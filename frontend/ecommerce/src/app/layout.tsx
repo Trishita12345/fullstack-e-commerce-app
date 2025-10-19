@@ -68,8 +68,8 @@ const theme = createTheme({
       "#8e523b",
       "#7e452f",
     ],
-    secondary: [
-      "#f6f6f6", //gray, secondary.0
+    gray: [
+      "#f6f6f6", //gray, gray.0
       "#e7e7e7",
       "#cdcdcd",
       "#b2b2b2",
@@ -79,6 +79,18 @@ const theme = createTheme({
       "#717171",
       "#656565",
       "#575757",
+    ],
+    black: [
+      "#f5f5f5",
+      "#e7e7e7",
+      "#cdcdcd",
+      "#b2b2b2",
+      "#9a9a9a",
+      "#8b8b8b",
+      "#848484",
+      "#717171",
+      "#656565",
+      "#000000",
     ],
   },
 });
