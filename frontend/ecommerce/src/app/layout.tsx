@@ -3,10 +3,12 @@ import "./globals.css";
 import Header from "./(components)/header";
 import AuthWrapper from "@/auth/AuthWrapper";
 import "@mantine/core/styles.css";
+import '@mantine/carousel/styles.css';
 import {ColorSchemeScript, createTheme, mantineHtmlProps, MantineProvider,} from "@mantine/core";
 import {en} from "@/constants/en";
 import {Allura, Inter, Jost, Poppins} from "next/font/google";
 import {Footer} from "@/app/(components)/footer";
+
 
 const poppins = Poppins({
     subsets: ["latin"],
