@@ -1,0 +1,6 @@
+.idea
+.gitattributes
+mvnw
+mvnw.cmd
+backend/productService/.mvn/wrapper/maven-wrapper.properties
+.DS_Store
