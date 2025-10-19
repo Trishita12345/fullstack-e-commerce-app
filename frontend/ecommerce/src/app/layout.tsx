@@ -82,7 +82,7 @@ const theme = createTheme({
     ],
     black: [
       "#f5f5f5",
-      "#e7e7e7",
+      "#'e7e7e7'",
       "#cdcdcd",
       "#b2b2b2",
       "#9a9a9a",

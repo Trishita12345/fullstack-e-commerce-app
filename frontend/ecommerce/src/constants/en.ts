@@ -5,4 +5,10 @@ export const en = {
   appDescription: "Luxury handcrafted candles inspired by calm.",
   account: "Account",
   hi: "Hi",
+  myWishlist: "My Wishlist",
+  myCart: "My Cart",
+  store: "store",
+  about: "about",
+  readStories: "Read Stories",
+  customCandles: "custom candles",
 };

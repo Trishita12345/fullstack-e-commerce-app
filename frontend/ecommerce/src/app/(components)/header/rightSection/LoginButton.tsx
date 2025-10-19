@@ -21,6 +21,8 @@ const LoginButton = () => {
       <Button
         c="black.9"
         style={{
+          padding: "2px 12px",
+          fontSize: "13px",
           "--button-hover": "var(--mantine-color-black-1)",
         }}
         radius="xs"
