@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { useContext, useEffect } from "react";
 import { IAuthContext, AuthContext } from "react-oauth2-code-pkce";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,22 +17,23 @@ const LoginButton = () => {
     }
   }, [token]);
   return (
-    <>
-      <Button
-        c="black.9"
-        style={{
-          padding: "2px 12px",
-          fontSize: "13px",
-          "--button-hover": "var(--mantine-color-black-1)",
-        }}
-        radius="xs"
-        variant="subtle"
-        leftSection={<FontAwesomeIcon icon={faUser} />}
-        onClick={() => (token ? logOut() : logIn())}
-      >
+    <Button
+      c="black.9"
+      py={2}
+      px={{ base: 0, xs: 12 }}
+      style={{
+        fontSize: "13px",
+        "--button-hover": "var(--mantine-color-black-1)",
+      }}
+      radius="xs"
+      variant="subtle"
+      leftSection={<FontAwesomeIcon icon={faUser} />}
+      onClick={() => (token ? logOut() : logIn())}
+    >
+      <Text size="xs" fw={600} visibleFrom="xs">
         {token ? `${en.hi}, ${tokenData?.given_name}!` : en.account}
-      </Button>
-    </>
+      </Text>
+    </Button>
   );
 };
 

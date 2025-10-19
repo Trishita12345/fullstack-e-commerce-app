@@ -10,11 +10,7 @@ type LeftNavItem = {
 const LeftNavItem = ({ navItem }: LeftNavItem) => {
   const feBaseUrl = process.env.NEXT_PUBLIC_FRONTEND;
   return (
-    <Text
-      tt={"uppercase"}
-      fw={500}
-      style={{ fontSize: "0.7rem", cursor: "pointer" }}
-    >
+    <Text tt={"uppercase"} fw={500} style={{ cursor: "pointer" }} size="xs">
       <Link href={`${feBaseUrl}${navItem.href}`}>{navItem.label}</Link>
     </Text>
   );

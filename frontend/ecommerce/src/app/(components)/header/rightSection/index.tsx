@@ -1,8 +1,10 @@
 import { Box, Tooltip } from "@mantine/core";
 import LoginButton from "./LoginButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMagnifyingGlass,
+  faCartShopping,
+} from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { en } from "@/constants/en";
 

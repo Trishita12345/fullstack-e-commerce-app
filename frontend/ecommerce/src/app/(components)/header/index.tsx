@@ -8,7 +8,7 @@ const Header = () => {
     <Box
       bg="gray.0"
       py={8}
-      px={{ base: 8, sm: 50, md: 100 }}
+      px={{ base: 8, sm: 30, lg: 100 }}
       style={{
         display: "flex",
         alignItems: "center",
@@ -17,7 +17,13 @@ const Header = () => {
       <Box display={"flex"} flex={3}>
         <LeftSection />
       </Box>
-      <Box display={"flex"} flex={3} style={{ justifyContent: "center" }}>
+      <Box
+        display={"flex"}
+        flex={2}
+        style={{ justifyContent: "center" }}
+        hidden
+        visibleFrom="md"
+      >
         <LogoText />
       </Box>
 
