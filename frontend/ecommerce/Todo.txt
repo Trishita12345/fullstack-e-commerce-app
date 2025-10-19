@@ -1,6 +1,5 @@
 -- social login
 ui design fix => according to that keycloak view Change
-AppName fix
 header footer
 change Password,
 profile redirect

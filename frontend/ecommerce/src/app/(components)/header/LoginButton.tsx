@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@mantine/core";
 import { useContext, useEffect } from "react";
 import { IAuthContext, AuthContext } from "react-oauth2-code-pkce";
 
@@ -15,9 +16,13 @@ const LoginButton = () => {
   return (
     <>
       {token ? (
-        <button onClick={() => logOut()}>Log out</button>
+        <Button variant="subtle" onClick={() => logOut()}>
+          Log out
+        </Button>
       ) : (
-        <button onClick={() => logIn()}>Login</button>
+        <Button variant="subtle" onClick={() => logIn()}>
+          Login
+        </Button>
       )}
     </>
   );
