@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { en } from "@/constants/en";
+import SearchSpotlight from "../../searchSpotlight";
 
 const RightSection = () => {
   return (
@@ -20,10 +21,7 @@ const RightSection = () => {
       <p style={{ paddingRight: 10, color: "var(--mantine-color-black-2)" }}>
         |
       </p>
-      <FontAwesomeIcon
-        icon={faMagnifyingGlass}
-        style={{ cursor: "pointer", paddingRight: 12 }}
-      />
+      <SearchSpotlight />
       <Tooltip label={en.myWishlist}>
         <FontAwesomeIcon
           icon={faHeart}

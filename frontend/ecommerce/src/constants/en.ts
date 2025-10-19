@@ -20,4 +20,8 @@ export const en = {
   savedAddesses: "Saved Addresses",
   orderHistory: "Order History",
   signout: "Sign out",
+  newlyAddedItems: "Newly Added Items",
+  newlyAddedItemsDesc: "Check the latest items through out the website",
+  mostLovedItems: "Most Loved Items",
+  mostLovedItemsDesc: "Check the most loved items by our customer",
 };
