@@ -18,13 +18,13 @@ import {
   IconMail,
   IconPhone,
 } from "@tabler/icons-react";
-import LogoText from "@/app/(components)/logo/LogoText";
+import LogoText from "@/(components)/logo/LogoText";
 import Link from "next/link";
 
 export const Footer = () => {
   return (
     <footer>
-      <Box bg="primary.0" py={64}>
+      <Box bg="primary.0" py={64} pl={{ base: 0, md: 64 }}>
         <Grid gutter={"48"} px={{ base: 24, md: 48 }} justify={"space-between"}>
           <GridCol
             span={{ base: 12, sm: 12, md: 5, lg: 4 }}

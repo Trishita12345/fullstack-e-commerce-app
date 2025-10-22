@@ -10,6 +10,7 @@ import {
 } from "@mantine/core";
 import { Carousel, CarouselSlide } from "@mantine/carousel";
 import Image from "next/image";
+import { en } from "@/constants/en";
 
 export const Testimonials = () => {
   const reviews = [
@@ -17,7 +18,7 @@ export const Testimonials = () => {
       content:
         "The soft glow and soothing fragrance transformed my evening into pure relaxation. A perfect touch of calm for any space",
       imageUrl:
-        "https://images.unsplash.com/photo-1760715756584-9a88f2b272c6?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1760",
+        "https://images.unsplash.com/photo-1570823635306-250abb06d4b3?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2070",
       rating: 5,
       by: "Ram Sankar",
     },
@@ -25,7 +26,7 @@ export const Testimonials = () => {
       content:
         "The candles aroma filled my home with bliss, creating a cozy, serene vibe. Highly recommended",
       imageUrl:
-        "https://images.unsplash.com/photo-1760715756584-9a88f2b272c6?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=82&w=1760",
+        "https://images.unsplash.com/photo-1528351655744-27cc30462816?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2070",
       rating: 4,
       by: "Rohit Chauhan",
     },
@@ -33,13 +34,13 @@ export const Testimonials = () => {
       content:
         "The gentle scent lingered beautifully, wrapping the room in warmth and peace. It’s my new favorite way to unwind after a long day.",
       imageUrl:
-        "https://images.unsplash.com/photo-1760715756584-9a88f2b272c6?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=84&w=1760",
+        "https://images.unsplash.com/photo-1476900164809-ff19b8ae5968?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=2070",
       rating: 4,
       by: "Shyam Sundar Das",
     },
   ];
   return (
-    <Box bg="primary.0" my={4}>
+    <Box bg="primary.0">
       <Carousel
         withIndicators
         height={400}
@@ -64,9 +65,9 @@ export const Testimonials = () => {
                     size={"2rem"}
                     c={"primaryDark.6"}
                   >
-                    Testimonials
+                    {en.testimonials}
                   </Text>
-                  <Title order={3} c={"black.6"} w={{ base: 300, md: "70%" }}>
+                  <Title order={3} c={"black.8"} w={{ base: 300, md: "70%" }}>
                     {review.content}
                   </Title>
                   <Group justify={"end"} w={"60%"}>

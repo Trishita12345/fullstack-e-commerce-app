@@ -1,4 +1,4 @@
-import { Box, Tooltip } from "@mantine/core";
+import { Box, Indicator, Tooltip } from "@mantine/core";
 import LoginButton from "./LoginButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -28,10 +28,14 @@ const RightSection = () => {
           style={{ cursor: "pointer", paddingRight: 12 }}
         />
       </Tooltip>
-
-      <Tooltip label={en.myCart}>
-        <FontAwesomeIcon icon={faCartShopping} style={{ cursor: "pointer" }} />
-      </Tooltip>
+      <Indicator inline label="9" size={16} color={"primaryDark.6"} processing>
+        <Tooltip label={en.myCart}>
+          <FontAwesomeIcon
+            icon={faCartShopping}
+            style={{ cursor: "pointer" }}
+          />
+        </Tooltip>
+      </Indicator>
     </Box>
   );
 };

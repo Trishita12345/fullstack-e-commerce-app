@@ -9,3 +9,14 @@ export type PopoverContentItemProps = {
   href: string;
   icon: IconProp;
 };
+export type ProductsListingProps = {
+  id: string;
+  subCategory: string;
+  rating: number;
+  name: string;
+  basePrice: number;
+  discountedPrice?: number;
+  addedToCart: boolean;
+  addedToWishList: boolean;
+  imgUrl: string;
+};

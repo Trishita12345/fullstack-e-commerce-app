@@ -5,8 +5,10 @@ import {
   faClockRotateLeft,
   faHouse,
 } from "@fortawesome/free-solid-svg-icons";
-import { Box, Button } from "@mantine/core";
+import { Box, Button, Text } from "@mantine/core";
 import PopoverContentItems from "./PopoverContentItems";
+import { useContext } from "react";
+import { IAuthContext, AuthContext } from "react-oauth2-code-pkce";
 
 const PopoverItems: PopoverContentItemProps[] = [
   {
@@ -16,7 +18,7 @@ const PopoverItems: PopoverContentItemProps[] = [
   },
   {
     label: en.manageProfile,
-    href: "/manage-profile",
+    href: `${process.env.NEXT_PUBLIC_KEYCLOAK}/realms/ecommerce/account/`,
     icon: faGear,
   },
   {
@@ -25,9 +27,17 @@ const PopoverItems: PopoverContentItemProps[] = [
     icon: faHouse,
   },
 ];
-const PopoverContent = ({ onLogout }: { onLogout: () => void }) => {
+const PopoverContent = () => {
+  const { tokenData, logOut } = useContext<IAuthContext>(AuthContext);
   return (
     <Box>
+      <Text
+        hiddenFrom="xs"
+        size="xs"
+        fw={600}
+        mb={12}
+        mt={4}
+      >{`${en.welcome}, ${tokenData?.given_name}!`}</Text>
       {PopoverItems.map((item: PopoverContentItemProps) => (
         <PopoverContentItems
           href={item.href}
@@ -47,7 +57,7 @@ const PopoverContent = ({ onLogout }: { onLogout: () => void }) => {
           letterSpacing: 2.5,
           "--button-hover": "var(--mantine-color-primaryDark-9)",
         }}
-        onClick={() => onLogout()}
+        onClick={() => logOut()}
       >
         {en.signout}
       </Button>

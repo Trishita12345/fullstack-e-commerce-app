@@ -40,7 +40,7 @@ const LoginButton = () => {
             </Button>
           </Popover.Target>
           <Popover.Dropdown>
-            <PopoverContent onLogout={logOut} />
+            <PopoverContent />
           </Popover.Dropdown>
         </Popover>
       ) : (
