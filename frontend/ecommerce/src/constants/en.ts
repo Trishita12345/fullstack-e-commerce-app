@@ -40,4 +40,15 @@ export const en = {
   exploreTrendingProducts: "Explore Trending Products",
   exploreTrendingProductsDesc:
     "We've curated some of our latest and most purchased products in emoni scents. Buy now and get a huge discount",
+  seeAllProducts: "See All Products",
+  addToCart: "Add to cart",
+  goToCart: "Go to cart",
+  inspiringStories: "Inspiring Stories",
+  stayInformedOnOur: "Stay Informed on our",
+  latest: "Latest",
+  stories: "Stories",
+  readMore: "Read More",
+  shopByCategories: "Shop by Categories",
+  shopByCategoriesDesc:
+    "All our candles are made from the finest wax and lead-free wicks to ensure a long, clean burn.",
 };

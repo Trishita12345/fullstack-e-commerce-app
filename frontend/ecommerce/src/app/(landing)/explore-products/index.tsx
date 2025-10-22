@@ -3,6 +3,7 @@ import { en } from "@/constants/en";
 import { ProductsListingProps } from "@/constants/types";
 import { Box, Group, Stack, Text, Title } from "@mantine/core";
 import { products } from "./products";
+import SeeAllProductsBtn from "./SeeAllProductsBtn";
 
 const ExploreProducts = () => {
   return (
@@ -39,6 +40,7 @@ const ExploreProducts = () => {
           <ProductCard product={item} key={item.id} />
         ))}
       </Group>
+      <SeeAllProductsBtn />
     </Box>
   );
 };

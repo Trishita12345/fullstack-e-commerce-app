@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import Header from "../(components)/header";
 import AuthWrapper from "@/auth/AuthWrapper";
 import "@mantine/core/styles.css";
@@ -14,6 +13,7 @@ import {
 import { en } from "@/constants/en";
 import { Allura, Inter, Jost, Poppins } from "next/font/google";
 import { Footer } from "@/(components)/footer";
+import "./globals.css";
 
 const poppins = Poppins({
   subsets: ["latin"],

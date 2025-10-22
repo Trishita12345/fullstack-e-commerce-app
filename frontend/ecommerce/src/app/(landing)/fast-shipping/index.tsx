@@ -1,15 +1,17 @@
 import { en } from "@/constants/en";
 import { Box, Divider, Group, Stack, Text, Title } from "@mantine/core";
 import {
+  Icon,
   IconPackage,
   IconPhoneIncoming,
+  IconProps,
   IconShieldCheck,
   IconTruckDelivery,
 } from "@tabler/icons-react";
-import { Fragment } from "react";
+import { ForwardRefExoticComponent, Fragment, RefAttributes } from "react";
 
 type FastShippingDataProps = {
-  Icon: any;
+  Icon: ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>;
   title: string;
   subtitle: string;
 };

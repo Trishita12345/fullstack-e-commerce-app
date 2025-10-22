@@ -43,6 +43,7 @@ const PopoverContent = () => {
           href={item.href}
           icon={item.icon}
           label={item.label}
+          key={item.label}
         />
       ))}
       <Button

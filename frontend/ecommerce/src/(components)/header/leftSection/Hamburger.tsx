@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDisclosure } from "@mantine/hooks";
-import { Drawer, Button, Stack, Box, Text } from "@mantine/core";
+import { Drawer, Box, Text } from "@mantine/core";
 import { NavItem } from "@/constants/types";
 import LogoText from "../../logo/LogoText";
 import Link from "next/link";
@@ -50,7 +50,7 @@ const Hamburger = ({ navData }: HamburgerProps) => {
         }
       >
         {navData.map((item: NavItem) => (
-          <Link href={item.href}>
+          <Link href={item.href} key={item.label}>
             <Box
               px={10}
               style={{

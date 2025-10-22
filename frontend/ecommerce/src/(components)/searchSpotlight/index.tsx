@@ -6,15 +6,9 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { Spotlight, SpotlightActionData, spotlight } from "@mantine/spotlight";
-import {
-  IconHome,
-  IconDashboard,
-  IconFileText,
-  IconSearch,
-} from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import { useState } from "react";
 
 const defaultActions: SpotlightActionData[] = [
@@ -42,7 +36,7 @@ const defaultActions: SpotlightActionData[] = [
 ];
 
 function SearchSpotlight() {
-  const [actions, setActions] = useState<any>(defaultActions);
+  const [actions, setActions] = useState<SpotlightActionData[]>(defaultActions);
   const [value, setValue] = useState("");
   const [debounced] = useDebouncedValue(value, 2000);
   return (
