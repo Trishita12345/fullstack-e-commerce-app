@@ -8,7 +8,7 @@ import {
 import { Box, Button, Text } from "@mantine/core";
 import PopoverContentItems from "./PopoverContentItems";
 import { useContext } from "react";
-import { IAuthContext, AuthContext } from "react-oauth2-code-pkce";
+import { authClient } from "@/lib/auth-client";
 
 const PopoverItems: PopoverContentItemProps[] = [
   {
@@ -28,16 +28,14 @@ const PopoverItems: PopoverContentItemProps[] = [
   },
 ];
 const PopoverContent = () => {
-  const { tokenData, logOut } = useContext<IAuthContext>(AuthContext);
+  const handleLogout = async () => {
+    await authClient.signOut();
+  };
   return (
     <Box>
-      <Text
-        hiddenFrom="xs"
-        size="xs"
-        fw={600}
-        mb={12}
-        mt={4}
-      >{`${en.welcome}, ${tokenData?.given_name}!`}</Text>
+      <Text hiddenFrom="xs" size="xs" fw={600} mb={12} mt={4}>{`${
+        en.welcome
+      }, ${"tokenData?.given_name"}!`}</Text>
       {PopoverItems.map((item: PopoverContentItemProps) => (
         <PopoverContentItems
           href={item.href}
@@ -58,7 +56,7 @@ const PopoverContent = () => {
           letterSpacing: 2.5,
           "--button-hover": "var(--mantine-color-primaryDark-9)",
         }}
-        onClick={() => logOut()}
+        onClick={handleLogout}
       >
         {en.signout}
       </Button>
