@@ -1,0 +1,16 @@
+.group {
+  margin-top: 72px;
+  width: 100%;
+  margin-inline: auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (min-width: 48em) {
+  .group {
+    gap: 48px;
+    width: 90%;
+  }
+}
