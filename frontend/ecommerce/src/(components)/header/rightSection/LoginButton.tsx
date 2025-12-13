@@ -1,25 +1,51 @@
 "use client";
 
 import { Button, Popover, Text } from "@mantine/core";
-import { useContext, useEffect } from "react";
-import { IAuthContext, AuthContext } from "react-oauth2-code-pkce";
+import { notifications } from "@mantine/notifications";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { en } from "@/constants/en";
 import PopoverContent from "./PopoverContent";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { authClient } from "@/lib/auth-client";
+import { Session } from "@/lib/auth";
 
 const LoginButton = () => {
-  const { token, tokenData, logOut, logIn, loginInProgress } =
-    useContext<IAuthContext>(AuthContext);
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [session, setSession] = useState<Session | null>(null);
 
-  useEffect(() => {
-    if (token) {
-      console.log(tokenData);
+  const { data: session, isPending } = authClient.useSession();
+
+  const handleSocialLogIn = async () => {
+    // setLoading(true);
+    debugger;
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+    });
+    if (error) {
+      // setLoading(false);
+      notifications.show({
+        title: "Login Failed",
+        message: error.message,
+        color: "red",
+      });
+    } else {
+      // setLoading(false);
+      notifications.show({
+        title: "Welcome Again",
+        message: "Welcome again please checkout and enlighten your room",
+        color: "green",
+      });
+      // setSession(data);
     }
-  }, [token]);
+  };
+  if (isPending) {
+    return <div></div>;
+  }
   return (
     <>
-      {token ? (
+      {session?.user ? (
         <Popover width={200} position="bottom" withArrow shadow="md">
           <Popover.Target>
             <Button
@@ -35,7 +61,7 @@ const LoginButton = () => {
               leftSection={<FontAwesomeIcon icon={faUser} />}
             >
               <Text size="xs" fw={600} visibleFrom="xs">
-                {`${en.hi}, ${tokenData?.given_name}!`}
+                {`${en.hi}, ${session.user.name}!`}
               </Text>
             </Button>
           </Popover.Target>
@@ -55,10 +81,10 @@ const LoginButton = () => {
           radius="xs"
           variant="subtle"
           leftSection={<FontAwesomeIcon icon={faUser} />}
-          onClick={() => logIn()}
+          onClick={handleSocialLogIn}
         >
           <Text size="xs" fw={600} visibleFrom="xs">
-            {en.account}
+            {en.login}
           </Text>
         </Button>
       )}

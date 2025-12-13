@@ -1,9 +1,10 @@
 export const en = {
+  logoText: "Loom & Lume",
   logoName: "Loom&Lume",
   commonPageTitle: "Loom&Lume - Luxury Handmade Candle Store",
   logoTagline: "Where Craft Meets Light.",
   appDescription: "Luxury handcrafted candles inspired by calm.",
-  account: "Account",
+  login: "Login",
   hi: "Hi",
   copyrightText: "© Loom&Lume 2025. All rights reserved.",
   footerNote:

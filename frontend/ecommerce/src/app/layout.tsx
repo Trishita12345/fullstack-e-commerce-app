@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Header from "../(components)/header";
-import AuthWrapper from "@/auth/AuthWrapper";
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
 import "@mantine/spotlight/styles.css";
@@ -111,9 +110,7 @@ export default function RootLayout({
         className={`${poppins.variable} ${inter.variable} ${allura.variable} ${jost.variable} antialiased`}
       >
         <MantineProvider theme={theme}>
-          <AuthWrapper>
-            <Header />
-          </AuthWrapper>
+          <Header />
           {children}
           <Footer />
         </MantineProvider>

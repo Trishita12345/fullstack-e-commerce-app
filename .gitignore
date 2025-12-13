@@ -7,3 +7,4 @@ backend/productService/.mvn/wrapper/maven-wrapper.properties
 
 # frontend
 node_modules
+generated
