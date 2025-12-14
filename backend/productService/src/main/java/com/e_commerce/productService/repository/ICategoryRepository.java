@@ -2,6 +2,7 @@ package com.e_commerce.productService.repository;
 
 import com.e_commerce.productService.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,4 +19,16 @@ public interface ICategoryRepository extends JpaRepository<Category, UUID> {
     List<Category> findByParentCategory_Id(UUID parentCategoryId);
 
     Optional<Category> findByName(String name);
+
+    @Query(value = """
+            SELECT c.*
+            FROM categories c
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM products p
+                WHERE p.category_id = c.id
+            )
+            """, nativeQuery = true)
+    List<Category> findCategoriesWithNoProducts();
+
 }
