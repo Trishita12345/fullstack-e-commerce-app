@@ -54,7 +54,7 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     // "http://localhost:3001",
-    // "https://oauth.pstmn.io/v1/callback",
+    "https://oauth.pstmn.io/v1/callback",
     "http://localhost:8081",
   ],
 });

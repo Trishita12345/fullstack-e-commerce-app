@@ -1,0 +1,29 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: productService
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5431/product_db
+    username: user
+    password: pass123
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db-changelog-master.yaml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:3000
+logging:
+  level:
+    org:
+      springframework:
+        security: debug
+
+

@@ -9,6 +9,7 @@ import { Box, Button, Text } from "@mantine/core";
 import PopoverContentItems from "./PopoverContentItems";
 import { useContext } from "react";
 import { authClient } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 const PopoverItems: PopoverContentItemProps[] = [
   {
@@ -18,7 +19,7 @@ const PopoverItems: PopoverContentItemProps[] = [
   },
   {
     label: en.manageProfile,
-    href: `${process.env.NEXT_PUBLIC_KEYCLOAK}/realms/ecommerce/account/`,
+    href: `/my-profile`,
     icon: faGear,
   },
   {
@@ -30,6 +31,7 @@ const PopoverItems: PopoverContentItemProps[] = [
 const PopoverContent = () => {
   const handleLogout = async () => {
     await authClient.signOut();
+    redirect("/");
   };
   return (
     <Box>

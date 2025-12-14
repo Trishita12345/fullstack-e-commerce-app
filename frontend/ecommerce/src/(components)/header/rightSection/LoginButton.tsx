@@ -6,38 +6,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { en } from "@/constants/en";
 import PopoverContent from "./PopoverContent";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { authClient } from "@/lib/auth-client";
-import { Session } from "@/lib/auth";
 
 const LoginButton = () => {
-  // const [loading, setLoading] = useState<boolean>(false);
-  // const [session, setSession] = useState<Session | null>(null);
-
   const { data: session, isPending } = authClient.useSession();
 
   const handleSocialLogIn = async () => {
-    // setLoading(true);
-    debugger;
     const { error } = await authClient.signIn.social({
       provider: "google",
     });
     if (error) {
-      // setLoading(false);
       notifications.show({
         title: "Login Failed",
         message: error.message,
         color: "red",
       });
     } else {
-      // setLoading(false);
       notifications.show({
         title: "Welcome Again",
         message: "Welcome again please checkout and enlighten your room",
         color: "green",
       });
-      // setSession(data);
     }
   };
   if (isPending) {
