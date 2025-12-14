@@ -1,5 +1,6 @@
 package com.e_commerce.productService.service;
 
+import com.e_commerce.productService.model.dto.CategoryListingResponseDTO;
 import com.e_commerce.productService.model.dto.CategoryRequestDTO;
 import com.e_commerce.productService.model.dto.CategoryResponseDTO;
 import com.e_commerce.productService.model.dto.common.SelectOptionDTO;
@@ -13,4 +14,6 @@ public interface ICategoryService {
     CategoryResponseDTO editCategory(UUID id, CategoryRequestDTO categoryRequestDTO);
 
     List<SelectOptionDTO<UUID>> getParentCategories();
+
+    List<CategoryListingResponseDTO> getAllCategories();
 }

@@ -10,8 +10,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class CategoryResponseDTO {
+public class CategoryListingResponseDTO {
     private UUID id;
     private String name;
     private SelectOptionDTO<UUID> parentCategory;
+    private Boolean showManageVariantBtn;
 }
