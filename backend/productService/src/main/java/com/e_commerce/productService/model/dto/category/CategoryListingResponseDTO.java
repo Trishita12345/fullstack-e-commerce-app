@@ -1,4 +1,4 @@
-package com.e_commerce.productService.model.dto;
+package com.e_commerce.productService.model.dto.category;
 
 import com.e_commerce.productService.model.dto.common.SelectOptionDTO;
 import lombok.*;
@@ -10,8 +10,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class CategoryResponseDTO {
+public class CategoryListingResponseDTO {
     private UUID id;
     private String name;
     private SelectOptionDTO<UUID> parentCategory;
+    private Boolean isParentCategory;
 }

@@ -1,8 +1,7 @@
 package com.e_commerce.productService.model;
+
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +12,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "variants")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Variant {
 
     @Id

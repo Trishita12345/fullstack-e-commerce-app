@@ -1,4 +1,4 @@
-package com.e_commerce.productService.model.dto;
+package com.e_commerce.productService.model.dto.category;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CategoryRequestDTO {
     @NotBlank
-    @Size(max = 100, message = "Category name must be at most 30 characters")
+    @Size(max = 100, message = "Category name must be at most 100 characters")
     private String name;
 
     @Nullable

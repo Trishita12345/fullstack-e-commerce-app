@@ -1,8 +1,8 @@
 package com.e_commerce.productService.controller;
 
-import com.e_commerce.productService.model.dto.CategoryListingResponseDTO;
-import com.e_commerce.productService.model.dto.CategoryRequestDTO;
-import com.e_commerce.productService.model.dto.CategoryResponseDTO;
+import com.e_commerce.productService.model.dto.category.CategoryListingResponseDTO;
+import com.e_commerce.productService.model.dto.category.CategoryRequestDTO;
+import com.e_commerce.productService.model.dto.category.CategoryResponseDTO;
 import com.e_commerce.productService.model.dto.common.SelectOptionDTO;
 import com.e_commerce.productService.service.ICategoryService;
 import jakarta.validation.Valid;
@@ -44,5 +44,11 @@ public class CategoryController {
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<List<CategoryListingResponseDTO>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<CategoryResponseDTO> getCategoryById(@PathVariable UUID id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 }

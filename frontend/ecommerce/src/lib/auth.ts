@@ -23,6 +23,7 @@ export const auth = betterAuth({
   plugins: [
     jwt({
       jwt: {
+        expirationTime: "2h",
         audience: "http://localhost:8081",
       },
       jwks: {
