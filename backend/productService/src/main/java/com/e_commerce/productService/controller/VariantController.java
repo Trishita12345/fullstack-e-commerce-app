@@ -31,9 +31,15 @@ public class VariantController {
         return ResponseEntity.ok(variantService.getVariantsByCategoryId(categoryId));
     }
 
-    @GetMapping("/{categoryId}/{variantsId}")
+    @GetMapping("/{categoryId}/{variantId}")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<VariantDTO> getVariantDetails(@PathVariable UUID variantsId) {
-        return ResponseEntity.ok(variantService.getVariantDetails(variantsId));
+    public ResponseEntity<VariantDTO> getVariantDetails(@PathVariable UUID variantId) {
+        return ResponseEntity.ok(variantService.getVariantDetails(variantId));
+    }
+
+    @PutMapping("/{categoryId}/{variantId}")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<VariantDTO> editVariant(@PathVariable UUID categoryId, @PathVariable UUID variantId, @Valid @RequestBody VariantDTO variantDTO) {
+        return ResponseEntity.ok(variantService.editVariant(categoryId, variantId, variantDTO));
     }
 }

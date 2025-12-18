@@ -6,15 +6,17 @@ import com.e_commerce.productService.model.VariantAttribute;
 import com.e_commerce.productService.model.dto.variant.VariantAttributeDTO;
 import com.e_commerce.productService.model.dto.variant.VariantDTO;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;
+import com.e_commerce.productService.repository.IVariantAttributeRepository;
 import com.e_commerce.productService.repository.IVariantRepository;
 import com.e_commerce.productService.service.ICategoryService;
 import com.e_commerce.productService.service.IVariantService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -22,8 +24,10 @@ public class VariantService implements IVariantService {
 
     private IVariantRepository variantRepository;
     private ICategoryService categoryService;
+    private IVariantAttributeRepository variantAttributeRepository;
 
     @Override
+    @Transactional
     public VariantDTO addVariant(UUID categoryId, VariantDTO variantDTO) {
         Category category = categoryService.getCategory(categoryId);
         Variant variant = Variant.builder()
@@ -40,6 +44,54 @@ public class VariantService implements IVariantService {
                 .toList();
         variant.setAttributes(attributes);
         Variant savedVariant = variantRepository.save(variant);
+        return variantEntityToDTOMapper(savedVariant);
+    }
+
+    @Override
+    @Transactional
+    public VariantDTO editVariant(UUID categoryId, UUID variantId, VariantDTO variantDTO) {
+
+        Variant variant = variantRepository.findById(variantId)
+                .orElseThrow(() -> new RuntimeException("Variant not found"));
+
+        // 1️⃣ Validate variant belongs to category
+        if (!variant.getCategory().getId().equals(categoryId)) {
+            throw new IllegalStateException("Variant does not belong to this category");
+        }
+
+        variant.setName(variantDTO.getName());
+
+        // Existing attributes map
+        Map<UUID, VariantAttribute> existingAttributes = variant.getAttributes()
+                .stream()
+                .collect(Collectors.toMap(VariantAttribute::getId, Function.identity()));
+
+        List<VariantAttribute> updatedAttributes = new ArrayList<>();
+
+        for (VariantAttributeDTO dto : variantDTO.getAttributes()) {
+
+            // UPDATE existing
+            if (dto.getId() != null && existingAttributes.containsKey(dto.getId())) {
+                VariantAttribute attribute = existingAttributes.get(dto.getId());
+                attribute.setName(dto.getName());
+                updatedAttributes.add(attribute);
+            }
+            // CREATE new
+            else {
+                VariantAttribute newAttr = VariantAttribute.builder()
+                        .name(dto.getName())
+                        .variant(variant)
+                        .build();
+                updatedAttributes.add(newAttr);
+            }
+        }
+
+        // 2️⃣ Remove deleted attributes
+        variant.getAttributes().clear();
+        variant.getAttributes().addAll(updatedAttributes);
+
+        Variant savedVariant = variantRepository.save(variant);
+
         return variantEntityToDTOMapper(savedVariant);
     }
 

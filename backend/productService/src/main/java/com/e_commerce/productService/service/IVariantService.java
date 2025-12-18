@@ -9,7 +9,9 @@ import java.util.UUID;
 public interface IVariantService {
     VariantDTO addVariant(UUID categoryId, VariantDTO variantDTO);
 
+    VariantDTO editVariant(UUID categoryId, UUID variantId, VariantDTO variantDTO);
+
     List<VariantWithCategoryDTO> getVariantsByCategoryId(UUID categoryId);
 
-    VariantDTO getVariantDetails(UUID variantsId);
+    VariantDTO getVariantDetails(UUID variantId);
 }

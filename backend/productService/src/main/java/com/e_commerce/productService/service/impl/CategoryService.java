@@ -8,6 +8,7 @@ import com.e_commerce.productService.model.dto.common.SelectOptionDTO;
 import com.e_commerce.productService.repository.ICategoryRepository;
 import com.e_commerce.productService.service.ICategoryService;
 import jakarta.annotation.Nullable;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class CategoryService implements ICategoryService {
     private final ICategoryRepository categoryRepository;
 
     @Override
+    @Transactional
     public CategoryResponseDTO addCategory(CategoryRequestDTO categoryRequestDTO) {
         Category category = new Category();
         category.setName(categoryRequestDTO.getName());
@@ -34,6 +36,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    @Transactional
     public CategoryResponseDTO editCategory(UUID id, CategoryRequestDTO categoryRequestDTO) {
         Optional<Category> existingCategory = categoryRepository.findById(id);
         if (existingCategory.isEmpty()) {
