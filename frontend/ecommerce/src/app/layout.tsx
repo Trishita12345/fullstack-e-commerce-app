@@ -109,11 +109,7 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${inter.variable} ${allura.variable} ${jost.variable} antialiased`}
       >
-        <MantineProvider theme={theme}>
-          <Header />
-          {children}
-          <Footer />
-        </MantineProvider>
+        <MantineProvider theme={theme}>{children}</MantineProvider>
       </body>
     </html>
   );

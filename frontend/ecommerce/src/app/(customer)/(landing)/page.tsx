@@ -1,4 +1,4 @@
-import { Testimonials } from "@/app/(landing)/testimonial";
+import { Testimonials } from "@/app/(customer)/(landing)/testimonial";
 import { FastShipping } from "./fast-shipping";
 import Banner from "./banner";
 import ExploreProducts from "./explore-products";
