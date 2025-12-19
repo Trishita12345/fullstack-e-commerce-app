@@ -1,4 +1,4 @@
-import { ScrollArea } from "@mantine/core";
+import { Box, ScrollArea } from "@mantine/core";
 
 import "./adminSidebar.css";
 import Links from "./Links";
@@ -7,9 +7,9 @@ import LogoText from "../logo/LogoText";
 export default function AdminSidebar() {
   return (
     <nav className={"navbar"}>
-      <div className={"header"}>
+      <Box className={"header"}>
         <LogoText />
-      </div>
+      </Box>
 
       <ScrollArea className={"links"}>
         <div className={"linksInner"}>

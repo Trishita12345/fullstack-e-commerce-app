@@ -7,7 +7,7 @@ import { en } from "@/constants/en";
 
 const AdminHeader = () => {
   return (
-    <Box bg={"primaryDark.0"} h="58px">
+    <Box bg={"gray.0"} h="58px">
       <Box
         style={{
           display: "flex",

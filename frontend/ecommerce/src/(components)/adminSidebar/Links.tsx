@@ -11,14 +11,14 @@ import {
 import { LinksGroup } from "../adminNavbarLinksGroup";
 
 const mockdata = [
-  { label: "Dashboard", icon: IconGauge, link: "" },
+  { label: "Dashboard", icon: IconGauge, link: "/dashboard" },
   {
     label: "Market news",
     icon: IconNotes,
     initiallyOpened: true,
     links: [
-      { label: "Overview", link: "/a" },
-      { label: "Forecasts", link: "/a" },
+      { label: "Overview", link: "/overview" },
+      { label: "Forecasts", link: "/forecasts" },
       { label: "Outlook", link: "/a" },
       { label: "Real time", link: "/a" },
     ],
@@ -27,12 +27,12 @@ const mockdata = [
     label: "Releases",
     icon: IconCalendarStats,
     links: [
-      { label: "Upcoming releases", link: "/a" },
+      { label: "Upcoming releases", link: "/" },
       { label: "Previous releases", link: "/a" },
       { label: "Releases schedule", link: "/a" },
     ],
   },
-  { label: "Analytics", icon: IconPresentationAnalytics },
+  { label: "Analytics", icon: IconPresentationAnalytics, link: "/analytics" },
   { label: "Contracts", icon: IconFileAnalytics },
   { label: "Settings", icon: IconAdjustments },
   {
