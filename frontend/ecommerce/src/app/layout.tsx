@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Header from "../(components)/header";
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
+import "@mantine/notifications/styles.css";
 import "@mantine/spotlight/styles.css";
 import {
   ColorSchemeScript,
@@ -11,8 +11,8 @@ import {
 } from "@mantine/core";
 import { en } from "@/constants/en";
 import { Allura, Inter, Jost, Poppins } from "next/font/google";
-import { Footer } from "@/(components)/footer";
 import "./globals.css";
+import { Notifications } from "@mantine/notifications";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -109,7 +109,10 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${inter.variable} ${allura.variable} ${jost.variable} antialiased`}
       >
-        <MantineProvider theme={theme}>{children}</MantineProvider>
+        <MantineProvider theme={theme}>
+          <Notifications />
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );

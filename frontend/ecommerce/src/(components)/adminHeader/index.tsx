@@ -1,39 +1,26 @@
-import { Box, Button, Text } from "@mantine/core";
-import Link from "next/link";
+import { Badge, Box, Group } from "@mantine/core";
 import LoginButton from "../header/rightSection/LoginButton";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStore } from "@fortawesome/free-solid-svg-icons";
+import LogoText from "../logo/LogoText";
 import { en } from "@/constants/en";
 
 const AdminHeader = () => {
   return (
-    <Box bg={"gray.0"} h="58px">
+    <Box bg={"gray.0"}>
       <Box
+        h="58px"
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "end",
-          paddingRight: 16,
+          justifyContent: "space-between",
+          padding: "0px 16px",
         }}
       >
-        <Link href="/">
-          <Button
-            c="black.9"
-            px={{ base: 0, xs: 12 }}
-            style={{
-              fontSize: "13px",
-              "--button-hover": "var(--mantine-color-black-1)",
-            }}
-            radius="xs"
-            variant="subtle"
-            leftSection={<FontAwesomeIcon icon={faStore} />}
-          >
-            <Text size="xs" fw={600} visibleFrom="xs">
-              {en.backToStore}
-            </Text>
-          </Button>
-        </Link>
-        <p style={{ color: "var(--mantine-color-black-2)" }}>|</p>
+        <Group>
+          <LogoText />
+          <Badge color="primaryDark.7" size="sm">
+            {en.SellerMode}
+          </Badge>
+        </Group>
         <LoginButton />
       </Box>
     </Box>

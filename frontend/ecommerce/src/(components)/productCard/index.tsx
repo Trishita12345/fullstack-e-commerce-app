@@ -12,6 +12,7 @@ import {
 } from "@mantine/core";
 import { IconHeart, IconHeartFilled, IconPlus } from "@tabler/icons-react";
 import ResponsiveImage from "../responsiveImage";
+import { en } from "@/constants/en";
 
 const ProductCard = ({ product }: { product: ProductsListingProps }) => {
   return (
@@ -47,7 +48,7 @@ const ProductCard = ({ product }: { product: ProductsListingProps }) => {
         <GridCol span={10}>
           {product.addedToCart ? (
             <Button color="black.9" size={"md"} fullWidth>
-              Go to cart
+              {en.goToCart}
             </Button>
           ) : (
             <Button
@@ -64,7 +65,7 @@ const ProductCard = ({ product }: { product: ProductsListingProps }) => {
               }}
             >
               <Text ml={48} fw={500}>
-                Add to cart
+                {en.addToCart}
               </Text>
             </Button>
           )}

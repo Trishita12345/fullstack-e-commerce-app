@@ -52,5 +52,9 @@ export const en = {
   shopByCategories: "Shop by Categories",
   shopByCategoriesDesc:
     "All our candles are made from the finest wax and lead-free wicks to ensure a long, clean burn.",
-  backToStore: "Store",
+  backToCustomer: "Back to Customer Mode",
+  goToSeller: "Go to Seller Mode",
+  Dashboard: "Dashboard",
+  Categories: "Categories",
+  SellerMode: "Seller Mode",
 };

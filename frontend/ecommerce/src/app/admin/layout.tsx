@@ -1,12 +1,7 @@
 import AdminHeader from "@/(components)/adminHeader";
 import AdminSidebar from "@/(components)/adminSidebar";
-import LoginButton from "@/(components)/header/rightSection/LoginButton";
-import { en } from "@/constants/en";
 import { getServerSession } from "@/lib/get-server-auth";
-import { faStore } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box, Button, Stack } from "@mantine/core";
-import Link from "next/link";
+import { Box, Group, Stack } from "@mantine/core";
 import { forbidden } from "next/navigation";
 
 export default async function AdminLayout({
@@ -18,17 +13,13 @@ export default async function AdminLayout({
   if (!session || session.user.role !== "SELLER") return forbidden();
   return (
     <>
-      <Box
-        style={{
-          display: "flex",
-        }}
-      >
+      <AdminHeader />
+      <Group align="start" gap={0}>
         <AdminSidebar />
-        <Stack w="100%">
-          <AdminHeader />
-          <Box px={16}>{children}</Box>
-        </Stack>
-      </Box>
+        <Box py={16} px={28} flex={2}>
+          {children}
+        </Box>
+      </Group>
     </>
   );
 }

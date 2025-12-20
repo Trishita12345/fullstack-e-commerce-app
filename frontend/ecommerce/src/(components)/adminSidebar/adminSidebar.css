@@ -7,6 +7,7 @@
   width: 300px;
   padding: var(--mantine-spacing-md);
   padding-bottom: 0;
+  padding-top: 0;
   display: flex;
   flex-direction: column;
   border-right: 1px solid
@@ -30,8 +31,8 @@
 }
 
 .linksInner {
-  padding-top: var(--mantine-spacing-xl);
-  padding-bottom: var(--mantine-spacing-xl);
+  padding-top: var(--mantine-spacing-xs);
+  padding-bottom: var(--mantine-spacing-xs);
 }
 
 .footer {

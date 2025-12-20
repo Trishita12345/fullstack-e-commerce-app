@@ -31,3 +31,17 @@ export type StoriesType = {
   name: string;
   updatedAt: string;
 };
+export type SelectOptionType = {
+  label: string;
+  value: string;
+};
+export type Category = {
+  name: string;
+  parentCategoryId?: string;
+};
+export type CategoryListType = {
+  id: string; // UUID as string in frontend
+  name: string;
+  parentCategory?: SelectOptionType | null;
+  isParentCategory: boolean;
+};

@@ -40,7 +40,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getParentCategories());
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<List<CategoryListingResponseDTO>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());

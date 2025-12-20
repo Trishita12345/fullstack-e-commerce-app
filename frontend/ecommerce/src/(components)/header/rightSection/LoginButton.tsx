@@ -7,6 +7,7 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { en } from "@/constants/en";
 import PopoverContent from "./PopoverContent";
 import { authClient } from "@/lib/auth-client";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 const LoginButton = () => {
   const { data: session, isPending } = authClient.useSession();
@@ -48,6 +49,7 @@ const LoginButton = () => {
               radius="xs"
               variant="subtle"
               leftSection={<FontAwesomeIcon icon={faUser} />}
+              rightSection={<FontAwesomeIcon icon={faChevronDown} size="sm" />}
             >
               <Text size="xs" fw={600} visibleFrom="xs">
                 {`${en.hi}, ${session.user.name}!`}
@@ -55,7 +57,7 @@ const LoginButton = () => {
             </Button>
           </Popover.Target>
           <Popover.Dropdown>
-            <PopoverContent />
+            <PopoverContent user={session.user} />
           </Popover.Dropdown>
         </Popover>
       ) : (
