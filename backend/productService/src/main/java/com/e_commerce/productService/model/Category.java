@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "categories")
 @NoArgsConstructor
-public class Category {
+public class Category extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

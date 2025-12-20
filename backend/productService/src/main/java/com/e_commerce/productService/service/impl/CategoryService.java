@@ -10,6 +10,8 @@ import com.e_commerce.productService.service.ICategoryService;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -70,17 +72,39 @@ public class CategoryService implements ICategoryService {
                 .toList();
     }
 
+//    @Override
+//    public Page<ProjectResponseDTO> getProjects(String query, Pageable pageable) {
+//        Page<Project> projects;
+//        Employee currentUser = SecurityUtil.getCurrentEmployee();
+//        if (query == null || query.trim().isEmpty()) {
+//            // No search query → return all
+//            projects = projectRepository.findAll(ProjectPredicate.findByEmployeeId(currentUser.getId()), pageable);
+//        } else {
+//            // Search by name or details
+//            projects = projectRepository.findAll(
+//                    ProjectPredicate.findByQuery(query)
+//                            .and(ProjectPredicate.findByEmployeeId(currentUser.getId())), pageable);
+//        }
+//        return projects.map(ProjectResponseMapper::toResponse);
+//    }
+
     @Override
-    public List<CategoryListingResponseDTO> getAllCategories() {
-        List<Category> allCategories = categoryRepository.findAll();
-        return allCategories.stream()
+    public Page<CategoryListingResponseDTO> getAllCategories(String query, Pageable pageable) {
+        Page<Category> allCategories;
+        if (query == null || query.trim().isEmpty()) {
+            // No search query → return all
+            allCategories = categoryRepository.findAll(pageable);
+        } else {
+            // Search by name or details
+            allCategories = categoryRepository.findByNameContainingIgnoreCase(query, pageable);
+        }
+        return allCategories
                 .map(category -> CategoryListingResponseDTO.builder()
                         .id(category.getId())
                         .name(category.getName())
                         .parentCategory(getParentCategoryAsSelectOptionDTO(category.getParentCategory()))
                         .isParentCategory(!category.getSubCategories().isEmpty())
-                        .build())
-                .toList();
+                        .build());
     }
 
 

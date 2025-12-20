@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class VariantAttribute {
+public class VariantAttribute extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

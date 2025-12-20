@@ -45,3 +45,40 @@ export type CategoryListType = {
   parentCategory?: SelectOptionType | null;
   isParentCategory: boolean;
 };
+export interface Pageable {
+  pageNumber: number;
+  pageSize: number;
+  offset: number;
+  paged: boolean;
+  unpaged: boolean;
+}
+
+export interface Sort {
+  empty: boolean;
+  sorted: boolean;
+  unsorted: boolean;
+}
+
+export interface Page<T> {
+  content: T[];
+
+  pageable: Pageable;
+
+  totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+
+  numberOfElements: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
+
+  sort?: Sort;
+}
+export interface QueryParamProps {
+  page?: number;
+  sortBy?: string;
+  direction?: "asc" | "desc";
+  query?: string;
+}

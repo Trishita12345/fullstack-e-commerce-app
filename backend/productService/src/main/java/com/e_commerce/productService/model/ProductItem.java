@@ -1,8 +1,9 @@
 package com.e_commerce.productService.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "productsItem")
 @NoArgsConstructor
-public class ProductItem {
+public class ProductItem extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,9 +1,10 @@
 package com.e_commerce.productService.repository;
 
 import com.e_commerce.productService.model.Category;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-// import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,6 +32,8 @@ public interface ICategoryRepository extends JpaRepository<Category, UUID> {
             )
             """, nativeQuery = true)
     List<Category> findCategoriesWithNoProducts();
+
+    Page<Category> findByNameContainingIgnoreCase(String query, Pageable pageable);
 
     // @Query(value = """
     //             SELECT NOT EXISTS (

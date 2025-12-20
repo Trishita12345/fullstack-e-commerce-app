@@ -11,3 +11,4 @@ public class PageRequestDTO {
     private String sortBy = "createdAt";
     private String direction = "desc";
 }
+
