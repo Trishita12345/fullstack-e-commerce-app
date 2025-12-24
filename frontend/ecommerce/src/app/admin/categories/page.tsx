@@ -10,6 +10,7 @@ import {
 } from "@tabler/icons-react";
 import { ActionButton } from "@/(components)/ActionButton";
 import AddEditCategory from "./(add-edit-category)/add-edit-category";
+import Link from "next/link";
 
 interface PageProps {
   searchParams: {
@@ -33,12 +34,11 @@ export default async function Categories({ searchParams }: PageProps) {
       body: {
         page,
         size: 10,
-        sortBy: sortBy || "createdAt",
+        sortBy: sortBy || "updatedAt",
         direction: direction || "desc",
       },
     }
   );
-  console.log(categories);
   const sortableFields: SortableField[] = [
     {
       field: "name",
@@ -61,12 +61,13 @@ export default async function Categories({ searchParams }: PageProps) {
             {item.isParentCategory || <IconLeaf size={"16px"} color="green" />}
           </Group>,
           <Group>
-            {/* <ActionButton Icon={<IconEdit size={"16px"} />} label="Edit" /> */}
             <AddEditCategory id={item.id} />
-            <ActionButton
-              Icon={<IconSettingsAutomation size={"16px"} />}
-              label="Configure Variants"
-            />
+            <Link href={`categories/${item.id}/variants`}>
+              <ActionButton
+                Icon={<IconSettingsAutomation size={"16px"} />}
+                label="Configure Variants"
+              />
+            </Link>
           </Group>,
         ]),
       }}

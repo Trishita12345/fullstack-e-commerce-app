@@ -12,6 +12,8 @@ import com.e_commerce.productService.service.ICategoryService;
 import com.e_commerce.productService.service.IVariantService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -97,11 +99,21 @@ public class VariantService implements IVariantService {
 
 
     @Override
-    public List<VariantWithCategoryDTO> getVariantsByCategoryId(UUID categoryId) {
+    public Page<VariantWithCategoryDTO> getVariantsByCategoryId(UUID categoryId, String query, Pageable pageable) {
         Category category = categoryService.getCategory(categoryId);
         List<Category> categoryHierarchy = categoryService.getCategoryHierarchy(category);
         List<UUID> categoryHierarchyIds = categoryHierarchy.stream().map(Category::getId).toList();
-        return variantRepository.findVariantsByCategoryIds(categoryHierarchyIds);
+//        return variantRepository.findVariantsByCategoryIds(categoryHierarchyIds);
+
+        Page<VariantWithCategoryDTO> allVariants;
+        if (query == null || query.trim().isEmpty()) {
+            // No search query → return all
+            allVariants = variantRepository.findVariantsByCategoryIds(categoryHierarchyIds, pageable);
+        } else {
+            // Search by name or details
+            allVariants = variantRepository.findByNameContainingIgnoreCaseByCategoryIds(query, categoryHierarchyIds, pageable);
+        }
+        return allVariants;
     }
 
     @Override

@@ -72,22 +72,6 @@ public class CategoryService implements ICategoryService {
                 .toList();
     }
 
-//    @Override
-//    public Page<ProjectResponseDTO> getProjects(String query, Pageable pageable) {
-//        Page<Project> projects;
-//        Employee currentUser = SecurityUtil.getCurrentEmployee();
-//        if (query == null || query.trim().isEmpty()) {
-//            // No search query → return all
-//            projects = projectRepository.findAll(ProjectPredicate.findByEmployeeId(currentUser.getId()), pageable);
-//        } else {
-//            // Search by name or details
-//            projects = projectRepository.findAll(
-//                    ProjectPredicate.findByQuery(query)
-//                            .and(ProjectPredicate.findByEmployeeId(currentUser.getId())), pageable);
-//        }
-//        return projects.map(ProjectResponseMapper::toResponse);
-//    }
-
     @Override
     public Page<CategoryListingResponseDTO> getAllCategories(String query, Pageable pageable) {
         Page<Category> allCategories;

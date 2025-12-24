@@ -2,6 +2,8 @@ package com.e_commerce.productService.repository;
 
 import com.e_commerce.productService.model.Variant;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,8 +27,31 @@ public interface IVariantRepository extends JpaRepository<Variant, UUID> {
                     """,
             nativeQuery = true
     )
-    List<VariantWithCategoryDTO> findVariantsByCategoryIds(
-            @Param("categoryIds") List<UUID> categoryIds
+    Page<VariantWithCategoryDTO> findVariantsByCategoryIds(
+            @Param("categoryIds") List<UUID> categoryIds, Pageable pageable
+    );
+
+    @Query(
+            value = """
+                    SELECT 
+                        v.id   AS variantId,
+                        v.name AS variantName,
+                        c.id   AS categoryId,
+                        c.name AS categoryName
+                    FROM variants v
+                    JOIN categories c ON v.category_id = c.id
+                    WHERE c.id IN (:categoryIds)
+                      AND (
+                          LOWER(v.name) LIKE LOWER(CONCAT('%', :query, '%'))
+                          OR LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%'))
+                      )
+                    """,
+            nativeQuery = true
+    )
+    Page<VariantWithCategoryDTO> findByNameContainingIgnoreCaseByCategoryIds(
+            @Param("query") String query,
+            @Param("categoryIds") List<UUID> categoryIds,
+            Pageable pageable
     );
 
 }

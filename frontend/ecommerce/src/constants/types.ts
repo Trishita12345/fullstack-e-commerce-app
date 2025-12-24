@@ -45,6 +45,13 @@ export type CategoryListType = {
   parentCategory?: SelectOptionType | null;
   isParentCategory: boolean;
 };
+export type VariantListType = {
+  variantId: string;
+  variantName: string;
+  CategoryId: string;
+  CategoryName: string;
+};
+
 export interface Pageable {
   pageNumber: number;
   pageSize: number;
