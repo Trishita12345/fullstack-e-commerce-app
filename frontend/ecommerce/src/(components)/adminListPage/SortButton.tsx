@@ -1,8 +1,8 @@
 import { useSearchParams } from "next/navigation";
-import { Menu } from "@mantine/core";
+import { Box, Button, Menu, Text } from "@mantine/core";
 import { IconSwitchVertical } from "@tabler/icons-react";
 import type { QueryParamProps } from "@/constants/types.js";
-import { ActionButton } from "./ActionButton";
+import { ActionButton } from "../ActionButton";
 
 export type SortableField = {
   field: string;
@@ -70,11 +70,14 @@ export const SortButton = ({
   return (
     <Menu width={220} position="bottom" withArrow>
       <Menu.Target>
-        <ActionButton
-          Icon={IconSwitchVertical}
-          label={mainLabel}
-          c={"var(--mantine-color-bright)"}
-        />
+        <Box>
+          <ActionButton
+            Icon={<IconSwitchVertical size={"20"} />}
+            label={mainLabel}
+            variant="subtle"
+            size="sm"
+          />
+        </Box>
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Label>Sort by</Menu.Label>

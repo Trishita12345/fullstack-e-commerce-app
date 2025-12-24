@@ -22,7 +22,6 @@ export function useApi<T>(): UseApiState<T> {
     async (endpoint: string, options: Parameters<typeof apiFetch>[1]) => {
       setLoading(true);
       setError(null);
-
       try {
         const response = await apiFetch<T>(endpoint, options);
         setData(response);

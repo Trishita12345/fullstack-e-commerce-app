@@ -79,13 +79,18 @@ export function ListPageClient<T>({
       />
 
       {/* Footer */}
-      <Group justify="space-between">
-        <Text c="dimmed">{footerMsg}</Text>
-        <Pagination
-          total={totalPages}
-          value={pageable.pageNumber + 1}
-          onChange={(page) => updateParams({ page })}
-        />
+      <Group justify="space-between" mt={4}>
+        <Text c="dimmed" size="xs">
+          {footerMsg}
+        </Text>
+        {totalPages !== 1 && (
+          <Pagination
+            total={totalPages}
+            value={pageable.pageNumber + 1}
+            onChange={(page) => updateParams({ page })}
+            withPages={false}
+          />
+        )}
       </Group>
     </Stack>
   );

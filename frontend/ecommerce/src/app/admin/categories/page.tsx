@@ -1,79 +1,15 @@
-// import {
-//   Box,
-//   Button,
-//   Group,
-//   Table,
-//   TableTbody,
-//   TableTd,
-//   TableTh,
-//   TableThead,
-//   TableTr,
-//   Text,
-//   Title,
-// } from "@mantine/core";
-// import CreateCategory from "./(create-category)/create-category";
-// import { apiFetch } from "@/lib/apiFetch";
-// import { type CategoryListType } from "@/constants/types";
-// import Link from "next/link";
-// import { IconEdit } from "@tabler/icons-react";
-
-// const Categories = async () => {
-//   const categories = await apiFetch<CategoryListType[]>("/category");
-
-//   return (
-//     <Box>
-//       <Group justify="space-between">
-//         <Title order={3}>Categories</Title>
-//         <CreateCategory />
-//       </Group>
-//       <Table mt={12} p={0} withTableBorder>
-//         <TableThead>
-//           <TableTr bg={"primaryDark.1"}>
-//             <TableTh>
-//               <Group>
-//                 <Text> </Text>
-//                 <Text>Category name</Text>
-//               </Group>
-//             </TableTh>
-//             <TableTh>Inherited From</TableTh>
-//             <TableTh></TableTh>
-//           </TableTr>
-//         </TableThead>
-
-//         <TableTbody>
-//           {categories.map((c: CategoryListType, index) => (
-//             <TableTr key={c.id}>
-//               <TableTd>
-//                 <Group>
-//                   <Text>{index}</Text>
-//                   <Text>{c.name}</Text>
-//                 </Group>
-//               </TableTd>
-//               <TableTd>{c.parentCategory?.label}</TableTd>
-//               <TableTd align="right">
-//                 {!c.isParentCategory ? (
-//                   <Link href={"categories/" + c.id}>
-//                     <Button size="xs" bg={"black.9"} leftSection={<IconEdit />}>
-//                       Manage Variant
-//                     </Button>
-//                   </Link>
-//                 ) : null}
-//               </TableTd>
-//             </TableTr>
-//           ))}
-//         </TableTbody>
-//       </Table>
-//     </Box>
-//   );
-// };
-
-// export default Categories;
-
 import { ListPageClient } from "@/(components)/adminListPage";
 import type { SortableField } from "@/(components)/adminListPage/SortButton";
 import type { Page, CategoryListType } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
-import CreateCategory from "./(create-category)/create-category";
+import { Button, Group, Text, Tooltip } from "@mantine/core";
+import {
+  IconEdit,
+  IconLeaf,
+  IconSettingsAutomation,
+} from "@tabler/icons-react";
+import { ActionButton } from "@/(components)/ActionButton";
+import AddEditCategory from "./(add-edit-category)/add-edit-category";
 
 interface PageProps {
   searchParams: {
@@ -102,7 +38,7 @@ export default async function Categories({ searchParams }: PageProps) {
       },
     }
   );
-
+  console.log(categories);
   const sortableFields: SortableField[] = [
     {
       field: "name",
@@ -114,12 +50,25 @@ export default async function Categories({ searchParams }: PageProps) {
   return (
     <ListPageClient
       title="Categories"
-      addButton={<CreateCategory />}
+      addButton={<AddEditCategory />}
       pageData={categories}
       fields={sortableFields}
       tableContent={{
-        head: ["Name", "hi"],
-        body: categories.content.map((item: any) => [item.name, <div>hi</div>]),
+        head: ["Name", "Actions"],
+        body: categories.content.map((item: any) => [
+          <Group gap={6}>
+            {item.name}
+            {item.isParentCategory || <IconLeaf size={"16px"} color="green" />}
+          </Group>,
+          <Group>
+            {/* <ActionButton Icon={<IconEdit size={"16px"} />} label="Edit" /> */}
+            <AddEditCategory id={item.id} />
+            <ActionButton
+              Icon={<IconSettingsAutomation size={"16px"} />}
+              label="Configure Variants"
+            />
+          </Group>,
+        ]),
       }}
     />
   );
