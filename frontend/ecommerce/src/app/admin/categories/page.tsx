@@ -2,7 +2,7 @@ import { ListPageClient } from "@/(components)/adminListPage";
 import type { SortableField } from "@/(components)/adminListPage/SortButton";
 import type { Page, CategoryListType } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
-import { Button, Group, Text, Tooltip } from "@mantine/core";
+import { Box, Button, Group, Text, Tooltip } from "@mantine/core";
 import {
   IconEdit,
   IconLeaf,
@@ -48,29 +48,33 @@ export default async function Categories({ searchParams }: PageProps) {
   ];
 
   return (
-    <ListPageClient
-      title="Categories"
-      addButton={<AddEditCategory />}
-      pageData={categories}
-      fields={sortableFields}
-      tableContent={{
-        head: ["Name", "Actions"],
-        body: categories.content.map((item: any) => [
-          <Group gap={6}>
-            {item.name}
-            {item.isParentCategory || <IconLeaf size={"16px"} color="green" />}
-          </Group>,
-          <Group>
-            <AddEditCategory id={item.id} />
-            <Link href={`categories/${item.id}/variants`}>
-              <ActionButton
-                Icon={<IconSettingsAutomation size={"16px"} />}
-                label="Configure Variants"
-              />
-            </Link>
-          </Group>,
-        ]),
-      }}
-    />
+    <Box mt={8}>
+      <ListPageClient
+        title="Categories"
+        addButton={<AddEditCategory />}
+        pageData={categories}
+        fields={sortableFields}
+        tableContent={{
+          head: ["Name", "Actions"],
+          body: categories.content.map((item: any) => [
+            <Group gap={6}>
+              {item.name}
+              {item.isParentCategory || (
+                <IconLeaf size={"16px"} color="green" />
+              )}
+            </Group>,
+            <Group>
+              <AddEditCategory id={item.id} />
+              <Link href={`categories/${item.id}/variants`}>
+                <ActionButton
+                  Icon={<IconSettingsAutomation size={"16px"} />}
+                  label="Configure Variants"
+                />
+              </Link>
+            </Group>,
+          ]),
+        }}
+      />
+    </Box>
   );
 }

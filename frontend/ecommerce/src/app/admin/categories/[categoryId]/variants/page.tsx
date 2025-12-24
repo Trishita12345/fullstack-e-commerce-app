@@ -8,6 +8,7 @@ import type {
 import { apiFetch } from "@/lib/apiFetch";
 import { Badge, Button, Group, Text, Tooltip } from "@mantine/core";
 import {
+  IconArrowNarrowLeft,
   IconEdit,
   IconLeaf,
   IconPlus,
@@ -17,6 +18,7 @@ import { ActionButton } from "@/(components)/ActionButton";
 
 import Link from "next/link";
 import { ListPageTableShimmer } from "@/(components)/Shimmer/ListPageTableShimmer";
+import Breadcrumb from "@/(components)/Breadcrumb";
 
 interface PageProps {
   params: {
@@ -64,6 +66,14 @@ export default async function Categories({ params, searchParams }: PageProps) {
 
   return (
     <>
+      <Link href={".."}>
+        <ActionButton
+          Icon={<IconArrowNarrowLeft size={"16px"} />}
+          label="Back to Categories"
+          variant="transparent"
+          style={{ marginTop: "8px", padding: 0 }}
+        />
+      </Link>
       <ListPageClient
         title={`Variants of ${categoryDetails.name}`}
         addButton={

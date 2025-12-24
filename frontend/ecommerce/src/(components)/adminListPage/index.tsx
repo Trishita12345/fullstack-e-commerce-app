@@ -60,7 +60,7 @@ export function ListPageClient<T>({
   return (
     <Stack gap={2}>
       <Group justify="space-between">
-        <h2>{title}</h2>
+        <h2 style={{ margin: "8px 0px" }}>{title}</h2>
 
         <Group>
           <SortButton
