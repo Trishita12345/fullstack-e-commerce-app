@@ -1,24 +1,12 @@
 import { ListPageClient } from "@/(components)/adminListPage";
 import type { SortableField } from "@/(components)/adminListPage/SortButton";
-import type {
-  Page,
-  CategoryListType,
-  VariantListType,
-} from "@/constants/types";
+import type { Page, VariantListType } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
-import { Badge, Button, Group, Text, Tooltip } from "@mantine/core";
-import {
-  IconArrowNarrowLeft,
-  IconEdit,
-  IconLeaf,
-  IconPlus,
-  IconSettingsAutomation,
-} from "@tabler/icons-react";
+import { Badge, Group } from "@mantine/core";
+import { IconArrowNarrowLeft, IconEdit, IconPlus } from "@tabler/icons-react";
 import { ActionButton } from "@/(components)/ActionButton";
 
 import Link from "next/link";
-import { ListPageTableShimmer } from "@/(components)/Shimmer/ListPageTableShimmer";
-import Breadcrumb from "@/(components)/Breadcrumb";
 
 interface PageProps {
   params: {
@@ -32,25 +20,33 @@ interface PageProps {
   };
 }
 
-export default async function Categories({ params, searchParams }: PageProps) {
+export default async function Variants({ params, searchParams }: PageProps) {
   const page = Number(searchParams.page ?? 1) - 1;
   const sortBy = searchParams.sortBy;
   const direction = searchParams.direction;
   const query = searchParams.query ?? "";
 
-  const categories = await apiFetch<Page<VariantListType>>(
+  const variants = await apiFetch<Page<VariantListType>>(
     `/variant/${params.categoryId}?query=${query}`,
     {
       method: "POST",
       body: {
         page,
         size: 10,
-        sortBy: sortBy || "created_At",
+        sortBy: sortBy || "updated_At",
         direction: direction || "desc",
       },
+      cache: "force-cache",
+      revalidate: 60,
     }
   );
-  const categoryDetails = await apiFetch<any>(`/category/${params.categoryId}`);
+  const categoryDetails = await apiFetch<any>(
+    `/category/${params.categoryId}`,
+    {
+      cache: "force-cache",
+      revalidate: 60,
+    }
+  );
   const sortableFields: SortableField[] = [
     {
       field: "name",
@@ -77,7 +73,7 @@ export default async function Categories({ params, searchParams }: PageProps) {
       <ListPageClient
         title={`Variants of ${categoryDetails.name}`}
         addButton={
-          <Link href={`categories/${params.categoryId}/variants/add`}>
+          <Link href={`variants/add`}>
             <ActionButton
               Icon={<IconPlus size={"16px"} />}
               label="Create Variant"
@@ -87,11 +83,11 @@ export default async function Categories({ params, searchParams }: PageProps) {
             />
           </Link>
         }
-        pageData={categories}
+        pageData={variants}
         fields={sortableFields}
         tableContent={{
           head: ["Name", "Category Name", "Actions"],
-          body: categories.content.map((item: VariantListType) => [
+          body: variants.content.map((item: VariantListType) => [
             item.variantName,
             <Group gap={4}>
               {item.CategoryName}
@@ -102,7 +98,7 @@ export default async function Categories({ params, searchParams }: PageProps) {
               )}
             </Group>,
             <Link
-              href={`categories/${params.categoryId}/variants/${item.variantId}`}
+              href={`/admin/categories/${item.CategoryId}/variants/${item.variantId}`}
             >
               <ActionButton Icon={<IconEdit size={"16px"} />} label="Edit" />
             </Link>,

@@ -41,7 +41,7 @@ export function ListPageTableShimmer({
           <TableThead>
             <TableTr>
               {Array.from({ length: cols }).map((_, index) => (
-                <TableTh>
+                <TableTh key={index}>
                   <Skeleton height={14} width={80} />
                 </TableTh>
               ))}
@@ -52,7 +52,7 @@ export function ListPageTableShimmer({
             {Array.from({ length: ROWS }).map((_, index) => (
               <TableTr key={index}>
                 {Array.from({ length: cols }).map((_, index) => (
-                  <TableTd>
+                  <TableTd key={index}>
                     <Skeleton height={18} width="100%" />
                   </TableTd>
                 ))}

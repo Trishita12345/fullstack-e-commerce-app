@@ -52,6 +52,17 @@ export type VariantListType = {
   CategoryName: string;
 };
 
+export interface VariantAttribute {
+  id: string; // UUID
+  name: string;
+}
+
+export interface Variant {
+  id: string; // UUID
+  name: string;
+  attributes: VariantAttribute[];
+}
+
 export interface Pageable {
   pageNumber: number;
   pageSize: number;

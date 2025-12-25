@@ -37,6 +37,8 @@ export default async function Categories({ searchParams }: PageProps) {
         sortBy: sortBy || "updatedAt",
         direction: direction || "desc",
       },
+      cache: "force-cache",
+      revalidate: 60,
     }
   );
   const sortableFields: SortableField[] = [

@@ -29,7 +29,8 @@ export function LinksGroup({
   link,
 }: LinksGroupProps) {
   const pathname = usePathname();
-  const isActive = (link?: string) => link && pathname === `/admin${link}`;
+  const isActive = (link?: string) =>
+    link && pathname.startsWith(`/admin${link}`);
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
   const items = (hasLinks ? links : []).map((link) => (
