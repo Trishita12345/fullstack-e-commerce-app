@@ -22,10 +22,9 @@ interface PageProps {
 }
 
 export default async function Categories({ searchParams }: PageProps) {
-  const page = Number(searchParams.page ?? 1) - 1;
-  const sortBy = searchParams.sortBy;
-  const direction = searchParams.direction;
-  const query = searchParams.query ?? "";
+  const { page: pageParam, sortBy, direction, query = "" } = await searchParams;
+
+  const page = Number(pageParam ?? 1) - 1;
 
   const categories = await apiFetch<Page<CategoryListType>>(
     `/category?query=${query}`,

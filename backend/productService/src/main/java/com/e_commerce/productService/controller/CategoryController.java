@@ -45,6 +45,12 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getParentCategories());
     }
 
+    @GetMapping("/get-leaf-categories")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<List<SelectOptionDTO<UUID>>> getLeafCategories() {
+        return ResponseEntity.ok(categoryService.getLeafCategories());
+    }
+
     @PostMapping("")
     @PreAuthorize("hasRole('SELLER')")
 //    public ResponseEntity<List<CategoryListingResponseDTO>> getAllCategories() {

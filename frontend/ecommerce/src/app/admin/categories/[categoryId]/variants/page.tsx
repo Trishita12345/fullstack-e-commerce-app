@@ -21,13 +21,13 @@ interface PageProps {
 }
 
 export default async function Variants({ params, searchParams }: PageProps) {
-  const page = Number(searchParams.page ?? 1) - 1;
-  const sortBy = searchParams.sortBy;
-  const direction = searchParams.direction;
-  const query = searchParams.query ?? "";
+  const { page: pageParam, sortBy, direction, query = "" } = await searchParams;
+
+  const page = Number(pageParam ?? 1) - 1;
+  const { categoryId } = await params;
 
   const variants = await apiFetch<Page<VariantListType>>(
-    `/variant/${params.categoryId}?query=${query}`,
+    `/variant/${categoryId}?query=${query}`,
     {
       method: "POST",
       body: {
@@ -40,13 +40,10 @@ export default async function Variants({ params, searchParams }: PageProps) {
       revalidate: 60,
     }
   );
-  const categoryDetails = await apiFetch<any>(
-    `/category/${params.categoryId}`,
-    {
-      cache: "force-cache",
-      revalidate: 60,
-    }
-  );
+  const categoryDetails = await apiFetch<any>(`/category/${categoryId}`, {
+    cache: "force-cache",
+    revalidate: 60,
+  });
   const sortableFields: SortableField[] = [
     {
       field: "name",

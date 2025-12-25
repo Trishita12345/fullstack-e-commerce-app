@@ -1,22 +1,27 @@
 "use client";
-import { IconGauge, IconCategoryFilled, IconNotes } from "@tabler/icons-react";
+import {
+  IconGauge,
+  IconCategoryFilled,
+  IconNotes,
+  IconStack2Filled,
+  IconBuildingWarehouse,
+} from "@tabler/icons-react";
 import { LinksGroup } from "../adminNavbarLinksGroup";
 import { en } from "@/constants/en";
 
 const mockdata = [
   { label: en.Dashboard, icon: IconGauge, link: "/dashboard" },
-  { label: en.Categories, icon: IconCategoryFilled, link: "/categories" },
-  // {
-  //   label: "Market news",
-  //   icon: IconNotes,
-  //   initiallyOpened: true,
-  //   links: [
-  //     { label: "Overview", link: "/dashboard" },
-  //     { label: "Forecasts", link: "/forecasts" },
-  //     { label: "Outlook", link: "/a" },
-  //     { label: "Real time", link: "/a" },
-  //   ],
-  // },
+  // { label: en.Categories, icon: IconCategoryFilled, link: "/categories" },
+  // { label: en.Categories, icon: IconCategoryFilled, link: "/products" },
+  {
+    label: "Inventory",
+    icon: IconBuildingWarehouse,
+    initiallyOpened: true,
+    links: [
+      { label: en.Categories, icon: IconCategoryFilled, link: "/categories" },
+      { label: "Products", icon: IconStack2Filled, link: "/products" },
+    ],
+  },
   // {
   //   label: "Releases",
   //   icon: IconCalendarStats,

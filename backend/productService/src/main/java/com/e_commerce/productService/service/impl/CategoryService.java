@@ -73,6 +73,15 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    public List<SelectOptionDTO<UUID>> getLeafCategories() {
+        List<Category> leafCategories = categoryRepository.findCategoriesWithNoChildCategories();
+        return leafCategories
+                .stream()
+                .map(category -> new SelectOptionDTO<UUID>(category.getName(), category.getId()))
+                .toList();
+    }
+
+    @Override
     public Page<CategoryListingResponseDTO> getAllCategories(String query, Pageable pageable) {
         Page<Category> allCategories;
         if (query == null || query.trim().isEmpty()) {

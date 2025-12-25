@@ -17,7 +17,7 @@ interface LinksGroupProps {
   icon: React.FC<any>;
   label: string;
   initiallyOpened?: boolean;
-  links?: { label: string; link: string }[];
+  links?: { label: string; link: string; icon: React.FC<any> }[];
   link?: string;
 }
 
@@ -33,6 +33,7 @@ export function LinksGroup({
     link && pathname.startsWith(`/admin${link}`);
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
+
   const items = (hasLinks ? links : []).map((link) => (
     <Link
       className={"link"}
@@ -45,7 +46,17 @@ export function LinksGroup({
         color: isActive(link.link) ? "var(--mantine-color-black-9)" : "",
       }}
     >
-      {link.label}
+      <Box style={{ display: "flex", alignItems: "center" }}>
+        <ThemeIcon
+          variant="light"
+          size={30}
+          c="primaryDark.7"
+          bg="primaryDark.0"
+        >
+          <link.icon size={18} />
+        </ThemeIcon>
+        <Box ml="md">{link.label}</Box>
+      </Box>
     </Link>
   ));
 

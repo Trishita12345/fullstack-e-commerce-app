@@ -24,14 +24,22 @@ public interface ICategoryRepository extends JpaRepository<Category, UUID> {
 
     @Query(value = """
             SELECT c.*
-            FROM categories c
-            WHERE NOT EXISTS (
-                SELECT 1
-                FROM products p
-                WHERE p.category_id = c.id
-            )
+              FROM categories c
+               left JOIN products p
+                ON c.id = p.category_id
+              WHERE p.id IS NULL
             """, nativeQuery = true)
     List<Category> findCategoriesWithNoProducts();
+
+    @Query(value = """
+            SELECT c.*
+             FROM categories c
+             LEFT JOIN categories cc
+               ON cc.parent_category = c.id
+             WHERE cc.id IS NULL
+            """, nativeQuery = true)
+    List<Category> findCategoriesWithNoChildCategories();
+
 
     Page<Category> findByNameContainingIgnoreCase(String query, Pageable pageable);
 

@@ -5,8 +5,9 @@ interface PageProps {
     categoryId: string;
   };
 }
-const AddVariant = ({ params }: PageProps) => {
-  return <AddEditVariantForm categoryId={params.categoryId} />;
+const AddVariant = async ({ params }: PageProps) => {
+  const { categoryId } = await params;
+  return <AddEditVariantForm categoryId={categoryId} />;
 };
 
 export default AddVariant;
