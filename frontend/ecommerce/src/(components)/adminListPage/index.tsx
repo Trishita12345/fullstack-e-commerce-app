@@ -115,12 +115,7 @@ export function ListPageClient<T>({
           </Badge>
         ))}
       </Group>
-      <Table
-        stickyHeader
-        // highlightOnHover
-        withTableBorder
-        data={tableContent}
-      />
+      <Table stickyHeader withTableBorder data={tableContent} />
 
       {/* Footer */}
       <Group justify="space-between" mt={4}>

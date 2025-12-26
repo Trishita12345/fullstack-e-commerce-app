@@ -60,7 +60,6 @@ export function ListPageTableShimmer({
                   <TableTd>
                     <Group gap="sm" justify="end">
                       <Skeleton height={36} width={100} />
-                      <Skeleton height={36} width={100} />
                     </Group>
                   </TableTd>
                 )}
