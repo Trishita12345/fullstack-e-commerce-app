@@ -2,6 +2,7 @@
 
 import {
   Anchor,
+  Badge,
   Button,
   Group,
   Pagination,
@@ -11,7 +12,7 @@ import {
 } from "@mantine/core";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "@mantine/hooks";
-import { IconPlus } from "@tabler/icons-react";
+import { IconCircleX, IconPlus, IconX } from "@tabler/icons-react";
 import { SortButton, SortableField } from "./SortButton";
 import type { Page } from "@/constants/types";
 import React from "react";
@@ -35,6 +36,11 @@ export function ListPageClient<T>({
 }: Props<T>) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const NON_FILTER_KEYS = ["query", "page", "sortBy", "direction"];
+
+  const filterValues = [...searchParams.entries()]
+    .filter(([key]) => !NON_FILTER_KEYS.includes(key))
+    .flatMap(([, value]) => value.split(","));
 
   const { empty, numberOfElements, totalElements, totalPages, size, pageable } =
     pageData;
@@ -59,6 +65,23 @@ export function ListPageClient<T>({
     500
   );
 
+  const removeFilter = (item: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    // keys that are NOT filters
+    const nonFilterKeys = new Set(["page", "sortBy", "direction"]);
+    for (const [key, value] of params.entries()) {
+      if (nonFilterKeys.has(key)) continue;
+      const values = value.split(",");
+      const updatedValues = values.filter((v) => v !== item);
+      if (updatedValues.length === 0) {
+        params.delete(key);
+      } else {
+        params.set(key, updatedValues.join(","));
+      }
+    }
+    router.push(`?${params.toString()}`);
+  };
+
   return (
     <Stack gap={2}>
       <Group justify="space-between">
@@ -72,10 +95,29 @@ export function ListPageClient<T>({
           {addButton}
         </Group>
       </Group>
-
+      <Group mb={"xs"} gap={"xs"}>
+        {filterValues.map((item: string) => (
+          <Badge
+            key={item}
+            variant="light"
+            color={"primaryDark.7"}
+            rightSection={
+              <IconX
+                size={14}
+                style={{ marginLeft: 6, cursor: "pointer" }}
+                onClick={() => removeFilter(item)}
+              />
+            }
+            size="md"
+            tt={"capitalize"}
+          >
+            {item}
+          </Badge>
+        ))}
+      </Group>
       <Table
         stickyHeader
-        highlightOnHover
+        // highlightOnHover
         withTableBorder
         data={tableContent}
       />

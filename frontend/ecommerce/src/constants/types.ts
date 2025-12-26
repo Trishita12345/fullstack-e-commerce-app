@@ -62,6 +62,11 @@ export interface Variant {
   name: string;
   attributes: VariantAttribute[];
 }
+export interface ProductsListingPageProps {
+  productId: string;
+  productName: string;
+  categoryName: string;
+}
 
 export interface Pageable {
   pageNumber: number;

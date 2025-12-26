@@ -54,13 +54,6 @@ export default async function Categories({ searchParams }: PageProps) {
       <ListPageClient
         title="Categories"
         addButton={<AddEditCategory />}
-        // otherButtons={
-        //   <ActionButton
-        //     Icon={<IconFilter size={"20"} />}
-        //     label={"Filters"}
-        //     size="xs"
-        //   />
-        // }
         pageData={categories}
         fields={sortableFields}
         tableContent={{
@@ -72,12 +65,15 @@ export default async function Categories({ searchParams }: PageProps) {
                 <IconLeaf size={"16px"} color="green" />
               )}
             </Group>,
-            <Group>
+            <Group gap={0} align="center">
               <AddEditCategory id={item.id} />
+              <Text c="dimmed">|</Text>
               <Link href={`categories/${item.id}/variants`}>
                 <ActionButton
                   Icon={<IconSettingsAutomation size={"16px"} />}
-                  label="Configure Variants"
+                  // label="Configure Variants"
+                  label={<u>{"Configure Variants"}</u>}
+                  variant="transparent"
                 />
               </Link>
             </Group>,

@@ -27,7 +27,7 @@ export default async function Variants({ params, searchParams }: PageProps) {
   const { categoryId } = await params;
 
   const variants = await apiFetch<Page<VariantListType>>(
-    `/variant${categoryId}/page?query=${query}`,
+    `/variant/${categoryId}/page?query=${query}`,
     {
       method: "POST",
       body: {
@@ -97,7 +97,11 @@ export default async function Variants({ params, searchParams }: PageProps) {
             <Link
               href={`/admin/categories/${item.CategoryId}/variants/${item.variantId}`}
             >
-              <ActionButton Icon={<IconEdit size={"16px"} />} label="Edit" />
+              <ActionButton
+                Icon={<IconEdit size={"16px"} />}
+                label={<u>Edit</u>}
+                variant="transparent"
+              />
             </Link>,
           ]),
         }}

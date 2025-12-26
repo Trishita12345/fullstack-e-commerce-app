@@ -57,7 +57,6 @@ const AddEditVariantForm = ({
           a.id.startsWith("added-") ? { name: a.name } : { ...a }
         ),
       };
-      console.log("variantData-submit:", modifiedValues);
       if (variantId) {
         await editVariant(categoryId, variantId, modifiedValues);
       } else {

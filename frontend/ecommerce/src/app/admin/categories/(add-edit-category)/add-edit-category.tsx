@@ -38,8 +38,10 @@ const AddEditCategory = ({ id }: { id?: string }) => {
       ) : (
         <ActionButton
           Icon={<IconEdit size={"16px"} />}
-          label="Edit"
+          // label="Edit"
           onClick={open}
+          label={<u>{"Edit"}</u>}
+          variant="transparent"
         />
       )}
     </Box>

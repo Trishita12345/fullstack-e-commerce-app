@@ -25,7 +25,7 @@ export const ActionButton = ({
   onClick?: () => void;
   c?: MantineColor;
   Icon: React.ReactNode;
-  label?: string;
+  label?: React.ReactNode;
   ref?: Ref<HTMLDivElement>;
   type?: "button" | "submit" | "reset";
   variant?: string;

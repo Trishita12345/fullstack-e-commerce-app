@@ -7,13 +7,12 @@ const MyProfilePage = async () => {
 
   const { token } = await getServerToken();
   try {
-    const data = await fetch("http://localhost:8081/secure", {
+    await fetch("http://localhost:8081/secure", {
       headers: {
         Authorizarion: "Bearer " + token,
         "Content-Type": "application/json",
       },
     });
-    console.log(data);
   } catch (ex) {
     console.error("Error fetching data" + ex);
   }

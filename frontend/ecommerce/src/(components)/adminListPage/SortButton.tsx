@@ -1,6 +1,6 @@
 import { useSearchParams } from "next/navigation";
-import { ActionIcon, Box, Button, Menu, Text } from "@mantine/core";
-import { IconSwitchVertical } from "@tabler/icons-react";
+import { Box, Button, Menu, Text } from "@mantine/core";
+import { IconChevronDown, IconSwitchVertical } from "@tabler/icons-react";
 import type { QueryParamProps } from "@/constants/types.js";
 import { ActionButton } from "../ActionButton";
 
@@ -65,17 +65,27 @@ export const SortButton = ({
         fields.find((item) => item.field == sortBy) as SortableField,
         direction as "asc" | "desc"
       )
-    : "Sort";
+    : "Latest";
 
   return (
     <Menu width={220} position="bottom" withArrow>
       <Menu.Target>
         <Box>
-          <ActionButton
+          {/* <ActionButton
             Icon={<IconSwitchVertical size={"20"} />}
-            label={mainLabel}
+            label={}
             size="xs"
-          />
+          /> */}
+          <Button
+            variant={"outline"}
+            size="xs"
+            color="black"
+            rightSection={<IconChevronDown size={"16"} />}
+          >
+            <Text size="xs">
+              Sort By: <b>{mainLabel}</b>
+            </Text>
+          </Button>
         </Box>
       </Menu.Target>
       <Menu.Dropdown>
