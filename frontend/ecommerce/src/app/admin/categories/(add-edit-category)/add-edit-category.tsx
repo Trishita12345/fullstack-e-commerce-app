@@ -33,7 +33,7 @@ const AddEditCategory = ({ id }: { id?: string }) => {
           label={"Create Category"}
           variant="filled"
           c="white"
-          size="sm"
+          size="xs"
         />
       ) : (
         <ActionButton

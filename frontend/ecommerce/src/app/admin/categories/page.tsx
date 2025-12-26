@@ -5,6 +5,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import { Box, Button, Group, Text, Tooltip } from "@mantine/core";
 import {
   IconEdit,
+  IconFilter,
   IconLeaf,
   IconSettingsAutomation,
 } from "@tabler/icons-react";
@@ -53,6 +54,13 @@ export default async function Categories({ searchParams }: PageProps) {
       <ListPageClient
         title="Categories"
         addButton={<AddEditCategory />}
+        // otherButtons={
+        //   <ActionButton
+        //     Icon={<IconFilter size={"20"} />}
+        //     label={"Filters"}
+        //     size="xs"
+        //   />
+        // }
         pageData={categories}
         fields={sortableFields}
         tableContent={{

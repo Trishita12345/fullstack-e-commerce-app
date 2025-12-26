@@ -1,5 +1,5 @@
 import { useSearchParams } from "next/navigation";
-import { Box, Button, Menu, Text } from "@mantine/core";
+import { ActionIcon, Box, Button, Menu, Text } from "@mantine/core";
 import { IconSwitchVertical } from "@tabler/icons-react";
 import type { QueryParamProps } from "@/constants/types.js";
 import { ActionButton } from "../ActionButton";
@@ -74,8 +74,7 @@ export const SortButton = ({
           <ActionButton
             Icon={<IconSwitchVertical size={"20"} />}
             label={mainLabel}
-            variant="subtle"
-            size="sm"
+            size="xs"
           />
         </Box>
       </Menu.Target>

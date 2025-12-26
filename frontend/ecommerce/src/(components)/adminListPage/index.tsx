@@ -20,6 +20,7 @@ interface Props<T> {
   title: string;
   pageData: Page<T>;
   addButton: React.ReactNode;
+  otherButtons?: React.ReactNode;
   tableContent: any;
   fields?: SortableField[];
 }
@@ -29,6 +30,7 @@ export function ListPageClient<T>({
   pageData,
   addButton,
   tableContent,
+  otherButtons,
   fields = [],
 }: Props<T>) {
   const router = useRouter();
@@ -61,8 +63,8 @@ export function ListPageClient<T>({
     <Stack gap={2}>
       <Group justify="space-between">
         <h2 style={{ margin: "8px 0px" }}>{title}</h2>
-
         <Group>
+          {otherButtons && otherButtons}
           <SortButton
             fields={fields as SortableField[]}
             onItemClick={updateParams}
