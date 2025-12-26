@@ -28,7 +28,7 @@ export default async function Categories({ searchParams }: PageProps) {
   const page = Number(pageParam ?? 1) - 1;
 
   const categories = await apiFetch<Page<CategoryListType>>(
-    `/category?query=${query}`,
+    `/category/page?query=${query}`,
     {
       method: "POST",
       body: {

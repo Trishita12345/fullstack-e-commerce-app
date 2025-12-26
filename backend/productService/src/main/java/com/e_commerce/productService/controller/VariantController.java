@@ -29,11 +29,11 @@ public class VariantController {
         return ResponseEntity.ok(variantService.addVariant(categoryId, variantDTO));
     }
 
-    @PostMapping("/{categoryId}")
+    @PostMapping("/{categoryId}/page")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<Page<VariantWithCategoryDTO>> getVariantsByCategoryId(@PathVariable UUID categoryId,
                                                                                 @RequestParam(required = false, defaultValue = "") String query,
-                                                                                @RequestBody PageRequestDTO pageRequestDTO
+                                                                                @RequestBody PageRequestDTO<Void> pageRequestDTO
     ) {
         Sort sort = pageRequestDTO.getDirection().equalsIgnoreCase("desc") ?
                 Sort.by(pageRequestDTO.getSortBy()).descending() :

@@ -27,7 +27,7 @@ export default async function Variants({ params, searchParams }: PageProps) {
   const { categoryId } = await params;
 
   const variants = await apiFetch<Page<VariantListType>>(
-    `/variant/${categoryId}?query=${query}`,
+    `/variant${categoryId}/page?query=${query}`,
     {
       method: "POST",
       body: {

@@ -51,15 +51,15 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getLeafCategories());
     }
 
-    @PostMapping("")
+    @PostMapping("/page")
     @PreAuthorize("hasRole('SELLER')")
 //    public ResponseEntity<List<CategoryListingResponseDTO>> getAllCategories() {
 //        return ResponseEntity.ok(categoryService.getAllCategories());
 //    }
 
-    public ResponseEntity<Page<CategoryListingResponseDTO>> getProjectsByEmpIdPage(
+    public ResponseEntity<Page<CategoryListingResponseDTO>> getAllCategories(
             @RequestParam(required = false, defaultValue = "") String query,
-            @RequestBody PageRequestDTO pageRequestDTO
+            @RequestBody PageRequestDTO<Void> pageRequestDTO
     ) {
         Sort sort = pageRequestDTO.getDirection().equalsIgnoreCase("desc") ?
                 Sort.by(pageRequestDTO.getSortBy()).descending() :
