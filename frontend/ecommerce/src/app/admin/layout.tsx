@@ -15,7 +15,9 @@ export default async function AdminLayout({
     <>
       <AdminHeader />
       <Group align="start" gap={0}>
-        <AdminSidebar />
+        <Box visibleFrom="md">
+          <AdminSidebar />
+        </Box>
         <Box px={28} flex={2}>
           {children}
         </Box>

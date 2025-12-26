@@ -1,4 +1,3 @@
-"use client";
 import { en } from "@/constants/en";
 import { Text } from "@mantine/core";
 import Link from "next/link";

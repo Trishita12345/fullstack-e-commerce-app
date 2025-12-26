@@ -76,7 +76,7 @@ export default async function Variants({ params, searchParams }: PageProps) {
               label="Create Variant"
               variant="filled"
               c="white"
-              size="sm"
+              size="xs"
             />
           </Link>
         }

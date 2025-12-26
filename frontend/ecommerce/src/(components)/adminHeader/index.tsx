@@ -2,6 +2,7 @@ import { Badge, Box, Group } from "@mantine/core";
 import LoginButton from "../header/rightSection/LoginButton";
 import LogoText from "../logo/LogoText";
 import { en } from "@/constants/en";
+import { MobileSideBar } from "../adminSidebar/MobileSideBar";
 
 const AdminHeader = () => {
   return (
@@ -16,6 +17,7 @@ const AdminHeader = () => {
         }}
       >
         <Group>
+          <MobileSideBar />
           <LogoText />
           <Badge color="primaryDark.7" size="sm">
             {en.SellerMode}
