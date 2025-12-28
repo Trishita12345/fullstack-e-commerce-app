@@ -1,9 +1,7 @@
 package com.e_commerce.productService.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +11,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "products")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Product extends AuditEntity {
 
     @Id

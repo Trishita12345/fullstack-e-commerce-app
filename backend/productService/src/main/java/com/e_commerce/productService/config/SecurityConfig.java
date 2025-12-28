@@ -1,6 +1,8 @@
 package com.e_commerce.productService.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -17,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+import java.util.Objects;
 
 @Configuration
 @EnableMethodSecurity
@@ -64,10 +67,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtDecoder jwtDecoder() {
+    CacheManager cacheManager() {
+        return new ConcurrentMapCacheManager("jwks-cache");
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder(CacheManager cacheManager) {
+
         return NimbusJwtDecoder.withJwkSetUri(
-                "http://localhost:3000/api/auth/jwks"
-        ).build();
+                        "http://localhost:3000/api/auth/jwks"
+                )
+                .cache(Objects.requireNonNull(cacheManager.getCache("jwks-cache"))).build();
     }
 
     @Bean

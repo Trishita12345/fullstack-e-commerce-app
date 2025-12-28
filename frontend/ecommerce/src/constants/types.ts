@@ -105,3 +105,11 @@ export interface QueryParamProps {
   direction?: "asc" | "desc";
   query?: string;
 }
+
+export interface Product {
+  productId?: string;
+  productName: string;
+  description: string;
+  feature: string;
+  categoryId: string;
+}

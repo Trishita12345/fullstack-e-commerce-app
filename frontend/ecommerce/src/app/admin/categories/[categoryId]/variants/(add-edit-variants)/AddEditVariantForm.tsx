@@ -13,7 +13,6 @@ import {
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useState } from "react";
-import { addVariant, editVariant } from "./actions";
 import { notify } from "@/utils/helperFunctions";
 import type { Variant, VariantAttribute } from "@/constants/types";
 import { ActionButton } from "@/(components)/ActionButton";
@@ -21,6 +20,7 @@ import { IconArrowNarrowLeft, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
 import { randomId } from "@mantine/hooks";
 import { useRouter } from "next/navigation";
+import { addVariant, editVariant } from "./actions";
 
 interface PageProps {
   categoryId: string;
@@ -51,6 +51,14 @@ const AddEditVariantForm = ({
   const handleSubmit = async (values: any) => {
     try {
       setLoading(true);
+      if (values.attributes.length < 1) {
+        notify({
+          variant: "error",
+          title: "Error!",
+          message: "You need to add at least one attribute for this variant",
+        });
+        return;
+      }
       const modifiedValues = {
         ...values,
         attributes: values.attributes.map((a: VariantAttribute) =>

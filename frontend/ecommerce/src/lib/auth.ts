@@ -24,6 +24,7 @@ export const auth = betterAuth({
     jwt({
       jwt: {
         expirationTime: "2h",
+        issuer: "http://localhost:3000",
         audience: "http://localhost:8081",
       },
       jwks: {
@@ -33,7 +34,7 @@ export const auth = betterAuth({
       },
     }),
     oidcProvider({
-      useJWTPlugin: false,
+      useJWTPlugin: true,
       getAdditionalUserInfoClaim: (user) => ({
         id: user.id,
         username: user.username,

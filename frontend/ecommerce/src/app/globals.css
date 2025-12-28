@@ -16,3 +16,7 @@ a {
 button {
   border-radius: 0 !important;
 }
+
+input:disabled {
+  background-color: #e9e6e6 !important;
+}

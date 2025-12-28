@@ -3,7 +3,7 @@ package com.e_commerce.productService.model.dto.variant;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +26,7 @@ public class VariantDTO {
     @Size(max = 100, message = "Please enter a variant name within 100 characters")
     private String name;
 
-    @NotNull
+    @NotEmpty
     @Valid
     private List<VariantAttributeDTO> attributes;
 }
