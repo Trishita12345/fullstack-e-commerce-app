@@ -36,7 +36,7 @@ export function ListPageClient<T>({
 }: Props<T>) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const NON_FILTER_KEYS = ["query", "page", "sortBy", "direction"];
+  const NON_FILTER_KEYS = ["query", "page", "sortBy", "direction", "tab"];
 
   const filterValues = [...searchParams.entries()]
     .filter(([key]) => !NON_FILTER_KEYS.includes(key))

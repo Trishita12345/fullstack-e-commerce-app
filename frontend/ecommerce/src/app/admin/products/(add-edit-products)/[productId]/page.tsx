@@ -3,6 +3,10 @@ import { AddEditProductTabs } from "../AddEditProductTabs";
 interface PageProps {
   searchParams: {
     tab?: "1" | "2";
+    page?: string;
+    sortBy?: string;
+    direction?: string;
+    query?: string;
   };
   params: {
     productId: string;
@@ -10,9 +14,10 @@ interface PageProps {
 }
 
 const EditProduct = async ({ searchParams, params }: PageProps) => {
-  const { tab = "1" } = await searchParams;
   const { productId } = await params;
-  return <AddEditProductTabs tab={tab} productId={productId} />;
+  return (
+    <AddEditProductTabs productId={productId} searchParams={searchParams} />
+  );
 };
 
 export default EditProduct;

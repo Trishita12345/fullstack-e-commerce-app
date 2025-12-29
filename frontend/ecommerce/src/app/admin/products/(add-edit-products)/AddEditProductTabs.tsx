@@ -5,13 +5,24 @@ import { Tabs, TabsList, TabsPanel, TabsTab } from "@mantine/core";
 import { IconArrowNarrowLeft } from "@tabler/icons-react";
 import Link from "next/link";
 import AddEditVariantForm from "./AddEditProductForm";
+import ProductVariantsListing from "./[productId]/(product-item)/ProductVariantsListing";
 
 interface PageProps {
-  tab: "1" | "2";
   productId?: string;
+  searchParams: {
+    tab?: "1" | "2";
+    page?: string;
+    sortBy?: string;
+    direction?: string;
+    query?: string;
+  };
 }
 
-export async function AddEditProductTabs({ tab, productId }: PageProps) {
+export async function AddEditProductTabs({
+  productId,
+  searchParams,
+}: PageProps) {
+  const { tab = "1" } = searchParams;
   const categories = await apiFetch<SelectOptionType[]>(
     "/category/get-leaf-categories"
   );
@@ -36,7 +47,7 @@ export async function AddEditProductTabs({ tab, productId }: PageProps) {
         <TabsList>
           <TabsTab value="1">Product Details</TabsTab>
           <TabsTab value="2" disabled={productId === undefined}>
-            Product Items
+            Product Variants
           </TabsTab>
         </TabsList>
 
@@ -49,8 +60,10 @@ export async function AddEditProductTabs({ tab, productId }: PageProps) {
         </TabsPanel>
 
         <TabsPanel value="2" pt="xs">
-          Second tab color is blue, it gets this value from props, props have
-          the priority and will override context value
+          <ProductVariantsListing
+            searchParams={searchParams}
+            productId={productId}
+          />
         </TabsPanel>
       </Tabs>
     </>

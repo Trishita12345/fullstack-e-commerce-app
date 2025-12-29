@@ -113,3 +113,7 @@ export interface Product {
   feature: string;
   categoryId: string;
 }
+
+export interface ProductVariant {
+  sku: string;
+}

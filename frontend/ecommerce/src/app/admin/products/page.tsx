@@ -6,7 +6,6 @@ import type {
   SelectOptionType,
 } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
-import { Group } from "@mantine/core";
 import { IconArrowNarrowLeft, IconEdit, IconPlus } from "@tabler/icons-react";
 import { ActionButton } from "@/(components)/ActionButton";
 
