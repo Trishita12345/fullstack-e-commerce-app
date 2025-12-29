@@ -14,7 +14,7 @@ import {
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useState } from "react";
 import { notify } from "@/utils/helperFunctions";
-import type { Variant, VariantAttribute } from "@/constants/types";
+import type { SelectOptionTypeIDName, Variant } from "@/constants/types";
 import { ActionButton } from "@/(components)/ActionButton";
 import { IconArrowNarrowLeft, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
@@ -38,7 +38,7 @@ const AddEditVariantForm = ({
     mode: "uncontrolled",
     initialValues: variantData || {
       name: "",
-      attributes: [] as VariantAttribute[],
+      attributes: [] as SelectOptionTypeIDName[],
     },
     validate: {
       name: isNotEmpty("Variant Name cannot be empty"),
@@ -61,7 +61,7 @@ const AddEditVariantForm = ({
       }
       const modifiedValues = {
         ...values,
-        attributes: values.attributes.map((a: VariantAttribute) =>
+        attributes: values.attributes.map((a: SelectOptionTypeIDName) =>
           a.id.startsWith("added-") ? { name: a.name } : { ...a }
         ),
       };
@@ -93,7 +93,7 @@ const AddEditVariantForm = ({
 
   const fields = form
     .getValues()
-    .attributes.map((item: VariantAttribute, index) => (
+    .attributes.map((item: SelectOptionTypeIDName, index) => (
       <Group key={item.id}>
         <TextInput
           placeholder="200ml, 400ml..."

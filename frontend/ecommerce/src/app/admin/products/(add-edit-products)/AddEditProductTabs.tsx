@@ -60,10 +60,12 @@ export async function AddEditProductTabs({
         </TabsPanel>
 
         <TabsPanel value="2" pt="xs">
-          <ProductVariantsListing
-            searchParams={searchParams}
-            productId={productId}
-          />
+          {productId && productData && (
+            <ProductVariantsListing
+              searchParams={searchParams}
+              productId={productId}
+            />
+          )}
         </TabsPanel>
       </Tabs>
     </>

@@ -5,7 +5,7 @@ import { IconPlus, IconEdit } from "@tabler/icons-react";
 import Link from "next/link";
 
 interface PageProps {
-  productId?: string;
+  productId: string;
   searchParams: {
     tab?: "1" | "2";
     page?: string;

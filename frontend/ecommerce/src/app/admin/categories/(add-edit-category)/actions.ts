@@ -3,7 +3,6 @@
 
 import { Category, SelectOptionType } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
-import { showNotification } from "@mantine/notifications";
 import { revalidatePath } from "next/cache";
 
 export async function addCategory(values: Category) {

@@ -52,7 +52,7 @@ export type VariantListType = {
   CategoryName: string;
 };
 
-export interface VariantAttribute {
+export interface SelectOptionTypeIDName {
   id: string; // UUID
   name: string;
 }
@@ -60,7 +60,7 @@ export interface VariantAttribute {
 export interface Variant {
   id: string; // UUID
   name: string;
-  attributes: VariantAttribute[];
+  attributes: SelectOptionTypeIDName[];
 }
 export interface ProductsListingPageProps {
   productId: string;
@@ -116,4 +116,17 @@ export interface Product {
 
 export interface ProductVariant {
   sku: string;
+  avlStock: number;
+  basePrice: number;
+  discountedPrice: number;
+  imgUrls: string[];
+  variants: {
+    [key: string]: string;
+  };
+}
+
+export interface VariantAttribute {
+  variantId: string;
+  variantName: string;
+  attributes: SelectOptionType[];
 }
