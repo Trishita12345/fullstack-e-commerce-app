@@ -85,7 +85,7 @@ const AddEditCategoryForm = ({
       }
       popUpClose();
       notify({
-        variant: "sucess",
+        variant: "success",
         title: "Success!",
         message: id
           ? "Category has been updated successfully."

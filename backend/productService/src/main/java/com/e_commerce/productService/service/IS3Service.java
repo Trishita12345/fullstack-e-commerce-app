@@ -1,0 +1,8 @@
+package com.e_commerce.productService.service;
+
+public interface IS3Service {
+    String generateUploadUrl(String key, String contentType);
+
+    void deleteFromS3(String key);
+}
+

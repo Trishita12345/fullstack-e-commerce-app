@@ -16,12 +16,12 @@ export function notify({
   title,
   message,
 }: {
-  variant: "info" | "error" | "sucess" | "warning";
+  variant: "info" | "error" | "success" | "warning";
   title: string;
   message: string;
 }) {
   let Icon, color;
-  if (variant === "sucess") {
+  if (variant === "success") {
     Icon = IconCheck;
     color = "green";
   } else if (variant === "error") {

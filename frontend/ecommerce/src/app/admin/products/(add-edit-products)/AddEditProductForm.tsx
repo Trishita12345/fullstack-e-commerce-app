@@ -58,7 +58,7 @@ const AddEditVariantForm = ({
         newProductId = await addProduct(values);
       }
       notify({
-        variant: "sucess",
+        variant: "success",
         title: "Success!",
         message: productId
           ? "Product has been updated successfully."

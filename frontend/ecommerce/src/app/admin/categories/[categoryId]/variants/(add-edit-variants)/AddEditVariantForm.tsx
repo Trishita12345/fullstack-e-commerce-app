@@ -71,7 +71,7 @@ const AddEditVariantForm = ({
         await addVariant(categoryId, modifiedValues);
       }
       notify({
-        variant: "sucess",
+        variant: "success",
         title: "Success!",
         message: variantId
           ? "Variant has been updated successfully."
