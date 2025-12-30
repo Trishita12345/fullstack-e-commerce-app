@@ -9,28 +9,9 @@ interface PageProps {
 }
 const AddProductVariant = async ({ params }: PageProps) => {
   const { productId } = await params;
-  const variantAttributes: VariantAttribute[] = [
-    {
-      variantId: "UUID1000",
-      variantName: "Size",
-      attributes: [
-        { value: "UUID1", label: "200ml" },
-        { value: "UUID2", label: "400ml" },
-      ],
-    },
-    {
-      variantId: "UUID1001",
-      variantName: "Frangrance",
-      attributes: [
-        { value: "UUID3", label: "Rose" },
-        { value: "UUID4", label: "Lavender" },
-      ],
-    },
-  ];
-
-  //   await apiFetch<VariantAttribute[]>(
-  //   `/productItem/${productId}/variant-attributes`
-  // );
+  const variantAttributes = await apiFetch<VariantAttribute[]>(
+    `/productItem/${productId}/variant-attributes`
+  );
   return (
     <AddEditProductVariantForm
       productId={productId}

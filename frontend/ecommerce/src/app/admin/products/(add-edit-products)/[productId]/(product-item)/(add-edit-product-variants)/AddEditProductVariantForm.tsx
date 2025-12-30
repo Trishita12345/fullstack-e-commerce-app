@@ -111,7 +111,7 @@ const AddEditProductVariantForm = ({
 
   return (
     <>
-      <Link href={`../products/${productId}?tab=2`}>
+      <Link href={`../${productId}?tab=2`}>
         <ActionButton
           Icon={<IconArrowNarrowLeft size={"16px"} />}
           label="Back to Product Variants"

@@ -3,6 +3,8 @@ package com.e_commerce.productService.service.impl;
 import com.e_commerce.productService.model.Category;
 import com.e_commerce.productService.model.Variant;
 import com.e_commerce.productService.model.VariantAttribute;
+import com.e_commerce.productService.model.dto.common.SelectOptionDTO;
+import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
 import com.e_commerce.productService.model.dto.variant.VariantAttributeDTO;
 import com.e_commerce.productService.model.dto.variant.VariantDTO;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;
@@ -95,6 +97,44 @@ public class VariantService implements IVariantService {
         Variant savedVariant = variantRepository.save(variant);
 
         return variantEntityToDTOMapper(savedVariant);
+    }
+
+    @Override
+    public List<ProductVariantAttributesDTO> getVariantsByCategoryId(UUID categoryId) {
+
+        List<UUID> categoryIds =
+                categoryService.getCategoryHierarchy(
+                        categoryService.getCategory(categoryId)
+                ).stream().map(Category::getId).toList();
+
+        List<Object[]> rows =
+                variantRepository.findVariantAttributesByCategoryIds(categoryIds);
+
+        Map<UUID, ProductVariantAttributesDTO> result = new LinkedHashMap<>();
+
+        for (Object[] row : rows) {
+            UUID variantId = (UUID) row[0];
+            String variantName = (String) row[1];
+            UUID attributeId = (UUID) row[2];
+            String attributeName = (String) row[3];
+
+            ProductVariantAttributesDTO dto =
+                    result.get(variantId);
+
+            if (dto == null) {
+                dto = ProductVariantAttributesDTO.builder()
+                        .variantId(variantId)
+                        .variantName(variantName)
+                        .attributes(new ArrayList<>())
+                        .build();
+                result.put(variantId, dto);
+            }
+
+            dto.getAttributes()
+                    .add(new SelectOptionDTO<>(attributeName, attributeId));
+        }
+
+        return new ArrayList<>(result.values());
     }
 
 

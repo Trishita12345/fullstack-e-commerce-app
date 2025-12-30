@@ -33,8 +33,7 @@ public interface IVariantRepository extends JpaRepository<Variant, UUID> {
 
     @Query(
             value = """
-                    SELECT 
-                        v.id   AS variantId,
+                    SELECT v.id   AS variantId,
                         v.name AS variantName,
                         c.id   AS categoryId,
                         c.name AS categoryName
@@ -53,6 +52,22 @@ public interface IVariantRepository extends JpaRepository<Variant, UUID> {
             @Param("categoryIds") List<UUID> categoryIds,
             Pageable pageable
     );
+
+    @Query(
+            value = """
+                    SELECT
+                        v.id           AS variant_id,
+                        v.name         AS variant_name,
+                        va.id           AS attribute_id,
+                        va.name         AS attribute_name
+                    FROM variants v
+                    JOIN categories c ON v.category_id = c.id
+                    JOIN variant_attributes va ON va.variant_id = v.id
+                    WHERE c.id IN (:categoryIds)
+                    """,
+            nativeQuery = true
+    )
+    List<Object[]> findVariantAttributesByCategoryIds(List<UUID> categoryIds);
 
 }
 

@@ -17,7 +17,7 @@ import { useState } from "react";
 export function ProductImagesSection() {
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [images, setImages] = useState<File[]>([]);
-
+  console.log(thumbnail, images);
   return (
     <Stack gap={0}>
       <Text fw={600}>Product Images</Text>

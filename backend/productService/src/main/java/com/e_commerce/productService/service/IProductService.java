@@ -1,5 +1,6 @@
 package com.e_commerce.productService.service;
 
+import com.e_commerce.productService.model.Product;
 import com.e_commerce.productService.model.dto.common.PageRequestDTO;
 import com.e_commerce.productService.model.dto.product.ProductDTO;
 import com.e_commerce.productService.model.dto.product.ProductFilterDTO;
@@ -16,5 +17,7 @@ public interface IProductService {
     ProductDTO getProductById(UUID productId);
 
     ProductDTO editProductById(UUID productId, ProductDTO productDTO);
+
+    Product getProduct(UUID productId);
 }
 

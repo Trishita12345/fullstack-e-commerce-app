@@ -28,6 +28,7 @@ public class ProductService implements IProductService {
     private IProductRepository productRepository;
     private ICategoryService categoryService;
 
+
     @Override
     public Page<ProductListingResponseDTO> getAllProducts(String query, PageRequestDTO<ProductFilterDTO> pageRequestDTO) {
         ProductFilterDTO filters = pageRequestDTO.getFilters();
@@ -53,6 +54,7 @@ public class ProductService implements IProductService {
         return productToDTOMapper(savedProduct);
     }
 
+    @Override
     public Product getProduct(UUID productId) {
         Optional<Product> existing = productRepository.findById(productId);
         return existing
@@ -75,6 +77,7 @@ public class ProductService implements IProductService {
         Product savedProduct = productRepository.save(existingProduct);
         return productToDTOMapper(savedProduct);
     }
+
 
     private static ProductDTO productToDTOMapper(Product savedProduct) {
         return ProductDTO.builder()
