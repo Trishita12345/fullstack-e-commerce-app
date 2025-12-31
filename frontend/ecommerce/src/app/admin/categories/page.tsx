@@ -23,20 +23,18 @@ interface PageProps {
 }
 
 export default async function Categories({ searchParams }: PageProps) {
-  const { page: pageParam, sortBy, direction, query = "" } = await searchParams;
+  const {
+    page: pageParam,
+    sortBy = "updatedAt",
+    direction = "desc",
+    query = "",
+  } = await searchParams;
 
   const page = Number(pageParam ?? 1) - 1;
 
   const categories = await apiFetch<Page<CategoryListType>>(
-    `/category/page?query=${query}`,
+    `/category/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}`,
     {
-      method: "POST",
-      body: {
-        page,
-        size: 10,
-        sortBy: sortBy || "updatedAt",
-        direction: direction || "desc",
-      },
       cache: "force-cache",
       revalidate: 60,
     }

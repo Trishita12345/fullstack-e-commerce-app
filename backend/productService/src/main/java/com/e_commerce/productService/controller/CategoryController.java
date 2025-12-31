@@ -3,7 +3,6 @@ package com.e_commerce.productService.controller;
 import com.e_commerce.productService.model.dto.category.CategoryListingResponseDTO;
 import com.e_commerce.productService.model.dto.category.CategoryRequestDTO;
 import com.e_commerce.productService.model.dto.category.CategoryResponseDTO;
-import com.e_commerce.productService.model.dto.common.PageRequestDTO;
 import com.e_commerce.productService.model.dto.common.SelectOptionDTO;
 import com.e_commerce.productService.service.ICategoryService;
 import jakarta.validation.Valid;
@@ -51,21 +50,20 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getLeafCategories());
     }
 
-    @PostMapping("/page")
+    @GetMapping("/page")
     @PreAuthorize("hasRole('SELLER')")
-//    public ResponseEntity<List<CategoryListingResponseDTO>> getAllCategories() {
-//        return ResponseEntity.ok(categoryService.getAllCategories());
-//    }
-
     public ResponseEntity<Page<CategoryListingResponseDTO>> getAllCategories(
             @RequestParam(required = false, defaultValue = "") String query,
-            @RequestBody PageRequestDTO<Void> pageRequestDTO
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required=false, defaultValue="createdAt") String sortBy,
+            @RequestParam(required=false, defaultValue="asc") String direction
     ) {
-        Sort sort = pageRequestDTO.getDirection().equalsIgnoreCase("desc") ?
-                Sort.by(pageRequestDTO.getSortBy()).descending() :
-                Sort.by(pageRequestDTO.getSortBy()).ascending();
+        Sort sort = direction.equals("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
 
-        Pageable pageable = PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), sort);
+        Pageable pageable = PageRequest.of(page, size, sort);
         return ResponseEntity.ok(categoryService.getAllCategories(query, pageable));
     }
 

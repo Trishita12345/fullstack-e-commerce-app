@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-ProductServiceApplication<productService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.productService.ProductServiceApplication",
+      "projectName": "productService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

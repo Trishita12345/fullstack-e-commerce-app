@@ -21,21 +21,19 @@ interface PageProps {
 }
 
 export default async function Variants({ params, searchParams }: PageProps) {
-  const { page: pageParam, sortBy, direction, query = "" } = await searchParams;
+  const {
+    page: pageParam,
+    sortBy = "updated_At",
+    direction = "desc",
+    query = "",
+  } = await searchParams;
 
   const page = Number(pageParam ?? 1) - 1;
   const { categoryId } = await params;
 
   const variants = await apiFetch<Page<VariantListType>>(
-    `/variant/${categoryId}/page?query=${query}`,
+    `/variant/${categoryId}/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}`,
     {
-      method: "POST",
-      body: {
-        page,
-        size: 10,
-        sortBy: sortBy || "updated_At",
-        direction: direction || "desc",
-      },
       cache: "force-cache",
       revalidate: 60,
     }

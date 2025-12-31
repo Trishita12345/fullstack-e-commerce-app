@@ -1,6 +1,5 @@
 package com.e_commerce.productService.controller;
 
-import com.e_commerce.productService.model.dto.common.PageRequestDTO;
 import com.e_commerce.productService.model.dto.variant.VariantDTO;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;
 import com.e_commerce.productService.service.IVariantService;
@@ -29,20 +28,25 @@ public class VariantController {
         return ResponseEntity.ok(variantService.addVariant(categoryId, variantDTO));
     }
 
-    @PostMapping("/{categoryId}/page")
+    @GetMapping("/{categoryId}/page")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<Page<VariantWithCategoryDTO>> getVariantsByCategoryId(@PathVariable UUID categoryId,
-                                                                                @RequestParam(required = false, defaultValue = "") String query,
-                                                                                @RequestBody PageRequestDTO<Void> pageRequestDTO
+    public ResponseEntity<Page<VariantWithCategoryDTO>> getVariantsByCategoryId(
+            @PathVariable UUID categoryId,
+            @RequestParam(required = false, defaultValue = "") String query,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required=false, defaultValue="createdAt") String sortBy,
+            @RequestParam(required=false, defaultValue="asc") String direction
     ) {
-        Sort sort = pageRequestDTO.getDirection().equalsIgnoreCase("desc") ?
-                Sort.by(pageRequestDTO.getSortBy()).descending() :
-                Sort.by(pageRequestDTO.getSortBy()).ascending();
-        Pageable pageable = PageRequest.of(pageRequestDTO.getPage(), pageRequestDTO.getSize(), sort);
+        Sort sort = direction.equals("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
         return ResponseEntity.ok(variantService.getVariantsByCategoryId(categoryId, query, pageable));
     }
 
-    @GetMapping("/{categoryId}/{variantId}")
+    @GetMapping("/{variantId}")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<VariantDTO> getVariantDetails(@PathVariable UUID variantId) {
         return ResponseEntity.ok(variantService.getVariantDetails(variantId));

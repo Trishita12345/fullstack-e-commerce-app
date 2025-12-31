@@ -34,18 +34,8 @@ export default async function Products({ searchParams }: PageProps) {
   const page = Number(pageParam ?? 1) - 1;
 
   const products = await apiFetch<Page<ProductsListingPageProps>>(
-    `/product/page?query=${query}`,
+    `/product/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&categories=${category}`,
     {
-      method: "POST",
-      body: {
-        page,
-        size: 10,
-        sortBy,
-        direction,
-        filters: {
-          categories: category === "" ? [] : category.split(","),
-        },
-      },
       cache: "force-cache",
       revalidate: 60,
     }
