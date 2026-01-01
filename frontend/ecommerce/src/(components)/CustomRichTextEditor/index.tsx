@@ -10,12 +10,12 @@ import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { Group, Stack, Text } from "@mantine/core";
 
-interface CustomInputProps {
+export interface CustomInputProps<T> {
   withAsterisk?: boolean;
   label?: string;
-  value?: string;
-  defaultValue?: string;
-  onChange?: (value: string) => void;
+  value?: T;
+  defaultValue?: T;
+  onChange?: (value: T) => void;
 }
 
 export function CustomRichTextEditor({
@@ -24,7 +24,7 @@ export function CustomRichTextEditor({
   value,
   defaultValue,
   onChange,
-}: CustomInputProps) {
+}: CustomInputProps<string>) {
   const [_value, handleChange] = useUncontrolled({
     value,
     defaultValue,

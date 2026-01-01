@@ -11,7 +11,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-
 @RestController
 @AllArgsConstructor
 @RequestMapping(path = "/s3")
@@ -28,10 +27,7 @@ public class S3Controller {
     public ResponseEntity<Void> deleteImage(@RequestBody ImageKey key) {
         String decodedKey = URLDecoder.decode(key.getKey(), StandardCharsets.UTF_8);
         s3Service.deleteFromS3(decodedKey);
-//        // optional: remove from DB if permanent
-//        productImageRepository.deleteByKey(key);
         return ResponseEntity.noContent().build();
     }
-
 
 }

@@ -119,7 +119,10 @@ export interface ProductVariant {
   avlStock: number;
   basePrice: number;
   discountedPrice: number;
-  imgUrls: string[];
+  imgUrls: [{
+    url: string,
+    isThumbnail: boolean
+  }];
   variants: {
     [key: string]: string;
   };
@@ -129,4 +132,14 @@ export interface VariantAttribute {
   variantId: string;
   variantName: string;
   attributes: SelectOptionType[];
+}
+
+export interface ProductItemListing {
+  productItemId: string,
+  sku: string,
+  avlStock: number,
+  basePrice: number,
+  discountedPrice: number,
+  imgUrl: string,
+  attributes: string[]
 }

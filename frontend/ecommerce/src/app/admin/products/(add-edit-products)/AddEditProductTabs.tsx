@@ -22,7 +22,7 @@ export async function AddEditProductTabs({
   productId,
   searchParams,
 }: PageProps) {
-  const { tab = "1" } = searchParams;
+  const { tab = "1" } = await searchParams;
   const categories = await apiFetch<SelectOptionType[]>(
     "/category/get-leaf-categories"
   );

@@ -1,8 +1,17 @@
 import { ActionButton } from "@/(components)/ActionButton";
 import { ListPageClient } from "@/(components)/adminListPage";
-import { ProductsListingPageProps } from "@/constants/types";
-import { IconPlus, IconEdit } from "@tabler/icons-react";
+import { SortableField } from "@/(components)/adminListPage/SortButton";
+import { FilterButton } from "@/(components)/FilterButton";
+import ResponsiveImage from "@/(components)/responsiveImage";
+import { Page, ProductItemListing, VariantAttribute } from "@/constants/types";
+import { apiFetch } from "@/lib/apiFetch";
+import { formattedPrice } from "@/utils/helperFunctions";
+import { Badge, Group, Text } from "@mantine/core";
+import { IconPlus, IconEdit, IconTrash } from "@tabler/icons-react";
+import { router } from "better-auth/api";
+import { revalidatePath } from "next/cache";
 import Link from "next/link";
+import DeleteProductItem from "./DeleteProductItem";
 
 interface PageProps {
   productId: string;
@@ -12,6 +21,7 @@ interface PageProps {
     sortBy?: string;
     direction?: string;
     query?: string;
+    f?: string;
   };
 }
 const ProductVariantsListing = async ({
@@ -20,78 +30,59 @@ const ProductVariantsListing = async ({
 }: PageProps) => {
   const {
     page: pageParam,
-    sortBy = "updated_At",
+    sortBy = "updatedAt",
     direction = "desc",
     query = "",
+    f=""
   } = await searchParams;
-
   const page = Number(pageParam ?? 1) - 1;
-  const products = {
-    content: [],
-    empty: false,
-    first: true,
-    last: true,
-    number: 0,
-    numberOfElements: 4,
-    pageable: {
-      offset: 0,
-      pageNumber: 0,
-      pageSize: 10,
-      paged: true,
-      sort: {
-        empty: false,
-        sorted: true,
-        unsorted: false,
-      },
-      unpaged: false,
-    },
-    size: 10,
-    sort: {
-      empty: false,
-      sorted: true,
-      unsorted: false,
-    },
-    totalElements: 4,
-    totalPages: 1,
-  } as any;
-  const sortableFields = [] as any[];
-  // const products = await apiFetch<Page<ProductsListingPageProps>>(
-  //   `/productItem/${productId}/page?query=${query}`,
-  //   {
-  //     method: "POST",
-  //     body: {
-  //       page,
-  //       size: 10,
-  //       sortBy,
-  //       direction,
-  //       filters: {
-  //         categories: category === "" ? [] : category.split(","),
-  //       },
-  //     },
-  //     cache: "force-cache",
-  //     revalidate: 60,
-  //   }
-  // );
+  const sortableFields = [{
+      field: "discountedPrice",
+      label: "Price",
+      type: "number",
+  },
+  {
+      field: "availableStock",
+      label: "Available Stock",
+      type: "number",
+  }, {
+      field: "updatedAt",
+      label: "Updated At",
+      type: "date",
+  }] as SortableField[];
+  
+  console.log('aaaaa: ',`query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`)
+  const products = await apiFetch<Page<ProductItemListing>>(
+    `/productItem/${productId}/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
+    {
+      cache: "force-cache",
+      revalidate: 60,
+    }
+  );
+  const variantAttributes = await apiFetch<VariantAttribute[]>(
+      `/productItem/${productId}/variant-attributes`
+  );
+  
   return (
     <ListPageClient
       title={`Product Items`}
-      // otherButtons={
-      //   <FilterButton
-      //     fields={
-      //       [
-      //         {
-      //           label: "Category",
-      //           options: categoriesForFilter.map((o) => ({
-      //             label: o.label,
-      //             value: o.label,
-      //           })),
-      //           type: "multiSelect",
-      //           field: "category",
-      //         },
-      //       ]
-      //     }
-      //   />
-      // }
+      otherButtons={
+        <FilterButton
+          fields={
+            variantAttributes.map((va) => (
+              {
+                label: va.variantName,
+                options: va.attributes.map((o) => ({
+                  label: o.label,
+                  value: o.label,
+                })),
+                type: "multiSelect",
+                field: va.variantName,
+              }
+            ))
+          }
+        />
+      }
       addButton={
         <Link href={`/admin/products/${productId}/add`}>
           <ActionButton
@@ -106,17 +97,32 @@ const ProductVariantsListing = async ({
       pageData={products}
       fields={sortableFields}
       tableContent={{
-        head: ["Name", "Category Name", "Actions"],
-        body: products.content.map((item: ProductsListingPageProps) => [
-          item.productName,
-          item.categoryName,
-          <Link href={`/admin/products/${item.productId}`}>
+        head: ["", "SKU", "Available Stock", "Price", "Attributes", "Actions"],
+        body: products.content.map((item: ProductItemListing) => [
+          <>{ item.imgUrl && <ResponsiveImage src={item.imgUrl} height={60} width={45} key={item.productItemId} /> }</>,
+          item.sku,
+          item.avlStock,
+          <Group gap={4}>
+            {item.discountedPrice !== item.basePrice && <Text size="xs" td={'line-through'} c='dimmed'>
+              {formattedPrice(item.basePrice)}</Text>}
+            <Text size="sm" fw={500}>{formattedPrice(item.discountedPrice)}</Text>
+          </Group>,
+          <Group gap={4}>{item.attributes.length > 0 ?
+            item.attributes.map((i: string) => (
+              <Badge key={i+item.productItemId} variant="gradient" gradient={{ from: 'primaryDark.6', to: 'primary.3', deg: 150 }}>{i}</Badge>
+            ))
+            : "-"}
+          </Group>,
+          <Group gap={4}>
+            <Link href={`/admin/products/${productId}/${item.productItemId}`}>
             <ActionButton
               Icon={<IconEdit size={"16px"} />}
               label={<u>Edit</u>}
               variant="transparent"
             />
-          </Link>,
+            </Link>
+            {/* <DeleteProductItem productItemId={item.productItemId} productId={ productId} /> */}
+          </Group>,
         ]),
       }}
     />

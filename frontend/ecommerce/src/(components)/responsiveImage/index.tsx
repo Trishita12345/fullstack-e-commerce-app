@@ -17,7 +17,7 @@ const ResponsiveImage = ({
         src={src}
         width={width}
         height={height}
-        alt={src}
+        alt={'No Img'}
         style={{ width: "100%", height: "100%" }}
       />
     </Box>

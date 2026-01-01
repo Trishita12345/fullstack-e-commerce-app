@@ -23,3 +23,12 @@ export async function editProductVariant(
   });
   revalidatePath(`/admin/products/${productId}`);
 }
+
+export async function deleteProductVariant(
+  productVariantId: string
+) {
+  await apiFetch<void>(`/productItem/${productVariantId}`, {
+        method: "DELETE"
+      })
+    revalidatePath(`/admin/products/${productVariantId}`)
+}

@@ -1,7 +1,7 @@
 "use client";
 
-import { apiFetch } from "@/lib/apiFetch";
-import { notify } from "@/utils/helperFunctions";
+import { CustomInputProps } from "@/(components)/CustomRichTextEditor";
+import { deleteImageS3, notify, uploadToS3 } from "@/utils/helperFunctions";
 import {
   Box,
   Text,
@@ -10,77 +10,56 @@ import {
   ActionIcon,
   Stack,
   Paper,
-  Group,
+  LoadingOverlay,
 } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
+import { useDisclosure, useUncontrolled } from "@mantine/hooks";
 import { IconPhoto, IconTrash } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export function ProductImagesSection() {
-  const [thumbnail, setThumbnail] = useState<string | null>(null);
-  const [images, setImages] = useState<string[]>([]);
+export function ProductImagesSection({
+  value,
+  defaultValue,
+  onChange,
+}: CustomInputProps<{
+  url: string;
+  isThumbnail: boolean
+}[]>) {
+  const [visible, { open, close }] = useDisclosure(false);
+  const [thumbnail, setThumbnail] = useState<string | null>(
+    defaultValue ? defaultValue.filter(img => img.isThumbnail)?.[0]?.url : null
+  );
+  const [images, setImages] = useState<string[]>(
+    defaultValue ? defaultValue.filter(img => !img.isThumbnail).map(img => img.url) : []
+  );
+  const [_value, handleChange] = useUncontrolled({
+    value,
+    defaultValue,
+    onChange,
+  });
 
-  async function getPresignedUrl(file: File) {
-    const { url } = await apiFetch<{ url: string }>("/s3/presign", {
-      method: "POST",
-      body: {
-        key: `temp/${crypto.randomUUID()}-${file.name}`,
-        contentType: file.type,
-      },
-      headers: { "Content-Type": "application/json" },
-    });
-    return url;
-  }
-
-  async function uploadToS3(file: File) {
-    const url = await getPresignedUrl(file);
-    await fetch(url, {
-      method: "PUT",
-      body: file,
-      headers: {
-        "Content-Type": file.type,
-      },
-    });
-
-    return url.split("?")[0]; // public S3 URL
-  }
-
-  function extractS3Key(s3Url: string) {
-    if (!s3Url) return "";
-
-    try {
-      const url = new URL(s3Url);
-      let key = url.pathname; // "/products/123/image.png"
-
-      // remove leading "/"
-      if (key.startsWith("/")) {
-        key = key.slice(1);
-      }
-
-      return key;
-    } catch (e) {
-      console.error("Invalid S3 URL:", s3Url);
-      return "";
-    }
-  }
-
-  console.log("images", images);
-  function deleteImageS3(file: string) {
-    if (file.includes("/temp/")) {
-      apiFetch(`/s3/images`, {
-        method: "DELETE",
-        body: {
-          key: extractS3Key(file),
+  useEffect(() => {
+    const imagesUrls = images.map(img => ({ url: img, isThumbnail: false }));
+    if (thumbnail) {
+      handleChange(
+      [...imagesUrls,{
+        url: thumbnail,
+        isThumbnail: true
         },
-      });
+      ]);
     }
-  }
-
+    else handleChange([...imagesUrls]);
+  }, [thumbnail, images]);
+  console.log("images: ",thumbnail, images)
   return (
     <Stack gap={0}>
       <Text fw={600}>Product Images</Text>
       <Box p={16} bdrs={"md"} bd={"1px solid gray.1"}>
-        <Stack gap="lg">
+        <Stack gap="lg" pos="relative">
+          <LoadingOverlay
+            visible={visible}
+            loaderProps={{ children: "Loading..." }}
+          />
           <Box>
             <Text size="xs" mb={4}>
               Upload Thumbnail
@@ -94,8 +73,20 @@ export function ProductImagesSection() {
             >
               <Dropzone
                 onDrop={async (files: File[]) => {
-                  const uploadedUrl = await uploadToS3(files[0]);
-                  setThumbnail(uploadedUrl);
+                  try {
+                    open();
+                    const uploadedUrl = await uploadToS3(files[0]);
+                    if (thumbnail) await deleteImageS3(thumbnail);
+                    setThumbnail(uploadedUrl);
+                  } catch {
+                    notify({
+                      variant: "error",
+                      title: "Error!",
+                      message: "Failed to upload thumbnail image.",
+                    });
+                  } finally {
+                    close();
+                  }
                 }}
                 maxFiles={1}
                 accept={[MIME_TYPES.jpeg, MIME_TYPES.png, MIME_TYPES.webp]}
@@ -136,9 +127,20 @@ export function ProductImagesSection() {
                     pos="absolute"
                     top={6}
                     right={6}
-                    onClick={() => {
-                      deleteImageS3(thumbnail);
-                      setThumbnail(null);
+                    onClick={async () => {
+                      try {
+                        open();
+                        await deleteImageS3(thumbnail);
+                        setThumbnail(null);
+                      } catch (e) {
+                        notify({
+                          variant: "error",
+                          title: "Error!",
+                          message: "Failed to delete thumbnail image.",
+                        });
+                      } finally {
+                        close();
+                      }
                     }}
                   >
                     <IconTrash size={14} />
@@ -162,9 +164,22 @@ export function ProductImagesSection() {
             >
               <Dropzone
                 onDrop={async (files: File[]) => {
-                  const uploadPromises = files.map((file) => uploadToS3(file));
-                  const uploadedUrls = await Promise.all(uploadPromises);
-                  setImages((prev) => [...prev, ...uploadedUrls]);
+                  try {
+                    open();
+                    const uploadPromises = files.map((file) =>
+                      uploadToS3(file)
+                    );
+                    const uploadedUrls = await Promise.all(uploadPromises);
+                    setImages((prev) => [...prev, ...uploadedUrls]);
+                  } catch {
+                    notify({
+                      variant: "error",
+                      title: "Error!",
+                      message: "Failed to upload images.",
+                    });
+                  } finally {
+                    close();
+                  }
                 }}
                 accept={[MIME_TYPES.jpeg, MIME_TYPES.png, MIME_TYPES.webp]}
               >
@@ -200,14 +215,26 @@ export function ProductImagesSection() {
                     <Image src={file} bdrs={"md"} h={150} fit="cover" />
                     <ActionIcon
                       color="red"
-                      //   variant="light"
                       size="sm"
                       pos="absolute"
                       top={6}
                       right={6}
-                      onClick={() => {
-                        setImages((prev) => prev.filter((_, i) => i !== index));
-                        deleteImageS3(file);
+                      onClick={async () => {
+                        try {
+                          open();
+                          await deleteImageS3(file);
+                          setImages((prev) =>
+                            prev.filter((_, i) => i !== index)
+                          );
+                        } catch {
+                          notify({
+                            variant: "error",
+                            title: "Error!",
+                            message: "Failed to delete images.",
+                          });
+                        } finally {
+                          close();
+                        }
                       }}
                     >
                       <IconTrash size={14} />

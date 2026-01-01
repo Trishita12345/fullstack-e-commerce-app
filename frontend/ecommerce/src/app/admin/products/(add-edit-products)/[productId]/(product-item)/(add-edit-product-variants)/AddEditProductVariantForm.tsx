@@ -30,6 +30,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ProductImagesSection } from "./ProductImageSection";
+import { addProductVariant, editProductVariant } from "./actions";
 
 interface PageProps {
   productId: string;
@@ -71,22 +72,10 @@ const AddEditProductVariantForm = ({
   const handleSubmit = async (values: any) => {
     try {
       setLoading(true);
-      //   if (values.attributes.length < 1) {
-      //     notify({
-      //       variant: "error",
-      //       title: "Error!",
-      //       message: "You need to add at least one attribute for this variant",
-      //     });
-      //     return;
-      //   }
-      const modifiedValues = {
-        ...values,
-      };
-      console.log("values: ", values);
       if (productVariantId) {
-        //await editProductVariant(productId, productVariantId, modifiedValues);
+        await editProductVariant(productId, productVariantId, values);
       } else {
-        //await addProductVariant(productId, modifiedValues);
+        await addProductVariant(productId, values);
       }
       notify({
         variant: "success",
@@ -95,7 +84,7 @@ const AddEditProductVariantForm = ({
           ? "Product Variant has been updated successfully."
           : "Product Variant has been added successfully.",
       });
-      // router.push(`/admin/products/${productId}?tab=2`);
+      router.push(`/admin/products/${productId}?tab=2`);
     } catch (err: any) {
       notify({
         variant: "error",
@@ -165,7 +154,6 @@ const AddEditProductVariantForm = ({
               />
               {variantAttributes.map((va: VariantAttribute) => (
                 <Select
-                  // disabled={productId !== undefined}
                   {...form.getInputProps(`attributes.${va.variantId}`)}
                   label={va.variantName}
                   placeholder={`Select ${va.variantName}...`}
@@ -176,7 +164,7 @@ const AddEditProductVariantForm = ({
             </Stack>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }}>
-            <ProductImagesSection />
+            <ProductImagesSection {...form.getInputProps("imgUrls")} />
           </Grid.Col>
         </Grid>
 

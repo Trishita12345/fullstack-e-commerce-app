@@ -31,11 +31,24 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
   const [filter, setFilter] = useState<{ [key: string]: string[] }>({});
   let isFilter = 0;
 
+
+  //f=Size:200ml,400ml::Fragrance:rose,lavender
+  //f=Category:candle
   let defaultFilters = {};
+  const params = searchParams.get('f');
+  const paramArr = params?.split('::'); //[Size:200ml,400ml, Fragrance:rose,lavender]
   fields.forEach((field: FilterField) => {
-    const values = searchParams.get(field.field)?.split(",") ?? [];
-    isFilter += values.length;
-    defaultFilters = { ...defaultFilters, [field.field]: values };
+    const a = paramArr?.find(p => p.includes(field.field)) //Size:200ml,400ml
+    if (a) {
+      const b = a.split(':')[1].split(',');
+      defaultFilters = { ...defaultFilters, [field.field]: b }
+      isFilter += b.length;
+    } else {
+      defaultFilters = { ...defaultFilters, [field.field]: [] }
+    }
+    // const values = searchParams.get(field.field)?.split(",") ?? [];
+    // isFilter += values.length;
+    // defaultFilters = { ...defaultFilters, [field.field]: values };
   });
   useEffect(() => {
     setFilter(defaultFilters);
@@ -58,24 +71,24 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
       }
     }
   };
+
   const handleApplyFilter = () => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString()); 
+    let tempArr: string[] = [];
     Object.entries(filter).forEach(([key, value]) => {
       if (!value || value.length === 0) {
-        params.delete(key);
         return;
       }
-      params.set(key, value.join(","));
+      tempArr.push(`${key}:${value.join(',')}`)
     });
+    params.set('f', tempArr.join('::'));
     router.push(`?${params.toString()}`);
     close();
   };
 
   const clearFilter = () => {
     const params = new URLSearchParams(searchParams.toString());
-    Object.keys(filter).forEach((key) => {
-      params.delete(key);
-    });
+    params.delete('f');
     router.push(`?${params.toString()}`);
     close();
   };

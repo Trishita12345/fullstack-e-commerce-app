@@ -22,7 +22,7 @@ const FilterMultiSelect = ({
   values,
 }: FilterMultiSelectProps) => {
   const handleChange = (value: string[]) => {
-    onChange({ [field]: value });
+    onChange(prev =>({ ...prev, [field]: value }));
   };
 
   return (

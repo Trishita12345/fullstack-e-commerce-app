@@ -28,7 +28,6 @@ public class VariantService implements IVariantService {
 
     private IVariantRepository variantRepository;
     private ICategoryService categoryService;
-    private IVariantAttributeRepository variantAttributeRepository;
 
     @Override
     @Transactional

@@ -11,7 +11,7 @@ interface PageProps {
 const EditVariant = async ({ params }: PageProps) => {
   const { categoryId, variantId } = await params;
   const variantData = await apiFetch<Variant>(
-    `/variant/${categoryId}/${variantId}`
+    `/variant/${variantId}`
   );
   return (
     <AddEditVariantForm

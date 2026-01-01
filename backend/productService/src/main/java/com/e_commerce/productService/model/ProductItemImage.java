@@ -1,6 +1,8 @@
 package com.e_commerce.productService.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,8 +12,10 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "productsItemImages")
+@Table(name = "productItemImages")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class ProductItemImage extends AuditEntity {
 
     @Id
@@ -21,8 +25,10 @@ public class ProductItemImage extends AuditEntity {
     @Column(nullable = false)
     private String imgUrl;
 
+    @Column(nullable = false)
+    private Boolean isThumbnail;
+
     @ManyToOne
-    @JoinColumn(name = "productsItemId", nullable = false)
+    @JoinColumn(name = "productItemId", nullable = false)
     private ProductItem productItem;
 }
-

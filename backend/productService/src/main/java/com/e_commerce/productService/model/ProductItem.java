@@ -1,6 +1,8 @@
 package com.e_commerce.productService.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,8 +15,10 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "productsItem")
+@Table(name = "productItems")
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class ProductItem extends AuditEntity {
 
     @Id
@@ -31,18 +35,13 @@ public class ProductItem extends AuditEntity {
     private BigDecimal discountedPrice;
 
     @ManyToOne
-    @JoinColumn(name = "productsId", nullable = false)
+    @JoinColumn(name = "productId", nullable = false)
     private Product product;
 
     @OneToMany(mappedBy = "productItem", cascade = CascadeType.ALL)
-    private List<ProductItemImage> images;
+    private Set<ProductItemImage> images;
 
     @ManyToMany
-    @JoinTable(
-            name = "productsItemVariantAttributes",
-            joinColumns = @JoinColumn(name = "productsItemId"),
-            inverseJoinColumns = @JoinColumn(name = "variantAttributesId")
-    )
+    @JoinTable(name = "productItemVariantAttributes", joinColumns = @JoinColumn(name = "productItemId"), inverseJoinColumns = @JoinColumn(name = "variantAttributeId"))
     private Set<VariantAttribute> variantAttributes;
 }
-

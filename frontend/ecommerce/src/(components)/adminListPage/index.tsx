@@ -36,12 +36,7 @@ export function ListPageClient<T>({
 }: Props<T>) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const NON_FILTER_KEYS = ["query", "page", "sortBy", "direction", "tab"];
-
-  const filterValues = [...searchParams.entries()]
-    .filter(([key]) => !NON_FILTER_KEYS.includes(key))
-    .flatMap(([, value]) => value.split(","));
-
+  const filterValues = searchParams.get('f')?.split('::').flatMap(i => i.split(':')[1].split(',')) || []
   const { empty, numberOfElements, totalElements, totalPages, size, pageable } =
     pageData;
 
@@ -65,22 +60,39 @@ export function ListPageClient<T>({
     500
   );
 
-  const removeFilter = (item: string) => {
+  //f=Size:200ml,400ml::Fragrance:rose,mint
+  //f=Category:candle
+  function removeFilter(valueToRemove: string) {
     const params = new URLSearchParams(searchParams.toString());
-    // keys that are NOT filters
-    const nonFilterKeys = new Set(["page", "sortBy", "direction"]);
-    for (const [key, value] of params.entries()) {
-      if (nonFilterKeys.has(key)) continue;
-      const values = value.split(",");
-      const updatedValues = values.filter((v) => v !== item);
-      if (updatedValues.length === 0) {
-        params.delete(key);
-      } else {
-        params.set(key, updatedValues.join(","));
-      }
-    }
+    const query = params.get('f');
+    const updatedQuery =  query
+      ?.split("::")
+      .map(section => {
+        const [key, values] = section.split(":");
+
+        // no value list (single value case)
+        if (!values) return null;
+
+        const valueList = values.split(",").map(v => v.trim());
+
+        if (!valueList.includes(valueToRemove)) {
+          return section; // untouched
+        }
+
+        const filtered = valueList.filter(v => v !== valueToRemove);
+
+        // if no values left → remove entire section
+        if (filtered.length === 0) return null;
+
+        return `${key}:${filtered.join(",")}`;
+      })
+      .filter(Boolean)
+      .join("::");
+    
+    updatedQuery ? params.set('f', updatedQuery): params.delete('f');
     router.push(`?${params.toString()}`);
-  };
+  }
+
 
   return (
     <Stack gap={2}>

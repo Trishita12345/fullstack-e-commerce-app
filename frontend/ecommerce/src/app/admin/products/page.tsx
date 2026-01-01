@@ -18,7 +18,7 @@ interface PageProps {
     sortBy?: string;
     direction?: string;
     query?: string;
-    category?: string;
+    f?: string;
   };
 }
 
@@ -28,13 +28,13 @@ export default async function Products({ searchParams }: PageProps) {
     sortBy = "updated_At",
     direction = "desc",
     query = "",
-    category = "",
+    f = "",
   } = await searchParams;
 
   const page = Number(pageParam ?? 1) - 1;
 
   const products = await apiFetch<Page<ProductsListingPageProps>>(
-    `/product/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&categories=${category}`,
+    `/product/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
     {
       cache: "force-cache",
       revalidate: 60,
