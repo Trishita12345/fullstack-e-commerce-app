@@ -18,6 +18,5 @@ public interface IProductService {
 
     Product getProduct(UUID productId);
 
-    Page<ProductListingResponseDTO> getAllProducts(String query, List<String> categories, Pageable pageable);
+    Page<ProductListingResponseDTO> getAllProducts(String query, String filter, Pageable pageable);
 }
-

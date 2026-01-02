@@ -33,11 +33,10 @@ public class ProductController {
             @RequestParam(required = false, defaultValue = "5") int size,
             @RequestParam(required = false, defaultValue = "created_At") String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String direction,
-            @ModelAttribute ProductFilterDTO filterDTO) {
-        List<String> categories = filterDTO.getCategories() == null ? new ArrayList<>() : filterDTO.getCategories();
+            @RequestParam(required = false, defaultValue = "") String filter) {
         Sort sort = direction.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return ResponseEntity.ok(productService.getAllProducts(query, categories, pageable));
+        return ResponseEntity.ok(productService.getAllProducts(query, filter, pageable));
     }
 
     @PostMapping("/add")

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,9 +24,14 @@ public class ProductService implements IProductService {
     private IProductRepository productRepository;
     private ICategoryService categoryService;
 
-
     @Override
-    public Page<ProductListingResponseDTO> getAllProducts(String query, List<String> categories, Pageable pageable) {
+    public Page<ProductListingResponseDTO> getAllProducts(String query, String filter, Pageable pageable) {
+        List<String> categories = new ArrayList<>();
+        if (filter != null && !filter.isBlank()) {
+            for (String category : filter.split(":")[1].split(",")) {
+                categories.add(category);
+            }
+        }
         return productRepository.findAllProducts(query, categories, pageable);
     }
 
@@ -47,8 +53,7 @@ public class ProductService implements IProductService {
     public Product getProduct(UUID productId) {
         Optional<Product> existing = productRepository.findById(productId);
         return existing
-                .orElseThrow(() ->
-                        new RuntimeException("Product with ID: " + productId + " not exist"));
+                .orElseThrow(() -> new RuntimeException("Product with ID: " + productId + " not exist"));
     }
 
     @Override
@@ -66,7 +71,6 @@ public class ProductService implements IProductService {
         Product savedProduct = productRepository.save(existingProduct);
         return productToDTOMapper(savedProduct);
     }
-
 
     private static ProductDTO productToDTOMapper(Product savedProduct) {
         return ProductDTO.builder()

@@ -16,7 +16,10 @@ public interface IProductItemService {
 
     ProductItemDTO getProductItemById(UUID productItemId);
 
-    Page<ProductItemListingDTO> getProductItemListing(UUID productId, String filter, Pageable pageable);
+    Page<ProductItemListingDTO> getProductItemListing(UUID productId, Pageable pageable, String filter, int page,
+            int size, String sortBy,
+            String direction);
 
     void deleteProductItemById(UUID productItemId);
+
 }

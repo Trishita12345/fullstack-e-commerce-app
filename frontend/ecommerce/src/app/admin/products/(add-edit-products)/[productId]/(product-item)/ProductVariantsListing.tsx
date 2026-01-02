@@ -1,17 +1,15 @@
 import { ActionButton } from "@/(components)/ActionButton";
 import { ListPageClient } from "@/(components)/adminListPage";
 import { SortableField } from "@/(components)/adminListPage/SortButton";
-import { FilterButton } from "@/(components)/FilterButton";
+import { FilterButton, FilterField } from "@/(components)/FilterButton";
 import ResponsiveImage from "@/(components)/responsiveImage";
 import { Page, ProductItemListing, VariantAttribute } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { formattedPrice } from "@/utils/helperFunctions";
 import { Badge, Group, Text } from "@mantine/core";
-import { IconPlus, IconEdit, IconTrash } from "@tabler/icons-react";
-import { router } from "better-auth/api";
-import { revalidatePath } from "next/cache";
+import { IconPlus, IconEdit, } from "@tabler/icons-react";
 import Link from "next/link";
-import DeleteProductItem from "./DeleteProductItem";
+import { Fragment } from "react";
 
 interface PageProps {
   productId: string;
@@ -63,13 +61,7 @@ const ProductVariantsListing = async ({
       `/productItem/${productId}/variant-attributes`
   );
   
-  return (
-    <ListPageClient
-      title={`Product Items`}
-      otherButtons={
-        <FilterButton
-          fields={
-            variantAttributes.map((va) => (
+  const variantFilterFields: FilterField[] = variantAttributes.map((va) => (
               {
                 label: va.variantName,
                 options: va.attributes.map((o) => ({
@@ -80,7 +72,18 @@ const ProductVariantsListing = async ({
                 field: va.variantName,
               }
             ))
-          }
+        
+  return (
+    <ListPageClient
+      title={`Product Items`}
+      otherButtons={
+        <FilterButton
+          fields={[...variantFilterFields, {
+                label: 'Price',
+                options: [],
+                type: "range",
+                field: 'Price',
+              }]}
         />
       }
       addButton={
@@ -99,7 +102,7 @@ const ProductVariantsListing = async ({
       tableContent={{
         head: ["", "SKU", "Available Stock", "Price", "Attributes", "Actions"],
         body: products.content.map((item: ProductItemListing) => [
-          <>{ item.imgUrl && <ResponsiveImage src={item.imgUrl} height={60} width={45} key={item.productItemId} /> }</>,
+          <Fragment key={item.productItemId}>{ item.imgUrl && <ResponsiveImage src={item.imgUrl} height={60} width={45} /> }</Fragment>,
           item.sku,
           item.avlStock,
           <Group gap={4}>

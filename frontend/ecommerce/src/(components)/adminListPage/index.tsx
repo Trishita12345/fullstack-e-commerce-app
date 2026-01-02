@@ -36,7 +36,8 @@ export function ListPageClient<T>({
 }: Props<T>) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const filterValues = searchParams.get('f')?.split('::').flatMap(i => i.split(':')[1].split(',')) || []
+  const filterStr = searchParams.get('f')
+  const filterValues = (filterStr || filterStr !== '') && filterStr?.split('::').flatMap(i => i.split(':')[1]?.split(',')) || []
   const { empty, numberOfElements, totalElements, totalPages, size, pageable } =
     pageData;
 

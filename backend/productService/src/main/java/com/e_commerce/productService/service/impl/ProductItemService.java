@@ -7,6 +7,7 @@ import com.e_commerce.productService.model.ProductItemImage;
 import com.e_commerce.productService.model.VariantAttribute;
 import com.e_commerce.productService.model.dto.productItem.ImageDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
+import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
 import com.e_commerce.productService.model.dto.productItem.ProductItemListingDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
 import com.e_commerce.productService.repository.IProductItemRepository;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -136,27 +138,33 @@ public class ProductItemService implements IProductItemService {
         }
 
         @Override
-        public Page<ProductItemListingDTO> getProductItemListing(UUID productId, String filter, Pageable pageable) {
+        public Page<ProductItemListingDTO> getProductItemListing(UUID productId, Pageable pageable, String filter,
+                        int page, int size,
+                        String sortBy,
+                        String direction) {
                 productService.getProduct(productId);
                 List<String> filtersList = new ArrayList<>();
+                BigDecimal minPrice = BigDecimal.valueOf(0.0);
+                BigDecimal maxPrice = BigDecimal.valueOf(100000000.0);
                 // filter = Fragrances:Mint,Lavender::Size:OneSize
                 if (filter != null && !filter.isBlank()) {
                         for (String attributesWithVariant : filter.split("::")) {
                                 String[] parts = attributesWithVariant.split(":", 2); // limit = 2
                                 if (parts.length == 2) {
-                                        for (String attribute : parts[1].split(",")) {
-                                                filtersList.add(attribute.trim());
+                                        if (parts[0].equalsIgnoreCase("Price")) {
+                                                maxPrice = new BigDecimal(parts[1].split(",")[1]);
+                                                minPrice = new BigDecimal(parts[1].split(",")[0]);
+                                        } else {
+                                                for (String attribute : parts[1].split(",")) {
+                                                        filtersList.add(attribute.trim());
+                                                }
                                         }
                                 }
                         }
                 }
                 System.out.println(filtersList.toString());
-                BigDecimal minPrice = BigDecimal.valueOf(0.0);
-                BigDecimal maxPrice = BigDecimal.valueOf(100.0);
-                // Page<ProductItem> productItems =
-                // productItemRepository.findWithDetailsPaginated(productId, pageable);
                 boolean applyFilters = filtersList != null && !filtersList.isEmpty();
-                Page<ProductItem> page = productItemRepository.findProductItemsPage(
+                Page<ProductItemFilter> sorted_items = productItemRepository.findProductItemsPage(
                                 productId,
                                 filtersList,
                                 applyFilters,
@@ -164,38 +172,62 @@ public class ProductItemService implements IProductItemService {
                                 maxPrice,
                                 pageable);
 
-                List<ProductItem> fullData = productItemRepository.fetchDetails(
-                                page.map(ProductItem::getId).toList());
+                // List<ProductItem> fullData = productItemRepository.fetchDetails(
+                // sorted_items.map(row -> row.getProductItemid()).toList());
 
-                Page<ProductItem> result = new PageImpl<>(fullData, pageable, page.getTotalElements());
+                // Page<ProductItem> result = new PageImpl<>(fullData, pageable,
+                // sorted_items.getTotalElements());
 
-                return result.map((this::productItemEntityToListingDTOMapper));
+                return sorted_items.map((this::productItemFilterEntityToListingDTOMapper));
+                // return null;
         }
 
-        private ProductItemListingDTO productItemEntityToListingDTOMapper(ProductItem productItem) {
+        private ProductItemListingDTO productItemFilterEntityToListingDTOMapper(ProductItemFilter productItemFilter) {
                 List<String> attributes = new ArrayList<>();
-                if (productItem.getVariantAttributes() != null) {
-                        attributes = productItem.getVariantAttributes().stream()
-                                        .map(va -> va.getName()).toList();
-                }
-                String imageUrl = "";
-                if (productItem.getImages().size() > 0) {
-                        for (ProductItemImage image : productItem.getImages()) {
-                                if (image.getIsThumbnail()) {
-                                        imageUrl = buildFullUrl(image.getImgUrl());
-                                }
-                        }
+                if (productItemFilter.getAttributes() != null) {
+                        // attributes = productItem.getVariantAttributes().stream()
+                        // .map(va -> va.getName()).toList();
+                        attributes = Arrays.asList(productItemFilter.getAttributes().split(","));
                 }
                 return ProductItemListingDTO.builder()
-                                .productItemId(productItem.getId())
-                                .sku(productItem.getSku())
-                                .avlStock(productItem.getAvailableStock())
-                                .basePrice(productItem.getBasePrice())
-                                .discountedPrice(productItem.getDiscountedPrice())
-                                .imgUrl(imageUrl)
+                                .productItemId(productItemFilter.getProductItemId())
+                                .sku(productItemFilter.getSku())
+                                .avlStock(productItemFilter.getAvailableStock())
+                                .basePrice(productItemFilter.getBasePrice())
+                                .discountedPrice(productItemFilter.getDiscountedPrice())
+                                .imgUrl(productItemFilter.getImgUrl() != null
+                                                ? buildFullUrl(productItemFilter.getImgUrl())
+                                                : null)
                                 .attributes(attributes)
                                 .build();
         }
+
+        // private ProductItemListingDTO productItemEntityToListingDTOMapper(ProductItem
+        // productItem) {
+        // List<String> attributes = new ArrayList<>();
+        // if (productItem.getVariantAttributes() != null) {
+        // // attributes = productItem.getVariantAttributes().stream()
+        // // .map(va -> va.getName()).toList();
+        // attributes =
+        // }
+        // String imageUrl = "";
+        // if (productItem.getImages().size() > 0) {
+        // for (ProductItemImage image : productItem.getImages()) {
+        // if (image.getIsThumbnail()) {
+        // imageUrl = buildFullUrl(image.getImgUrl());
+        // }
+        // }
+        // }
+        // return ProductItemListingDTO.builder()
+        // .productItemId(productItem.getId())
+        // .sku(productItem.getSku())
+        // .avlStock(productItem.getAvailableStock())
+        // .basePrice(productItem.getBasePrice())
+        // .discountedPrice(productItem.getDiscountedPrice())
+        // .imgUrl(imageUrl)
+        // .attributes(attributes)
+        // .build();
+        // }
 
         @Override
         public void deleteProductItemById(UUID productItemId) {

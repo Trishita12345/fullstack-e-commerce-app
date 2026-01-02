@@ -8,6 +8,8 @@ import {
   Divider,
   Drawer,
   Indicator,
+  RangeSlider,
+  RangeSliderValue,
   Stack,
   Text,
 } from "@mantine/core";
@@ -15,7 +17,9 @@ import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 import { ActionButton } from "../ActionButton";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import FilterMultiSelect from "./FilterMultiSelect";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { formattedPrice } from "@/utils/helperFunctions";
+import FilterRangeSelect from "./FilterRangeSelect";
 
 export type FilterField = {
   options: any[];
@@ -28,10 +32,10 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
   const { height } = useViewportSize();
   const [opened, { open, close }] = useDisclosure(false);
   const searchParams = useSearchParams();
-  const [filter, setFilter] = useState<{ [key: string]: string[] }>({});
+  const [filter, setFilter] = useState<{ [key: string]: string[] | RangeSliderValue }>({});
   let isFilter = 0;
 
-
+ console.log('filter', filter)
   //f=Size:200ml,400ml::Fragrance:rose,lavender
   //f=Category:candle
   let defaultFilters = {};
@@ -46,9 +50,6 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
     } else {
       defaultFilters = { ...defaultFilters, [field.field]: [] }
     }
-    // const values = searchParams.get(field.field)?.split(",") ?? [];
-    // isFilter += values.length;
-    // defaultFilters = { ...defaultFilters, [field.field]: values };
   });
   useEffect(() => {
     setFilter(defaultFilters);
@@ -61,8 +62,18 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
           <FilterMultiSelect
             options={field.options}
             field={field.field}
-            onChange={setFilter}
-            values={filter[field.field]}
+            onChange={setFilter as Dispatch<SetStateAction<{ [key: string]: string[]; }>>}
+            values={filter[field.field] as string[]}
+          />
+        );
+      }
+      case "range": {
+        return (
+          <FilterRangeSelect
+            field={field.field}
+            onChange={setFilter as Dispatch<SetStateAction<{ [key: string]: RangeSliderValue }>>}
+            domain={[0, 5000]}
+            values={filter[field.field].length === 0 ? [0,5000] : filter[field.field] as RangeSliderValue}
           />
         );
       }

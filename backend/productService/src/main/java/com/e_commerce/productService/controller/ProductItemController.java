@@ -58,13 +58,14 @@ public class ProductItemController {
             @PathVariable UUID productId,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
-            @RequestParam(required = false, defaultValue = "created_At") String sortBy,
+            @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String direction,
             @RequestParam(required = false, defaultValue = "") String filter) {
         Sort sort = direction.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        System.out.println("filter" + filter);
-        return ResponseEntity.ok(productItemService.getProductItemListing(productId, filter, pageable));
+        return ResponseEntity
+                .ok(productItemService.getProductItemListing(productId, pageable, filter, page, size, sortBy,
+                        direction));
     }
 
     @DeleteMapping("/{productItemId}")
