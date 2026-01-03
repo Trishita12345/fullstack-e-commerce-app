@@ -4,7 +4,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@mantine/core";
 import { IconArrowNarrowLeft } from "@tabler/icons-react";
 import Link from "next/link";
-import AddEditVariantForm from "./AddEditProductForm";
+import AddEditProductForm from "./AddEditProductForm";
 import ProductVariantsListing from "./[productId]/(product-item)/ProductVariantsListing";
 
 interface PageProps {
@@ -52,7 +52,7 @@ export async function AddEditProductTabs({
         </TabsList>
 
         <TabsPanel value="1" pt="xs">
-          <AddEditVariantForm
+          <AddEditProductForm
             categories={categories}
             productData={productData}
             productId={productId}

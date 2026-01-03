@@ -14,41 +14,42 @@ import java.util.UUID;
 @Repository
 public interface ICategoryRepository extends JpaRepository<Category, UUID> {
 
-    // Top-level categories (Aromatherapy, Home Decor, etc.)
-    List<Category> findByParentCategoryIsNull();
+  List<Category> findByNameIn(List<String> categories);
 
-    // Sub-categories of a parent (Candles, Incense Sticks)
-    List<Category> findByParentCategory_Id(UUID parentCategoryId);
+  // Top-level categories (Aromatherapy, Home Decor, etc.)
+  List<Category> findByParentCategoryIsNull();
 
-    Optional<Category> findByName(String name);
+  // Sub-categories of a parent (Candles, Incense Sticks)
+  List<Category> findByParentCategory_Id(UUID parentCategoryId);
 
-    @Query(value = """
-            SELECT c.*
-              FROM categories c
-               left JOIN products p
-                ON c.id = p.category_id
-              WHERE p.id IS NULL
-            """, nativeQuery = true)
-    List<Category> findCategoriesWithNoProducts();
+  Optional<Category> findByName(String name);
 
-    @Query(value = """
-            SELECT c.*
-             FROM categories c
-             LEFT JOIN categories cc
-               ON cc.parent_category = c.id
-             WHERE cc.id IS NULL
-            """, nativeQuery = true)
-    List<Category> findCategoriesWithNoChildCategories();
+  @Query(value = """
+      SELECT c.*
+        FROM categories c
+         left JOIN products p
+          ON c.id = p.category_id
+        WHERE p.id IS NULL
+      """, nativeQuery = true)
+  List<Category> findCategoriesWithNoProducts();
 
+  @Query(value = """
+      SELECT c.*
+       FROM categories c
+       LEFT JOIN categories cc
+         ON cc.parent_category = c.id
+       WHERE cc.id IS NULL
+      """, nativeQuery = true)
+  List<Category> findCategoriesWithNoChildCategories();
 
-    Page<Category> findByNameContainingIgnoreCase(String query, Pageable pageable);
+  Page<Category> findByNameContainingIgnoreCase(String query, Pageable pageable);
 
-    // @Query(value = """
-    //             SELECT NOT EXISTS (
-    //                 SELECT 1
-    //                 FROM products p
-    //                 WHERE p.category_id = :categoryId
-    //             )
-    //         """, nativeQuery = true)
-    // boolean isCategoryParent(@Param("categoryId") UUID categoryId);
+  // @Query(value = """
+  // SELECT NOT EXISTS (
+  // SELECT 1
+  // FROM products p
+  // WHERE p.category_id = :categoryId
+  // )
+  // """, nativeQuery = true)
+  // boolean isCategoryParent(@Param("categoryId") UUID categoryId);
 }

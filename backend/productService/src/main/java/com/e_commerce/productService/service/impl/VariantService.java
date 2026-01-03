@@ -8,6 +8,7 @@ import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesD
 import com.e_commerce.productService.model.dto.variant.VariantAttributeDTO;
 import com.e_commerce.productService.model.dto.variant.VariantDTO;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;
+import com.e_commerce.productService.repository.ICategoryRepository;
 import com.e_commerce.productService.repository.IVariantAttributeRepository;
 import com.e_commerce.productService.repository.IVariantRepository;
 import com.e_commerce.productService.service.ICategoryService;
@@ -26,160 +27,176 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class VariantService implements IVariantService {
 
-    private IVariantRepository variantRepository;
-    private ICategoryService categoryService;
+        private IVariantRepository variantRepository;
+        private ICategoryService categoryService;
+        private ICategoryRepository categoryRepository;
 
-    @Override
-    @Transactional
-    public VariantDTO addVariant(UUID categoryId, VariantDTO variantDTO) {
-        Category category = categoryService.getCategory(categoryId);
-        Variant variant = Variant.builder()
-                .name(variantDTO.getName())
-                .category(category)
-                .build();
-        List<VariantAttribute> attributes = variantDTO.getAttributes()
-                .stream()
-                .map(dto -> VariantAttribute.builder()
-                        .name(dto.getName())
-                        .variant(variant)
-                        .build()
-                )
-                .toList();
-        variant.setAttributes(attributes);
-        Variant savedVariant = variantRepository.save(variant);
-        return variantEntityToDTOMapper(savedVariant);
-    }
-
-    @Override
-    @Transactional
-    public VariantDTO editVariant(UUID categoryId, UUID variantId, VariantDTO variantDTO) {
-
-        Variant variant = variantRepository.findById(variantId)
-                .orElseThrow(() -> new RuntimeException("Variant not found"));
-
-        // 1️⃣ Validate variant belongs to category
-        if (!variant.getCategory().getId().equals(categoryId)) {
-            throw new IllegalStateException("Variant does not belong to this category");
+        @Override
+        @Transactional
+        public VariantDTO addVariant(UUID categoryId, VariantDTO variantDTO) {
+                Category category = categoryService.getCategory(categoryId);
+                Variant variant = Variant.builder()
+                                .name(variantDTO.getName())
+                                .category(category)
+                                .build();
+                List<VariantAttribute> attributes = variantDTO.getAttributes()
+                                .stream()
+                                .map(dto -> VariantAttribute.builder()
+                                                .name(dto.getName())
+                                                .variant(variant)
+                                                .build())
+                                .toList();
+                variant.setAttributes(attributes);
+                Variant savedVariant = variantRepository.save(variant);
+                return variantEntityToDTOMapper(savedVariant);
         }
 
-        variant.setName(variantDTO.getName());
+        @Override
+        @Transactional
+        public VariantDTO editVariant(UUID categoryId, UUID variantId, VariantDTO variantDTO) {
 
-        // Existing attributes map
-        Map<UUID, VariantAttribute> existingAttributes = variant.getAttributes()
-                .stream()
-                .collect(Collectors.toMap(VariantAttribute::getId, Function.identity()));
+                Variant variant = variantRepository.findById(variantId)
+                                .orElseThrow(() -> new RuntimeException("Variant not found"));
 
-        List<VariantAttribute> updatedAttributes = new ArrayList<>();
+                // 1️⃣ Validate variant belongs to category
+                if (!variant.getCategory().getId().equals(categoryId)) {
+                        throw new IllegalStateException("Variant does not belong to this category");
+                }
 
-        for (VariantAttributeDTO dto : variantDTO.getAttributes()) {
+                variant.setName(variantDTO.getName());
 
-            // UPDATE existing
-            if (dto.getId() != null && existingAttributes.containsKey(dto.getId())) {
-                VariantAttribute attribute = existingAttributes.get(dto.getId());
-                attribute.setName(dto.getName());
-                updatedAttributes.add(attribute);
-            }
-            // CREATE new
-            else {
-                VariantAttribute newAttr = VariantAttribute.builder()
-                        .name(dto.getName())
-                        .variant(variant)
-                        .build();
-                updatedAttributes.add(newAttr);
-            }
+                // Existing attributes map
+                Map<UUID, VariantAttribute> existingAttributes = variant.getAttributes()
+                                .stream()
+                                .collect(Collectors.toMap(VariantAttribute::getId, Function.identity()));
+
+                List<VariantAttribute> updatedAttributes = new ArrayList<>();
+
+                for (VariantAttributeDTO dto : variantDTO.getAttributes()) {
+
+                        // UPDATE existing
+                        if (dto.getId() != null && existingAttributes.containsKey(dto.getId())) {
+                                VariantAttribute attribute = existingAttributes.get(dto.getId());
+                                attribute.setName(dto.getName());
+                                updatedAttributes.add(attribute);
+                        }
+                        // CREATE new
+                        else {
+                                VariantAttribute newAttr = VariantAttribute.builder()
+                                                .name(dto.getName())
+                                                .variant(variant)
+                                                .build();
+                                updatedAttributes.add(newAttr);
+                        }
+                }
+
+                // 2️⃣ Remove deleted attributes
+                variant.getAttributes().clear();
+                variant.getAttributes().addAll(updatedAttributes);
+
+                Variant savedVariant = variantRepository.save(variant);
+
+                return variantEntityToDTOMapper(savedVariant);
         }
 
-        // 2️⃣ Remove deleted attributes
-        variant.getAttributes().clear();
-        variant.getAttributes().addAll(updatedAttributes);
+        @Override
+        public List<ProductVariantAttributesDTO> getVariantsByCategoryId(UUID categoryId) {
 
-        Variant savedVariant = variantRepository.save(variant);
+                List<UUID> categoryIds = categoryService.getCategoryHierarchy(
+                                categoryService.getCategory(categoryId)).stream().map(Category::getId).toList();
 
-        return variantEntityToDTOMapper(savedVariant);
-    }
+                List<Object[]> rows = variantRepository.findVariantAttributesByCategoryIds(categoryIds);
 
-    @Override
-    public List<ProductVariantAttributesDTO> getVariantsByCategoryId(UUID categoryId) {
+                Map<UUID, ProductVariantAttributesDTO> result = new LinkedHashMap<>();
 
-        List<UUID> categoryIds =
-                categoryService.getCategoryHierarchy(
-                        categoryService.getCategory(categoryId)
-                ).stream().map(Category::getId).toList();
+                for (Object[] row : rows) {
+                        UUID variantId = (UUID) row[0];
+                        String variantName = (String) row[1];
+                        UUID attributeId = (UUID) row[2];
+                        String attributeName = (String) row[3];
 
-        List<Object[]> rows =
-                variantRepository.findVariantAttributesByCategoryIds(categoryIds);
+                        ProductVariantAttributesDTO dto = result.get(variantId);
 
-        Map<UUID, ProductVariantAttributesDTO> result = new LinkedHashMap<>();
+                        if (dto == null) {
+                                dto = ProductVariantAttributesDTO.builder()
+                                                .variantId(variantId)
+                                                .variantName(variantName)
+                                                .attributes(new ArrayList<>())
+                                                .build();
+                                result.put(variantId, dto);
+                        }
 
-        for (Object[] row : rows) {
-            UUID variantId = (UUID) row[0];
-            String variantName = (String) row[1];
-            UUID attributeId = (UUID) row[2];
-            String attributeName = (String) row[3];
+                        dto.getAttributes()
+                                        .add(new SelectOptionDTO<>(attributeName, attributeId));
+                }
 
-            ProductVariantAttributesDTO dto =
-                    result.get(variantId);
-
-            if (dto == null) {
-                dto = ProductVariantAttributesDTO.builder()
-                        .variantId(variantId)
-                        .variantName(variantName)
-                        .attributes(new ArrayList<>())
-                        .build();
-                result.put(variantId, dto);
-            }
-
-            dto.getAttributes()
-                    .add(new SelectOptionDTO<>(attributeName, attributeId));
+                return new ArrayList<>(result.values());
         }
 
-        return new ArrayList<>(result.values());
-    }
+        @Override
+        public Page<VariantWithCategoryDTO> getVariantsByCategoryId(UUID categoryId, String query, Pageable pageable) {
+                Category category = categoryService.getCategory(categoryId);
+                List<Category> categoryHierarchy = categoryService.getCategoryHierarchy(category);
+                List<UUID> categoryHierarchyIds = categoryHierarchy.stream().map(Category::getId).toList();
 
-
-    @Override
-    public Page<VariantWithCategoryDTO> getVariantsByCategoryId(UUID categoryId, String query, Pageable pageable) {
-        Category category = categoryService.getCategory(categoryId);
-        List<Category> categoryHierarchy = categoryService.getCategoryHierarchy(category);
-        List<UUID> categoryHierarchyIds = categoryHierarchy.stream().map(Category::getId).toList();
-//        return variantRepository.findVariantsByCategoryIds(categoryHierarchyIds);
-
-        Page<VariantWithCategoryDTO> allVariants;
-        if (query == null || query.trim().isEmpty()) {
-            // No search query → return all
-            allVariants = variantRepository.findVariantsByCategoryIds(categoryHierarchyIds, pageable);
-        } else {
-            // Search by name or details
-            allVariants = variantRepository.findByNameContainingIgnoreCaseByCategoryIds(query, categoryHierarchyIds, pageable);
+                Page<VariantWithCategoryDTO> allVariants;
+                if (query == null || query.trim().isEmpty()) {
+                        // No search query → return all
+                        allVariants = variantRepository.findVariantsByCategoryIds(categoryHierarchyIds, pageable);
+                } else {
+                        // Search by name or details
+                        allVariants = variantRepository.findByNameContainingIgnoreCaseByCategoryIds(query,
+                                        categoryHierarchyIds, pageable);
+                }
+                return allVariants;
         }
-        return allVariants;
-    }
 
-    @Override
-    public VariantDTO getVariantDetails(UUID variantId) {
-        return variantEntityToDTOMapper(getVariant(variantId));
-    }
+        @Override
+        public Page<VariantWithCategoryDTO> getAllVariants(String query, String filter, Pageable pageable) {
+                List<String> categories = new ArrayList<>();
+                if (filter != null && !filter.isBlank()) {
+                        for (String category : filter.split(":")[1].split(",")) {
+                                categories.add(category);
+                        }
+                }
+                List<UUID> existingCategories = categoryRepository.findByNameIn(categories).stream()
+                                .map((c) -> c.getId()).toList();
+                Page<VariantWithCategoryDTO> allVariants;
+                if (query == null || query.trim().isEmpty()) {
+                        // No search query → return all
+                        allVariants = variantRepository.findVariantsByCategoryIds(existingCategories, pageable);
+                } else {
+                        // Search by name or details
+                        allVariants = variantRepository.findByNameContainingIgnoreCaseByCategoryIds(query,
+                                        existingCategories, pageable);
+                }
+                return allVariants;
+        }
 
-    public Variant getVariant(UUID id) {
-        Optional<Variant> existing = variantRepository.findById(id);
-        return existing
-                .orElseThrow(() ->
-                        new RuntimeException("Variant with ID: " + id + " not exist"));
-    }
+        @Override
+        public VariantDTO getVariantDetails(UUID variantId) {
+                return variantEntityToDTOMapper(getVariant(variantId));
+        }
 
-    private static VariantDTO variantEntityToDTOMapper(Variant savedVariant) {
-        return VariantDTO.builder()
-                .id(savedVariant.getId())
-                .name((savedVariant.getName()))
-                .attributes(savedVariant
-                        .getAttributes()
-                        .stream()
-                        .map(variantAttribute -> VariantAttributeDTO
-                                .builder()
-                                .id(variantAttribute.getId())
-                                .name(variantAttribute.getName())
-                                .build())
-                        .toList())
-                .build();
-    }
+        public Variant getVariant(UUID id) {
+                Optional<Variant> existing = variantRepository.findById(id);
+                return existing
+                                .orElseThrow(() -> new RuntimeException("Variant with ID: " + id + " not exist"));
+        }
+
+        private static VariantDTO variantEntityToDTOMapper(Variant savedVariant) {
+                return VariantDTO.builder()
+                                .id(savedVariant.getId())
+                                .name((savedVariant.getName()))
+                                .attributes(savedVariant
+                                                .getAttributes()
+                                                .stream()
+                                                .map(variantAttribute -> VariantAttributeDTO
+                                                                .builder()
+                                                                .id(variantAttribute.getId())
+                                                                .name(variantAttribute.getName())
+                                                                .build())
+                                                .toList())
+                                .build();
+        }
 }

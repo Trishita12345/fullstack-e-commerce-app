@@ -18,14 +18,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-
 @RestController
 @RequestMapping("/category")
 @AllArgsConstructor
 public class CategoryController {
     private final ICategoryService categoryService;
 
-    //@AuthenticationPrincipal Jwt jwt,
+    // @AuthenticationPrincipal Jwt jwt,
     @PostMapping("/add")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<CategoryResponseDTO> addCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
@@ -34,7 +33,8 @@ public class CategoryController {
 
     @PutMapping("/edit/{id}")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<CategoryResponseDTO> editCategory(@PathVariable UUID id, @Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
+    public ResponseEntity<CategoryResponseDTO> editCategory(@PathVariable UUID id,
+            @Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
         return ResponseEntity.ok(categoryService.editCategory(id, categoryRequestDTO));
     }
 
@@ -50,18 +50,21 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getLeafCategories());
     }
 
+    @GetMapping("/get-all-categories")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<List<SelectOptionDTO<UUID>>> getAllCategoriesSelectOption() {
+        return ResponseEntity.ok(categoryService.getAllCategoriesSelectOption());
+    }
+
     @GetMapping("/page")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<Page<CategoryListingResponseDTO>> getAllCategories(
             @RequestParam(required = false, defaultValue = "") String query,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
-            @RequestParam(required=false, defaultValue="createdAt") String sortBy,
-            @RequestParam(required=false, defaultValue="asc") String direction
-    ) {
-        Sort sort = direction.equals("desc") ?
-                Sort.by(sortBy).descending() :
-                Sort.by(sortBy).ascending();
+            @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String direction) {
+        Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
         return ResponseEntity.ok(categoryService.getAllCategories(query, pageable));

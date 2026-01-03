@@ -17,15 +17,24 @@ import { useDisclosure, useUncontrolled } from "@mantine/hooks";
 import { IconPhoto, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
+type ProductImagesSectionType = {
+  visible: boolean;
+  open: () => void;
+  close: () => void;
+} & CustomInputProps<{
+  url: string;
+  isThumbnail: boolean;
+}[]>;
+
+
 export function ProductImagesSection({
   value,
   defaultValue,
   onChange,
-}: CustomInputProps<{
-  url: string;
-  isThumbnail: boolean
-}[]>) {
-  const [visible, { open, close }] = useDisclosure(false);
+  visible,
+  open,
+  close
+}: ProductImagesSectionType) {
   const [thumbnail, setThumbnail] = useState<string | null>(
     defaultValue ? defaultValue.filter(img => img.isThumbnail)?.[0]?.url : null
   );

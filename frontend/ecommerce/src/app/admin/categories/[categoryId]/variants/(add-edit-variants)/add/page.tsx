@@ -1,4 +1,6 @@
+import { SelectOptionType } from "@/constants/types";
 import AddEditVariantForm from "../AddEditVariantForm";
+import { apiFetch } from "@/lib/apiFetch";
 
 interface PageProps {
   params: {
@@ -7,7 +9,10 @@ interface PageProps {
 }
 const AddVariant = async ({ params }: PageProps) => {
   const { categoryId } = await params;
-  return <AddEditVariantForm categoryId={categoryId} />;
+    const categoryOptions = await apiFetch<SelectOptionType[]>(
+        "/category/get-all-categories"
+      );
+  return <AddEditVariantForm categoryId={categoryId} categoryOptions={categoryOptions}/>;
 };
 
 export default AddVariant;

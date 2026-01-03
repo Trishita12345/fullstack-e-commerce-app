@@ -5,6 +5,7 @@ import com.e_commerce.productService.model.dto.category.CategoryListingResponseD
 import com.e_commerce.productService.model.dto.category.CategoryRequestDTO;
 import com.e_commerce.productService.model.dto.category.CategoryResponseDTO;
 import com.e_commerce.productService.model.dto.common.SelectOptionDTO;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -27,4 +28,6 @@ public interface ICategoryService {
     Category getCategory(UUID categoryId);
 
     CategoryResponseDTO getCategoryById(UUID id);
+
+    List<SelectOptionDTO<UUID>> getAllCategoriesSelectOption();
 }

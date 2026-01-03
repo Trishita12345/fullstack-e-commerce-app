@@ -62,7 +62,6 @@ public class CategoryService implements ICategoryService {
                 .build();
     }
 
-
     @Override
     public List<SelectOptionDTO<UUID>> getParentCategories() {
         List<Category> parentCategories = categoryRepository.findCategoriesWithNoProducts();
@@ -76,6 +75,15 @@ public class CategoryService implements ICategoryService {
     public List<SelectOptionDTO<UUID>> getLeafCategories() {
         List<Category> leafCategories = categoryRepository.findCategoriesWithNoChildCategories();
         return leafCategories
+                .stream()
+                .map(category -> new SelectOptionDTO<UUID>(category.getName(), category.getId()))
+                .toList();
+    }
+
+    @Override
+    public List<SelectOptionDTO<UUID>> getAllCategoriesSelectOption() {
+        List<Category> allCategories = categoryRepository.findAll();
+        return allCategories
                 .stream()
                 .map(category -> new SelectOptionDTO<UUID>(category.getName(), category.getId()))
                 .toList();
@@ -100,7 +108,6 @@ public class CategoryService implements ICategoryService {
                         .build());
     }
 
-
     @Nullable
     private static SelectOptionDTO<UUID> getParentCategoryAsSelectOptionDTO(Category parent) {
         if (parent == null)
@@ -123,8 +130,7 @@ public class CategoryService implements ICategoryService {
     public Category getCategory(UUID categoryId) {
         Optional<Category> existingCategory = categoryRepository.findById(categoryId);
         return existingCategory
-                .orElseThrow(() ->
-                        new RuntimeException("Category with ID: " + categoryId + " not exist"));
+                .orElseThrow(() -> new RuntimeException("Category with ID: " + categoryId + " not exist"));
     }
 
     @Override

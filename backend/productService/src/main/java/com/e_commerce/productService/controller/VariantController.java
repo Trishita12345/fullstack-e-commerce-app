@@ -24,7 +24,8 @@ public class VariantController {
 
     @PostMapping("/add/{categoryId}")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<VariantDTO> addVariant(@PathVariable UUID categoryId, @Valid @RequestBody VariantDTO variantDTO) {
+    public ResponseEntity<VariantDTO> addVariant(@PathVariable UUID categoryId,
+            @Valid @RequestBody VariantDTO variantDTO) {
         return ResponseEntity.ok(variantService.addVariant(categoryId, variantDTO));
     }
 
@@ -35,15 +36,27 @@ public class VariantController {
             @RequestParam(required = false, defaultValue = "") String query,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size,
-            @RequestParam(required=false, defaultValue="createdAt") String sortBy,
-            @RequestParam(required=false, defaultValue="asc") String direction
-    ) {
-        Sort sort = direction.equals("desc") ?
-                Sort.by(sortBy).descending() :
-                Sort.by(sortBy).ascending();
+            @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String direction) {
+        Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page, size, sort);
         return ResponseEntity.ok(variantService.getVariantsByCategoryId(categoryId, query, pageable));
+    }
+
+    @GetMapping("/page")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<Page<VariantWithCategoryDTO>> getAllVariantsPage(
+            @RequestParam(required = false, defaultValue = "") String query,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String direction,
+            @RequestParam(required = false, defaultValue = "") String filter) {
+        Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ResponseEntity.ok(variantService.getAllVariants(query, filter, pageable));
     }
 
     @GetMapping("/{variantId}")
@@ -54,7 +67,8 @@ public class VariantController {
 
     @PutMapping("/{categoryId}/{variantId}")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<VariantDTO> editVariant(@PathVariable UUID categoryId, @PathVariable UUID variantId, @Valid @RequestBody VariantDTO variantDTO) {
+    public ResponseEntity<VariantDTO> editVariant(@PathVariable UUID categoryId, @PathVariable UUID variantId,
+            @Valid @RequestBody VariantDTO variantDTO) {
         return ResponseEntity.ok(variantService.editVariant(categoryId, variantId, variantDTO));
     }
 }

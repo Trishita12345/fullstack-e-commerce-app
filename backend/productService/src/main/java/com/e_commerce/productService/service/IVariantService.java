@@ -3,6 +3,7 @@ package com.e_commerce.productService.service;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
 import com.e_commerce.productService.model.dto.variant.VariantDTO;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,4 +20,6 @@ public interface IVariantService {
     Page<VariantWithCategoryDTO> getVariantsByCategoryId(UUID categoryId, String query, Pageable pageable);
 
     VariantDTO getVariantDetails(UUID variantId);
+
+    Page<VariantWithCategoryDTO> getAllVariants(String query, String filter, Pageable pageable);
 }

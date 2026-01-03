@@ -31,6 +31,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ProductImagesSection } from "./ProductImageSection";
 import { addProductVariant, editProductVariant } from "./actions";
+import { useDisclosure } from "@mantine/hooks";
 
 interface PageProps {
   productId: string;
@@ -44,6 +45,7 @@ const AddEditProductVariantForm = ({
   productVariantData,
   variantAttributes,
 }: PageProps) => {
+  const [visible, { open, close }] = useDisclosure(false);
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
   const form = useForm({
@@ -72,8 +74,6 @@ const AddEditProductVariantForm = ({
   const handleSubmit = async (values: any) => {
     try {
       setLoading(true);
-      console.log('values', values);
-      debugger;
       if (productVariantId) {
         await editProductVariant(productId, productVariantId, values);
       } else {
@@ -166,12 +166,13 @@ const AddEditProductVariantForm = ({
             </Stack>
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 6 }}>
-            <ProductImagesSection {...form.getInputProps("imgUrls")} />
+            <ProductImagesSection {...form.getInputProps("imgUrls")} visible={visible} open={open}  close={close}/>
           </Grid.Col>
         </Grid>
 
         <Group mt="lg">
           <Button
+            disabled={visible}
             type="reset"
             color="black.9"
             variant="outline"
@@ -179,7 +180,7 @@ const AddEditProductVariantForm = ({
           >
             Reset
           </Button>
-          <Button type="submit" bg="black.9" loading={loading}>
+          <Button type="submit" bg="black.9" loading={loading} disabled={visible}>
             Submit
           </Button>
         </Group>

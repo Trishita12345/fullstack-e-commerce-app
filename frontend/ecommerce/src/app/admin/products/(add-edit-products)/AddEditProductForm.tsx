@@ -27,7 +27,7 @@ interface PageProps {
   categories: SelectOptionType[];
 }
 
-const AddEditVariantForm = ({
+const AddEditProductForm = ({
   productId,
   productData,
   categories,
@@ -135,4 +135,4 @@ const AddEditVariantForm = ({
   );
 };
 
-export default AddEditVariantForm;
+export default AddEditProductForm;
