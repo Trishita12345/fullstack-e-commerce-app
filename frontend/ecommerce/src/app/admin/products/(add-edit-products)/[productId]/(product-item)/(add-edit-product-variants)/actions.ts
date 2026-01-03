@@ -1,10 +1,10 @@
 "use server";
 
-import { Category } from "@/constants/types";
+import { Category, ProductVariant } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { revalidatePath } from "next/cache";
 
-export async function addProductVariant(productId: string, values: Category) {
+export async function addProductVariant(productId: string, values: ProductVariant) {
   await apiFetch(`/productItem/add/${productId}`, {
     method: "POST",
     body: values,
@@ -15,10 +15,10 @@ export async function addProductVariant(productId: string, values: Category) {
 export async function editProductVariant(
   productId: string,
   productVariantId: string,
-  values: Category
+  values: ProductVariant
 ) {
-  await apiFetch(`/productItem/${productId}/${productVariantId}`, {
-    method: "PUT",
+  await apiFetch(`/productItem/${productVariantId}`, {
+    method: "PATCH",
     body: values,
   });
   revalidatePath(`/admin/products/${productId}`);

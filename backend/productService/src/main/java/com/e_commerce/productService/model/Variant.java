@@ -6,7 +6,6 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-
 @Getter
 @Setter
 @Entity
@@ -20,7 +19,7 @@ public class Variant extends AuditEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @ManyToOne

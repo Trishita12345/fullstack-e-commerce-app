@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-unique-constraint-variant-and-attributes-name
+      author: trishita
+      changes:
+        - addUniqueConstraint:
+            tableName: variant_attributes
+            columnNames: name
+            constraintName: uk_variant_attributes_name
+        - addUniqueConstraint:
+            tableName: variants
+            columnNames: name
+            constraintName: uk_variant_name

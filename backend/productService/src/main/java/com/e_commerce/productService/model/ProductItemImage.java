@@ -31,4 +31,5 @@ public class ProductItemImage extends AuditEntity {
     @ManyToOne
     @JoinColumn(name = "productItemId", nullable = false)
     private ProductItem productItem;
+
 }

@@ -58,7 +58,7 @@ export function ProductImagesSection({
         <Stack gap="lg" pos="relative">
           <LoadingOverlay
             visible={visible}
-            loaderProps={{ children: "Loading..." }}
+            loaderProps={{ children: "Uploading..." }}
           />
           <Box>
             <Text size="xs" mb={4}>
@@ -76,7 +76,6 @@ export function ProductImagesSection({
                   try {
                     open();
                     const uploadedUrl = await uploadToS3(files[0]);
-                    if (thumbnail) await deleteImageS3(thumbnail);
                     setThumbnail(uploadedUrl);
                   } catch {
                     notify({
@@ -127,20 +126,8 @@ export function ProductImagesSection({
                     pos="absolute"
                     top={6}
                     right={6}
-                    onClick={async () => {
-                      try {
-                        open();
-                        await deleteImageS3(thumbnail);
-                        setThumbnail(null);
-                      } catch (e) {
-                        notify({
-                          variant: "error",
-                          title: "Error!",
-                          message: "Failed to delete thumbnail image.",
-                        });
-                      } finally {
-                        close();
-                      }
+                    onClick={() => {
+                      setThumbnail(null);
                     }}
                   >
                     <IconTrash size={14} />
@@ -219,22 +206,12 @@ export function ProductImagesSection({
                       pos="absolute"
                       top={6}
                       right={6}
-                      onClick={async () => {
-                        try {
+                      onClick={() => {
                           open();
-                          await deleteImageS3(file);
                           setImages((prev) =>
                             prev.filter((_, i) => i !== index)
                           );
-                        } catch {
-                          notify({
-                            variant: "error",
-                            title: "Error!",
-                            message: "Failed to delete images.",
-                          });
-                        } finally {
                           close();
-                        }
                       }}
                     >
                       <IconTrash size={14} />

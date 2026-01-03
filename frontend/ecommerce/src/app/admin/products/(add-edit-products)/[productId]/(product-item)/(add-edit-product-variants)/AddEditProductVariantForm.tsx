@@ -72,6 +72,8 @@ const AddEditProductVariantForm = ({
   const handleSubmit = async (values: any) => {
     try {
       setLoading(true);
+      console.log('values', values);
+      debugger;
       if (productVariantId) {
         await editProductVariant(productId, productVariantId, values);
       } else {

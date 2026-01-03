@@ -10,6 +10,7 @@ import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
 import com.e_commerce.productService.model.dto.productItem.ProductItemListingDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
+import com.e_commerce.productService.repository.IProductItemImageRepository;
 import com.e_commerce.productService.repository.IProductItemRepository;
 import com.e_commerce.productService.repository.IVariantAttributeRepository;
 import com.e_commerce.productService.service.IProductItemService;
@@ -19,7 +20,6 @@ import com.e_commerce.productService.service.IVariantService;
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -44,6 +45,7 @@ public class ProductItemService implements IProductItemService {
         private IVariantService variantService;
         private IVariantAttributeRepository variantAttributeRepository;
         private IProductItemRepository productItemRepository;
+        private IProductItemImageRepository productItemImageRepository;
         private IS3Service s3Service;
 
         private final String s3PublicUrl = "https://loom-and-lume.s3.ap-south-1.amazonaws.com";
@@ -172,14 +174,7 @@ public class ProductItemService implements IProductItemService {
                                 maxPrice,
                                 pageable);
 
-                // List<ProductItem> fullData = productItemRepository.fetchDetails(
-                // sorted_items.map(row -> row.getProductItemid()).toList());
-
-                // Page<ProductItem> result = new PageImpl<>(fullData, pageable,
-                // sorted_items.getTotalElements());
-
                 return sorted_items.map((this::productItemFilterEntityToListingDTOMapper));
-                // return null;
         }
 
         private ProductItemListingDTO productItemFilterEntityToListingDTOMapper(ProductItemFilter productItemFilter) {
@@ -202,36 +197,74 @@ public class ProductItemService implements IProductItemService {
                                 .build();
         }
 
-        // private ProductItemListingDTO productItemEntityToListingDTOMapper(ProductItem
-        // productItem) {
-        // List<String> attributes = new ArrayList<>();
-        // if (productItem.getVariantAttributes() != null) {
-        // // attributes = productItem.getVariantAttributes().stream()
-        // // .map(va -> va.getName()).toList();
-        // attributes =
-        // }
-        // String imageUrl = "";
-        // if (productItem.getImages().size() > 0) {
-        // for (ProductItemImage image : productItem.getImages()) {
-        // if (image.getIsThumbnail()) {
-        // imageUrl = buildFullUrl(image.getImgUrl());
-        // }
-        // }
-        // }
-        // return ProductItemListingDTO.builder()
-        // .productItemId(productItem.getId())
-        // .sku(productItem.getSku())
-        // .avlStock(productItem.getAvailableStock())
-        // .basePrice(productItem.getBasePrice())
-        // .discountedPrice(productItem.getDiscountedPrice())
-        // .imgUrl(imageUrl)
-        // .attributes(attributes)
-        // .build();
-        // }
-
         @Override
         public void deleteProductItemById(UUID productItemId) {
                 ProductItem productItem = getProductItem(productItemId);
                 productItemRepository.delete(productItem);
+        }
+
+        @Override
+        @Transactional
+        public ProductItemDTO editProductById(UUID productItemId, ProductItemDTO productItemDTO) {
+                ProductItem productItem = getProductItem(productItemId);
+                productItem.setSku(productItemDTO.getSku());
+                productItem.setAvailableStock(productItemDTO.getAvlStock());
+                productItem.setBasePrice(productItemDTO.getBasePrice());
+                productItem.setDiscountedPrice(productItemDTO.getDiscountedPrice());
+
+                // Clear existing Variant Attribute from both side
+                for (VariantAttribute va : productItem.getVariantAttributes()) {
+                        va.getProductItems().remove(productItem);
+                }
+                productItem.getVariantAttributes().clear();
+
+                Set<UUID> attributeIds = new HashSet<>(productItemDTO.getAttributes().values());
+                Set<VariantAttribute> newAttributes = new HashSet<>(
+                                variantAttributeRepository.findAllById(attributeIds));
+
+                // Add Variant Attribute from both side
+                for (VariantAttribute va : newAttributes) {
+                        va.getProductItems().add(productItem);
+                }
+                productItem.setVariantAttributes(newAttributes);
+
+                List<ProductItemImage> existingImages = new ArrayList<>(productItem.getImages());
+                List<ImageDTO> currentImages = productItemDTO.getImgUrls();
+
+                List<ProductItemImage> newImages = currentImages.stream()
+                                .filter(img -> img.getUrl().contains("temp/"))
+                                .map(img -> {
+                                        String finalKey = s3Service.moveFromTempToProducts(img.getUrl());
+                                        return ProductItemImage.builder()
+                                                        .imgUrl(finalKey)
+                                                        .isThumbnail(img.getIsThumbnail())
+                                                        .productItem(productItem)
+                                                        .build();
+                                }).toList();
+
+                List<ProductItemImage> imgToBeDeleted = new ArrayList<>();
+                List<ProductItemImage> imgToBeRetained = new ArrayList<>();
+                imgToBeRetained.addAll(newImages);
+                List<ImageDTO> imageDTOinDB = currentImages.stream()
+                                .filter(newImageFromDTO -> newImageFromDTO.getUrl().contains("products/")).toList();
+                for (ProductItemImage existingImg : existingImages) {
+                        Optional<ImageDTO> existing = imageDTOinDB.stream()
+                                        .filter(newImageFromDTO -> s3Service.extractKey(newImageFromDTO.getUrl())
+                                                        .equals(existingImg.getImgUrl()))
+                                        .findFirst();
+                        if (existing.isPresent()) {
+                                existingImg.setIsThumbnail(existing.get().getIsThumbnail());
+                                imgToBeRetained.add(existingImg);
+                        } else {
+                                imgToBeDeleted.add(existingImg);
+                                s3Service.deleteFromS3(existingImg.getImgUrl());
+                        }
+                }
+                productItem.getImages().clear();
+                productItemImageRepository.deleteAll(imgToBeDeleted);
+                productItem.getImages().addAll(imgToBeRetained);
+
+                ProductItem saved = productItemRepository.save(productItem);
+                return productItemEntityToDTOMapper(saved);
         }
 }

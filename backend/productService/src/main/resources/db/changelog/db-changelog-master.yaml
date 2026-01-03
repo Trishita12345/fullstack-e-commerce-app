@@ -5,3 +5,6 @@ databaseChangeLog:
       file: classpath:/db/changelog/002-add-audit-columns.yaml
   - include:
       file: classpath:/db/changelog/003-add-isThumbnail-column-productItemImage.yaml
+  - include:
+      file: classpath:/db/changelog/004-add-unique-constraint-name-variant-attribute.yaml
+      

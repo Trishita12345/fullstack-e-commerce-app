@@ -1,7 +1,6 @@
 package com.e_commerce.productService.controller;
 
 import com.e_commerce.productService.model.dto.product.ProductDTO;
-import com.e_commerce.productService.model.dto.product.ProductFilterDTO;
 import com.e_commerce.productService.model.dto.product.ProductListingResponseDTO;
 import com.e_commerce.productService.service.IProductService;
 import jakarta.validation.Valid;
@@ -14,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @RestController

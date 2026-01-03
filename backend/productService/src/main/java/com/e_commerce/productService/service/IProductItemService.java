@@ -22,4 +22,6 @@ public interface IProductItemService {
 
     void deleteProductItemById(UUID productItemId);
 
+    ProductItemDTO editProductById(UUID productItemId, ProductItemDTO productItemDTO);
+
 }

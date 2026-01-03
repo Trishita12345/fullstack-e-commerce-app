@@ -1,9 +1,7 @@
 "use client";
 
 import {
-  Anchor,
   Badge,
-  Button,
   Group,
   Pagination,
   Stack,
@@ -12,10 +10,11 @@ import {
 } from "@mantine/core";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "@mantine/hooks";
-import { IconCircleX, IconPlus, IconX } from "@tabler/icons-react";
+import { IconX } from "@tabler/icons-react";
 import { SortButton, SortableField } from "./SortButton";
 import type { Page } from "@/constants/types";
 import React from "react";
+import { formattedPrice } from "@/utils/helperFunctions";
 
 interface Props<T> {
   title: string;
@@ -36,8 +35,19 @@ export function ListPageClient<T>({
 }: Props<T>) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const filterStr = searchParams.get('f')
-  const filterValues = (filterStr || filterStr !== '') && filterStr?.split('::').flatMap(i => i.split(':')[1]?.split(',')) || []
+  const filterStr = searchParams.get("f");
+  const filterValues =
+    ((filterStr || filterStr !== "") &&
+      filterStr?.split("::").flatMap((i) => {
+        const [key, values] = i.split(":");
+        if (key == "Price") {
+          return `${values.split(",").map(v=>formattedPrice(parseInt(v))).join(" - ")}`;
+        } else {
+          return values.split(",");
+        }
+      })) ||
+    [];
+  console.log("filterValues", filterValues);
   const { empty, numberOfElements, totalElements, totalPages, size, pageable } =
     pageData;
 
@@ -65,22 +75,25 @@ export function ListPageClient<T>({
   //f=Category:candle
   function removeFilter(valueToRemove: string) {
     const params = new URLSearchParams(searchParams.toString());
-    const query = params.get('f');
-    const updatedQuery =  query
+    const query = params.get("f");
+    const updatedQuery = query
       ?.split("::")
-      .map(section => {
+      .map((section) => {
         const [key, values] = section.split(":");
-
+        if (valueToRemove.startsWith("Rs.") && key == "Price") {
+          console.log("valueToRemove", valueToRemove);
+          return null;
+        }
         // no value list (single value case)
         if (!values) return null;
 
-        const valueList = values.split(",").map(v => v.trim());
+        const valueList = values.split(",").map((v) => v.trim());
 
         if (!valueList.includes(valueToRemove)) {
           return section; // untouched
         }
 
-        const filtered = valueList.filter(v => v !== valueToRemove);
+        const filtered = valueList.filter((v) => v !== valueToRemove);
 
         // if no values left → remove entire section
         if (filtered.length === 0) return null;
@@ -89,11 +102,11 @@ export function ListPageClient<T>({
       })
       .filter(Boolean)
       .join("::");
-    
-    updatedQuery ? params.set('f', updatedQuery): params.delete('f');
+
+    updatedQuery ? params.set("f", updatedQuery) : params.delete("f");
+    params.set('page','1')
     router.push(`?${params.toString()}`);
   }
-
 
   return (
     <Stack gap={2}>

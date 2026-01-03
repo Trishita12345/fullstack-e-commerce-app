@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/productItem")
@@ -66,6 +68,13 @@ public class ProductItemController {
         return ResponseEntity
                 .ok(productItemService.getProductItemListing(productId, pageable, filter, page, size, sortBy,
                         direction));
+    }
+
+    @PatchMapping("/{productItemId}")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<ProductItemDTO> editProductItem(@PathVariable UUID productItemId,
+            @RequestBody ProductItemDTO productItemDTO) {
+        return ResponseEntity.ok(productItemService.editProductById(productItemId, productItemDTO));
     }
 
     @DeleteMapping("/{productItemId}")

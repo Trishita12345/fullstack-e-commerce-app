@@ -23,11 +23,18 @@ public class S3Service implements IS3Service {
     private final S3Presigner presigner;
     private final S3Client s3Client;
 
+    public static String sanitizeFileName(String fileName) {
+        return fileName
+                .toLowerCase()
+                .replaceAll("[^a-z0-9./-]", "-")
+                .replaceAll("-+", "-");
+    }
+
     @Override
     public String generateUploadUrl(String key, String contentType) {
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(BUCKET_NAME)
-                .key(key)
+                .key(sanitizeFileName(key))
                 .contentType(contentType)
                 .build();
 
@@ -41,6 +48,7 @@ public class S3Service implements IS3Service {
 
     @Override
     public void deleteFromS3(String key) {
+
         DeleteObjectRequest request = DeleteObjectRequest.builder()
                 .bucket(BUCKET_NAME)
                 .key(key)
@@ -70,7 +78,8 @@ public class S3Service implements IS3Service {
         s3Client.copyObject(request);
     }
 
-    private String extractKey(String fileUrl) {
+    @Override
+    public String extractKey(String fileUrl) {
         return URI.create(fileUrl).getPath().substring(1);
     }
 

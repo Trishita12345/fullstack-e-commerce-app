@@ -48,8 +48,6 @@ const ProductVariantsListing = async ({
       label: "Updated At",
       type: "date",
   }] as SortableField[];
-  
-  console.log('aaaaa: ',`query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`)
   const products = await apiFetch<Page<ProductItemListing>>(
     `/productItem/${productId}/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
     {
