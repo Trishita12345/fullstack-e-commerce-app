@@ -9,7 +9,6 @@ import com.e_commerce.productService.model.dto.variant.VariantAttributeDTO;
 import com.e_commerce.productService.model.dto.variant.VariantDTO;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;
 import com.e_commerce.productService.repository.ICategoryRepository;
-import com.e_commerce.productService.repository.IVariantAttributeRepository;
 import com.e_commerce.productService.repository.IVariantRepository;
 import com.e_commerce.productService.service.ICategoryService;
 import com.e_commerce.productService.service.IVariantService;
@@ -57,12 +56,8 @@ public class VariantService implements IVariantService {
 
                 Variant variant = variantRepository.findById(variantId)
                                 .orElseThrow(() -> new RuntimeException("Variant not found"));
-
-                // 1️⃣ Validate variant belongs to category
-                if (!variant.getCategory().getId().equals(categoryId)) {
-                        throw new IllegalStateException("Variant does not belong to this category");
-                }
-
+                Category category = categoryService.getCategory(categoryId);
+                variant.setCategory(category);
                 variant.setName(variantDTO.getName());
 
                 // Existing attributes map

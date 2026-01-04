@@ -10,6 +10,8 @@ import com.e_commerce.productService.service.ICategoryService;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -86,6 +88,23 @@ public class CategoryService implements ICategoryService {
         return allCategories
                 .stream()
                 .map(category -> new SelectOptionDTO<UUID>(category.getName(), category.getId()))
+                .toList();
+    }
+
+    public List<SelectOptionDTO<UUID>> getAncestors(UUID categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        List<Category> ancestors = new ArrayList<>();
+        ancestors.add(category);
+        Category current = category.getParentCategory(); // start from parent
+        while (current != null) {
+            ancestors.add(current);
+            current = current.getParentCategory();
+        }
+
+        return ancestors.stream()
+                .map(c -> new SelectOptionDTO<UUID>(c.getName(), c.getId()))
                 .toList();
     }
 

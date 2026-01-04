@@ -119,11 +119,11 @@ export interface ProductVariant {
   avlStock: number;
   basePrice: number;
   discountedPrice: number;
-  imgUrls: [{
+  imgUrls: {
     url: string,
     isThumbnail: boolean
-  }];
-  variants: {
+  }[];
+   attributes: {
     [key: string]: string;
   };
 }

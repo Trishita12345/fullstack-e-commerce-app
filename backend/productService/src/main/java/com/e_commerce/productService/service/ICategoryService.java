@@ -21,6 +21,8 @@ public interface ICategoryService {
 
     List<SelectOptionDTO<UUID>> getLeafCategories();
 
+    List<SelectOptionDTO<UUID>> getAncestors(UUID categoryId);
+
     Page<CategoryListingResponseDTO> getAllCategories(String query, Pageable pageable);
 
     List<Category> getCategoryHierarchy(Category leaf);

@@ -13,12 +13,15 @@ const EditVariant = async ({ params }: PageProps) => {
   const variantData = await apiFetch<Variant>(
     `/variant/${variantId}`
   );
+  const categoryOptions = await apiFetch<SelectOptionType[]>(
+      `/category/${categoryId}/ancestors`
+  );
   return (
     <AddEditVariantForm
       categoryId={categoryId}
       variantId={variantId}
       variantData={{...variantData, category: categoryId}}
-      categoryOptions={[] as SelectOptionType[]}
+      categoryOptions={categoryOptions}
     />
   );
 };

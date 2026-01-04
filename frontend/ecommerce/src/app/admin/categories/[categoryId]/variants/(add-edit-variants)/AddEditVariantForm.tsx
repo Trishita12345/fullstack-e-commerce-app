@@ -71,6 +71,7 @@ const AddEditVariantForm = ({
           a.id.startsWith("added-") ? { name: a.name } : { ...a }
         ),
       };
+      debugger;
         if (variantId) {
           await editVariant(values.category, variantId, modifiedValues);
         } else {

@@ -59,7 +59,7 @@ public class ProductItemController {
     public ResponseEntity<Page<ProductItemListingDTO>> getProductItemListing(
             @PathVariable UUID productId,
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false, defaultValue = "10") int size,
             @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String direction,
             @RequestParam(required = false, defaultValue = "") String filter) {

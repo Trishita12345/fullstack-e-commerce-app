@@ -11,35 +11,46 @@ import {
   Stack,
   Paper,
   LoadingOverlay,
+  Group,
 } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
+import { FormErrors } from "@mantine/form";
 import { useDisclosure, useUncontrolled } from "@mantine/hooks";
 import { IconPhoto, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 type ProductImagesSectionType = {
+  errors: FormErrors;
   visible: boolean;
   open: () => void;
   close: () => void;
-} & CustomInputProps<{
-  url: string;
-  isThumbnail: boolean;
-}[]>;
-
+  withAsterisk: boolean;
+} & CustomInputProps<
+  {
+    url: string;
+    isThumbnail: boolean;
+  }[]
+>;
 
 export function ProductImagesSection({
+  errors,
   value,
   defaultValue,
   onChange,
   visible,
   open,
-  close
+  close,
+  withAsterisk,
 }: ProductImagesSectionType) {
   const [thumbnail, setThumbnail] = useState<string | null>(
-    defaultValue ? defaultValue.filter(img => img.isThumbnail)?.[0]?.url : null
+    defaultValue
+      ? defaultValue.filter((img) => img.isThumbnail)?.[0]?.url
+      : null
   );
   const [images, setImages] = useState<string[]>(
-    defaultValue ? defaultValue.filter(img => !img.isThumbnail).map(img => img.url) : []
+    defaultValue
+      ? defaultValue.filter((img) => !img.isThumbnail).map((img) => img.url)
+      : []
   );
   const [_value, handleChange] = useUncontrolled({
     value,
@@ -48,21 +59,23 @@ export function ProductImagesSection({
   });
 
   useEffect(() => {
-    const imagesUrls = images.map(img => ({ url: img, isThumbnail: false }));
+    const imagesUrls = images.map((img) => ({ url: img, isThumbnail: false }));
     if (thumbnail) {
-      handleChange(
-      [...imagesUrls,{
-        url: thumbnail,
-        isThumbnail: true
+      handleChange([
+        ...imagesUrls,
+        {
+          url: thumbnail,
+          isThumbnail: true,
         },
       ]);
-    }
-    else handleChange([...imagesUrls]);
+    } else handleChange([...imagesUrls]);
   }, [thumbnail, images]);
-  console.log("images: ",thumbnail, images)
   return (
     <Stack gap={0}>
-      <Text fw={600}>Product Images</Text>
+      <Group gap={2}>
+        <Text fw={600}>Product Images</Text>
+        {withAsterisk && <Text c={"red"}>*</Text>}
+      </Group>
       <Box p={16} bdrs={"md"} bd={"1px solid gray.1"}>
         <Stack gap="lg" pos="relative">
           <LoadingOverlay
@@ -216,11 +229,9 @@ export function ProductImagesSection({
                       top={6}
                       right={6}
                       onClick={() => {
-                          open();
-                          setImages((prev) =>
-                            prev.filter((_, i) => i !== index)
-                          );
-                          close();
+                        open();
+                        setImages((prev) => prev.filter((_, i) => i !== index));
+                        close();
                       }}
                     >
                       <IconTrash size={14} />
@@ -229,6 +240,11 @@ export function ProductImagesSection({
                 ))}
             </SimpleGrid>
           </Box>
+          {errors.imgUrls && (
+            <Text c="red" size="xs">
+              {errors.imgUrls}
+            </Text>
+          )}
         </Stack>
       </Box>
     </Stack>

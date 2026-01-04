@@ -56,12 +56,19 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getAllCategoriesSelectOption());
     }
 
+    @GetMapping("/{categoryId}/ancestors")
+    public ResponseEntity<List<SelectOptionDTO<UUID>>> getAncestors(
+            @PathVariable UUID categoryId) {
+
+        return ResponseEntity.ok(categoryService.getAncestors(categoryId));
+    }
+
     @GetMapping("/page")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<Page<CategoryListingResponseDTO>> getAllCategories(
             @RequestParam(required = false, defaultValue = "") String query,
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false, defaultValue = "10") int size,
             @RequestParam(required = false, defaultValue = "createdAt") String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String direction) {
         Sort sort = direction.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();

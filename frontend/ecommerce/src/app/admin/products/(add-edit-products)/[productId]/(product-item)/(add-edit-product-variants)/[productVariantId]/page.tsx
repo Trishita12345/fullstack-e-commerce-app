@@ -1,6 +1,6 @@
 import { apiFetch } from "@/lib/apiFetch";
 import AddEditProductVariantForm from "../AddEditProductVariantForm";
-import { ProductVariant, VariantAttribute } from "@/constants/types";
+import { Product, ProductVariant, VariantAttribute } from "@/constants/types";
 
 interface PageProps {
   params: { productId: string; productVariantId: string };

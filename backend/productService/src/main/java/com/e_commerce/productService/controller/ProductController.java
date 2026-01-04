@@ -27,7 +27,7 @@ public class ProductController {
     public ResponseEntity<Page<ProductListingResponseDTO>> getAllProducts(
             @RequestParam(required = false, defaultValue = "") String query,
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "5") int size,
+            @RequestParam(required = false, defaultValue = "10") int size,
             @RequestParam(required = false, defaultValue = "created_At") String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String direction,
             @RequestParam(required = false, defaultValue = "") String filter) {
