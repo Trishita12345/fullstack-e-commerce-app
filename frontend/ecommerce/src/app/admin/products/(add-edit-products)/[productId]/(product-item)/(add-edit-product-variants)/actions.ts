@@ -2,7 +2,6 @@
 
 import { Category, ProductVariant } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
-import { generate5DigitNumber, generateProductKey, normalizeText, normalizeUnit, UNIT_PATTERN, VariantMap } from "@/utils/helperFunctions";
 import { revalidatePath } from "next/cache";
 
 export async function addProductVariant(productId: string, values: ProductVariant) {
@@ -36,7 +35,7 @@ export async function deleteProductVariant(
 
 export async function generateProductSKU(
   productId: string,
-  variants: VariantMap = {}
+  variants: Record<string,string> = {}
 ): Promise<string> {
   const { sku } = await apiFetch<{sku: string}>(`/productItem/${productId}/generate-sku`, {
     method: "POST",

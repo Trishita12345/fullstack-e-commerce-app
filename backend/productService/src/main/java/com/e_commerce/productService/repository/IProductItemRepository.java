@@ -132,4 +132,6 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
             @Param("minPrice") BigDecimal minPrice,
             @Param("maxPrice") BigDecimal maxPrice,
             Pageable pageable);
+
+    boolean existsBySku(String sku);
 }

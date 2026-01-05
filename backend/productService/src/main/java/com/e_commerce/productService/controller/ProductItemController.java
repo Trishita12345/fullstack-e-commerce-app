@@ -4,6 +4,8 @@ import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemListingDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
 import com.e_commerce.productService.service.IProductItemService;
+import com.e_commerce.productService.service.ISkuUtilService;
+
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -23,15 +25,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/productItem")
 @AllArgsConstructor
 public class ProductItemController {
 
-    private IProductItemService productItemService;
+    private final IProductItemService productItemService;
+    private final ISkuUtilService skuUtilService;
 
     @GetMapping("/{productId}/variant-attributes")
     @PreAuthorize("hasRole('SELLER')")
@@ -82,6 +85,13 @@ public class ProductItemController {
     public ResponseEntity<Void> deleteProductItemById(@PathVariable UUID productItemId) {
         productItemService.deleteProductItemById(productItemId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{productId}/generate-sku")
+    public ResponseEntity<Map<String, String>> generateSKU(@PathVariable UUID productId,
+            @RequestBody Map<String, String> variantMap) {
+        String sku = skuUtilService.generateUniqueSku(productId, variantMap);
+        return ResponseEntity.ok(Map.of("sku", sku));
     }
 
 }

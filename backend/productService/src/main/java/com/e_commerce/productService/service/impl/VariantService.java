@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class VariantService implements IVariantService {
 
-        private IVariantRepository variantRepository;
-        private ICategoryService categoryService;
-        private ICategoryRepository categoryRepository;
+        private final IVariantRepository variantRepository;
+        private final ICategoryService categoryService;
+        private final ICategoryRepository categoryRepository;
 
         @Override
         @Transactional

@@ -35,18 +35,17 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
 public class ProductItemService implements IProductItemService {
 
-        private IProductService productService;
-        private IVariantService variantService;
-        private IVariantAttributeRepository variantAttributeRepository;
-        private IProductItemRepository productItemRepository;
-        private IProductItemImageRepository productItemImageRepository;
-        private IS3Service s3Service;
+        private final IProductService productService;
+        private final IVariantService variantService;
+        private final IVariantAttributeRepository variantAttributeRepository;
+        private final IProductItemRepository productItemRepository;
+        private final IProductItemImageRepository productItemImageRepository;
+        private final IS3Service s3Service;
 
         private final String s3PublicUrl = "https://loom-and-lume.s3.ap-south-1.amazonaws.com";
 
@@ -70,13 +69,9 @@ public class ProductItemService implements IProductItemService {
                                 .discountedPrice(dto.getDiscountedPrice())
                                 .product(product)
                                 .build();
-
-                Set<UUID> attributeIds = new HashSet<>(dto.getAttributes().values());
-
-                Set<VariantAttribute> attributes = new HashSet<>(variantAttributeRepository.findAllById(attributeIds));
-
+                Set<VariantAttribute> attributes = variantAttributeRepository
+                                .findByNameIn(new HashSet<>(dto.getAttributes().values()));
                 productItem.setVariantAttributes(attributes);
-
                 List<ProductItemImage> images = dto.getImgUrls().stream()
                                 .map(img -> {
                                         String finalKey = s3Service.moveFromTempToProducts(img.getUrl());
@@ -87,20 +82,18 @@ public class ProductItemService implements IProductItemService {
                                                         .build();
                                 })
                                 .toList();
-
                 productItem.setImages(new HashSet<>(images));
-
                 ProductItem saved = productItemRepository.save(productItem);
                 return saved.getId();
         }
 
         private ProductItemDTO productItemEntityToDTOMapper(ProductItem productItem) {
-                Map<UUID, UUID> attMap = new HashMap<>();
+                Map<String, String> attMap = new HashMap<>();
                 if (productItem.getVariantAttributes() != null) {
                         attMap = productItem.getVariantAttributes().stream()
                                         .collect(Collectors.toMap(
-                                                        va -> va.getVariant().getId(),
-                                                        VariantAttribute::getId));
+                                                        va -> va.getVariant().getName(),
+                                                        VariantAttribute::getName));
                 }
                 List<ImageDTO> images = productItem.getImages().stream()
                                 .map(img -> ImageDTO.builder()
@@ -218,9 +211,9 @@ public class ProductItemService implements IProductItemService {
                 }
                 productItem.getVariantAttributes().clear();
 
-                Set<UUID> attributeIds = new HashSet<>(productItemDTO.getAttributes().values());
+                Set<String> attributeNames = new HashSet<>(productItemDTO.getAttributes().values());
                 Set<VariantAttribute> newAttributes = new HashSet<>(
-                                variantAttributeRepository.findAllById(attributeIds));
+                                variantAttributeRepository.findByNameIn(attributeNames));
 
                 // Add Variant Attribute from both side
                 for (VariantAttribute va : newAttributes) {

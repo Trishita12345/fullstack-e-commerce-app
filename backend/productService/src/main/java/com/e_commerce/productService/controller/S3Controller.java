@@ -15,7 +15,7 @@ import java.util.Map;
 @AllArgsConstructor
 @RequestMapping(path = "/s3")
 public class S3Controller {
-    private IS3Service s3Service;
+    private final IS3Service s3Service;
 
     @PostMapping("/presign")
     public ResponseEntity<Map<String, String>> getPresignedUrl(@RequestBody PresignRequest req) {

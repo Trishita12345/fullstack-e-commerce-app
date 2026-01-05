@@ -41,5 +41,5 @@ public class ProductItemDTO {
 
     private List<ImageDTO> imgUrls;
 
-    private Map<UUID, UUID> attributes;
+    private Map<String, String> attributes;
 }

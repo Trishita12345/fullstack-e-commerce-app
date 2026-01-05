@@ -21,8 +21,8 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class ProductService implements IProductService {
-    private IProductRepository productRepository;
-    private ICategoryService categoryService;
+    private final IProductRepository productRepository;
+    private final ICategoryService categoryService;
 
     @Override
     public Page<ProductListingResponseDTO> getAllProducts(String query, String filter, Pageable pageable) {

@@ -181,7 +181,6 @@ const AddEditProductVariantForm = ({
               {variantAttributes.map((va: VariantAttribute) => (
                 <Select
                   withAsterisk
-                  disabled={productVariantId != null}
                   {...form.getInputProps(`attributes.${va.variantName}`)}
                   label={va.variantName}
                   placeholder={`Select ${va.variantName}...`}
