@@ -22,6 +22,12 @@ public class Category extends AuditEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = true)
+    private String imgUrl;
+
+    @Column(nullable = false)
+    private String description;
+
     @ManyToOne
     @JoinColumn(name = "parentCategory")
     private Category parentCategory;
@@ -36,4 +42,3 @@ public class Category extends AuditEntity {
     private List<Variant> variants;
 
 }
-

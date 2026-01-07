@@ -13,6 +13,8 @@ import java.util.UUID;
 public class CategoryListingResponseDTO {
     private UUID id;
     private String name;
+    private String description;
+    private String imgUrl;
     private SelectOptionDTO<UUID> parentCategory;
     private Boolean isParentCategory;
 }

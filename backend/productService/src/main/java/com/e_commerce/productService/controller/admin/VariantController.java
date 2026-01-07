@@ -1,4 +1,4 @@
-package com.e_commerce.productService.controller;
+package com.e_commerce.productService.controller.admin;
 
 import com.e_commerce.productService.model.dto.variant.VariantDTO;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;

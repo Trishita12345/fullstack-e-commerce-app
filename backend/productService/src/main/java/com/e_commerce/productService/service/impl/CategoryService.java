@@ -4,9 +4,12 @@ import com.e_commerce.productService.model.Category;
 import com.e_commerce.productService.model.dto.category.CategoryListingResponseDTO;
 import com.e_commerce.productService.model.dto.category.CategoryRequestDTO;
 import com.e_commerce.productService.model.dto.category.CategoryResponseDTO;
+import com.e_commerce.productService.model.dto.customer.CategoryResponseDTOLanding;
 import com.e_commerce.productService.model.dto.common.SelectOptionDTO;
 import com.e_commerce.productService.repository.ICategoryRepository;
 import com.e_commerce.productService.service.ICategoryService;
+import com.e_commerce.productService.service.IS3Service;
+
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -25,12 +28,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CategoryService implements ICategoryService {
     private final ICategoryRepository categoryRepository;
+    private final IS3Service s3Service;
 
     @Override
     @Transactional
     public CategoryResponseDTO addCategory(CategoryRequestDTO categoryRequestDTO) {
         Category category = new Category();
         category.setName(categoryRequestDTO.getName());
+        category.setDescription(categoryRequestDTO.getDescription());
+        category.setImgUrl(s3Service.moveFromTempToProducts(categoryRequestDTO.getImgUrl()));
         if (categoryRequestDTO.getParentCategoryId() != null) {
             Optional<Category> parentCategory = categoryRepository.findById(categoryRequestDTO.getParentCategoryId());
             parentCategory.ifPresent(category::setParentCategory);
@@ -48,6 +54,11 @@ public class CategoryService implements ICategoryService {
         }
         Category category = existingCategory.get();
         category.setName(categoryRequestDTO.getName());
+        category.setDescription(category.getDescription());
+        if (categoryRequestDTO.getImgUrl().contentEquals("temp/")) {
+            s3Service.deleteFromS3(category.getImgUrl());
+            category.setImgUrl(s3Service.moveFromTempToProducts(categoryRequestDTO.getImgUrl()));
+        }
         if (categoryRequestDTO.getParentCategoryId() != null) {
             Optional<Category> parentCategory = categoryRepository.findById(categoryRequestDTO.getParentCategoryId());
             parentCategory.ifPresent(category::setParentCategory);
@@ -60,6 +71,8 @@ public class CategoryService implements ICategoryService {
         return CategoryResponseDTO.builder()
                 .id(savedCategory.getId())
                 .name(savedCategory.getName())
+                .description(savedCategory.getDescription())
+                .imgUrl(savedCategory.getImgUrl())
                 .parentCategory(getParentCategoryAsSelectOptionDTO(savedCategory.getParentCategory()))
                 .build();
     }
@@ -80,6 +93,11 @@ public class CategoryService implements ICategoryService {
                 .stream()
                 .map(category -> new SelectOptionDTO<UUID>(category.getName(), category.getId()))
                 .toList();
+    }
+
+    @Override
+    public List<CategoryResponseDTOLanding> getLeafCategoriesCustomer() {
+        return categoryRepository.findCategoriesWithNoChildCategoriesForCustomer();
     }
 
     @Override
@@ -122,6 +140,8 @@ public class CategoryService implements ICategoryService {
                 .map(category -> CategoryListingResponseDTO.builder()
                         .id(category.getId())
                         .name(category.getName())
+                        .description(category.getDescription())
+                        .imgUrl(category.getImgUrl())
                         .parentCategory(getParentCategoryAsSelectOptionDTO(category.getParentCategory()))
                         .isParentCategory(!category.getSubCategories().isEmpty())
                         .build());

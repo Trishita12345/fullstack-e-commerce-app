@@ -21,4 +21,10 @@ public class CategoryRequestDTO {
 
     @Nullable
     private UUID parentCategoryId;
+
+    @Nullable
+    @Size(max = 2000, message = "Category description must be at most 2000 characters")
+    private String description;
+
+    private String imgUrl;
 }

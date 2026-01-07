@@ -20,7 +20,6 @@ import { IconPhoto, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 type ProductImagesSectionType = {
-  errors: FormErrors;
   visible: boolean;
   open: () => void;
   close: () => void;

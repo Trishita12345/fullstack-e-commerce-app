@@ -20,6 +20,7 @@ const AddEditCategory = ({ id }: { id?: string }) => {
             fontWeight: "600",
           },
         }}
+        size={"2xl"}
       >
         <>
           <Divider mb={16} />

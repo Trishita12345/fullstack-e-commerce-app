@@ -9,13 +9,16 @@ import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import { Group, Stack, Text } from "@mantine/core";
+import { FormErrors } from "@mantine/form";
 
 export interface CustomInputProps<T> {
+  errors: FormErrors;
   withAsterisk?: boolean;
   label?: string;
   value?: T;
   defaultValue?: T;
   onChange?: (value: T) => void;
+  field: string;
 }
 
 export function CustomRichTextEditor({
@@ -24,6 +27,8 @@ export function CustomRichTextEditor({
   value,
   defaultValue,
   onChange,
+  errors,
+  field,
 }: CustomInputProps<string>) {
   const [_value, handleChange] = useUncontrolled({
     value,

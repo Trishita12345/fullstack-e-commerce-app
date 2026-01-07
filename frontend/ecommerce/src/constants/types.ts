@@ -42,6 +42,8 @@ export type Category = {
 export type CategoryListType = {
   id: string; // UUID as string in frontend
   name: string;
+  description: string;
+  imgUrl: string;
   parentCategory?: SelectOptionType | null;
   isParentCategory: boolean;
 };

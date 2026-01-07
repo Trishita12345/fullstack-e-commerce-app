@@ -1,6 +1,8 @@
 package com.e_commerce.productService.repository;
 
 import com.e_commerce.productService.model.Category;
+import com.e_commerce.productService.model.dto.customer.CategoryResponseDTOLanding;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -43,6 +45,14 @@ public interface ICategoryRepository extends JpaRepository<Category, UUID> {
   List<Category> findCategoriesWithNoChildCategories();
 
   Page<Category> findByNameContainingIgnoreCase(String query, Pageable pageable);
+
+  @Query(value = """
+      select  c.id as id, c.name as name,  c.img_url as imgUrl , count(p.id) as quantity from categories c
+      join products p on c.id = p.category_id
+      group by c.name, c.id, c.img_url
+      order by quantity desc
+            """, nativeQuery = true)
+  List<CategoryResponseDTOLanding> findCategoriesWithNoChildCategoriesForCustomer();
 
   // @Query(value = """
   // SELECT NOT EXISTS (

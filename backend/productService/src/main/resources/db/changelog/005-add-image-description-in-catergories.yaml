@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-add-image-description-in-categories
+      author: trishita
+      changes:
+        - addColumn:
+            tableName: categories
+            columns:
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: img_url
+                  type: varchar(500)
+                  defaultValue: ''
+                  constraints:
+                    nullable: false

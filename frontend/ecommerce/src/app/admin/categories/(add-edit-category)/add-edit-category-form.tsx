@@ -2,12 +2,22 @@
 
 import { Category, SelectOptionType } from "@/constants/types";
 import { useApi } from "@/utils/hooks/useApi";
-import { Button, Group, Select, Stack, TextInput } from "@mantine/core";
+import {
+  Button,
+  Grid,
+  GridCol,
+  Group,
+  Select,
+  Stack,
+  TextInput,
+} from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useCallback, useEffect, useState } from "react";
 import { addCategory, editCategory } from "./actions";
 import { notify } from "@/utils/helperFunctions";
 import { apiFetch } from "@/lib/apiFetch";
+import { CustomRichTextEditor } from "@/(components)/CustomRichTextEditor";
+import UploadDropzone from "@/(components)/UploadDropzone";
 
 const AddEditCategoryForm = ({
   popUpClose,
@@ -63,15 +73,17 @@ const AddEditCategoryForm = ({
 
     fetchData();
   }, [id, getParentCategories, getCategoryById]);
-
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
       name: "",
+      description: "<p></p>",
+      imgUrl: "",
       parentCategoryId: "",
     },
     validate: {
       name: isNotEmpty("Name cannot be empty"),
+      imgUrl: isNotEmpty("Image cannot be empty"),
     },
   });
 
@@ -104,19 +116,40 @@ const AddEditCategoryForm = ({
   return (
     <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
       <Stack>
-        <TextInput
-          {...form.getInputProps("name")}
-          withAsterisk
-          label="Name"
-          placeholder="Candle, Stick ..."
-          key={form.key("name")}
+        <Grid>
+          <GridCol span={{ base: 12, sm: 6 }}>
+            <TextInput
+              {...form.getInputProps("name")}
+              withAsterisk
+              label="Name"
+              placeholder="Candle, Stick ..."
+              key={form.key("name")}
+            />
+          </GridCol>
+          <GridCol span={{ base: 12, sm: 6 }}>
+            <Select
+              {...form.getInputProps("parentCategoryId")}
+              label="Parent Category"
+              placeholder="Select Parent Category..."
+              key={form.key("parentCategoryId")}
+              data={parentCategories as SelectOptionType[]}
+            />
+          </GridCol>
+        </Grid>
+
+        <UploadDropzone
+          label="Image"
+          {...form.getInputProps("imgUrl")}
+          key={form.key("imgUrl")}
+          errors={form.errors}
+          field="imgUrl"
         />
-        <Select
-          {...form.getInputProps("parentCategoryId")}
-          label="Parent Category"
-          placeholder="Select Parent Category..."
-          key={form.key("parentCategoryId")}
-          data={parentCategories as SelectOptionType[]}
+        <CustomRichTextEditor
+          label="Description"
+          {...form.getInputProps("description")}
+          key={form.key("description")}
+          errors={form.errors}
+          field="description"
         />
         <Group justify="flex-end" mt="md">
           <Button

@@ -107,6 +107,8 @@ const AddEditProductForm = ({
               label="Description"
               {...form.getInputProps("description")}
               key={form.key("description")}
+              errors={form.errors}
+              field="description"
             />
           </GridCol>
           <GridCol span={{ base: 12, sm: 6 }}>
@@ -114,6 +116,8 @@ const AddEditProductForm = ({
               label="Features"
               {...form.getInputProps("feature")}
               key={form.key("feature")}
+              errors={form.errors}
+              field="feature"
             />
           </GridCol>
         </Grid>

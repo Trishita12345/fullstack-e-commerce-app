@@ -1,4 +1,4 @@
-package com.e_commerce.productService.controller;
+package com.e_commerce.productService.controller.admin;
 
 import com.e_commerce.productService.model.dto.category.CategoryListingResponseDTO;
 import com.e_commerce.productService.model.dto.category.CategoryRequestDTO;
@@ -82,4 +82,5 @@ public class CategoryController {
     public ResponseEntity<CategoryResponseDTO> getCategoryById(@PathVariable UUID id) {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
+
 }

@@ -4,52 +4,16 @@ import CategoriesCard, {
 import { en } from "@/constants/en";
 import { Carousel, CarouselSlide } from "@mantine/carousel";
 import { Box, Grid, GridCol, Group, Stack, Text, Title } from "@mantine/core";
+import { apiFetch } from "@/lib/apiFetch";
 
-const Categories: CategoriesCardType[] = [
-  {
-    id: "1",
-    name: "Jar Candle",
-    imgUrl:
-      "https://images.unsplash.com/photo-1643122966696-a67c288b39d3?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fGphciUyMGNhbmRsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
-    quantity: 4,
-  },
-  {
-    id: "2",
-    name: "3 Wicked candle",
-    imgUrl:
-      "https://images.unsplash.com/photo-1602607203475-c5e99918dfc5?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTF8fGNhbmRsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
-    quantity: 1,
-  },
-  {
-    id: "3",
-    name: "Candle Set",
-    imgUrl:
-      "https://images.unsplash.com/photo-1603905179139-db12ab535ca9?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fGNhbmRsZXxlbnwwfHwwfHx8Mg%3D%3D&auto=format&fit=crop&q=60&w=900",
-    quantity: 2,
-  },
-  {
-    id: "4",
-    name: "Jar Candle",
-    imgUrl:
-      "https://images.unsplash.com/photo-1643122966696-a67c288b39d3?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fGphciUyMGNhbmRsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
-    quantity: 4,
-  },
-  {
-    id: "5",
-    name: "3 Wicked candle",
-    imgUrl:
-      "https://images.unsplash.com/photo-1602607203475-c5e99918dfc5?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTF8fGNhbmRsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
-    quantity: 1,
-  },
-  {
-    id: "6",
-    name: "Candle Set",
-    imgUrl:
-      "https://images.unsplash.com/photo-1603905179139-db12ab535ca9?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fGNhbmRsZXxlbnwwfHwwfHx8Mg%3D%3D&auto=format&fit=crop&q=60&w=900",
-    quantity: 2,
-  },
-];
-const ShopByCategories = () => {
+const ShopByCategories = async () => {
+  const Categories = await apiFetch<CategoriesCardType[]>(
+    "/public/categories/leaf",
+    {
+      cache: "force-cache",
+      revalidate: 60,
+    }
+  );
   return (
     <Box bg="gray.1" p={48}>
       <Grid justify="space-between" align="center">

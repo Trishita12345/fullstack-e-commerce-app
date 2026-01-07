@@ -266,6 +266,7 @@ const AddEditProductVariantForm = ({
               visible={visible}
               open={open}
               close={close}
+              field="imgUrls"
             />
           </Grid.Col>
         </Grid>
