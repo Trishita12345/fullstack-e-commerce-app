@@ -20,8 +20,7 @@ const ResponsiveImage = ({
         width={width}
         height={height}
         alt={"No Img"}
-        style={{ width: "100%", height: "100%" }}
-        objectFit={objectFit}
+        style={{ width: "100%", height: "100%", objectFit }}
       />
     </Box>
   );

@@ -145,3 +145,11 @@ export interface ProductItemListing {
   imgUrl: string,
   attributes: string[]
 }
+
+export interface AddEditCategoryResponceType {
+  id?: string;
+  name: string;
+  description: string;
+  imgUrl: string;
+  parentCategoryId: string;
+}

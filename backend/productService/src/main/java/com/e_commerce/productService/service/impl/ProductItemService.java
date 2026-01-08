@@ -47,8 +47,6 @@ public class ProductItemService implements IProductItemService {
         private final IProductItemImageRepository productItemImageRepository;
         private final IS3Service s3Service;
 
-        private final String s3PublicUrl = "https://loom-and-lume.s3.ap-south-1.amazonaws.com";
-
         @Override
         public List<ProductVariantAttributesDTO> getVariantAttributesByCategoryId(UUID productId) {
                 Product existingProduct = productService.getProduct(productId);
@@ -97,7 +95,7 @@ public class ProductItemService implements IProductItemService {
                 }
                 List<ImageDTO> images = productItem.getImages().stream()
                                 .map(img -> ImageDTO.builder()
-                                                .url(buildFullUrl(img.getImgUrl()))
+                                                .url(s3Service.buildFullUrl(img.getImgUrl()))
                                                 .isThumbnail(img.getIsThumbnail())
                                                 .build())
                                 .toList();
@@ -111,13 +109,6 @@ public class ProductItemService implements IProductItemService {
                                 .imgUrls(images)
                                 .attributes(attMap)
                                 .build();
-        }
-
-        private String buildFullUrl(String key) {
-                if (key.startsWith("http")) {
-                        return key;
-                }
-                return s3PublicUrl + "/" + key;
         }
 
         private ProductItem getProductItem(UUID productItemId) {
@@ -184,7 +175,7 @@ public class ProductItemService implements IProductItemService {
                                 .basePrice(productItemFilter.getBasePrice())
                                 .discountedPrice(productItemFilter.getDiscountedPrice())
                                 .imgUrl(productItemFilter.getImgUrl() != null
-                                                ? buildFullUrl(productItemFilter.getImgUrl())
+                                                ? s3Service.buildFullUrl(productItemFilter.getImgUrl())
                                                 : null)
                                 .attributes(attributes)
                                 .build();

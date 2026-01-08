@@ -16,7 +16,11 @@ import {
 import { isNotEmpty, useForm } from "@mantine/form";
 import { useState } from "react";
 import { notify } from "@/utils/helperFunctions";
-import type { SelectOptionType, SelectOptionTypeIDName, Variant } from "@/constants/types";
+import type {
+  SelectOptionType,
+  SelectOptionTypeIDName,
+  Variant,
+} from "@/constants/types";
 import { ActionButton } from "@/(components)/ActionButton";
 import { IconArrowNarrowLeft, IconPlus, IconTrash } from "@tabler/icons-react";
 import Link from "next/link";
@@ -27,14 +31,14 @@ import { addVariant, editVariant } from "./actions";
 interface PageProps {
   categoryId?: string;
   variantId?: string;
-  variantData?: Variant & {category: string};
-  categoryOptions?: SelectOptionType[]
+  variantData?: Variant & { category: string };
+  categoryOptions?: SelectOptionType[];
 }
 const AddEditVariantForm = ({
   categoryId,
   variantId,
   variantData,
-  categoryOptions
+  categoryOptions,
 }: PageProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
@@ -54,7 +58,11 @@ const AddEditVariantForm = ({
     },
   });
 
-  const handleSubmit = async (values: { name: string; category: string; attributes: SelectOptionTypeIDName[]; }) => {
+  const handleSubmit = async (values: {
+    name: string;
+    category: string;
+    attributes: SelectOptionTypeIDName[];
+  }) => {
     try {
       setLoading(true);
       if (values.attributes.length < 1) {
@@ -71,12 +79,11 @@ const AddEditVariantForm = ({
           a.id.startsWith("added-") ? { name: a.name } : { ...a }
         ),
       };
-      debugger;
-        if (variantId) {
-          await editVariant(values.category, variantId, modifiedValues);
-        } else {
-          await addVariant(values.category, modifiedValues);
-        }
+      if (variantId) {
+        await editVariant(values.category, variantId, modifiedValues);
+      } else {
+        await addVariant(values.category, modifiedValues);
+      }
       notify({
         variant: "success",
         title: "Success!",
@@ -132,25 +139,25 @@ const AddEditVariantForm = ({
       <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
         <Stack>
           <Grid>
-            <GridCol span={{ base: 12, sm: 6}}>
+            <GridCol span={{ base: 12, sm: 6 }}>
               <TextInput
                 {...form.getInputProps("name")}
                 withAsterisk
                 label="Name"
                 placeholder="Size, Fragrance..."
                 key={form.key("name")}
-                />
+              />
             </GridCol>
-            <GridCol span={{ base: 12, sm: 6}}>
+            <GridCol span={{ base: 12, sm: 6 }}>
               <Select
-                  withAsterisk
-                  disabled={variantId === undefined && categoryId !== undefined} //add from configure variants from category table
-                  {...form.getInputProps("category")}
-                  label="Category"
-                  placeholder="Select Category..."
-                  key={form.key("category")}
-                  data={categoryOptions as SelectOptionType[]}
-            />
+                withAsterisk
+                disabled={variantId === undefined && categoryId !== undefined} //add from configure variants from category table
+                {...form.getInputProps("category")}
+                label="Category"
+                placeholder="Select Category..."
+                key={form.key("category")}
+                data={categoryOptions as SelectOptionType[]}
+              />
             </GridCol>
           </Grid>
           <Box>

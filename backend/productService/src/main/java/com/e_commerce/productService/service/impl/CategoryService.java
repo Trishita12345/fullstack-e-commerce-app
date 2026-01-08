@@ -55,8 +55,9 @@ public class CategoryService implements ICategoryService {
         Category category = existingCategory.get();
         category.setName(categoryRequestDTO.getName());
         category.setDescription(category.getDescription());
-        if (categoryRequestDTO.getImgUrl().contentEquals("temp/")) {
-            s3Service.deleteFromS3(category.getImgUrl());
+        if (categoryRequestDTO.getImgUrl().contains("temp/")) {
+            if (!category.getImgUrl().isEmpty())
+                s3Service.deleteFromS3(category.getImgUrl());
             category.setImgUrl(s3Service.moveFromTempToProducts(categoryRequestDTO.getImgUrl()));
         }
         if (categoryRequestDTO.getParentCategoryId() != null) {
@@ -67,13 +68,14 @@ public class CategoryService implements ICategoryService {
         return categoryEntityToResponseDTOMapper(savedCategory);
     }
 
-    private static CategoryResponseDTO categoryEntityToResponseDTOMapper(Category savedCategory) {
+    private CategoryResponseDTO categoryEntityToResponseDTOMapper(Category savedCategory) {
         return CategoryResponseDTO.builder()
                 .id(savedCategory.getId())
                 .name(savedCategory.getName())
                 .description(savedCategory.getDescription())
-                .imgUrl(savedCategory.getImgUrl())
-                .parentCategory(getParentCategoryAsSelectOptionDTO(savedCategory.getParentCategory()))
+                .imgUrl(s3Service.buildFullUrl(savedCategory.getImgUrl()))
+                .parentCategoryId(
+                        savedCategory.getParentCategory() != null ? savedCategory.getParentCategory().getId() : null)
                 .build();
     }
 
@@ -97,7 +99,15 @@ public class CategoryService implements ICategoryService {
 
     @Override
     public List<CategoryResponseDTOLanding> getLeafCategoriesCustomer() {
-        return categoryRepository.findCategoriesWithNoChildCategoriesForCustomer();
+        List<CategoryResponseDTOLanding> leafCategories = categoryRepository
+                .findCategoriesWithNoChildCategoriesForCustomer();
+        return leafCategories
+                .stream()
+                .map(category -> {
+                    category.setImgUrl(s3Service.buildFullUrl(category.getImgUrl()));
+                    return category;
+                })
+                .toList();
     }
 
     @Override

@@ -1,6 +1,10 @@
 "use client";
 
-import { Category, SelectOptionType } from "@/constants/types";
+import {
+  AddEditCategoryResponceType,
+  Category,
+  SelectOptionType,
+} from "@/constants/types";
 import { useApi } from "@/utils/hooks/useApi";
 import {
   Button,
@@ -18,64 +22,28 @@ import { notify } from "@/utils/helperFunctions";
 import { apiFetch } from "@/lib/apiFetch";
 import { CustomRichTextEditor } from "@/(components)/CustomRichTextEditor";
 import UploadDropzone from "@/(components)/UploadDropzone";
+import Link from "next/link";
+import { ActionButton } from "@/(components)/ActionButton";
+import { IconArrowNarrowLeft } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import { useDisclosure } from "@mantine/hooks";
 
 const AddEditCategoryForm = ({
-  popUpClose,
-  id,
+  categoryId,
+  categoryData,
+  parentCategories,
 }: {
-  popUpClose: () => void;
-  id?: string;
+  parentCategories: SelectOptionType[];
+  categoryId?: string;
+  categoryData?: AddEditCategoryResponceType;
 }) => {
+  const router = useRouter();
+  const [visible, { open, close }] = useDisclosure(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [parentCategories, setParentCategories] = useState<SelectOptionType[]>(
-    []
-  );
 
-  const getParentCategories = useCallback(async (id: string | undefined) => {
-    const response = await apiFetch<SelectOptionType[]>(
-      "/category/get-parent-categories"
-    );
-    if (id) {
-      setParentCategories(
-        response.filter((res: SelectOptionType) => res.value !== id)
-      );
-    } else {
-      setParentCategories(response);
-    }
-  }, []);
-
-  const getCategoryById = useCallback(async (id: string) => {
-    const response = await apiFetch<any>(`/category/${id}`);
-    form.setValues({
-      name: response.name,
-      parentCategoryId: response.parentCategory?.value ?? "",
-    });
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        await Promise.all([
-          getParentCategories(id),
-          id ? getCategoryById(id) : Promise.resolve(),
-        ]);
-      } catch (err) {
-        notify({
-          variant: "error",
-          title: "Oops!",
-          message: "Failed to fetch data",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [id, getParentCategories, getCategoryById]);
   const form = useForm({
     mode: "uncontrolled",
-    initialValues: {
+    initialValues: categoryData || {
       name: "",
       description: "<p></p>",
       imgUrl: "",
@@ -86,20 +54,20 @@ const AddEditCategoryForm = ({
       imgUrl: isNotEmpty("Image cannot be empty"),
     },
   });
-
-  const handleSubmit = async (values: Category) => {
+  const handleSubmit = async (values: AddEditCategoryResponceType) => {
     try {
       setLoading(true);
-      if (id) {
-        await editCategory(id, values);
+      console.log("values: ", values);
+      if (categoryId) {
+        await editCategory(categoryId, values);
       } else {
         await addCategory(values);
       }
-      popUpClose();
+      router.push(`/admin/categories/`);
       notify({
         variant: "success",
         title: "Success!",
-        message: id
+        message: categoryId
           ? "Category has been updated successfully."
           : "Category has been added successfully.",
       });
@@ -107,65 +75,94 @@ const AddEditCategoryForm = ({
       notify({
         variant: "error",
         title: "Opps!",
-        message: id ? "Failed to update category." : "Failed to add category.",
+        message: categoryId
+          ? "Failed to update category."
+          : "Failed to add category.",
       });
     } finally {
       setLoading(false);
     }
   };
   return (
-    <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-      <Stack>
-        <Grid>
-          <GridCol span={{ base: 12, sm: 6 }}>
-            <TextInput
-              {...form.getInputProps("name")}
-              withAsterisk
-              label="Name"
-              placeholder="Candle, Stick ..."
-              key={form.key("name")}
-            />
-          </GridCol>
-          <GridCol span={{ base: 12, sm: 6 }}>
-            <Select
-              {...form.getInputProps("parentCategoryId")}
-              label="Parent Category"
-              placeholder="Select Parent Category..."
-              key={form.key("parentCategoryId")}
-              data={parentCategories as SelectOptionType[]}
-            />
-          </GridCol>
-        </Grid>
+    <>
+      <Link href={"../categories"}>
+        <ActionButton
+          Icon={<IconArrowNarrowLeft size={"16px"} />}
+          label="Back to Categories"
+          variant="transparent"
+          style={{ marginTop: "8px", padding: 0 }}
+        />
+      </Link>
+      <h2>{categoryId ? "Update Category" : "Create Category"}</h2>
+      <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Stack>
+          <Grid>
+            <GridCol span={{ base: 12, sm: 6 }}>
+              <TextInput
+                {...form.getInputProps("name")}
+                withAsterisk
+                label="Name"
+                placeholder="Candle, Stick ..."
+                key={form.key("name")}
+              />
+            </GridCol>
+            <GridCol span={{ base: 12, sm: 6 }}>
+              <Select
+                {...form.getInputProps("parentCategoryId")}
+                label="Parent Category"
+                placeholder="Select Parent Category..."
+                key={form.key("parentCategoryId")}
+                data={parentCategories as SelectOptionType[]}
+              />
+            </GridCol>
+          </Grid>
+          <Grid>
+            <GridCol span={{ base: 12, sm: 6 }}>
+              <CustomRichTextEditor
+                label="Description"
+                {...form.getInputProps("description")}
+                key={form.key("description")}
+                errors={form.errors}
+                field="description"
+              />
+            </GridCol>
+            <GridCol span={{ base: 12, sm: 6 }}>
+              <UploadDropzone
+                label="Image"
+                {...form.getInputProps("imgUrl")}
+                key={form.key("imgUrl")}
+                errors={form.errors}
+                field="imgUrl"
+                visible={visible}
+                open={open}
+                close={close}
+                withAsterisk
+              />
+            </GridCol>
+          </Grid>
 
-        <UploadDropzone
-          label="Image"
-          {...form.getInputProps("imgUrl")}
-          key={form.key("imgUrl")}
-          errors={form.errors}
-          field="imgUrl"
-        />
-        <CustomRichTextEditor
-          label="Description"
-          {...form.getInputProps("description")}
-          key={form.key("description")}
-          errors={form.errors}
-          field="description"
-        />
-        <Group justify="flex-end" mt="md">
-          <Button
-            type="reset"
-            color="black.9"
-            variant="outline"
-            onClick={form.reset}
-          >
-            Reset
-          </Button>
-          <Button type="submit" bg="black.9" loading={loading}>
-            Submit
-          </Button>
-        </Group>
-      </Stack>
-    </form>
+          <Group justify="flex-end" mt="md">
+            <Button
+              type="reset"
+              color="black.9"
+              variant="outline"
+              onClick={form.reset}
+              disabled={visible}
+            >
+              Reset
+            </Button>
+            <Button
+              type="submit"
+              bg="black.9"
+              loading={loading}
+              disabled={visible}
+            >
+              Submit
+            </Button>
+          </Group>
+        </Stack>
+      </form>
+    </>
   );
 };
 

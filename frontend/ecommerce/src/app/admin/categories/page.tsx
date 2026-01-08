@@ -7,10 +7,10 @@ import {
   IconEdit,
   IconFilter,
   IconLeaf,
+  IconPlus,
   IconSettingsAutomation,
 } from "@tabler/icons-react";
 import { ActionButton } from "@/(components)/ActionButton";
-import AddEditCategory from "./(add-edit-category)/add-edit-category";
 import Link from "next/link";
 
 interface PageProps {
@@ -51,7 +51,17 @@ export default async function Categories({ searchParams }: PageProps) {
     <Box mt={8}>
       <ListPageClient
         title="Categories"
-        addButton={<AddEditCategory />}
+        addButton={
+          <Link href={`categories/add`}>
+            <ActionButton
+              Icon={<IconPlus size={"20"} />}
+              label={"Create Category"}
+              variant="filled"
+              c="white"
+              size="xs"
+            />
+          </Link>
+        }
         pageData={categories}
         fields={sortableFields}
         tableContent={{
@@ -64,7 +74,14 @@ export default async function Categories({ searchParams }: PageProps) {
               )}
             </Group>,
             <Group gap={0} align="center">
-              <AddEditCategory id={item.id} />
+              {/* <AddEditCategory id={item.id} /> */}
+              <Link href={`categories/${item.id}`}>
+                <ActionButton
+                  Icon={<IconEdit size={"16px"} />}
+                  label={<u>{"Edit"}</u>}
+                  variant="transparent"
+                />
+              </Link>
               <Text c="dimmed">|</Text>
               <Link href={`categories/${item.id}/variants`}>
                 <ActionButton

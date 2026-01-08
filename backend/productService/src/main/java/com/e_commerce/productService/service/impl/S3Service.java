@@ -23,6 +23,8 @@ public class S3Service implements IS3Service {
     private final S3Presigner presigner;
     private final S3Client s3Client;
 
+    private final String s3PublicUrl = "https://loom-and-lume.s3.ap-south-1.amazonaws.com";
+
     public static String sanitizeFileName(String fileName) {
         return fileName
                 .toLowerCase()
@@ -83,4 +85,11 @@ public class S3Service implements IS3Service {
         return URI.create(fileUrl).getPath().substring(1);
     }
 
+    @Override
+    public String buildFullUrl(String key) {
+        if (key.startsWith("http")) {
+            return key;
+        }
+        return s3PublicUrl + "/" + key;
+    }
 }

@@ -1,10 +1,18 @@
-import CategoriesCard, {
-  CategoriesCardType,
-} from "@/(components)/categoriesCard";
+import { CategoriesCardType } from "@/(components)/categoriesCard";
 import { en } from "@/constants/en";
-import { Carousel, CarouselSlide } from "@mantine/carousel";
-import { Box, Grid, GridCol, Group, Stack, Text, Title } from "@mantine/core";
+import {
+  Box,
+  Grid,
+  GridCol,
+  Group,
+  ScrollArea,
+  Stack,
+  Text,
+  Title,
+} from "@mantine/core";
 import { apiFetch } from "@/lib/apiFetch";
+import { CategoryImageCard } from "@/(components)/categoriesCard/CategoryImageCard";
+import { IconArrowRight } from "@tabler/icons-react";
 
 const ShopByCategories = async () => {
   const Categories = await apiFetch<CategoriesCardType[]>(
@@ -15,37 +23,69 @@ const ShopByCategories = async () => {
     }
   );
   return (
-    <Box bg="gray.1" p={48}>
+    <Box bg="gray.1" p={{ base: 24, md: 32, lg: 48 }}>
       <Grid justify="space-between" align="center">
-        <GridCol span={{ base: 12, md: 2.5 }}>
+        <GridCol span={{ base: 12, md: 3 }}>
           <Stack w={"100%"}>
-            <Title order={2} fw={500}>
-              {en.shopByCategories}
-            </Title>
-            <Text c="gray.8" size="sm">
+            <Group align="center">
+              <Title
+                pb={4}
+                order={2}
+                fw={600}
+                style={{ fontFamily: "var(--font-jost)" }}
+              >
+                {en.shopByCategories}
+              </Title>
+              <IconArrowRight />
+            </Group>
+            <Text
+              c="gray.8"
+              size="sm"
+              style={{ fontFamily: "var(--font-poppins)" }}
+            >
               {en.shopByCategoriesDesc}
             </Text>
           </Stack>
         </GridCol>
-        <GridCol span={{ base: 12, md: 8, lg: 9 }}>
-          <Carousel
+        <GridCol span={{ base: 12, md: 8.5 }}>
+          {/* <Carousel
             slideSize={{
               base: "70%",
               xs: "50%",
               sm: "33.333333%",
               lg: "25%",
-              xl: "20%",
+              xl: "25%",
             }}
             slideGap={"md"}
             emblaOptions={{ loop: true, align: "start" }}
             withControls={true}
+          > */}
+
+          <ScrollArea
+            w={"100%"}
+            type="always"
+            offsetScrollbars
+            styles={{
+              thumb: { backgroundColor: "var(--mantine-color-primaryDark-5)" },
+              scrollbar: {
+                height: 6.5,
+              },
+            }}
           >
-            {Categories.map((item: CategoriesCardType) => (
-              <CarouselSlide key={item.id}>
-                <CategoriesCard item={item} />
-              </CarouselSlide>
-            ))}
-          </Carousel>
+            <Box w={"max-content"} pb={24}>
+              <Group>
+                {Categories.map((item: CategoriesCardType) => (
+                  <CategoryImageCard
+                    key={item.id}
+                    id={item.id}
+                    title={item.name}
+                    quantity={item.quantity}
+                    image={item.imgUrl}
+                  />
+                ))}
+              </Group>
+            </Box>
+          </ScrollArea>
         </GridCol>
       </Grid>
     </Box>

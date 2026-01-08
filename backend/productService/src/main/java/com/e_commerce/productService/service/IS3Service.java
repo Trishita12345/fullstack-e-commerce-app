@@ -8,4 +8,7 @@ public interface IS3Service {
     String moveFromTempToProducts(String tempUrl);
 
     String extractKey(String fileUrl);
+
+    String buildFullUrl(String key);
+
 }
