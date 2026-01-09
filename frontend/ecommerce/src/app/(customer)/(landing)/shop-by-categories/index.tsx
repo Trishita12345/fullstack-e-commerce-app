@@ -48,19 +48,6 @@ const ShopByCategories = async () => {
           </Stack>
         </GridCol>
         <GridCol span={{ base: 12, md: 8.5 }}>
-          {/* <Carousel
-            slideSize={{
-              base: "70%",
-              xs: "50%",
-              sm: "33.333333%",
-              lg: "25%",
-              xl: "25%",
-            }}
-            slideGap={"md"}
-            emblaOptions={{ loop: true, align: "start" }}
-            withControls={true}
-          > */}
-
           <ScrollArea
             w={"100%"}
             type="always"

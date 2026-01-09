@@ -32,23 +32,25 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
   const { height } = useViewportSize();
   const [opened, { open, close }] = useDisclosure(false);
   const searchParams = useSearchParams();
-  const [filter, setFilter] = useState<{ [key: string]: string[] | RangeSliderValue }>({});
+  const [filter, setFilter] = useState<{
+    [key: string]: string[] | RangeSliderValue;
+  }>({});
   let isFilter = 0;
 
- console.log('filter', filter)
+  console.log("filter", filter);
   //f=Size:200ml,400ml::Fragrance:rose,lavender
   //f=Category:candle
   let defaultFilters = {};
-  const params = searchParams.get('f');
-  const paramArr = params?.split('::'); //[Size:200ml,400ml, Fragrance:rose,lavender]
+  const params = searchParams.get("f");
+  const paramArr = params?.split("::"); //[Size:200ml,400ml, Fragrance:rose,lavender]
   fields.forEach((field: FilterField) => {
-    const a = paramArr?.find(p => p.includes(field.field)) //Size:200ml,400ml
+    const a = paramArr?.find((p) => p.includes(field.field)); //Size:200ml,400ml
     if (a) {
-      const b = a.split(':')[1].split(',');
-      defaultFilters = { ...defaultFilters, [field.field]: b }
+      const b = a.split(":")[1].split(",");
+      defaultFilters = { ...defaultFilters, [field.field]: b };
       isFilter += b.length;
     } else {
-      defaultFilters = { ...defaultFilters, [field.field]: [] }
+      defaultFilters = { ...defaultFilters, [field.field]: [] };
     }
   });
   useEffect(() => {
@@ -62,7 +64,9 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
           <FilterMultiSelect
             options={field.options}
             field={field.field}
-            onChange={setFilter as Dispatch<SetStateAction<{ [key: string]: string[]; }>>}
+            onChange={
+              setFilter as Dispatch<SetStateAction<{ [key: string]: string[] }>>
+            }
             values={filter[field.field] as string[]}
           />
         );
@@ -71,9 +75,17 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
         return (
           <FilterRangeSelect
             field={field.field}
-            onChange={setFilter as Dispatch<SetStateAction<{ [key: string]: RangeSliderValue }>>}
+            onChange={
+              setFilter as Dispatch<
+                SetStateAction<{ [key: string]: RangeSliderValue }>
+              >
+            }
             domain={[0, 5000]}
-            values={filter[field.field].length === 0 ? [0,5000] : filter[field.field] as RangeSliderValue}
+            values={
+              filter[field.field].length === 0
+                ? [0, 5000]
+                : (filter[field.field] as RangeSliderValue)
+            }
           />
         );
       }
@@ -84,22 +96,22 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
   };
 
   const handleApplyFilter = () => {
-    const params = new URLSearchParams(searchParams.toString()); 
-    let tempArr: string[] = [];
+    const params = new URLSearchParams(searchParams.toString());
+    const tempArr: string[] = [];
     Object.entries(filter).forEach(([key, value]) => {
       if (!value || value.length === 0) {
         return;
       }
-      tempArr.push(`${key}:${value.join(',')}`)
+      tempArr.push(`${key}:${value.join(",")}`);
     });
-    params.set('f', tempArr.join('::'));
+    params.set("f", tempArr.join("::"));
     router.push(`?${params.toString()}`);
     close();
   };
 
   const clearFilter = () => {
     const params = new URLSearchParams(searchParams.toString());
-    params.delete('f');
+    params.delete("f");
     router.push(`?${params.toString()}`);
     close();
   };

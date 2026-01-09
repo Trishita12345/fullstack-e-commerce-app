@@ -1,3 +1,4 @@
+import { ShareProductType } from "@/app/(customer)/products/[productId]/(components)/ImageComponent";
 import { apiFetch } from "@/lib/apiFetch";
 import { showNotification } from "@mantine/notifications";
 import { IconCheck, IconExclamationMark, IconX } from "@tabler/icons-react";
@@ -102,3 +103,13 @@ export async function deleteImageS3(file: string) {
     });
   }
 }
+
+export const shareProduct = async (product: ShareProductType) => {
+  if (!navigator.share) return;
+
+  await navigator.share({
+    title: `Check out this ${product.name} on our store`,
+    text: `Check out this ${product.name} on our store`,
+    url: `${window.location.origin}/product/${product.id}`,
+  });
+};

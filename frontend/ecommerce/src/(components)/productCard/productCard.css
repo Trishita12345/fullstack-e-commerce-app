@@ -1,0 +1,18 @@
+
+.product-card {
+  transition: box-shadow 200ms ease;
+}
+
+.product-card-1 {
+  transition: padding 200ms ease;
+}
+
+.product-card:hover {
+  -webkit-box-shadow: 5px 5px 18px 8px #C3C3C3;
+  box-shadow: 5px 5px 18px 8px #C3C3C3;
+}
+
+.product-card:hover .product-card-1 {
+  padding: 0px 16px;
+}
+

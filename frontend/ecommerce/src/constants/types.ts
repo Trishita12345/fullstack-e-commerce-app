@@ -153,3 +153,64 @@ export interface AddEditCategoryResponceType {
   imgUrl: string;
   parentCategoryId: string;
 }
+
+export type VariantAttributeType = {
+  name: string;
+  isSelected: boolean;
+  productItemId: string;
+};
+
+export type ProductVariantAttribute = {
+  variantName: string;
+  attributes: VariantAttributeType[];
+};
+
+export type ProductDetailsDTO = {
+  categoryName: string;
+  productName: string;
+  productId: string;
+  description: string;
+  feature: string;
+  basePrice: number;
+  discountedPrice: number;
+  availableStock: number;
+  variantAttributes: ProductVariantAttribute[];
+  imgUrls: string[];
+  rating: number;
+  noOfReviews: number;
+};
+export interface pdpCartDataDTO {
+  addedToWishList: boolean,
+    noOfItemsInCart: number,
+}
+export interface ProductReviewsResponseDTO {
+  productId: string;
+  productName: string;
+  reviews: ReviewDTO[];
+  summary: ReviewSummaryDTO;
+  canLeaveReview: boolean;
+}
+export interface RatingBreakdownDTO {
+  stars: 1 | 2 | 3 | 4 | 5;
+  percentage: number; // 0–100
+}
+
+export interface ReviewSummaryDTO {
+  averageRating: number; // e.g. 4.3
+  totalReviews: number;
+  breakdown: RatingBreakdownDTO[];
+}
+export interface UserDTO {
+  id: string;
+  name: string;
+  avatarUrl: string|null;
+}
+
+export interface ReviewDTO {
+  id: string;
+  user: UserDTO;
+  rating: 1 | 2 | 3 | 4 | 5;
+  comment: string;
+  createdAt: string; // ISO date from backend
+}
+

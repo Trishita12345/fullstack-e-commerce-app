@@ -57,4 +57,6 @@ export const en = {
   Dashboard: "Dashboard",
   Categories: "Categories",
   SellerMode: "Seller Mode",
+  shippingContent: "<p> Free shipping on orders above ₹999.<br /> Delivered safely to your doorstep within 3–5 business days.</p>",
+  returnContent: "<p> **Returns / Replacements are accepted only in case of damaged products.<br /> Please ensure an unboxing video is recorded for verification.</p>"
 };

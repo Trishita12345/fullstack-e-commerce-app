@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <Box bg="gray.0" py={8}>
       <Box
-        w={"90%"}
+        w={{ base: "90%", md: "85%" }}
         mx="auto"
         style={{
           display: "flex",
