@@ -1,25 +1,16 @@
 "use client";
 
 import {
-  Box,
   Button,
-  CopyButton,
   Grid,
   Group,
   NumberInput,
-  Paper,
   Select,
   Stack,
   Text,
-  TextInput,
 } from "@mantine/core";
-import {
-  formRootRule,
-  FormRulesRecord,
-  isNotEmpty,
-  useForm,
-} from "@mantine/form";
-import { useEffect, useState } from "react";
+import { formRootRule, isNotEmpty, useForm } from "@mantine/form";
+import { useState } from "react";
 import { notify } from "@/utils/helperFunctions";
 import type {
   ProductVariant,
@@ -29,9 +20,7 @@ import type {
 import { ActionButton } from "@/(components)/ActionButton";
 import {
   IconArrowNarrowLeft,
-  IconCoinRupee,
   IconCurrencyRupee,
-  IconFileBarcode,
   IconSparkles,
 } from "@tabler/icons-react";
 import Link from "next/link";
@@ -91,9 +80,9 @@ const AddEditProductVariantForm = ({
       imgUrls: {
         [formRootRule]: (value) => {
           const isThumbnailExist =
-            value.filter(({ url, isThumbnail }) => isThumbnail).length == 1;
+            value.filter(({ isThumbnail }) => isThumbnail).length == 1;
           const isimagesExist =
-            value.filter(({ url, isThumbnail }) => !isThumbnail).length >= 1;
+            value.filter(({ isThumbnail }) => !isThumbnail).length >= 1;
           return isThumbnailExist && isimagesExist
             ? null
             : "Images must be added for each section";
@@ -132,7 +121,7 @@ const AddEditProductVariantForm = ({
     }
   };
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: ProductVariant) => {
     try {
       setLoading(true);
       if (productVariantId) {
@@ -148,7 +137,7 @@ const AddEditProductVariantForm = ({
           : "Product Variant has been added successfully.",
       });
       router.push(`/admin/products/${productId}?tab=2`);
-    } catch (err: any) {
+    } catch {
       notify({
         variant: "error",
         title: "Opps!",

@@ -1,6 +1,10 @@
 import { ListPageClient } from "@/(components)/adminListPage";
 import type { SortableField } from "@/(components)/adminListPage/SortButton";
-import type { Page, VariantListType } from "@/constants/types";
+import type {
+  AddEditCategoryResponseType,
+  Page,
+  VariantListType,
+} from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { Badge, Group } from "@mantine/core";
 import { IconArrowNarrowLeft, IconEdit, IconPlus } from "@tabler/icons-react";
@@ -38,10 +42,13 @@ export default async function Variants({ params, searchParams }: PageProps) {
       revalidate: 60,
     }
   );
-  const categoryDetails = await apiFetch<any>(`/category/${categoryId}`, {
-    cache: "force-cache",
-    revalidate: 60,
-  });
+  const categoryDetails = await apiFetch<AddEditCategoryResponseType>(
+    `/category/${categoryId}`,
+    {
+      cache: "force-cache",
+      revalidate: 60,
+    }
+  );
   const sortableFields: SortableField[] = [
     {
       field: "name",
@@ -84,7 +91,7 @@ export default async function Variants({ params, searchParams }: PageProps) {
           head: ["Name", "Category Name", "Actions"],
           body: variants.content.map((item: VariantListType) => [
             item.variantName,
-            <Group gap={4}>
+            <Group gap={4} key={item.CategoryName}>
               {item.CategoryName}
               {item.CategoryId !== params.categoryId && (
                 <Badge size="xs" tt="capitalize" color={"primaryDark.7"}>
@@ -93,6 +100,7 @@ export default async function Variants({ params, searchParams }: PageProps) {
               )}
             </Group>,
             <Link
+              key={item.variantId}
               href={`/admin/categories/${item.CategoryId}/variants/${item.variantId}`}
             >
               <ActionButton

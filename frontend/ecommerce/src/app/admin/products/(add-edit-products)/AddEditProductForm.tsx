@@ -3,13 +3,9 @@
 import {
   Stack,
   TextInput,
-  Box,
-  Divider,
   Group,
   Button,
-  Text,
   Select,
-  Flex,
   Grid,
   GridCol,
 } from "@mantine/core";
@@ -66,7 +62,7 @@ const AddEditProductForm = ({
       });
       if (productId) return;
       router.push(`/admin/products/${newProductId}?tab=2`);
-    } catch (err: any) {
+    } catch {
       notify({
         variant: "error",
         title: "Opps!",

@@ -6,8 +6,8 @@ import type {
   VariantListType,
 } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
-import { Badge, Group } from "@mantine/core";
-import { IconArrowNarrowLeft, IconEdit, IconPlus } from "@tabler/icons-react";
+import { Group } from "@mantine/core";
+import { IconEdit, IconPlus } from "@tabler/icons-react";
 import { ActionButton } from "@/(components)/ActionButton";
 
 import Link from "next/link";
@@ -94,7 +94,9 @@ export default async function Variants({ searchParams }: PageProps) {
           head: ["Name", "Category Name", "Actions"],
           body: variants.content.map((item: VariantListType) => [
             item.variantName,
-            <Group gap={4}>{item.CategoryName}</Group>,
+            <Group key={item.CategoryName} gap={4}>
+              {item.CategoryName}
+            </Group>,
             <Link
               key={item.variantId}
               href={`/admin/categories/${item.CategoryId}/variants/${item.variantId}`}

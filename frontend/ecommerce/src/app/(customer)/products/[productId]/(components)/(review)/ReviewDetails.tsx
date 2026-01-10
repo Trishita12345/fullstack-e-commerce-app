@@ -1,7 +1,7 @@
 import { ReviewDTO } from "@/constants/types";
 import { Fragment } from "react";
 import ReviewCard from "./ReviewCard";
-import { Button, Stack, Text } from "@mantine/core";
+import { Stack, Text } from "@mantine/core";
 
 const ReviewDetails = ({ reviews }: { reviews: ReviewDTO[] }) => {
   return (

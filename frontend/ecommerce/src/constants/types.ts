@@ -146,7 +146,7 @@ export interface ProductItemListing {
   attributes: string[]
 }
 
-export interface AddEditCategoryResponceType {
+export interface AddEditCategoryResponseType {
   id?: string;
   name: string;
   description: string;

@@ -1,17 +1,15 @@
 "use client";
 import { pdpCartDataDTO, ProductDetailsDTO } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
-import { Button, Grid, GridCol, Group, Text } from "@mantine/core";
+import { Button, Grid, GridCol, Text } from "@mantine/core";
 import {
   IconArrowRight,
-  IconChevronDown,
-  IconChevronUp,
   IconHeart,
   IconHeartFilled,
   IconMinus,
   IconPlus,
 } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const ButtonSection = ({
   pdpData,

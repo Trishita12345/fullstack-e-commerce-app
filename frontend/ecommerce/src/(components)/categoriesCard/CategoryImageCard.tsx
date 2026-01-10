@@ -1,6 +1,6 @@
 import { Button, Paper, Title, Text } from "@mantine/core";
 import "./categoryImageCard.css";
-import { IconArrowUpRight, IconLink } from "@tabler/icons-react";
+import { IconArrowUpRight } from "@tabler/icons-react";
 import Link from "next/link";
 
 interface CardProps {

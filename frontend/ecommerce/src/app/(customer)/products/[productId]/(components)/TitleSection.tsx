@@ -1,8 +1,7 @@
 import { ProductDetailsDTO } from "@/constants/types";
-import { Stack, Badge, Title, Group, Button, Box } from "@mantine/core";
-import { IconShare } from "@tabler/icons-react";
+import { Stack, Badge, Title } from "@mantine/core";
 
-const TitleScetion = ({ pdpData }: { pdpData: ProductDetailsDTO }) => {
+const TitleSection = ({ pdpData }: { pdpData: ProductDetailsDTO }) => {
   const discount = (
     ((pdpData.basePrice - pdpData.discountedPrice) / pdpData.basePrice) *
     100
@@ -22,4 +21,4 @@ const TitleScetion = ({ pdpData }: { pdpData: ProductDetailsDTO }) => {
   );
 };
 
-export default TitleScetion;
+export default TitleSection;

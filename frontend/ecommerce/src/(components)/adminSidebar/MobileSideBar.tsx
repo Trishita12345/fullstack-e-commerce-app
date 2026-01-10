@@ -1,10 +1,8 @@
 "use client";
 
-import { ActionIcon, Box, Drawer } from "@mantine/core";
+import { Box, Drawer } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconMenu2 } from "@tabler/icons-react";
 import AdminSidebar from ".";
-import { en } from "@/constants/en";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faXmark } from "@fortawesome/free-solid-svg-icons";
 import LogoText from "../logo/LogoText";

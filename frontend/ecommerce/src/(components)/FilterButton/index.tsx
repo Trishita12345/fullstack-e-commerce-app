@@ -5,10 +5,8 @@ import {
   Accordion,
   Box,
   Button,
-  Divider,
   Drawer,
   Indicator,
-  RangeSlider,
   RangeSliderValue,
   Stack,
   Text,
@@ -18,16 +16,20 @@ import { ActionButton } from "../ActionButton";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import FilterMultiSelect from "./FilterMultiSelect";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { formattedPrice } from "@/utils/helperFunctions";
 import FilterRangeSelect from "./FilterRangeSelect";
+import { SelectOptionType } from "@/constants/types";
 
-export type FilterField = {
-  options: any[];
+export type FilterField<T> = {
+  options: T[];
   label: string;
   type: "multiSelect" | "singleSelect" | "range";
   field: string;
 };
-export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
+export const FilterButton = ({
+  fields,
+}: {
+  fields: FilterField<SelectOptionType>[];
+}) => {
   const router = useRouter();
   const { height } = useViewportSize();
   const [opened, { open, close }] = useDisclosure(false);
@@ -43,7 +45,7 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
   let defaultFilters = {};
   const params = searchParams.get("f");
   const paramArr = params?.split("::"); //[Size:200ml,400ml, Fragrance:rose,lavender]
-  fields.forEach((field: FilterField) => {
+  fields.forEach((field: FilterField<SelectOptionType>) => {
     const a = paramArr?.find((p) => p.includes(field.field)); //Size:200ml,400ml
     if (a) {
       const b = a.split(":")[1].split(",");
@@ -57,7 +59,11 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
     setFilter(defaultFilters);
   }, [searchParams]);
 
-  const SubComponent = ({ field }: { field: FilterField }) => {
+  const SubComponent = ({
+    field,
+  }: {
+    field: FilterField<SelectOptionType>;
+  }) => {
     switch (field.type) {
       case "multiSelect": {
         return (
@@ -157,7 +163,7 @@ export const FilterButton = ({ fields }: { fields: FilterField[] }) => {
             },
           }}
         >
-          {fields.map((item: FilterField, index) => (
+          {fields.map((item: FilterField<SelectOptionType>, index) => (
             <Accordion.Item
               style={{ borderBottom: "1px solid #ebebeb" }}
               mt={index == 0 ? 0 : 12}

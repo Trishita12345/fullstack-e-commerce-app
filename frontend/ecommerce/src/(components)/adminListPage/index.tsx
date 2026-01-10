@@ -6,6 +6,7 @@ import {
   Pagination,
   Stack,
   Table,
+  TableData,
   Text,
 } from "@mantine/core";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -21,7 +22,7 @@ interface Props<T> {
   pageData: Page<T>;
   addButton: React.ReactNode;
   otherButtons?: React.ReactNode;
-  tableContent: any;
+  tableContent: TableData;
   fields?: SortableField[];
 }
 
@@ -41,7 +42,10 @@ export function ListPageClient<T>({
       filterStr?.split("::").flatMap((i) => {
         const [key, values] = i.split(":");
         if (key == "Price") {
-          return `${values.split(",").map(v=>formattedPrice(parseInt(v))).join(" - ")}`;
+          return `${values
+            .split(",")
+            .map((v) => formattedPrice(parseInt(v)))
+            .join(" - ")}`;
         } else {
           return values.split(",");
         }
@@ -58,7 +62,17 @@ export function ListPageClient<T>({
       } of ${totalElements} items`;
 
   const updateParams = useDebouncedCallback(
-    ({ page = 1, sortBy, direction, query }: any) => {
+    ({
+      page = 1,
+      sortBy,
+      direction,
+      query,
+    }: {
+      page?: number;
+      sortBy?: string;
+      direction?: "asc" | "desc";
+      query?: string;
+    }) => {
       const params = new URLSearchParams(searchParams.toString());
 
       params.set("page", page.toString());
@@ -104,7 +118,7 @@ export function ListPageClient<T>({
       .join("::");
 
     updatedQuery ? params.set("f", updatedQuery) : params.delete("f");
-    params.set('page','1')
+    params.set("page", "1");
     router.push(`?${params.toString()}`);
   }
 

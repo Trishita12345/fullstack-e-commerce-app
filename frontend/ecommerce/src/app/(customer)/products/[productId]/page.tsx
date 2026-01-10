@@ -5,7 +5,7 @@ import { productDetailsDummy } from "./(components)/(dummyData)/pdpData";
 import ImageComponent from "./(components)/ImageComponent";
 import PriceSection from "./(components)/PriceSection";
 import UpperRatingSection from "./(components)/UpperRatingSection";
-import TitleScetion from "./(components)/TitleScetion";
+import TitleSection from "./(components)/TitleSection";
 import Variants from "./(components)/Variants";
 import ButtonSection from "./(components)/ButtonSection";
 import PdpAccordionItem from "./(components)/PdpAccordianItem";
@@ -56,7 +56,7 @@ const PDP = async ({ params }: PageProps) => {
           </GridCol>
           <GridCol span={{ base: 12, sm: 6, md: 6.5, lg: 7 }}>
             <Stack gap={24}>
-              <TitleScetion pdpData={pdpData} />
+              <TitleSection pdpData={pdpData} />
               <PriceSection pdpData={pdpData} />
               <UpperRatingSection pdpData={pdpData} />
               <Variants pdpData={pdpData} />

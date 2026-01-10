@@ -96,7 +96,10 @@ export default async function Products({ searchParams }: PageProps) {
           body: products.content.map((item: ProductsListingPageProps) => [
             item.productName,
             item.categoryName,
-            <Link href={`/admin/products/${item.productId}`}>
+            <Link
+              key={item.productId}
+              href={`/admin/products/${item.productId}`}
+            >
               <ActionButton
                 Icon={<IconEdit size={"16px"} />}
                 label={<u>Edit</u>}

@@ -1,20 +1,7 @@
-import { en } from "@/constants/en";
 import { StoriesType } from "@/constants/types";
-import { formattedPrice } from "@/utils/helperFunctions";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  ActionIcon,
-  Button,
-  Grid,
-  GridCol,
-  Group,
-  Rating,
-  Stack,
-  Text,
-} from "@mantine/core";
-import { IconHeart, IconHeartFilled, IconPlus } from "@tabler/icons-react";
-import Image from "next/image";
+import { Group, Stack, Text } from "@mantine/core";
 import Link from "next/link";
 import ResponsiveImage from "../responsiveImage";
 

@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  AddEditCategoryResponceType,
-  Category,
+  AddEditCategoryResponseType,
   SelectOptionType,
 } from "@/constants/types";
-import { useApi } from "@/utils/hooks/useApi";
 import {
   Button,
   Grid,
@@ -16,10 +14,9 @@ import {
   TextInput,
 } from "@mantine/core";
 import { isNotEmpty, useForm } from "@mantine/form";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { addCategory, editCategory } from "./actions";
 import { notify } from "@/utils/helperFunctions";
-import { apiFetch } from "@/lib/apiFetch";
 import { CustomRichTextEditor } from "@/(components)/CustomRichTextEditor";
 import UploadDropzone from "@/(components)/UploadDropzone";
 import Link from "next/link";
@@ -35,7 +32,7 @@ const AddEditCategoryForm = ({
 }: {
   parentCategories: SelectOptionType[];
   categoryId?: string;
-  categoryData?: AddEditCategoryResponceType;
+  categoryData?: AddEditCategoryResponseType;
 }) => {
   const router = useRouter();
   const [visible, { open, close }] = useDisclosure(false);
@@ -54,7 +51,7 @@ const AddEditCategoryForm = ({
       imgUrl: isNotEmpty("Image cannot be empty"),
     },
   });
-  const handleSubmit = async (values: AddEditCategoryResponceType) => {
+  const handleSubmit = async (values: AddEditCategoryResponseType) => {
     try {
       setLoading(true);
       console.log("values: ", values);
@@ -71,7 +68,7 @@ const AddEditCategoryForm = ({
           ? "Category has been updated successfully."
           : "Category has been added successfully.",
       });
-    } catch (err: any) {
+    } catch {
       notify({
         variant: "error",
         title: "Opps!",

@@ -36,7 +36,7 @@ const UploadDropzone = ({
   open,
   close,
 }: UploadDropzone) => {
-  const [_value, handleChange] = useUncontrolled({
+  const [, handleChange] = useUncontrolled({
     value,
     defaultValue,
     onChange,
@@ -123,6 +123,7 @@ const UploadDropzone = ({
                   h={150}
                   radius="md"
                   fit="cover"
+                  alt="uploadedImg"
                 />
                 <ActionIcon
                   color="red"

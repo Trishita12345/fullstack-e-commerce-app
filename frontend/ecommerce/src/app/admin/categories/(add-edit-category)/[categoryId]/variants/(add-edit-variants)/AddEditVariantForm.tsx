@@ -92,7 +92,7 @@ const AddEditVariantForm = ({
           : "Variant has been added successfully.",
       });
       router.push(`/admin/categories/${values.category}/variants`);
-    } catch (err: any) {
+    } catch {
       notify({
         variant: "error",
         title: "Opps!",

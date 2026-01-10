@@ -2,7 +2,6 @@
 import {
   IconGauge,
   IconCategoryFilled,
-  IconNotes,
   IconStack2Filled,
   IconBuildingWarehouse,
   IconGitBranch,

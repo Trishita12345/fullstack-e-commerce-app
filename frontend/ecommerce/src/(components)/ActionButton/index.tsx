@@ -5,7 +5,6 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import type { Icon } from "@tabler/icons-react";
 import type { Ref } from "react";
 import React from "react";
 
@@ -15,12 +14,9 @@ export const ActionButton = ({
   c = "black.9",
   color,
   onClick,
-  ref,
-  type = "button",
   variant,
   size,
   style,
-  ...props
 }: {
   onClick?: () => void;
   c?: MantineColor;

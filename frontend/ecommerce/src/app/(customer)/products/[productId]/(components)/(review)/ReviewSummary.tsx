@@ -1,17 +1,8 @@
 import {
   ProductReviewsResponseDTO,
   RatingBreakdownDTO,
-  ReviewSummaryDTO,
 } from "@/constants/types";
-import {
-  Box,
-  Button,
-  Group,
-  Progress,
-  Rating,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Button, Group, Progress, Rating, Stack, Text } from "@mantine/core";
 import { IconStarFilled } from "@tabler/icons-react";
 
 const RatingBreakdown = ({ stars, percentage }: RatingBreakdownDTO) => (

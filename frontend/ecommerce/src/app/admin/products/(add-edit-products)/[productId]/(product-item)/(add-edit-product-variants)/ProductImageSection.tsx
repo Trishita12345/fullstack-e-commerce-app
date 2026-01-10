@@ -1,7 +1,7 @@
 "use client";
 
 import { CustomInputProps } from "@/(components)/CustomRichTextEditor";
-import { deleteImageS3, notify, uploadToS3 } from "@/utils/helperFunctions";
+import { notify, uploadToS3 } from "@/utils/helperFunctions";
 import {
   Box,
   Text,
@@ -14,8 +14,7 @@ import {
   Group,
 } from "@mantine/core";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
-import { FormErrors } from "@mantine/form";
-import { useDisclosure, useUncontrolled } from "@mantine/hooks";
+import { useUncontrolled } from "@mantine/hooks";
 import { IconPhoto, IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
@@ -137,6 +136,7 @@ export function ProductImagesSection({
                     m={"auto"}
                     bdrs={"md"}
                     h={150}
+                    alt="thumbnail"
                     radius="md"
                     fit="cover"
                   />
@@ -220,7 +220,13 @@ export function ProductImagesSection({
                     p={2}
                     pos="relative"
                   >
-                    <Image src={file} bdrs={"md"} h={150} fit="cover" />
+                    <Image
+                      src={file}
+                      bdrs={"md"}
+                      h={150}
+                      fit="cover"
+                      alt={`more-image ${index}`}
+                    />
                     <ActionIcon
                       color="red"
                       size="sm"

@@ -3,11 +3,16 @@ import { ListPageClient } from "@/(components)/adminListPage";
 import { SortableField } from "@/(components)/adminListPage/SortButton";
 import { FilterButton, FilterField } from "@/(components)/FilterButton";
 import ResponsiveImage from "@/(components)/responsiveImage";
-import { Page, ProductItemListing, VariantAttribute } from "@/constants/types";
+import {
+  Page,
+  ProductItemListing,
+  SelectOptionType,
+  VariantAttribute,
+} from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { formattedPrice } from "@/utils/helperFunctions";
 import { Badge, Group, Text } from "@mantine/core";
-import { IconPlus, IconEdit, } from "@tabler/icons-react";
+import { IconPlus, IconEdit } from "@tabler/icons-react";
 import Link from "next/link";
 import { Fragment } from "react";
 
@@ -31,23 +36,26 @@ const ProductVariantsListing = async ({
     sortBy = "updatedAt",
     direction = "desc",
     query = "",
-    f=""
+    f = "",
   } = await searchParams;
   const page = Number(pageParam ?? 1) - 1;
-  const sortableFields = [{
+  const sortableFields = [
+    {
       field: "discountedPrice",
       label: "Price",
       type: "number",
-  },
-  {
+    },
+    {
       field: "availableStock",
       label: "Available Stock",
       type: "number",
-  }, {
+    },
+    {
       field: "updatedAt",
       label: "Updated At",
       type: "date",
-  }] as SortableField[];
+    },
+  ] as SortableField[];
   const products = await apiFetch<Page<ProductItemListing>>(
     `/productItem/${productId}/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
     {
@@ -56,32 +64,34 @@ const ProductVariantsListing = async ({
     }
   );
   const variantAttributes = await apiFetch<VariantAttribute[]>(
-      `/productItem/${productId}/variant-attributes`
+    `/productItem/${productId}/variant-attributes`
   );
-  
-  const variantFilterFields: FilterField[] = variantAttributes.map((va) => (
-              {
-                label: va.variantName,
-                options: va.attributes.map((o) => ({
-                  label: o.label,
-                  value: o.label,
-                })),
-                type: "multiSelect",
-                field: va.variantName,
-              }
-            ))
-        
+
+  const variantFilterFields: FilterField<SelectOptionType>[] =
+    variantAttributes.map((va) => ({
+      label: va.variantName,
+      options: va.attributes.map((o) => ({
+        label: o.label,
+        value: o.label,
+      })),
+      type: "multiSelect",
+      field: va.variantName,
+    }));
+
   return (
     <ListPageClient
       title={`Product Items`}
       otherButtons={
         <FilterButton
-          fields={[...variantFilterFields, {
-                label: 'Price',
-                options: [],
-                type: "range",
-                field: 'Price',
-              }]}
+          fields={[
+            ...variantFilterFields,
+            {
+              label: "Price",
+              options: [],
+              type: "range",
+              field: "Price",
+            },
+          ]}
         />
       }
       addButton={
@@ -100,27 +110,47 @@ const ProductVariantsListing = async ({
       tableContent={{
         head: ["", "SKU", "Available Stock", "Price", "Attributes", "Actions"],
         body: products.content.map((item: ProductItemListing) => [
-          <Fragment key={item.productItemId}>{ item.imgUrl && <ResponsiveImage src={item.imgUrl} height={60} width={45} /> }</Fragment>,
+          <Fragment key={item.productItemId}>
+            {item.imgUrl && (
+              <ResponsiveImage src={item.imgUrl} height={60} width={45} />
+            )}
+          </Fragment>,
           item.sku,
           item.avlStock,
-          <Group gap={4}>
-            {item.discountedPrice !== item.basePrice && <Text size="xs" td={'line-through'} c='dimmed'>
-              {formattedPrice(item.basePrice)}</Text>}
-            <Text size="sm" fw={500}>{formattedPrice(item.discountedPrice)}</Text>
+          <Group key={item.basePrice} gap={4}>
+            {item.discountedPrice !== item.basePrice && (
+              <Text size="xs" td={"line-through"} c="dimmed">
+                {formattedPrice(item.basePrice)}
+              </Text>
+            )}
+            <Text size="sm" fw={500}>
+              {formattedPrice(item.discountedPrice)}
+            </Text>
           </Group>,
-          <Group gap={4}>{item.attributes.length > 0 ?
-            item.attributes.map((i: string) => (
-              <Badge key={i+item.productItemId} variant="gradient" gradient={{ from: 'primaryDark.6', to: 'primary.3', deg: 150 }}>{i}</Badge>
-            ))
-            : "-"}
+          <Group gap={4} key={item.attributes.join("-")}>
+            {item.attributes.length > 0
+              ? item.attributes.map((i: string) => (
+                  <Badge
+                    key={i + item.productItemId}
+                    variant="gradient"
+                    gradient={{
+                      from: "primaryDark.6",
+                      to: "primary.3",
+                      deg: 150,
+                    }}
+                  >
+                    {i}
+                  </Badge>
+                ))
+              : "-"}
           </Group>,
-          <Group gap={4}>
+          <Group key={item.productItemId} gap={4}>
             <Link href={`/admin/products/${productId}/${item.productItemId}`}>
-            <ActionButton
-              Icon={<IconEdit size={"16px"} />}
-              label={<u>Edit</u>}
-              variant="transparent"
-            />
+              <ActionButton
+                Icon={<IconEdit size={"16px"} />}
+                label={<u>Edit</u>}
+                variant="transparent"
+              />
             </Link>
             {/* <DeleteProductItem productItemId={item.productItemId} productId={ productId} /> */}
           </Group>,

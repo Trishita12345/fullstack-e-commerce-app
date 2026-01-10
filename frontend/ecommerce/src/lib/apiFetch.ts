@@ -34,7 +34,7 @@ export async function apiFetch<T>(
   } = options;
 
   const token = await getToken();
-  let header = {
+  const header = {
     "Content-Type": "application/json",
     ...headers,
   };

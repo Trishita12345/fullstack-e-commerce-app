@@ -4,11 +4,11 @@ import { useState } from "react";
 
 import "swiper/css";
 import "swiper/css/thumbs";
-import { ActionIcon, Box, Button, Group } from "@mantine/core";
+import { ActionIcon, Box, Group } from "@mantine/core";
 import ResponsiveImage from "../responsiveImage";
 import "./imageGallery.css";
 import { useViewportSize } from "@mantine/hooks";
-import { IconShare, IconShare2, IconShare3 } from "@tabler/icons-react";
+import { IconShare } from "@tabler/icons-react";
 import { shareProduct } from "@/utils/helperFunctions";
 import { ShareProductType } from "@/app/(customer)/products/[productId]/(components)/ImageComponent";
 

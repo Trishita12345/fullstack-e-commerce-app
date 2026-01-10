@@ -1,7 +1,7 @@
 import AdminHeader from "@/(components)/adminHeader";
 import AdminSidebar from "@/(components)/adminSidebar";
 import { getServerSession } from "@/lib/get-server-auth";
-import { Box, Group, Stack } from "@mantine/core";
+import { Box, Group } from "@mantine/core";
 import { forbidden } from "next/navigation";
 
 export default async function AdminLayout({

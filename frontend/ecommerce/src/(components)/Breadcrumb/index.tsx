@@ -1,5 +1,4 @@
-import { Breadcrumbs, Anchor, Text } from "@mantine/core";
-import { IconBackslash } from "@tabler/icons-react";
+import { Breadcrumbs, Text } from "@mantine/core";
 import Link from "next/link";
 import { Fragment } from "react";
 

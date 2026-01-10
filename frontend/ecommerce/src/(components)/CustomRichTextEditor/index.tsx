@@ -27,10 +27,8 @@ export function CustomRichTextEditor({
   value,
   defaultValue,
   onChange,
-  errors,
-  field,
 }: CustomInputProps<string>) {
-  const [_value, handleChange] = useUncontrolled({
+  const [, handleChange] = useUncontrolled({
     value,
     defaultValue,
     onChange,

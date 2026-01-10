@@ -87,7 +87,7 @@ function extractS3Key(s3Url: string) {
     }
 
     return key;
-  } catch (e) {
+  } catch {
     console.error("Invalid S3 URL:", s3Url);
     return "";
   }

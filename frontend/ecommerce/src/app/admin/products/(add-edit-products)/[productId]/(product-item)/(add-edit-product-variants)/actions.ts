@@ -1,6 +1,6 @@
 "use server";
 
-import { Category, ProductVariant } from "@/constants/types";
+import {ProductVariant } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { revalidatePath } from "next/cache";
 

@@ -1,7 +1,6 @@
 import {
-  Variant,
   SelectOptionType,
-  AddEditCategoryResponceType,
+  AddEditCategoryResponseType,
 } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import AddEditCategoryForm from "../add-edit-category-form";
@@ -14,7 +13,7 @@ interface PageProps {
 
 const EditCategory = async ({ params }: PageProps) => {
   const { categoryId } = await params;
-  const categoryData = await apiFetch<AddEditCategoryResponceType>(
+  const categoryData = await apiFetch<AddEditCategoryResponseType>(
     `/category/${categoryId}`
   );
   const parentCategories = await apiFetch<SelectOptionType[]>(

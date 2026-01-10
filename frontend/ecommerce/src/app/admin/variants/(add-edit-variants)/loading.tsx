@@ -1,4 +1,4 @@
-import { Skeleton, Stack, Group, Divider, Box } from "@mantine/core";
+import { Skeleton, Stack, Group, Divider } from "@mantine/core";
 
 export default function UpdateVariantSkeleton() {
   return (

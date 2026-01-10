@@ -1,12 +1,11 @@
 "use client";
 
 import { SelectOptionType } from "@/constants/types";
-import { Checkbox, Group, Stack } from "@mantine/core";
-import { useSearchParams } from "next/navigation";
+import { Checkbox, Stack } from "@mantine/core";
 import { Dispatch, SetStateAction } from "react";
 
-interface FilterMultiSelectProps {
-  options: any[];
+interface FilterMultiSelectProps<T> {
+  options: T[];
   field: string;
   values: string[];
   onChange: Dispatch<
@@ -20,9 +19,9 @@ const FilterMultiSelect = ({
   field,
   onChange,
   values,
-}: FilterMultiSelectProps) => {
+}: FilterMultiSelectProps<SelectOptionType>) => {
   const handleChange = (value: string[]) => {
-    onChange(prev =>({ ...prev, [field]: value }));
+    onChange((prev) => ({ ...prev, [field]: value }));
   };
 
   return (

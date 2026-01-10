@@ -22,7 +22,7 @@ export default function ImageCarousel({
       slideGap="0"
       withControls={false}
     >
-      {images.map((src, i) => (
+      {images.map((src) => (
         <Carousel.Slide key={src}>
           <Box maw={350} mx={"auto"} style={{ position: "relative" }}>
             <ResponsiveImage src={src} height={350} width={350} />
