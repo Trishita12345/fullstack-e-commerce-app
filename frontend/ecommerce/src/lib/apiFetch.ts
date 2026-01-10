@@ -13,17 +13,17 @@ interface ApiFetchOptions {
 }
 
 const getToken = cache(async () => {
-  if (typeof window === "undefined") {
-    try {
+  try {
+    if (typeof window === "undefined") {
       const res = await getServerToken();
-      return res?.token ;
-    } catch {
-      return undefined;
+      return res?.token;
+    } else {
+      const { data } = await authClient.token();
+      return data?.token;
     }
-     
-  }
-  const { data } = await authClient.token();
-  return data?.token;
+  } catch {
+      return undefined;
+    } 
 });
 
 export async function apiFetch<T>(
