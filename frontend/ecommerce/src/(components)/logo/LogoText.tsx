@@ -9,9 +9,10 @@ const LogoText = ({ fontSize = "1rem" }: LogoTextProps) => {
   const feBaseUrl = process.env.NEXT_PUBLIC_FRONTEND;
   return (
     <Text
+      lts={3}
       style={{
         fontFamily: "var(--font-jost), sans-serif",
-        fontWeight: 600,
+        fontWeight: 800,
         letterSpacing: "0.05em",
         textTransform: "uppercase",
         fontSize: fontSize,
