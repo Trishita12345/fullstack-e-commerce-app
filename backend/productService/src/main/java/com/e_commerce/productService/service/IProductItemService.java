@@ -1,5 +1,6 @@
 package com.e_commerce.productService.service;
 
+import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemListingDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
@@ -23,5 +24,7 @@ public interface IProductItemService {
     void deleteProductItemById(UUID productItemId);
 
     ProductItemDTO editProductById(UUID productItemId, ProductItemDTO productItemDTO);
+
+    ProductDetailsDTO getProductDetailsByProductItemId(UUID productItemId);
 
 }

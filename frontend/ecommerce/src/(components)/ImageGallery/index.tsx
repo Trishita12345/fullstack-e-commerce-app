@@ -10,7 +10,7 @@ import "./imageGallery.css";
 import { useViewportSize } from "@mantine/hooks";
 import { IconShare } from "@tabler/icons-react";
 import { shareProduct } from "@/utils/helperFunctions";
-import { ShareProductType } from "@/app/(customer)/products/[productId]/(components)/ImageComponent";
+import { ShareProductType } from "@/app/(customer)/products/[productItemId]/(components)/ImageComponent";
 
 export default function ImageGallery({
   images,
@@ -31,6 +31,7 @@ export default function ImageGallery({
           width={width > 1349 ? 464 : 386}
         />
         <ActionIcon
+          aria-label="share"
           onClick={() => shareProduct(product)}
           variant="filled"
           c="white"

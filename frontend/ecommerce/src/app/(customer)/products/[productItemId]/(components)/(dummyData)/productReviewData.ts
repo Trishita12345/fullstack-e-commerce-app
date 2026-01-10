@@ -44,7 +44,7 @@ export const reviewData: ProductReviewsResponseDTO = {
   ],
   summary: {
     averageRating: 4.3,
-    totalReviews: 160,
+    totalReviews: 268,
     breakdown: [
       { stars: 5, percentage: 53 },
       { stars: 4, percentage: 20 },

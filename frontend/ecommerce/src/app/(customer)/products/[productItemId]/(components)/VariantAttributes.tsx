@@ -3,7 +3,13 @@ import { Button, Group, Stack, Text } from "@mantine/core";
 import Link from "next/link";
 import { Fragment } from "react";
 
-const VariantAttributes = ({ va }: { va: ProductVariantAttribute }) => {
+const VariantAttributes = ({
+  va,
+  productItemId,
+}: {
+  va: ProductVariantAttribute;
+  productItemId: string;
+}) => {
   return (
     <Stack gap={10}>
       <Text tt="uppercase" size="11px" fw={600} lts={0.9} c={"black.8"}>
@@ -13,7 +19,7 @@ const VariantAttributes = ({ va }: { va: ProductVariantAttribute }) => {
         {va.attributes.map((vaa) => (
           <Fragment key={vaa.name}>
             {" "}
-            {vaa.isSelected ? (
+            {vaa.productItemId === productItemId ? ( //isSelected
               <Button
                 variant={"filled"}
                 color={"primaryDark.5"}

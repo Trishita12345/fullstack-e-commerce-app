@@ -126,6 +126,7 @@ const ButtonSection = ({
     <Grid my={12}>
       <GridCol span={{ base: 12, md: 12, lg: 7 }}>
         <Button
+          aria-label="addToCart"
           fullWidth
           color="black"
           size="lg"
@@ -152,6 +153,7 @@ const ButtonSection = ({
       <GridCol span={{ base: 9, md: 10, lg: 3.5 }}>
         <Button.Group>
           <Button
+            aria-label="minus"
             px={16}
             size="lg"
             variant="outline"
@@ -172,6 +174,7 @@ const ButtonSection = ({
             <Text>{noOfItemsInCartLocal ?? 0}</Text>
           </Button.GroupSection>
           <Button
+            aria-label="plus"
             px={16}
             size="lg"
             variant="outline"
@@ -187,6 +190,7 @@ const ButtonSection = ({
       </GridCol>
       <GridCol span={{ base: 3, md: 2, lg: 1.5 }}>
         <Button
+          aria-label="wishlist"
           color="black"
           size="lg"
           variant="outline"

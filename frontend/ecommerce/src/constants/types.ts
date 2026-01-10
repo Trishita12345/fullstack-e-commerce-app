@@ -156,7 +156,6 @@ export interface AddEditCategoryResponseType {
 
 export type VariantAttributeType = {
   name: string;
-  isSelected: boolean;
   productItemId: string;
 };
 

@@ -24,7 +24,7 @@ const ReviewCard = ({
 }: ReviewCardProps) => {
   return (
     <Group wrap="nowrap" align="start">
-      <Avatar src={avatar} h={36} w={36} mt={8} />
+      <Avatar src={avatar} h={36} w={36} mt={8} alt={name} />
       <Stack gap={12}>
         <Text size="sm" lts={0.7} fw={600}>
           {name}

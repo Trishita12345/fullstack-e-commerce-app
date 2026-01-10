@@ -1,4 +1,4 @@
-import { ShareProductType } from "@/app/(customer)/products/[productId]/(components)/ImageComponent";
+import { ShareProductType } from "@/app/(customer)/products/[productItemId]/(components)/ImageComponent";
 import { apiFetch } from "@/lib/apiFetch";
 import { showNotification } from "@mantine/notifications";
 import { IconCheck, IconExclamationMark, IconX } from "@tabler/icons-react";

@@ -4,7 +4,7 @@ import classes from "./ImageCarousel.module.css";
 import { ActionIcon, Box } from "@mantine/core";
 import { shareProduct } from "@/utils/helperFunctions";
 import { IconShare } from "@tabler/icons-react";
-import { ShareProductType } from "@/app/(customer)/products/[productId]/(components)/ImageComponent";
+import type { ShareProductType } from "@/app/(customer)/products/[productItemId]/(components)/ImageComponent";
 
 export default function ImageCarousel({
   images,
@@ -27,6 +27,7 @@ export default function ImageCarousel({
           <Box maw={350} mx={"auto"} style={{ position: "relative" }}>
             <ResponsiveImage src={src} height={350} width={350} />
             <ActionIcon
+              aria-label="share"
               onClick={() => shareProduct(product)}
               variant="filled"
               c="white"

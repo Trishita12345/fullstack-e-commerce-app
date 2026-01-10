@@ -1,7 +1,5 @@
 import Breadcrumb from "@/(components)/Breadcrumb";
-import { pdpCartDataDTO } from "@/constants/types";
 import { Accordion, Box, Divider, Grid, GridCol, Stack } from "@mantine/core";
-import { productDetailsDummy } from "./(components)/(dummyData)/pdpData";
 import ImageComponent from "./(components)/ImageComponent";
 import PriceSection from "./(components)/PriceSection";
 import UpperRatingSection from "./(components)/UpperRatingSection";
@@ -13,15 +11,19 @@ import ReviewSection from "./(components)/(review)/ReviewSection";
 import { reviewData } from "./(components)/(dummyData)/productReviewData";
 import { en } from "@/constants/en";
 import { pdpCartData } from "./(components)/pdpCartData";
+import { ProductDetailsDTO } from "@/constants/types";
+import { apiFetch } from "@/lib/apiFetch";
 
 interface PageProps {
   params: {
-    productId: string;
+    productItemId: string;
   };
 }
 const PDP = async ({ params }: PageProps) => {
-  const { productId } = await params;
-  const pdpData = productDetailsDummy; //await apiFetch<ProductDetailsDTO>(`/public/products/${productId}`);
+  const { productItemId } = await params;
+  const pdpData = await apiFetch<ProductDetailsDTO>(
+    `/public/products/${productItemId}`
+  );
   const reviews = reviewData;
   const pdpCartDetails = pdpCartData;
   const breadcrumbs = [
@@ -49,7 +51,7 @@ const PDP = async ({ params }: PageProps) => {
           <GridCol span={{ base: 12, sm: 5.7, md: 5.5, lg: 5 }}>
             <ImageComponent
               images={pdpData.imgUrls}
-              product={{ name: pdpData.productName, id: productId }}
+              product={{ name: pdpData.productName, id: productItemId }}
             />
           </GridCol>
           <GridCol span={{ base: 12, sm: 6, md: 6.5, lg: 7 }}>
@@ -57,7 +59,7 @@ const PDP = async ({ params }: PageProps) => {
               <TitleSection pdpData={pdpData} />
               <PriceSection pdpData={pdpData} />
               <UpperRatingSection pdpData={pdpData} />
-              <Variants pdpData={pdpData} />
+              <Variants pdpData={pdpData} productItemId={productItemId} />
               <ButtonSection pdpData={pdpData} pdpCartData={pdpCartDetails} />
               <Divider color="gray.2" mb={-24} />
               <Accordion>

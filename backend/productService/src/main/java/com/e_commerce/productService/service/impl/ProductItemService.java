@@ -5,6 +5,9 @@ import com.e_commerce.productService.model.Product;
 import com.e_commerce.productService.model.ProductItem;
 import com.e_commerce.productService.model.ProductItemImage;
 import com.e_commerce.productService.model.VariantAttribute;
+import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
+import com.e_commerce.productService.model.dto.customer.ProductVariantAttributeDTO;
+import com.e_commerce.productService.model.dto.customer.VariantAttributeDTO;
 import com.e_commerce.productService.model.dto.productItem.ImageDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
@@ -250,5 +253,51 @@ public class ProductItemService implements IProductItemService {
 
                 ProductItem saved = productItemRepository.save(productItem);
                 return productItemEntityToDTOMapper(saved);
+        }
+
+        @Override
+        public ProductDetailsDTO getProductDetailsByProductItemId(UUID productItemId) {
+                ProductDetailsDTO productDetailsDTO = productItemRepository.findProductDetailsById(productItemId);
+                productDetailsDTO
+                                .setImgUrls(productItemImageRepository.findProductImagesByProductItemId(productItemId)
+                                                .stream().map(imgUrl -> s3Service.buildFullUrl(imgUrl)).toList());
+                List<Object[]> rows = productItemRepository
+                                .findVariantAttributeByProductId(productDetailsDTO.getProductId());
+                System.out.println(rows.toString());
+                Map<String, Map<String, UUID>> outerMap = new HashMap<>();
+                for (Object[] row : rows) {
+                        String variantName = (String) row[0];
+                        String attributeName = (String) row[1];
+                        UUID productItem = (UUID) row[2];
+                        if (outerMap.containsKey(variantName)) {
+                                if (!outerMap.get(variantName).containsKey(attributeName)) {
+                                        outerMap.get(variantName).put(attributeName, productItem);
+                                }
+                        } else {
+
+                                outerMap.put(variantName, new HashMap<>() {
+                                        {
+                                                put(attributeName, productItem);
+                                        }
+                                });
+                        }
+                }
+                List<ProductVariantAttributeDTO> pva = new ArrayList<>();
+                outerMap.forEach((outerKey, outerValue) -> {
+                        List<VariantAttributeDTO> va = new ArrayList<>();
+                        outerValue.forEach((innerKey, innerValue) -> {
+                                va.add(VariantAttributeDTO.builder()
+                                                .name(innerKey)
+                                                .productItemId(innerValue)
+                                                .build());
+                        });
+                        pva.add(ProductVariantAttributeDTO
+                                        .builder()
+                                        .variantName(outerKey)
+                                        .attributes(va)
+                                        .build());
+                });
+                productDetailsDTO.setVariantAttributes(pva);
+                return productDetailsDTO;
         }
 }

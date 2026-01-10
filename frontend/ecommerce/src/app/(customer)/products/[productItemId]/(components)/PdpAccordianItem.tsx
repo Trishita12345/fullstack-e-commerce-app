@@ -41,10 +41,11 @@ const PdpAccordionItem = ({
       </AccordionControl>
       <AccordionPanel>
         <Text
+          component="div"
           lts={1}
           size="13px"
           lh={1.8}
-          dangerouslySetInnerHTML={{ __html: content }}
+          dangerouslySetInnerHTML={{ __html: content ?? "" }}
         />
       </AccordionPanel>
     </AccordionItem>

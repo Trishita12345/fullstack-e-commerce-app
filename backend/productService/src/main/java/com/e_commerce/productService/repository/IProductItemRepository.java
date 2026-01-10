@@ -1,6 +1,7 @@
 package com.e_commerce.productService.repository;
 
 import com.e_commerce.productService.model.ProductItem;
+import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
 
 import org.springframework.data.domain.Page;
@@ -22,16 +23,6 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
 
     // All SKUs for a product
     List<ProductItem> findByProduct_Id(UUID productId);
-
-    // // PLP Page
-    // @Query("""
-    // select distinct pi
-    // from ProductItem pi
-    // left join fetch pi.images
-    // left join fetch pi.variantAttributes
-    // """)
-    // Page<ProductItem> findAllItemsWithImagesWithVariantAttributes(Pageable
-    // pageable);
 
     // Fetch items with images and variants using query -- PDP page
     @Query("""
@@ -133,4 +124,33 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
             Pageable pageable);
 
     boolean existsBySku(String sku);
+
+    @Query(value = """
+                        select
+            c.name as categoryName,
+            p.name as productName,
+            p.id as productId,
+            p.description as description,
+            p.features as feature,
+            CAST(pi.base_price AS DOUBLE PRECISION) as basePrice,
+            CAST(pi.discounted_price AS DOUBLE PRECISION)  as discountedPrice,
+            CAST(pi.available_stock AS INTEGER) as availableStock,
+            CAST(4.5 AS DOUBLE PRECISION) as rating,
+            CAST(268 AS INTEGER) as noOfReviews
+            from product_items pi
+            join products p on p.id = pi.product_id
+            join categories c ON c.id = p.category_id
+            where pi.id = :productItemId
+                        """, nativeQuery = true)
+    ProductDetailsDTO findProductDetailsById(UUID productItemId);
+
+    @Query(value = """
+            select v.name,va.name,pi.id
+            from product_items pi
+            join product_item_variant_attributes piva on piva.product_item_id = pi.id
+            join variant_attributes va on va.id = piva.variant_attribute_id
+            join variants v on v.id = va.variant_id
+            where pi.product_id = :productId
+            """, nativeQuery = true)
+    List<Object[]> findVariantAttributeByProductId(UUID productId);
 }
