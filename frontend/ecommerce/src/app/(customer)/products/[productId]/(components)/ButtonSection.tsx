@@ -1,5 +1,6 @@
 "use client";
 import { pdpCartDataDTO, ProductDetailsDTO } from "@/constants/types";
+import { getToken } from "@/lib/apiFetch";
 import { notify } from "@/utils/helperFunctions";
 import { Button, Grid, GridCol, Text } from "@mantine/core";
 import {
@@ -28,9 +29,18 @@ const ButtonSection = ({
   const { noOfItemsInCart, addedToWishList } = pdpCartData;
   const addToCart = async () => {
     try {
+      const token = await getToken();
+      if (!token) {
+        notify({
+          variant: "error",
+          title: "Error!",
+          message: "Please log in first before item adding to cart!",
+        });
+        return;
+      }
       setCartButtonLoader(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
       // api call here
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       notify({
         variant: "success",
         title: "Success!",
@@ -50,9 +60,18 @@ const ButtonSection = ({
 
   const addToWishlist = async () => {
     try {
+      const token = await getToken();
+      if (!token) {
+        notify({
+          variant: "error",
+          title: "Error!",
+          message: "Please log in first before item adding to wishlist!",
+        });
+        return;
+      }
       setWishlistButtonLoader(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
       // api call here
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       notify({
         variant: "success",
         title: "Success!",
@@ -72,9 +91,18 @@ const ButtonSection = ({
 
   const removeFromWishlist = async () => {
     try {
+      const token = await getToken();
+      if (!token) {
+        notify({
+          variant: "error",
+          title: "Error!",
+          message: "Please log in first before item removing from wishlist!",
+        });
+        return;
+      }
       setWishlistButtonLoader(true);
-      await new Promise((resolve) => setTimeout(resolve, 2000));
       // api call here
+      await new Promise((resolve) => setTimeout(resolve, 2000));
       notify({
         variant: "success",
         title: "Success!",

@@ -22,12 +22,6 @@ const LoginButton = () => {
         message: error.message,
         color: "red",
       });
-    } else {
-      notifications.show({
-        title: "Welcome Again",
-        message: "Welcome again please checkout and enlighten your room",
-        color: "green",
-      });
     }
   };
   if (isPending) {

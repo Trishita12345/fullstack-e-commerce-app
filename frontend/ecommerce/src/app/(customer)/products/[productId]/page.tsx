@@ -12,6 +12,7 @@ import PdpAccordionItem from "./(components)/PdpAccordianItem";
 import ReviewSection from "./(components)/(review)/ReviewSection";
 import { reviewData } from "./(components)/(dummyData)/productReviewData";
 import { en } from "@/constants/en";
+import { pdpCartData } from "./(components)/pdpCartData";
 
 interface PageProps {
   params: {
@@ -19,13 +20,10 @@ interface PageProps {
   };
 }
 const PDP = async ({ params }: PageProps) => {
-  const { productId } = params;
+  const { productId } = await params;
   const pdpData = productDetailsDummy; //await apiFetch<ProductDetailsDTO>(`/public/products/${productId}`);
   const reviews = reviewData;
-  const pdpCartData: pdpCartDataDTO = {
-    addedToWishList: false,
-    noOfItemsInCart: 2,
-  };
+  const pdpCartDetails = pdpCartData;
   const breadcrumbs = [
     { title: "Home", href: "/" },
     {
@@ -60,7 +58,7 @@ const PDP = async ({ params }: PageProps) => {
               <PriceSection pdpData={pdpData} />
               <UpperRatingSection pdpData={pdpData} />
               <Variants pdpData={pdpData} />
-              <ButtonSection pdpData={pdpData} pdpCartData={pdpCartData} />
+              <ButtonSection pdpData={pdpData} pdpCartData={pdpCartDetails} />
               <Divider color="gray.2" mb={-24} />
               <Accordion>
                 <PdpAccordionItem

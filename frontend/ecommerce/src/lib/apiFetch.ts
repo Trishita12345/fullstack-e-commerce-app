@@ -12,7 +12,7 @@ interface ApiFetchOptions {
   revalidate?: number;
 }
 
-const getToken = cache(async () => {
+export const getToken = cache(async () => {
   try {
     if (typeof window === "undefined") {
       const res = await getServerToken();

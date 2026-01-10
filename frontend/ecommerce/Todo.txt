@@ -1,14 +1,1 @@
-social login
-auto login after logout
-
-notification
-
-
-
-Loom&Lume.com
-Where Craft Meets Light.
-
-Actual app
-----------
-
-1. Authrization through backend and keycloak (Exposing proxy api through backend app as admin)
+1. add to cart and add to wishlisht only after login
