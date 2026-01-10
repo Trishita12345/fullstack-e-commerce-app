@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.e_commerce.productService.repository.IProductItemImageRepository;
 import com.e_commerce.productService.repository.IProductItemRepository;
-import com.e_commerce.productService.repository.IProductRepository;
 import com.e_commerce.productService.service.IProductService;
 import com.e_commerce.productService.service.ISkuUtilService;
 

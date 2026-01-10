@@ -22,6 +22,8 @@ const ShopByCategories = async () => {
       revalidate: 60,
     }
   );
+  // const res = await fetch("http://localhost:8081/public/categories/leaf");
+  // const Categories = await res.json();
   return (
     <Box bg="gray.1" p={{ base: 24, md: 32, lg: 48 }}>
       <Grid justify="space-between" align="center">
