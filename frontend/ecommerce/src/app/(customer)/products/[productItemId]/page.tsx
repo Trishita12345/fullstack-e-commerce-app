@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 import Breadcrumb from "@/(components)/Breadcrumb";
 import { Accordion, Box, Divider, Grid, GridCol, Stack } from "@mantine/core";
 import ImageComponent from "./(components)/ImageComponent";
@@ -19,11 +21,43 @@ interface PageProps {
     productItemId: string;
   };
 }
+export async function generateStaticParams() {
+  const productItemIds = await apiFetch<{ productItemId: string }[]>(
+    "/public/products/list-productItemId",
+    {
+      cache: "force-cache",
+      revalidate: 3600,
+    }
+  );
+  return productItemIds;
+}
+
+async function getPDPData(productItemId: string) {
+  return await apiFetch<ProductDetailsDTO>(
+    `/public/products/${productItemId}`,
+    {
+      cache: "force-cache",
+      revalidate: 3600,
+    }
+  );
+}
+export async function generateMetadata({ params }: PageProps) {
+  const { productItemId } = await params;
+  const pdp = await getPDPData(productItemId);
+
+  return {
+    title: pdp.productName,
+    description: pdp.description,
+    openGraph: {
+      title: pdp.productName,
+      images: pdp.imgUrls,
+    },
+  };
+}
+
 const PDP = async ({ params }: PageProps) => {
   const { productItemId } = await params;
-  const pdpData = await apiFetch<ProductDetailsDTO>(
-    `/public/products/${productItemId}`
-  );
+  const pdpData = await getPDPData(productItemId);
   const reviews = reviewData;
   const pdpCartDetails = pdpCartData;
   const breadcrumbs = [
