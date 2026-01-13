@@ -1,1 +1,2 @@
 1. add to cart and add to wishlisht only after login
+2. Batch job on pushing email notificicatin on item in cart for more than 12 hours

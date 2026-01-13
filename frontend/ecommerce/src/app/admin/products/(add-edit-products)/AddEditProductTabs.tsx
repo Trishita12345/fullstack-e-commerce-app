@@ -24,10 +24,13 @@ export async function AddEditProductTabs({
 }: PageProps) {
   const { tab = "1" } = await searchParams;
   const categories = await apiFetch<SelectOptionType[]>(
-    "/category/get-leaf-categories"
+    "/product-service/category/get-leaf-categories"
   );
   let productData;
-  if (productId) productData = await apiFetch<Product>(`/product/${productId}`);
+  if (productId)
+    productData = await apiFetch<Product>(
+      `/product-service/product/${productId}`
+    );
   return (
     <>
       <Link href={"../products"}>

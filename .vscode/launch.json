@@ -9,6 +9,38 @@
       "projectName": "productService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-ApiGatewayServiceApplication<apiGatewayService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.apiGatewayService.ApiGatewayServiceApplication",
+      "projectName": "apiGatewayService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=58787 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=apiGatewayService"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-CartServiceApplication<cartService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.cartService.CartServiceApplication",
+      "projectName": "cartService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=62742 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=cartService"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-Main<common-auth>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.Main",
+      "projectName": "common-auth",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

@@ -4,7 +4,7 @@ import AddEditVariantForm from "@/app/admin/categories/(add-edit-category)/[cate
 
 const AddVariant = async () => {
   const categoryOptions = await apiFetch<SelectOptionType[]>(
-    "/category/get-all-categories"
+    "/product-service/category/get-all-categories"
   );
   return <AddEditVariantForm categoryOptions={categoryOptions} />;
 };

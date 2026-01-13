@@ -16,7 +16,7 @@ export const auth = betterAuth({
   },
   cors: {
     enabled: true,
-    origin: ["http://localhost:3000", "http://localhost:8081"],
+    origin: ["http://localhost:3000", "http://localhost:8080"],
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
   },
@@ -25,7 +25,7 @@ export const auth = betterAuth({
       jwt: {
         expirationTime: "2h",
         issuer: "http://localhost:3000",
-        audience: "http://localhost:8081",
+        audience: "http://localhost:8080",
       },
       jwks: {
         keyPairConfig: {
@@ -57,7 +57,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     // "http://localhost:3001",
     "https://oauth.pstmn.io/v1/callback",
-    "http://localhost:8081",
+    "http://localhost:8080",
   ],
 });
 

@@ -1,0 +1,22 @@
+services:
+  cart_service:
+    image: 'postgres:16'
+    container_name: cart_service_postgres_container
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d cart_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass123
+      POSTGRES_DB: cart_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - cart_data:/var/lib/postgresql/data
+
+
+volumes:
+  cart_data:

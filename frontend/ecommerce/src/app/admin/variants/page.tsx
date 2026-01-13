@@ -35,7 +35,7 @@ export default async function Variants({ searchParams }: PageProps) {
   const page = Number(pageParam ?? 1) - 1;
 
   const variants = await apiFetch<Page<VariantListType>>(
-    `/variant/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
+    `/product-service/variant/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
     {
       cache: "force-cache",
       revalidate: 60,
@@ -43,7 +43,7 @@ export default async function Variants({ searchParams }: PageProps) {
   );
 
   const categoriesForFilter = await apiFetch<SelectOptionType[]>(
-    "/category/get-all-categories"
+    "/product-service/category/get-all-categories"
   );
   const sortableFields: SortableField[] = [
     {

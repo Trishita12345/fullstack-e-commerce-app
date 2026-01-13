@@ -14,10 +14,10 @@ interface PageProps {
 const EditCategory = async ({ params }: PageProps) => {
   const { categoryId } = await params;
   const categoryData = await apiFetch<AddEditCategoryResponseType>(
-    `/category/${categoryId}`
+    `/product-service/category/${categoryId}`
   );
   const parentCategories = await apiFetch<SelectOptionType[]>(
-    `/category/get-parent-categories`
+    `/product-service/category/get-parent-categories`
   );
   console.log("categoryData: ", categoryData);
   const filteredParentCategories = parentCategories.filter(

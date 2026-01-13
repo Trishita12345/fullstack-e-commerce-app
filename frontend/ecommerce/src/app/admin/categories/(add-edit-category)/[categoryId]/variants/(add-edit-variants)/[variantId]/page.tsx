@@ -11,16 +11,16 @@ interface PageProps {
 const EditVariant = async ({ params }: PageProps) => {
   const { categoryId, variantId } = await params;
   const variantData = await apiFetch<Variant>(
-    `/variant/${variantId}`
+    `/product-service/variant/${variantId}`
   );
   const categoryOptions = await apiFetch<SelectOptionType[]>(
-      `/category/${categoryId}/ancestors`
+    `/product-service/category/${categoryId}/ancestors`
   );
   return (
     <AddEditVariantForm
       categoryId={categoryId}
       variantId={variantId}
-      variantData={{...variantData, category: categoryId}}
+      variantData={{ ...variantData, category: categoryId }}
       categoryOptions={categoryOptions}
     />
   );

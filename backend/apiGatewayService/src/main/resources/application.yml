@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: product-service
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/product-service/**
+              filters:
+                - StripPrefix=2
+                - UserContext
+            - id: cart-service
+              uri: http://localhost:8082
+              predicates:
+                - Path=/api/cart-service/**
+              filters:
+                - StripPrefix=2
+                - UserContext
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:3000
+logging:
+  level:
+    org:
+      springframework:
+        security: debug
+        cloud:
+          gateway: debug
+
+frontend:
+  url: ${FRONTEND_URL:http://localhost:3000}

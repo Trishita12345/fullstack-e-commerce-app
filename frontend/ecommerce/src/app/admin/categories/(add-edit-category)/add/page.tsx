@@ -4,7 +4,7 @@ import AddEditCategoryForm from "../add-edit-category-form";
 
 const AddCategory = async () => {
   const parentCategories = await apiFetch<SelectOptionType[]>(
-    `/category/get-parent-categories`
+    `/product-service/category/get-parent-categories`
   );
   return <AddEditCategoryForm parentCategories={parentCategories} />;
 };

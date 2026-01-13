@@ -32,7 +32,7 @@ export default async function Categories({ searchParams }: PageProps) {
   const page = Number(pageParam ?? 1) - 1;
 
   const categories = await apiFetch<Page<CategoryListType>>(
-    `/category/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}`,
+    `/product-service/category/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}`,
     {
       cache: "force-cache",
       revalidate: 60,

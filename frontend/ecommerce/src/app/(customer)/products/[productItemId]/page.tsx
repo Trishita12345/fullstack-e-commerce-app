@@ -23,7 +23,7 @@ interface PageProps {
 }
 export async function generateStaticParams() {
   const productItemIds = await apiFetch<{ productItemId: string }[]>(
-    "/public/products/list-productItemId",
+    "/product-service/public/products/list-productItemId",
     {
       cache: "force-cache",
       revalidate: 3600,
@@ -34,7 +34,7 @@ export async function generateStaticParams() {
 
 async function getPDPData(productItemId: string) {
   return await apiFetch<ProductDetailsDTO>(
-    `/public/products/${productItemId}`,
+    `/product-service/public/products/${productItemId}`,
     {
       cache: "force-cache",
       revalidate: 3600,

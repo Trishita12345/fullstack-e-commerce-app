@@ -34,14 +34,14 @@ export default async function Products({ searchParams }: PageProps) {
   const page = Number(pageParam ?? 1) - 1;
 
   const products = await apiFetch<Page<ProductsListingPageProps>>(
-    `/product/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
+    `/product-service/product/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
     {
       cache: "force-cache",
       revalidate: 60,
     }
   );
   const categoriesForFilter = await apiFetch<SelectOptionType[]>(
-    "/category/get-leaf-categories"
+    "/product-service/category/get-leaf-categories"
   );
   const sortableFields: SortableField[] = [
     {

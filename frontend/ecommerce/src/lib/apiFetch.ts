@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { authClient } from "./auth-client";
 import { getServerToken } from "./get-server-auth";
+import { forbidden, unauthorized } from "next/navigation";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -53,6 +54,8 @@ export async function apiFetch<T>(
   });
 
   if (!res.ok) {
+    if(res.status === 401) unauthorized()
+    if(res.status === 403) forbidden()
     const message = await res.text();
     throw new Error(message || "API request failed");
   }

@@ -9,10 +9,15 @@ interface PageProps {
 }
 const AddVariant = async ({ params }: PageProps) => {
   const { categoryId } = await params;
-    const categoryOptions = await apiFetch<SelectOptionType[]>(
-        "/category/get-all-categories"
-      );
-  return <AddEditVariantForm categoryId={categoryId} categoryOptions={categoryOptions}/>;
+  const categoryOptions = await apiFetch<SelectOptionType[]>(
+    "/product-service/category/get-all-categories"
+  );
+  return (
+    <AddEditVariantForm
+      categoryId={categoryId}
+      categoryOptions={categoryOptions}
+    />
+  );
 };
 
 export default AddVariant;

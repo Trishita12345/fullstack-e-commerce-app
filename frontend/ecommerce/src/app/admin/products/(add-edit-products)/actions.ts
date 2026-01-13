@@ -5,7 +5,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import { revalidatePath } from "next/cache";
 
 export async function addProduct(values: Product) {
-  const { productId } = await apiFetch<Product>(`/product/add`, {
+  const { productId } = await apiFetch<Product>(`/product-service/product/add`, {
     method: "POST",
     body: values,
   });
@@ -14,7 +14,7 @@ export async function addProduct(values: Product) {
 }
 
 export async function editProduct(productId: string, values: Product) {
-  await apiFetch(`/product/${productId}`, {
+  await apiFetch(`/product-service/product/${productId}`, {
     method: "PUT",
     body: values,
   });

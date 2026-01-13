@@ -6,7 +6,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import { revalidatePath } from "next/cache";
 
 export async function addCategory(values: AddEditCategoryResponseType) {
-  await apiFetch("/category/add", {
+  await apiFetch("/product-service/category/add", {
     method: "POST",
     body: values,
   });
@@ -14,7 +14,7 @@ export async function addCategory(values: AddEditCategoryResponseType) {
 }
 
 export async function editCategory(id: string, values: AddEditCategoryResponseType) {
-  await apiFetch(`/category/edit/${id}`, {
+  await apiFetch(`/product-service/category/edit/${id}`, {
     method: "PUT",
     body: values,
   });
@@ -22,5 +22,5 @@ export async function editCategory(id: string, values: AddEditCategoryResponseTy
 }
 
 export async function parentCaregories() {
-  await apiFetch<SelectOptionType[]>("/category/get-parent-categories");
+  await apiFetch<SelectOptionType[]>("/product-service/category/get-parent-categories");
 }

@@ -10,7 +10,7 @@ interface PageProps {
 const AddProductVariant = async ({ params }: PageProps) => {
   const { productId } = await params;
   const variantAttributes = await apiFetch<VariantAttribute[]>(
-    `/productItem/${productId}/variant-attributes`
+    `/product-service/productItem/${productId}/variant-attributes`
   );
   return (
     <AddEditProductVariantForm

@@ -5,7 +5,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import { revalidatePath } from "next/cache";
 
 export async function addVariant(categoryId: string, values: Category) {
-  await apiFetch(`/variant/add/${categoryId}`, {
+  await apiFetch(`/product-service/variant/add/${categoryId}`, {
     method: "POST",
     body: values,
   });
@@ -17,7 +17,7 @@ export async function editVariant(
   variantId: string,
   values: Category
 ) {
-  await apiFetch(`/variant/${categoryId}/${variantId}`, {
+  await apiFetch(`/product-service/variant/${categoryId}/${variantId}`, {
     method: "PUT",
     body: values,
   });

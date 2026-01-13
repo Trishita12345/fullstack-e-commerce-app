@@ -57,14 +57,14 @@ const ProductVariantsListing = async ({
     },
   ] as SortableField[];
   const products = await apiFetch<Page<ProductItemListing>>(
-    `/productItem/${productId}/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
+    `/product-service/productItem/${productId}/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
     {
       cache: "force-cache",
       revalidate: 60,
     }
   );
   const variantAttributes = await apiFetch<VariantAttribute[]>(
-    `/productItem/${productId}/variant-attributes`
+    `/product-service/productItem/${productId}/variant-attributes`
   );
 
   const variantFilterFields: FilterField<SelectOptionType>[] =

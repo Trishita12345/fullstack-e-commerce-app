@@ -36,14 +36,14 @@ export default async function Variants({ params, searchParams }: PageProps) {
   const { categoryId } = await params;
 
   const variants = await apiFetch<Page<VariantListType>>(
-    `/variant/${categoryId}/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}`,
+    `/product-service/variant/${categoryId}/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}`,
     {
       cache: "force-cache",
       revalidate: 60,
     }
   );
   const categoryDetails = await apiFetch<AddEditCategoryResponseType>(
-    `/category/${categoryId}`,
+    `/product-service/category/${categoryId}`,
     {
       cache: "force-cache",
       revalidate: 60,

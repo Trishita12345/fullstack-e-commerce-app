@@ -50,14 +50,17 @@ export function notify({
 }
 
 async function getPresignedUrl(file: File) {
-  const { url } = await apiFetch<{ url: string }>("/s3/presign", {
-    method: "POST",
-    body: {
-      key: `temp/${crypto.randomUUID()}-${file.name}`,
-      contentType: file.type,
-    },
-    headers: { "Content-Type": "application/json" },
-  });
+  const { url } = await apiFetch<{ url: string }>(
+    "/product-service/s3/presign",
+    {
+      method: "POST",
+      body: {
+        key: `temp/${crypto.randomUUID()}-${file.name}`,
+        contentType: file.type,
+      },
+      headers: { "Content-Type": "application/json" },
+    }
+  );
   return url;
 }
 
@@ -95,7 +98,7 @@ function extractS3Key(s3Url: string) {
 
 export async function deleteImageS3(file: string) {
   if (file.includes("/temp/")) {
-    await apiFetch<null>(`/s3/images`, {
+    await apiFetch<null>(`/product-service/s3/images`, {
       method: "DELETE",
       body: {
         key: extractS3Key(file),

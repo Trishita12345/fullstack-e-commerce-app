@@ -16,7 +16,7 @@ import { IconArrowRight } from "@tabler/icons-react";
 
 const ShopByCategories = async () => {
   const Categories = await apiFetch<CategoriesCardType[]>(
-    "/public/categories/leaf",
+    "/product-service/public/categories/leaf",
     {
       cache: "force-cache",
       revalidate: 60,
