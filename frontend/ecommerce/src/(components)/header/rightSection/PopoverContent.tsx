@@ -1,14 +1,18 @@
+"use client";
 import { en } from "@/constants/en";
 import { PopoverContentItemProps } from "@/constants/types";
 import {
   faGear,
   faClockRotateLeft,
   faHouse,
+  faArrowLeft,
+  faWarehouse,
 } from "@fortawesome/free-solid-svg-icons";
 import { Box, Button, Text } from "@mantine/core";
 import PopoverContentItems from "./PopoverContentItems";
-import { useContext } from "react";
 import { authClient } from "@/lib/auth-client";
+import { redirect, usePathname } from "next/navigation";
+import { User } from "@/lib/auth";
 
 const PopoverItems: PopoverContentItemProps[] = [
   {
@@ -18,7 +22,7 @@ const PopoverItems: PopoverContentItemProps[] = [
   },
   {
     label: en.manageProfile,
-    href: `${process.env.NEXT_PUBLIC_KEYCLOAK}/realms/ecommerce/account/`,
+    href: `/my-profile`,
     icon: faGear,
   },
   {
@@ -27,15 +31,21 @@ const PopoverItems: PopoverContentItemProps[] = [
     icon: faHouse,
   },
 ];
-const PopoverContent = () => {
+const PopoverContent = ({ user }: { user: User }) => {
+  const pathname = usePathname();
   const handleLogout = async () => {
     await authClient.signOut();
+    redirect("/");
   };
   return (
     <Box>
-      <Text hiddenFrom="xs" size="xs" fw={600} mb={12} mt={4}>{`${
-        en.welcome
-      }, ${"tokenData?.given_name"}!`}</Text>
+      <Text
+        hiddenFrom="xs"
+        size="xs"
+        fw={600}
+        mb={12}
+        mt={4}
+      >{`${en.hi}, ${user.name}!`}</Text>
       {PopoverItems.map((item: PopoverContentItemProps) => (
         <PopoverContentItems
           href={item.href}
@@ -44,6 +54,23 @@ const PopoverContent = () => {
           key={item.label}
         />
       ))}
+      {user.role === "SELLER" && (
+        <>
+          {pathname.includes("/admin") ? (
+            <PopoverContentItems
+              href={"/"}
+              icon={faArrowLeft}
+              label={en.backToCustomer}
+            />
+          ) : (
+            <PopoverContentItems
+              href={"/admin/dashboard"}
+              icon={faWarehouse}
+              label={en.goToSeller}
+            />
+          )}
+        </>
+      )}
       <Button
         c={"white"}
         tt={"uppercase"}

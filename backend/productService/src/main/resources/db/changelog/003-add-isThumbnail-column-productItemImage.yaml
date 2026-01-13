@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-add-is_thumbnail-column-product_item_images
+      author: trishita
+      changes:
+        - addColumn:
+            tableName: product_item_images
+            columns:
+              - column:
+                  name: is_thumbnail
+                  type: boolean
+                  defaultValue: false
+                  constraints:
+                    nullable: false

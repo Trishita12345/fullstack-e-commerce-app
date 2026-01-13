@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - include:
+      file: classpath:/db/changelog/001-create-table.yaml
+  - include:
+      file: classpath:/db/changelog/002-add-audit-columns.yaml
+  - include:
+      file: classpath:/db/changelog/003-add-isThumbnail-column-productItemImage.yaml
+  - include:
+      file: classpath:/db/changelog/004-add-unique-constraint-name-variant-attribute.yaml
+  - include:
+      file: classpath:/db/changelog/005-add-image-description-in-catergories.yaml
+      

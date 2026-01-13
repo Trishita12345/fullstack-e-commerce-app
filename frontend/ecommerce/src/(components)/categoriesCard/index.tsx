@@ -1,5 +1,5 @@
 import { Box, Stack, Text } from "@mantine/core";
-import ResponsiveImage from "../responsiveImage";
+import Image from "next/image";
 
 export type CategoriesCardType = {
   id: string;
@@ -8,19 +8,34 @@ export type CategoriesCardType = {
   quantity: number;
 };
 const CategoriesCard = ({ item }: { item: CategoriesCardType }) => {
+  console.log("item.imgUrl: ", item.imgUrl);
   return (
-    <Stack bg="white" py={32} px={8} justify="center" gap={16} bdrs={3}>
+    <Stack
+      bg="white"
+      py={16}
+      px={24}
+      justify="center"
+      gap={16}
+      bdrs={3}
+      h={330}
+    >
       <Text style={{ fontFamily: "var(--font-poppins)" }} size="sm" ta="center">
         {item.name}
       </Text>
       <Box
-        w={100}
-        h={100}
+        w={200}
+        h={200}
         bdrs={"50%"}
         style={{ overflow: "hidden" }}
         mx="auto"
       >
-        <ResponsiveImage src={item.imgUrl} width={100} height={100} />
+        <Image
+          src={item.imgUrl}
+          width={150}
+          height={150}
+          alt={"No Img"}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
       </Box>
       <Text
         style={{ fontFamily: "var(--font-poppins)" }}

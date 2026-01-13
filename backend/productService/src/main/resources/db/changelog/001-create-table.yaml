@@ -1,0 +1,265 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 001-create-categories
+      author: trishita
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: parent_category
+                  type: uuid
+                  constraints:
+                    nullable: true
+
+        - addForeignKeyConstraint:
+            baseTableName: categories
+            baseColumnNames: parent_category
+            referencedTableName: categories
+            referencedColumnNames: id
+            constraintName: fk_category_parent
+
+
+  - changeSet:
+      id: 002-create-variants
+      author: trishita
+      changes:
+        - createTable:
+            tableName: variants
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: category_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: variants
+            baseColumnNames: category_id
+            referencedTableName: categories
+            referencedColumnNames: id
+            constraintName: fk_variant_category
+
+
+  - changeSet:
+      id: 003-create-variant-attributes
+      author: trishita
+      changes:
+        - createTable:
+            tableName: variant_attributes
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: variant_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: variant_attributes
+            baseColumnNames: variant_id
+            referencedTableName: variants
+            referencedColumnNames: id
+            constraintName: fk_variant_attribute_variant
+
+
+  - changeSet:
+      id: 004-create-products
+      author: trishita
+      changes:
+        - createTable:
+            tableName: products
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: text
+
+              - column:
+                  name: features
+                  type: text
+
+              - column:
+                  name: category_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: products
+            baseColumnNames: category_id
+            referencedTableName: categories
+            referencedColumnNames: id
+            constraintName: fk_product_category
+
+
+  - changeSet:
+      id: 005-create-product-items
+      author: trishita
+      changes:
+        - createTable:
+            tableName: product_items
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: sku
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: available_stock
+                  type: int
+
+              - column:
+                  name: base_price
+                  type: decimal(10,2)
+
+              - column:
+                  name: discounted_price
+                  type: decimal(10,2)
+
+              - column:
+                  name: product_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: product_items
+            baseColumnNames: product_id
+            referencedTableName: products
+            referencedColumnNames: id
+            constraintName: fk_product_item_product
+
+
+  - changeSet:
+      id: 006-create-product-item-images
+      author: trishita
+      changes:
+        - createTable:
+            tableName: product_item_images
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: img_url
+                  type: varchar(500)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: product_item_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: product_item_images
+            baseColumnNames: product_item_id
+            referencedTableName: product_items
+            referencedColumnNames: id
+            constraintName: fk_product_item_image_item
+
+
+  - changeSet:
+      id: 007-create-product-item-variant-attributes
+      author: trishita
+      changes:
+        - createTable:
+            tableName: product_item_variant_attributes
+            columns:
+              - column:
+                  name: product_item_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: variant_attribute_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: product_item_variant_attributes
+            columnNames: product_item_id, variant_attribute_id
+            constraintName: pk_product_item_variant
+
+        - addForeignKeyConstraint:
+            baseTableName: product_item_variant_attributes
+            baseColumnNames: product_item_id
+            referencedTableName: product_items
+            referencedColumnNames: id
+            constraintName: fk_piva_product_item
+
+        - addForeignKeyConstraint:
+            baseTableName: product_item_variant_attributes
+            baseColumnNames: variant_attribute_id
+            referencedTableName: variant_attributes
+            referencedColumnNames: id
+            constraintName: fk_piva_variant_attribute

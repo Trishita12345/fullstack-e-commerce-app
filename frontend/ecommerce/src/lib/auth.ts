@@ -16,14 +16,16 @@ export const auth = betterAuth({
   },
   cors: {
     enabled: true,
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "http://localhost:8080"],
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
   },
   plugins: [
     jwt({
       jwt: {
-        audience: "http://localhost:8081",
+        expirationTime: "2h",
+        issuer: "http://localhost:3000",
+        audience: "http://localhost:8080",
       },
       jwks: {
         keyPairConfig: {
@@ -32,7 +34,7 @@ export const auth = betterAuth({
       },
     }),
     oidcProvider({
-      useJWTPlugin: false,
+      useJWTPlugin: true,
       getAdditionalUserInfoClaim: (user) => ({
         id: user.id,
         username: user.username,
@@ -54,8 +56,8 @@ export const auth = betterAuth({
   },
   trustedOrigins: [
     // "http://localhost:3001",
-    // "https://oauth.pstmn.io/v1/callback",
-    "http://localhost:8081",
+    "https://oauth.pstmn.io/v1/callback",
+    "http://localhost:8080",
   ],
 });
 

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Header from "../(components)/header";
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
+import "@mantine/notifications/styles.css";
 import "@mantine/spotlight/styles.css";
+import "@mantine/tiptap/styles.css";
 import {
   ColorSchemeScript,
   createTheme,
@@ -11,8 +12,8 @@ import {
 } from "@mantine/core";
 import { en } from "@/constants/en";
 import { Allura, Inter, Jost, Poppins } from "next/font/google";
-import { Footer } from "@/(components)/footer";
 import "./globals.css";
+import { Notifications } from "@mantine/notifications";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -90,7 +91,7 @@ const theme = createTheme({
       "#8b8b8b",
       "#848484",
       "#717171",
-      "#656565",
+      "#363535ff",
       "#000000",
     ],
   },
@@ -110,9 +111,8 @@ export default function RootLayout({
         className={`${poppins.variable} ${inter.variable} ${allura.variable} ${jost.variable} antialiased`}
       >
         <MantineProvider theme={theme}>
-          <Header />
+          <Notifications />
           {children}
-          <Footer />
         </MantineProvider>
       </body>
     </html>

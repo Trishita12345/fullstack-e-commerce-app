@@ -1,0 +1,68 @@
+import { cache } from "react";
+import { authClient } from "./auth-client";
+import { getServerToken } from "./get-server-auth";
+import { forbidden, unauthorized } from "next/navigation";
+
+type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
+interface ApiFetchOptions {
+  method?: HttpMethod;
+  body?: unknown;
+  headers?: HeadersInit;
+  cache?: RequestCache;
+  revalidate?: number;
+}
+
+export const getToken = cache(async () => {
+  try {
+    if (typeof window === "undefined") {
+      const res = await getServerToken();
+      return res?.token;
+    } else {
+      const { data } = await authClient.token();
+      return data?.token;
+    }
+  } catch {
+      return undefined;
+    } 
+});
+
+export async function apiFetch<T>(
+  endpoint: string,
+  options: ApiFetchOptions = {}
+): Promise<T> {
+  const {
+    method = "GET",
+    body,
+    headers,
+    cache = "no-store",
+    revalidate,
+  } = options;
+
+  const token = await getToken();
+  const header = {
+    "Content-Type": "application/json",
+    ...headers,
+  };
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+    method,
+    headers: token ? { ...header, Authorization: `Bearer ${token}` } : header,
+    body: body ? JSON.stringify(body) : undefined,
+    cache,
+    ...(revalidate !== undefined && { next: { revalidate } }),
+  });
+
+  if (!res.ok) {
+    if(res.status === 401) unauthorized()
+    if(res.status === 403) forbidden()
+    const message = await res.text();
+    throw new Error(message || "API request failed");
+  }
+
+  if (res.status === 204) {
+    return null as T;
+  }
+
+  return res.json();
+}

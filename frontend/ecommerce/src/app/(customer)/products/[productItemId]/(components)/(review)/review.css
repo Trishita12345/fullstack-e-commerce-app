@@ -1,0 +1,10 @@
+.reviewGrid .mantine-Grid-inner {
+  flex-direction: row;
+}
+
+@media (max-width: 991px) {
+  .reviewGrid .mantine-Grid-inner {
+    flex-direction: column-reverse;
+    gap: 28px
+  }
+}

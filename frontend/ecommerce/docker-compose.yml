@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  postgres:
+  auth-service-postgres:
     image: postgres:16
     container_name: postgres-container
     restart: always
@@ -29,7 +29,7 @@ services:
     ports:
       - "5050:80"
     depends_on:
-      - postgres
+      - auth-service-postgres
 
 volumes:
   postgres_data:

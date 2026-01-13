@@ -54,7 +54,10 @@ function SearchSpotlight() {
           leftSection: <IconSearch size={20} stroke={1.5} />,
           placeholder: "Search...",
         }}
-        onChange={(event: any) => setValue(event.target.value)}
+        onChange={(event) => {
+          const { target } = event;
+          setValue((target as unknown as { value: string }).value);
+        }}
       />
     </>
   );
