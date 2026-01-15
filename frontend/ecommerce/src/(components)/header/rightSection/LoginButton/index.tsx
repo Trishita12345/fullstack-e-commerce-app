@@ -8,9 +8,13 @@ import { en } from "@/constants/en";
 import PopoverContent from "./PopoverContent";
 import { authClient } from "@/lib/auth-client";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { useEffect } from "react";
+import { useCartActions, useCartItems } from "@/utils/store/cart";
 
 const LoginButton = () => {
   const { data: session, isPending } = authClient.useSession();
+  const isLoggedIn = Boolean(session?.user?.id);
+  const { getInitialCartData } = useCartActions();
 
   const handleSocialLogIn = async () => {
     const { error } = await authClient.signIn.social({
@@ -24,9 +28,17 @@ const LoginButton = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      getInitialCartData();
+    }
+  }, [isLoggedIn]);
+
   if (isPending) {
     return <div></div>;
   }
+
   return (
     <>
       {session?.user ? (

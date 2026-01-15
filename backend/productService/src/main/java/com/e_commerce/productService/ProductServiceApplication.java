@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = {
 		"com.e_commerce.productService",
-		"com.e_commerce.common_auth"
+		"com.e_commerce.common"
 })
 public class ProductServiceApplication {
 

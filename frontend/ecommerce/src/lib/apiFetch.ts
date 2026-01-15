@@ -11,6 +11,7 @@ interface ApiFetchOptions {
   headers?: HeadersInit;
   cache?: RequestCache;
   revalidate?: number;
+  tags?: string[]
 }
 
 export const getToken = cache(async () => {
@@ -37,6 +38,7 @@ export async function apiFetch<T>(
     headers,
     cache = "no-store",
     revalidate,
+    tags = []
   } = options;
 
   const token = await getToken();
@@ -50,7 +52,7 @@ export async function apiFetch<T>(
     headers: token ? { ...header, Authorization: `Bearer ${token}` } : header,
     body: body ? JSON.stringify(body) : undefined,
     cache,
-    ...(revalidate !== undefined && { next: { revalidate } }),
+    ...(revalidate !== undefined && { next: { revalidate, tags } }),
   });
 
   if (!res.ok) {

@@ -1,6 +1,7 @@
 "use client";
-import { pdpCartDataDTO, ProductDetailsDTO } from "@/constants/types";
+import { CartItemDTO, ProductDetailsDTO } from "@/constants/types";
 import { getToken } from "@/lib/apiFetch";
+import { authClient } from "@/lib/auth-client";
 import { notify } from "@/utils/helperFunctions";
 import { Button, Grid, GridCol, Text } from "@mantine/core";
 import {
@@ -10,58 +11,121 @@ import {
   IconMinus,
   IconPlus,
 } from "@tabler/icons-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import {
+  addOrUpdateCartAction,
+  getIsWishListed,
+  getPdpCartData,
+} from "./actions";
+import { useCartActions } from "@/utils/store/cart";
 
 const ButtonSection = ({
   pdpData,
-  pdpCartData,
+  productItemId,
 }: {
   pdpData: ProductDetailsDTO;
-  pdpCartData: pdpCartDataDTO;
+  productItemId: string;
 }) => {
-  const [cartButtonLoader, setCartButtonLoader] = useState<boolean>(false);
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
+  const isLoggedIn = Boolean(session?.user?.id);
+  const [cartButtonLoader, setCartButtonLoader] = useState<boolean>(true);
+  const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
   const [wishlistButtonLoader, setWishlistButtonLoader] =
-    useState<boolean>(false);
-  const [noOfItemsInCartLocal, setNoOfItemsInCartLocal] = useState<number>(
-    pdpCartData.noOfItemsInCart
-  );
+    useState<boolean>(true);
+  const [noOfItemsInCart, setNoOfItemsInCart] = useState<number>(0);
+  const [noOfItemsInCartLocal, setNoOfItemsInCartLocal] = useState<number>(1);
+  const { addToCart, updateCart } = useCartActions();
 
-  const { noOfItemsInCart, addedToWishList } = pdpCartData;
-  const addToCart = async () => {
+  const getInitialCartData = async () => {
     try {
-      const token = await getToken();
-      if (!token) {
+      setCartButtonLoader(true);
+      const noOfItemsInCartTemp = await getPdpCartData(productItemId);
+      setNoOfItemsInCart(noOfItemsInCartTemp);
+      setNoOfItemsInCartLocal(noOfItemsInCartTemp || 1);
+    } catch {
+    } finally {
+      setCartButtonLoader(false);
+    }
+  };
+
+  const getInitialWishlistData = async () => {
+    try {
+      setWishlistButtonLoader(true);
+      const isWishlistedTemp = await getIsWishListed(productItemId);
+      setIsWishlisted(isWishlistedTemp);
+    } catch {
+    } finally {
+      setWishlistButtonLoader(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      getInitialCartData();
+      getInitialWishlistData();
+    } else {
+      setCartButtonLoader(false);
+      setWishlistButtonLoader(false);
+    }
+  }, [isLoggedIn]);
+
+  const addOrUpdateCart = async (type: "add" | "update") => {
+    try {
+      const payload: CartItemDTO = {
+        productItemId,
+        quantity: noOfItemsInCartLocal,
+        priceSnapshot: pdpData.discountedPrice,
+      };
+      if (!isLoggedIn) {
         notify({
           variant: "error",
           title: "Error!",
-          message: "Please log in first before item adding to cart!",
+          message: "Please log in first!",
         });
         return;
+        //if (type === "add") addToCart(payload);
+      } else {
+        setCartButtonLoader(true);
+        await addOrUpdateCartAction(payload, type);
+        getInitialCartData();
+        if (type === "add") addToCart(payload);
       }
-      setCartButtonLoader(true);
-      // api call here
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (type === "update") updateCart(payload);
       notify({
         variant: "success",
         title: "Success!",
-        message: "Item added to cart successfully!",
+        message:
+          type === "add"
+            ? "Item added to cart successfully!"
+            : "Cart updated successfully!",
       });
     } catch (err) {
-      console.error(err);
-    } finally {
-      setCartButtonLoader(false);
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to add item in cart!",
+        message:
+          type === "add"
+            ? "Failed to add item in cart!"
+            : "Failed to update your cart!",
       });
+    } finally {
+      setCartButtonLoader(false);
     }
+  };
+
+  const handleAddToCart = () => {
+    if (noOfItemsInCart === 0) {
+      addOrUpdateCart("add");
+    } else if (noOfItemsInCart !== noOfItemsInCartLocal) {
+      addOrUpdateCart("update");
+    } else router.push("/checkout/cart");
   };
 
   const addToWishlist = async () => {
     try {
-      const token = await getToken();
-      if (!token) {
+      if (!isLoggedIn) {
         notify({
           variant: "error",
           title: "Error!",
@@ -70,8 +134,8 @@ const ButtonSection = ({
         return;
       }
       setWishlistButtonLoader(true);
-      // api call here
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await getIsWishListed(productItemId);
+      getInitialWishlistData();
       notify({
         variant: "success",
         title: "Success!",
@@ -132,11 +196,7 @@ const ButtonSection = ({
           size="lg"
           loading={cartButtonLoader}
           loaderProps={{ type: "dots" }}
-          onClick={() =>
-            noOfItemsInCartLocal && noOfItemsInCart === noOfItemsInCartLocal
-              ? goToCart()
-              : addToCart()
-          }
+          onClick={handleAddToCart}
           rightSection={
             noOfItemsInCartLocal && noOfItemsInCart === noOfItemsInCartLocal ? (
               <IconArrowRight />
@@ -159,7 +219,7 @@ const ButtonSection = ({
             variant="outline"
             color="black"
             onClick={() => {
-              if (noOfItemsInCartLocal > 0)
+              if (noOfItemsInCartLocal > 1)
                 setNoOfItemsInCartLocal((prev) => --prev);
             }}
           >
@@ -171,7 +231,7 @@ const ButtonSection = ({
             variant="outline"
             w="100%"
           >
-            <Text>{noOfItemsInCartLocal ?? 0}</Text>
+            <Text>{noOfItemsInCartLocal}</Text>
           </Button.GroupSection>
           <Button
             aria-label="plus"
@@ -196,11 +256,11 @@ const ButtonSection = ({
           variant="outline"
           fullWidth
           px={16}
-          onClick={!addedToWishList ? addToWishlist : removeFromWishlist}
+          onClick={!isWishlisted ? addToWishlist : removeFromWishlist}
           loading={wishlistButtonLoader}
           loaderProps={{ type: "dots" }}
         >
-          {addedToWishList ? <IconHeartFilled /> : <IconHeart />}
+          {isWishlisted ? <IconHeartFilled /> : <IconHeart />}
         </Button>
       </GridCol>
     </Grid>

@@ -13,6 +13,7 @@ import PopoverContentItems from "./PopoverContentItems";
 import { authClient } from "@/lib/auth-client";
 import { redirect, usePathname } from "next/navigation";
 import { User } from "@/lib/auth";
+import { useCartActions } from "@/utils/store/cart";
 
 const PopoverItems: PopoverContentItemProps[] = [
   {
@@ -33,8 +34,10 @@ const PopoverItems: PopoverContentItemProps[] = [
 ];
 const PopoverContent = ({ user }: { user: User }) => {
   const pathname = usePathname();
+  const { clearCartData } = useCartActions();
   const handleLogout = async () => {
     await authClient.signOut();
+    clearCartData();
     redirect("/");
   };
   return (

@@ -50,7 +50,7 @@
         </dependency>
 		<dependency>
 			<groupId>com.e_commerce</groupId>
-			<artifactId>common-auth</artifactId>
+			<artifactId>common</artifactId>
 			<version>1.0.0</version>
 		</dependency>
         <dependency>

@@ -1,4 +1,4 @@
-package com.e_commerce.common_auth.security;
+package com.e_commerce.common.security;
 
 public final class UserHeaders {
 

@@ -14,7 +14,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: user_id
-                  type: uuid
+                  type: text
                   constraints:
                     nullable: false
               - column:
@@ -54,7 +54,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: product_id
+                  name: product_item_id
                   type: uuid
                   constraints:
                     nullable: false

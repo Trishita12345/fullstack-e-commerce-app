@@ -6,6 +6,8 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
+import com.e_commerce.common.model.AuditEntity;
+
 @Getter
 @Setter
 @Entity
@@ -35,4 +37,3 @@ public class Product extends AuditEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductItem> productItems;
 }
-

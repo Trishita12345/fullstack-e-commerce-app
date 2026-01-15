@@ -1,10 +1,10 @@
-import { Box, Indicator, Tooltip } from "@mantine/core";
+import { Box, Tooltip } from "@mantine/core";
 import LoginButton from "./LoginButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { en } from "@/constants/en";
 import SearchSpotlight from "../../searchSpotlight";
+import CartButton from "./CartButton";
 
 const RightSection = () => {
   return (
@@ -25,14 +25,7 @@ const RightSection = () => {
           style={{ cursor: "pointer", paddingRight: 12 }}
         />
       </Tooltip>
-      <Indicator inline label="9" size={16} color={"primaryDark.6"} processing>
-        <Tooltip label={en.myCart}>
-          <FontAwesomeIcon
-            icon={faCartShopping}
-            style={{ cursor: "pointer" }}
-          />
-        </Tooltip>
-      </Indicator>
+      <CartButton />
     </Box>
   );
 };

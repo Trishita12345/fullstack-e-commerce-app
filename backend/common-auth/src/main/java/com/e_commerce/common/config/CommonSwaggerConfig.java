@@ -1,4 +1,4 @@
-package com.e_commerce.common_auth.config;
+package com.e_commerce.common.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Components;

@@ -1,5 +1,7 @@
 export const dynamic = "force-static";
 
+export const revalidate = 3600;
+
 import Breadcrumb from "@/(components)/Breadcrumb";
 import { Accordion, Box, Divider, Grid, GridCol, Stack } from "@mantine/core";
 import ImageComponent from "./(components)/ImageComponent";
@@ -12,7 +14,6 @@ import PdpAccordionItem from "./(components)/PdpAccordianItem";
 import ReviewSection from "./(components)/(review)/ReviewSection";
 import { reviewData } from "./(components)/(dummyData)/productReviewData";
 import { en } from "@/constants/en";
-import { pdpCartData } from "./(components)/pdpCartData";
 import { ProductDetailsDTO } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 
@@ -44,7 +45,6 @@ async function getPDPData(productItemId: string) {
 export async function generateMetadata({ params }: PageProps) {
   const { productItemId } = await params;
   const pdp = await getPDPData(productItemId);
-
   return {
     title: pdp.productName,
     description: pdp.description,
@@ -58,8 +58,9 @@ export async function generateMetadata({ params }: PageProps) {
 const PDP = async ({ params }: PageProps) => {
   const { productItemId } = await params;
   const pdpData = await getPDPData(productItemId);
+  // const noOfItemsInCart = await getPdpCartData(productItemId);
+  // const isWishlisted = await getIsWishListed(productItemId);
   const reviews = reviewData;
-  const pdpCartDetails = pdpCartData;
   const breadcrumbs = [
     { title: "Home", href: "/" },
     {
@@ -94,7 +95,7 @@ const PDP = async ({ params }: PageProps) => {
               <PriceSection pdpData={pdpData} />
               <UpperRatingSection pdpData={pdpData} />
               <Variants pdpData={pdpData} productItemId={productItemId} />
-              <ButtonSection pdpData={pdpData} pdpCartData={pdpCartDetails} />
+              <ButtonSection pdpData={pdpData} productItemId={productItemId} />
               <Divider color="gray.2" mb={-24} />
               <Accordion>
                 <PdpAccordionItem

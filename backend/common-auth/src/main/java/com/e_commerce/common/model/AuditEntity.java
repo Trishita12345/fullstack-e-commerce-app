@@ -1,4 +1,4 @@
-package com.e_commerce.productService.model;
+package com.e_commerce.common.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -20,7 +20,6 @@ public abstract class AuditEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
@@ -34,4 +33,3 @@ public abstract class AuditEntity {
 
     // getters/setters
 }
-

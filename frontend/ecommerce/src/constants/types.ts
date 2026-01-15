@@ -178,8 +178,7 @@ export type ProductDetailsDTO = {
   rating: number;
   noOfReviews: number;
 };
-export interface pdpCartDataDTO {
-  addedToWishList: boolean,
+export interface PdpCartDataDTO {
     noOfItemsInCart: number,
 }
 export interface ProductReviewsResponseDTO {
@@ -213,3 +212,8 @@ export interface ReviewDTO {
   createdAt: string; // ISO date from backend
 }
 
+export interface CartItemDTO {
+  productItemId: string; 
+  quantity: number;
+  priceSnapshot: number; 
+}

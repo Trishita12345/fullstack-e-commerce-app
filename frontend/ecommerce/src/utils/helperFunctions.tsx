@@ -12,15 +12,24 @@ export function formattedPrice(amount: number) {
 
   return formatted;
 }
+type NotificationPosition =
+  | "top-left"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-right"
+  | "top-center"
+  | "bottom-center";
 
 export function notify({
   variant,
   title,
   message,
+  position = "top-center",
 }: {
   variant: "info" | "error" | "success" | "warning";
   title: string;
   message: string;
+  position?: NotificationPosition;
 }) {
   let Icon, color;
   if (variant === "success") {
@@ -38,7 +47,7 @@ export function notify({
   }
   showNotification({
     id: "notify",
-    position: "top-right",
+    position,
     withCloseButton: true,
     autoClose: 5000,
     title,
