@@ -3,10 +3,21 @@ import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { Indicator, Tooltip } from "@mantine/core";
 import { en } from "@/constants/en";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCartItems } from "@/utils/store/cart";
+import { useCartActions, useCartItems } from "@/utils/store/cart";
 import Link from "next/link";
+import { useEffect } from "react";
+import { authClient } from "@/lib/auth-client";
 const CartButton = () => {
+  const { data: session } = authClient.useSession();
+  const isLoggedIn = Boolean(session?.user?.id);
+  const { getInitialCartData } = useCartActions();
+
   const cartItems = useCartItems();
+  useEffect(() => {
+    if (isLoggedIn) {
+      getInitialCartData();
+    }
+  }, [isLoggedIn]);
   return (
     <Link href={"/checkout/cart"}>
       {cartItems.length ? (

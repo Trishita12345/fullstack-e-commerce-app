@@ -1,6 +1,7 @@
 package com.e_commerce.productService.repository;
 
 import com.e_commerce.productService.model.ProductItemImage;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -22,4 +23,5 @@ public interface IProductItemImageRepository extends JpaRepository<ProductItemIm
             order by pii.is_thumbnail desc
                         """, nativeQuery = true)
     List<String> findProductImagesByProductItemId(UUID productItemId);
+
 }

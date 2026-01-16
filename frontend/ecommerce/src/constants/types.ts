@@ -217,3 +217,16 @@ export interface CartItemDTO {
   quantity: number;
   priceSnapshot: number; 
 }
+
+export interface CartProducts {
+  productName: string;
+  productItemId: string;
+  basePrice: number;
+  discountedPrice: number;
+  availableStock: number;
+  imgUrl: string;
+}
+
+export interface CartProductsDTO {
+  [productItemId: string]: CartProducts
+}

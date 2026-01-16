@@ -13,8 +13,6 @@ import { useCartActions, useCartItems } from "@/utils/store/cart";
 
 const LoginButton = () => {
   const { data: session, isPending } = authClient.useSession();
-  const isLoggedIn = Boolean(session?.user?.id);
-  const { getInitialCartData } = useCartActions();
 
   const handleSocialLogIn = async () => {
     const { error } = await authClient.signIn.social({
@@ -29,14 +27,24 @@ const LoginButton = () => {
     }
   };
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      getInitialCartData();
-    }
-  }, [isLoggedIn]);
-
   if (isPending) {
-    return <div></div>;
+    return (
+      <Button
+        c="black.9"
+        py={2}
+        px={{ base: 0, xs: 12 }}
+        style={{
+          fontSize: "13px",
+          cursor: "default",
+        }}
+        radius="xs"
+        variant="transparent"
+      >
+        <Text size="xs" visibleFrom="xs">
+          Logging in...
+        </Text>
+      </Button>
+    );
   }
 
   return (

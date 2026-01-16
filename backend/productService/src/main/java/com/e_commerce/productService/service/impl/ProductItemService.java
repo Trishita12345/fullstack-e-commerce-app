@@ -5,6 +5,7 @@ import com.e_commerce.productService.model.Product;
 import com.e_commerce.productService.model.ProductItem;
 import com.e_commerce.productService.model.ProductItemImage;
 import com.e_commerce.productService.model.VariantAttribute;
+import com.e_commerce.productService.model.dto.customer.CartProductItemInfoResponse;
 import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
 import com.e_commerce.productService.model.dto.customer.ProductItemIdDTO;
 import com.e_commerce.productService.model.dto.customer.ProductVariantAttributeDTO;
@@ -312,5 +313,22 @@ public class ProductItemService implements IProductItemService {
                                                 .productItemId(pi.getId())
                                                 .build())
                                 .toList();
+        }
+
+        @Override
+        public Map<UUID, CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds) {
+                List<CartProductItemInfoResponse> cartProductItemInfoResponseList = productItemRepository
+                                .getCarProductItemInfos(productItemIds).stream()
+                                .map(i -> {
+                                        i.setImgUrl(s3Service.buildFullUrl(i.getImgUrl()));
+                                        return i;
+                                })
+                                .toList();
+                Map<UUID, CartProductItemInfoResponse> map = new HashMap<>();
+                cartProductItemInfoResponseList
+                                .forEach(item -> {
+                                        map.put(item.getProductItemId(), item);
+                                });
+                return map;
         }
 }

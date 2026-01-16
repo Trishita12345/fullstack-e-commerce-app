@@ -1,6 +1,7 @@
 package com.e_commerce.productService.repository;
 
 import com.e_commerce.productService.model.ProductItem;
+import com.e_commerce.productService.model.dto.customer.CartProductItemInfoResponse;
 import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
 
@@ -153,4 +154,20 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
             where pi.product_id = :productId
             """, nativeQuery = true)
     List<Object[]> findVariantAttributeByProductId(UUID productId);
+
+    @Query(value = """
+            SELECT
+            p.name as productName,
+            pi.id as productItemId,
+            CAST(pi.base_price AS DOUBLE PRECISION) as basePrice,
+            CAST(pi.discounted_price AS DOUBLE PRECISION)  as discountedPrice,
+            CAST(pi.available_stock AS INTEGER) as availableStock,
+            pii.img_url as imgUrl
+            FROM product_items pi
+            join products p on p.id = pi.product_id
+            join product_item_images pii on pi.id = pii.product_item_id
+            where pii.is_thumbnail = true
+            and pi.id in :productItemIds
+                                    """, nativeQuery = true)
+    List<CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds);
 }
