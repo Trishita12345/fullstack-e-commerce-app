@@ -2,10 +2,18 @@
 
 import { CartItemDTO, CartProductsDTO } from "@/constants/types";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
-import { Box, Grid, GridCol, Group, Stack } from "@mantine/core";
+import {
+  Box,
+  Grid,
+  GridCol,
+  Group,
+  Loader,
+  LoadingOverlay,
+  Stack,
+} from "@mantine/core";
 import AddressBox from "./AddressBox";
 import CouponBox from "./CouponBox";
-import { useViewportSize } from "@mantine/hooks";
+import { useDisclosure, useViewportSize } from "@mantine/hooks";
 import GiftBox from "./GiftBox";
 import DonateBox from "./DonateBox";
 import PriceDetailsBox from "./PriceDetailsBox";
@@ -14,8 +22,10 @@ import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/apiFetch";
 import CartItemsSection from "./CartItemsSection";
 import CartEmpty from "./CartEmpty";
+import { getInitialCartDataAction } from "./cartActions";
 
 const Cart = () => {
+  const [visible, { open, close }] = useDisclosure(false);
   const { width } = useViewportSize();
   const { data: session } = authClient.useSession();
   const isLoggedIn = Boolean(session?.user?.id);
@@ -29,13 +39,7 @@ const Cart = () => {
   }, [isLoggedIn]);
 
   const getCartProducts = async () => {
-    const data = await apiFetch<CartProductsDTO>(
-      "/product-service/public/products/cart-item-details",
-      {
-        method: "POST",
-        body: cartItems.map((ci) => ci.productItemId),
-      }
-    );
+    const data = await getInitialCartDataAction(cartItems);
     setCartProducts(data);
   };
 
@@ -48,30 +52,42 @@ const Cart = () => {
   return (
     <Box w={{ base: "90%", md: "85%", lg: "70%" }} mx="auto">
       {Object.keys(cartProducts).length > 0 ? (
-        <Grid>
-          <GridCol
-            pr={{ base: 0, lg: 24 }}
-            span={{ base: 12, lg: 8 }}
-            style={{
-              borderRight: `${
-                width < 1200 ? 0 : 1
-              }px solid var(--mantine-color-gray-1)`,
+        <Box pos="relative">
+          <LoadingOverlay
+            visible={visible}
+            loaderProps={{
+              children: <Loader size={30} color="primaryDark.7" />,
             }}
-          >
-            <Stack my={24}>
-              <AddressBox />
-              <CartItemsSection cartProducts={cartProducts} />
-            </Stack>
-          </GridCol>
-          <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>
-            <Stack my={24} gap={36}>
-              <CouponBox />
-              <GiftBox />
-              <DonateBox />
-              <PriceDetailsBox />
-            </Stack>
-          </GridCol>
-        </Grid>
+          />
+          <Grid>
+            <GridCol
+              pr={{ base: 0, lg: 24 }}
+              span={{ base: 12, lg: 8 }}
+              style={{
+                borderRight: `${
+                  width < 1200 ? 0 : 1
+                }px solid var(--mantine-color-gray-1)`,
+              }}
+            >
+              <Stack my={24}>
+                <AddressBox />
+                <CartItemsSection
+                  cartProducts={cartProducts}
+                  showLoading={open}
+                  stopLoading={close}
+                />
+              </Stack>
+            </GridCol>
+            <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>
+              <Stack my={24} gap={36}>
+                <CouponBox />
+                <GiftBox />
+                <DonateBox />
+                <PriceDetailsBox />
+              </Stack>
+            </GridCol>
+          </Grid>
+        </Box>
       ) : (
         <CartEmpty />
       )}

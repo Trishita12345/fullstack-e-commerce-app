@@ -2,7 +2,6 @@
 
 import type { CartItemDTO, PdpCartDataDTO } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
-import { revalidatePath, revalidateTag, updateTag } from "next/cache";
 
 export async function addOrUpdateCartAction(values: CartItemDTO, type: 'add' | 'update') {
   if (type === 'add') {
@@ -16,8 +15,6 @@ export async function addOrUpdateCartAction(values: CartItemDTO, type: 'add' | '
     body: values,
   });
   }
-  updateTag('cart');
-  revalidatePath(`/products/${values.productItemId}`)
   
 }
 
@@ -26,13 +23,7 @@ export async function getPdpCartData(productItemId: string) {
     const { noOfItemsInCart } =
       await apiFetch<PdpCartDataDTO>(
         `/cart-service/cart-items/check/${productItemId}`,
-        {
-          cache: "force-cache",
-          revalidate: 3600,
-          tags: ["cart"],
-        }
       );
-    console.log("noOfItemsInCart", noOfItemsInCart)
     return noOfItemsInCart;
 }
 
