@@ -1,17 +1,17 @@
 import { formattedPrice } from "@/utils/helperFunctions";
+import { useCartActions, useDonation } from "@/utils/store/cart";
 import { Button, Checkbox, Divider, Group, Stack, Text } from "@mantine/core";
-import { useState } from "react";
 
 const DonateBox = () => {
-  const [value, setValue] = useState<number | undefined>();
-
+  const value = useDonation();
+  const { setDonation } = useCartActions();
   const donationList = [10, 20, 50, 100];
   const handleClick = (val: number) => {
-    setValue(val);
+    setDonation(val);
   };
   const addOrRemoveDonation = (e: React.MouseEvent<HTMLInputElement>) => {
-    if (e.currentTarget.checked == false) setValue(undefined);
-    else setValue(donationList[0]);
+    if (e.currentTarget.checked == false) setDonation(0);
+    else setDonation(donationList[0]);
   };
   return (
     <Stack gap={16}>
@@ -20,7 +20,7 @@ const DonateBox = () => {
       </Text>
       <Group gap={4}>
         <Checkbox
-          checked={value !== undefined}
+          checked={value > 0}
           onClick={addOrRemoveDonation}
           color={"primaryDark.7"}
           label={"Donate and make a difference"}

@@ -1,6 +1,7 @@
+import { InfoIcon } from "@/(components)/InfoIcon";
 import { CartProductsDTO } from "@/constants/types";
 import { formattedPrice } from "@/utils/helperFunctions";
-import { useCartItems } from "@/utils/store/cart";
+import { useCartItems, useCoupon, useDonation } from "@/utils/store/cart";
 import { Button, Divider, Group, Stack, Text } from "@mantine/core";
 
 const PriceDetailsBox = ({
@@ -9,6 +10,8 @@ const PriceDetailsBox = ({
   cartProducts: CartProductsDTO;
 }) => {
   const cartItems = useCartItems();
+  const donation = useDonation();
+  const { couponDiscount } = useCoupon();
   const totalPrice = cartItems.reduce(
     (sum, item) =>
       (sum += cartProducts[item.productItemId].basePrice * item.quantity),
@@ -43,24 +46,28 @@ const PriceDetailsBox = ({
             - {formattedPrice(totalPrice - totalDiscountedPrice)}
           </Text>
         </Group>
-        {/* <Group justify="space-between" id="coupon">
-          <Text c={"black.7"} size="xs">
-            Coupon Discount
-          </Text>
-          <Text c={"green"} size="xs">
-            - ₹2400.00
-          </Text>
-        </Group>
-        <Group justify="space-between" id="donation">
-          <Group gap={4}>
+        {couponDiscount > 0 && (
+          <Group justify="space-between" id="coupon">
             <Text c={"black.7"} size="xs">
-              Donation
+              Coupon Discount
             </Text>
-            <InfoIcon info="** Donation has been added as per choice you have selected above" />
+            <Text c={"green"} size="xs">
+              - {formattedPrice(couponDiscount)}
+            </Text>
           </Group>
-          <Text size="xs">₹10.00</Text>
-        </Group>
-        <Group justify="space-between" id="gift wrap">
+        )}
+        {donation > 0 && (
+          <Group justify="space-between" id="donation">
+            <Group gap={4}>
+              <Text c={"black.7"} size="xs">
+                Donation
+              </Text>
+              <InfoIcon info="** Donation has been added as per choice you have selected above" />
+            </Group>
+            <Text size="xs">{formattedPrice(donation)}</Text>
+          </Group>
+        )}
+        {/* <Group justify="space-between" id="gift wrap">
           <Group gap={4}>
             <Text c={"black.7"} size="xs">
               Gift wrap charges
@@ -76,7 +83,7 @@ const PriceDetailsBox = ({
           Total Amount
         </Text>
         <Text fw={600} size="sm">
-          {formattedPrice(totalDiscountedPrice)}
+          {formattedPrice(totalDiscountedPrice - couponDiscount + donation)}
         </Text>
       </Group>
       <Button color="primaryDark.7" size="md">
