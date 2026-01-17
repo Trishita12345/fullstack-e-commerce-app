@@ -26,6 +26,7 @@ const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       cartItems: [],
+      
       donation: 0,
       coupon: {couponCode: '', couponDiscount: 0},
       actions: {
