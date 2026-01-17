@@ -16,6 +16,7 @@ import Image from "next/image";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { Button } from "@mantine/core";
 import { useCounter } from "@mantine/hooks";
+import { InfoIcon } from "@/(components)/InfoIcon";
 
 interface CartItemCardProps {
   cartItem: CartItemDTO;
@@ -24,29 +25,6 @@ interface CartItemCardProps {
   stopLoading: () => void;
 }
 
-const InfoIcon = ({ discountedPrice }: { discountedPrice: number }) => {
-  return (
-    <Tooltip
-      withArrow
-      arrowSize={6}
-      w={200}
-      label={
-        <Text size="10px" style={{ whiteSpace: "wrap" }} lh={1.5}>
-          {`Total price you see on ${en.logoText} is an all-inclusive price. It
-                    includesthe product price, taxes and GT charges of ${
-                      discountedPrice * 0.05
-                    }.`}
-        </Text>
-      }
-    >
-      <IconInfoCircle
-        color="var(--mantine-color-dimmed)"
-        size={12}
-        style={{ cursor: "pointer" }}
-      />
-    </Tooltip>
-  );
-};
 
 function Price({
   basePrice,
@@ -101,7 +79,9 @@ function Price({
           )}
         </>
       )}
-      <InfoIcon discountedPrice={discountedPrice} />
+      <InfoIcon info={`Total price you see on ${en.logoText} is an all-inclusive price. It
+                    includesthe product price, taxes and GT charges of ${discountedPrice * 0.05
+        }.`} />
     </Group>
   );
 }
