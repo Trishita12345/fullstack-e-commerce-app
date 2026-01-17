@@ -79,11 +79,11 @@ const Cart = () => {
               </Stack>
             </GridCol>
             <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>
-              <Stack my={24} gap={36}>
+              <Stack my={24} gap={18}>
                 <CouponBox />
                 <GiftBox />
                 <DonateBox />
-                <PriceDetailsBox />
+                <PriceDetailsBox cartProducts={cartProducts} />
               </Stack>
             </GridCol>
           </Grid>

@@ -3,20 +3,19 @@ import { CartItemDTO, CartProducts } from "@/constants/types";
 import { authClient } from "@/lib/auth-client";
 import { notify, formattedPrice } from "@/utils/helperFunctions";
 import { useCartActions } from "@/utils/store/cart";
-import { Card, Box, Group, Stack, Tooltip, Text, Badge } from "@mantine/core";
+import { Card, Box, Group, Stack, Text, Badge, Popover } from "@mantine/core";
 import {
   IconArrowNarrowDown,
   IconArrowNarrowUp,
-  IconInfoCircle,
+  IconCaretDownFilled,
+  IconCheck,
   IconTrash,
   IconTruckDelivery,
 } from "@tabler/icons-react";
-import { removeFromCartAction } from "./cartActions";
+import { removeFromCartAction, updateCartAction } from "./cartActions";
 import Image from "next/image";
-import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
-import { Button } from "@mantine/core";
-import { useCounter } from "@mantine/hooks";
 import { InfoIcon } from "@/(components)/InfoIcon";
+import { useState } from "react";
 
 interface CartItemCardProps {
   cartItem: CartItemDTO;
@@ -24,7 +23,6 @@ interface CartItemCardProps {
   showLoading: () => void;
   stopLoading: () => void;
 }
-
 
 function Price({
   basePrice,
@@ -79,9 +77,14 @@ function Price({
           )}
         </>
       )}
-      <InfoIcon info={`Total price you see on ${en.logoText} is an all-inclusive price. It
-                    includesthe product price, taxes and GT charges of ${discountedPrice * 0.05
-        }.`} />
+      <InfoIcon
+        info={`Total price you see on ${
+          en.logoText
+        } is an all-inclusive price. It
+                    includesthe product price, taxes and GST charges of ${
+                      discountedPrice * 0.05
+                    }.`}
+      />
     </Group>
   );
 }
@@ -89,31 +92,114 @@ function Price({
 function Quantity({
   quantity,
   availableStock,
+  productItemId,
+  showLoading,
+  stopLoading,
+  isLoggedIn,
+  priceSnapshot,
 }: {
   quantity: number;
   availableStock: number;
+  productItemId: string;
+  showLoading: () => void;
+  stopLoading: () => void;
+  isLoggedIn: boolean;
+  priceSnapshot: number;
 }) {
-  const [value, { increment, decrement }] = useCounter(quantity, {
-    min: 1,
-    max: availableStock,
-  });
+  const [opened, setOpened] = useState(false);
+  const { updateCart } = useCartActions();
+  const data = Array.from(
+    { length: Math.min(availableStock, 25) },
+    (_, i) => i + 1
+  );
+  const setValue = async (value: number) => {
+    try {
+      const payload: CartItemDTO = {
+        productItemId,
+        quantity: value,
+        priceSnapshot,
+      };
+      if (!isLoggedIn) {
+        notify({
+          variant: "error",
+          title: "Error!",
+          message: "Please log in first!",
+        });
+        // updateCart(payload);
+        return;
+      } else {
+        showLoading();
+        await updateCartAction(payload);
+      }
+      updateCart(payload);
+      notify({
+        variant: "success",
+        title: "Success!",
+        message: "Cart updated successfully!",
+      });
+    } catch (err) {
+      notify({
+        variant: "error",
+        title: "Error!",
+        message: "Failed to update your cart!",
+      });
+    } finally {
+      stopLoading();
+      setOpened(false);
+    }
+  };
 
   return (
-    <Button.Group>
-      <Button variant="default" radius="md" onClick={decrement}>
-        <IconChevronDown color="var(--mantine-color-red-text)" />
-      </Button>
-      <Button.GroupSection
-        variant="default"
-        bg="var(--mantine-color-body)"
-        miw={80}
+    <Popover
+      width={200}
+      position="bottom"
+      withArrow
+      shadow="md"
+      opened={opened}
+    >
+      <Popover.Target>
+        <Group
+          gap={8}
+          bdrs={3}
+          w="max-content"
+          px={8}
+          py={2}
+          style={{
+            cursor: "pointer",
+            backgroundColor: "var(--mantine-color-black-1)",
+          }}
+          onClick={() => setOpened((prev) => !prev)}
+        >
+          <Text size="xs" fw={600} visibleFrom="xs">
+            {`Qty: ${quantity}`}
+          </Text>
+          <IconCaretDownFilled size={"12px"} />
+        </Group>
+      </Popover.Target>
+      <Popover.Dropdown
+        h={"15vw"}
+        style={{ overflowY: "auto" }}
+        w="max-content"
       >
-        {value}
-      </Button.GroupSection>
-      <Button variant="default" radius="md" onClick={increment}>
-        <IconChevronUp color="var(--mantine-color-teal-text)" />
-      </Button>
-    </Button.Group>
+        {data.map((i) => {
+          return (
+            <Group
+              gap={8}
+              py={4}
+              onClick={() => setValue(i)}
+              style={{ cursor: "pointer" }}
+            >
+              <IconCheck
+                size={"18px"}
+                display={i === quantity ? "inline" : "none"}
+                color="var(--mantine-color-black-3)"
+              />
+              <Text size="xs">{i}</Text>
+            </Group>
+          );
+        })}
+      </Popover.Dropdown>
+    </Popover>
   );
 }
 
@@ -182,6 +268,11 @@ const CartItemCard = ({
             <Quantity
               availableStock={availableStock}
               quantity={cartItem.quantity}
+              productItemId={productItemId}
+              showLoading={showLoading}
+              stopLoading={stopLoading}
+              isLoggedIn={isLoggedIn}
+              priceSnapshot={cartItem.priceSnapshot}
             />
             <Group gap={4} id="ship">
               <IconTruckDelivery

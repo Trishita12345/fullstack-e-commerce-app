@@ -85,11 +85,11 @@ const ButtonSection = ({
           message: "Please log in first!",
         });
         return;
-        //if (type === "add") addToCart(payload);
+        // if (type === "add") addToCart(payload);
       } else {
         setCartButtonLoader(true);
         await addOrUpdateCartAction(payload, type);
-        getInitialCartData();
+        // getInitialCartData();
         if (type === "add") addToCart(payload);
       }
       if (type === "update") updateCart(payload);
