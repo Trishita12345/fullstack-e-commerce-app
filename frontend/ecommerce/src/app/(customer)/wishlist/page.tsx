@@ -2,10 +2,12 @@ import ResponsiveImage from "@/(components)/responsiveImage";
 import { CartProducts, CartProductsDTO } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { formattedPrice } from "@/utils/helperFunctions";
-import { Box, Card, CardSection, Grid, GridCol, Group, Text } from "@mantine/core";
+import { Box, Button, Card, CardSection, Grid, GridCol, Group, Stack, Text } from "@mantine/core";
 import Link from "next/link";
 import RemoveWishlistIcon from "./RemoveWishlistIcon";
 import MoveToBagButton from "./MoveToBagButton";
+import Image from "next/image";
+import { IconPointer } from "@tabler/icons-react";
 
 const WishlistPage = async () => {
     const wishlistedItems = await apiFetch<string[]>(
@@ -17,6 +19,19 @@ const WishlistPage = async () => {
             method: "POST",
             body: wishlistedItems
         }
+    )
+
+    const WishlistEmpty = () => (
+        <Stack mx={"auto"} w={"100%"} align="center" gap={8}>
+            <Image src="/assets/WishlistEmpty.svg" height={300} width={300} alt="empty" />
+            {/* <Text c={"dimmed"} ta={"center"} size="xl" fw={700} w={"300px"}>No favorites yet — let’s change that.</Text> */}
+            <Link href={"/"}>
+                <Stack align="center">
+                    <Text c="primaryDark.7" ta={"center"} size="xl" fw={700} w={"350px"}>No favorites yet — let’s change that.</Text>
+                    <Group gap={2}><IconPointer /><Text size="xs" c="dimmed" fw={500}>Click Here</Text></Group>
+                </Stack>
+            </Link>
+        </Stack>
     )
 
     const WishlistCardItem = (wishlistedDetails: CartProducts) => {
@@ -69,14 +84,19 @@ const WishlistPage = async () => {
                     <Text fw={700} size="md">My Wishlist</Text>
                     <Text fw={300} c="black.7">{wishlistedItems.length} Item{wishlistedItems.length > 1 && 's'}</Text>
                 </Group>
-                <Grid gutter={{ base: 16, sm: 24, md: 28, lg: 32 }}>
-                    {
-                        wishlistedItems
-                            .map((item: string) =>
-                                <WishlistCardItem key={item} {...wishlistedItemDetails[item]} />
-                            )
-                    }
-                </Grid>
+                {wishlistedItems.length > 0 ?
+                    <Grid gutter={{ base: 16, sm: 24, md: 28, lg: 32 }}>
+                        {
+                            wishlistedItems
+                                .map((item: string) =>
+                                    <WishlistCardItem key={item} {...wishlistedItemDetails[item]} />
+                                )
+                        }
+
+                    </Grid>
+                    :
+                    <WishlistEmpty />
+                }
 
             </Box>
         </Box>
