@@ -16,6 +16,7 @@ import { removeFromCartAction, updateCartAction } from "./cartActions";
 import Image from "next/image";
 import { InfoIcon } from "@/(components)/InfoIcon";
 import { useState } from "react";
+import Link from "next/link";
 
 interface CartItemCardProps {
   cartItem: CartItemDTO;
@@ -24,7 +25,7 @@ interface CartItemCardProps {
   stopLoading: () => void;
 }
 
-function Price({
+const Price = ({
   basePrice,
   discountedPrice,
   priceSnapshot,
@@ -32,7 +33,7 @@ function Price({
   basePrice: number;
   discountedPrice: number;
   priceSnapshot: number;
-}) {
+}) => {
   return (
     <Group key={basePrice} gap={4} id="price">
       <Text size="sm" fw={500}>
@@ -78,18 +79,16 @@ function Price({
         </>
       )}
       <InfoIcon
-        info={`Total price you see on ${
-          en.logoText
-        } is an all-inclusive price. It
-                    includesthe product price, taxes and GST charges of ${
-                      discountedPrice * 0.05
-                    }.`}
+        info={`Total price you see on ${en.logoText
+          } is an all-inclusive price. It
+                    includesthe product price, taxes and GST charges of ${discountedPrice * 0.05
+          }.`}
       />
     </Group>
   );
 }
 
-function Quantity({
+const Quantity = ({
   quantity,
   availableStock,
   productItemId,
@@ -105,7 +104,7 @@ function Quantity({
   stopLoading: () => void;
   isLoggedIn: boolean;
   priceSnapshot: number;
-}) {
+}) => {
   const [opened, setOpened] = useState(false);
   const { updateCart } = useCartActions();
   const data = Array.from(
@@ -156,6 +155,7 @@ function Quantity({
       withArrow
       shadow="md"
       opened={opened}
+      onDismiss={() => setOpened(false)}
     >
       <Popover.Target>
         <Group
@@ -213,11 +213,11 @@ const CartItemCard = ({
   const isLoggedIn = Boolean(session?.user?.id);
   const { removeFromCart } = useCartActions();
   const {
-    productName,
-    productItemId,
-    basePrice,
-    discountedPrice,
-    availableStock,
+    productName = "",
+    productItemId = "",
+    basePrice = 0,
+    discountedPrice = 0,
+    availableStock = 0,
     imgUrl,
   } = productItem;
   const handleRemoveFromCart = async (productItemId: string) => {
@@ -254,12 +254,16 @@ const CartItemCard = ({
           alignItems: "start",
         }}
       >
-        <Image src={imgUrl} height={120} width={90} alt={productName} />
+        <Link href={`/products/${productItemId}`}>
+          <Image src={imgUrl} height={120} width={90} alt={productName} />
+        </Link>
         <Group justify="space-between" w="100%" align="start">
           <Stack flex={11} gap={8}>
-            <Text size="sm" c="black.6">
-              {productName}
-            </Text>
+            <Link href={`/products/${productItemId}`}>
+              <Text size="sm" c="black.8">
+                {productName}
+              </Text>
+            </Link>
             <Price
               basePrice={basePrice}
               discountedPrice={discountedPrice}

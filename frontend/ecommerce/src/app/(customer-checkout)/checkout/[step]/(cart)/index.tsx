@@ -31,7 +31,7 @@ const Cart = () => {
   const isLoggedIn = Boolean(session?.user?.id);
   const { getInitialCartData } = useCartActions();
   const cartItems = useCartItems();
-  const [cartProducts, setCartProducts] = useState<CartProductsDTO>({});
+  const [cartProducts, setCartProducts] = useState<CartProductsDTO | undefined>(undefined);
   useEffect(() => {
     if (isLoggedIn) {
       getInitialCartData();
@@ -51,7 +51,7 @@ const Cart = () => {
 
   return (
     <Box w={{ base: "90%", md: "85%", lg: "70%" }} mx="auto">
-      {Object.keys(cartProducts).length > 0 ? (
+      {cartProducts ? (
         <Box pos="relative">
           <LoadingOverlay
             visible={visible}
@@ -64,9 +64,8 @@ const Cart = () => {
               pr={{ base: 0, lg: 24 }}
               span={{ base: 12, lg: 8 }}
               style={{
-                borderRight: `${
-                  width < 1200 ? 0 : 1
-                }px solid var(--mantine-color-gray-1)`,
+                borderRight: `${width < 1200 ? 0 : 1
+                  }px solid var(--mantine-color-gray-1)`,
               }}
             >
               <Stack my={24}>

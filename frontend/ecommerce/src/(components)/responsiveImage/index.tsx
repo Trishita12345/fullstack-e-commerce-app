@@ -6,12 +6,14 @@ export type ResponsiveImageProps = {
   width?: number;
   height?: number;
   objectFit?: "fill" | "contain" | "cover" | "none" | "scale-down";
+  style?: object
 };
 const ResponsiveImage = ({
   src,
   width = 320,
   height = 320,
   objectFit = "fill",
+  style
 }: ResponsiveImageProps) => {
   return (
     <Box w={{ base: "100%", md: width }} h={height}>
@@ -20,7 +22,7 @@ const ResponsiveImage = ({
         width={width}
         height={height}
         alt={"No Img"}
-        style={{ width: "100%", height: "100%", objectFit }}
+        style={{ width: "100%", height: "100%", objectFit, ...style }}
       />
     </Box>
   );

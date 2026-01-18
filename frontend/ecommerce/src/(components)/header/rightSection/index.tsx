@@ -5,6 +5,7 @@ import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { en } from "@/constants/en";
 import SearchSpotlight from "../../searchSpotlight";
 import CartButton from "./CartButton";
+import Link from "next/link";
 
 const RightSection = () => {
   return (
@@ -19,12 +20,13 @@ const RightSection = () => {
         |
       </p>
       <SearchSpotlight />
-      <Tooltip label={en.myWishlist}>
+      <Link href={"/wishlist"}><Tooltip label={en.myWishlist}>
         <FontAwesomeIcon
           icon={faHeart}
           style={{ cursor: "pointer", paddingRight: 12 }}
         />
       </Tooltip>
+      </Link>
       <CartButton />
     </Box>
   );

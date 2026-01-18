@@ -15,8 +15,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   addOrUpdateCartAction,
+  addToWishListed,
   getIsWishListed,
   getPdpCartData,
+  removeFromWishListed,
 } from "./actions";
 import { useCartActions } from "@/utils/store/cart";
 
@@ -89,7 +91,7 @@ const ButtonSection = ({
       } else {
         setCartButtonLoader(true);
         await addOrUpdateCartAction(payload, type);
-        // getInitialCartData();
+        getInitialCartData();
         if (type === "add") addToCart(payload);
       }
       if (type === "update") updateCart(payload);
@@ -123,7 +125,7 @@ const ButtonSection = ({
     } else router.push("/checkout/cart");
   };
 
-  const addToWishlist = async () => {
+  const addToWishlistHandler = async () => {
     try {
       if (!isLoggedIn) {
         notify({
@@ -134,7 +136,7 @@ const ButtonSection = ({
         return;
       }
       setWishlistButtonLoader(true);
-      await getIsWishListed(productItemId);
+      await addToWishListed(productItemId);
       getInitialWishlistData();
       notify({
         variant: "success",
@@ -153,7 +155,7 @@ const ButtonSection = ({
     }
   };
 
-  const removeFromWishlist = async () => {
+  const removeFromWishlistHandler = async () => {
     try {
       const token = await getToken();
       if (!token) {
@@ -165,8 +167,8 @@ const ButtonSection = ({
         return;
       }
       setWishlistButtonLoader(true);
-      // api call here
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await removeFromWishListed(productItemId);
+      getInitialWishlistData();
       notify({
         variant: "success",
         title: "Success!",
@@ -183,9 +185,6 @@ const ButtonSection = ({
       });
     }
   };
-
-  const goToCart = () => {};
-
   return (
     <Grid my={12}>
       <GridCol span={{ base: 12, md: 12, lg: 7 }}>
@@ -206,8 +205,8 @@ const ButtonSection = ({
           {noOfItemsInCart === 0
             ? "Add to Cart"
             : noOfItemsInCart !== noOfItemsInCartLocal
-            ? "Update Cart"
-            : "Go to Cart"}
+              ? "Update Cart"
+              : "Go to Cart"}
         </Button>
       </GridCol>
       <GridCol span={{ base: 9, md: 10, lg: 3.5 }}>
@@ -256,7 +255,7 @@ const ButtonSection = ({
           variant="outline"
           fullWidth
           px={16}
-          onClick={!isWishlisted ? addToWishlist : removeFromWishlist}
+          onClick={!isWishlisted ? addToWishlistHandler : removeFromWishlistHandler}
           loading={wishlistButtonLoader}
           loaderProps={{ type: "dots" }}
         >
