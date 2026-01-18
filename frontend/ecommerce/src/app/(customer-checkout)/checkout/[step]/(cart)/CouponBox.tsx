@@ -91,12 +91,14 @@ const CouponBoxModal = ({
   const { setCoupon } = useCartActions();
   const couponFromStore = useCoupon();
   const getTotalDiscountedPriceTemp = (cartItems: CartItemDTO[]) => {
-    return cartItems.reduce(
-      (sum, item) =>
-        (sum +=
-          cartProducts[item.productItemId].discountedPrice * item.quantity),
-      0
-    );
+    return cartItems
+      .filter((ci) => ci.isSelected)
+      .reduce(
+        (sum, item) =>
+          (sum +=
+            cartProducts[item.productItemId].discountedPrice * item.quantity),
+        0
+      );
   };
   useEffect(() => {
     const totalDiscountedPriceTemp = getTotalDiscountedPriceTemp(cartItems);

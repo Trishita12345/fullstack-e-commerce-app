@@ -21,4 +21,6 @@ public class CartItemRequestDTO {
 
     @NotNull
     private BigDecimal priceSnapshot;
+
+    private Boolean isSelected;
 }

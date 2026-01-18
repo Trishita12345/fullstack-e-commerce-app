@@ -31,7 +31,7 @@ const useCartStore = create<CartState>()(
       actions: {
         addToCart(cartItem) {
           set((state) => {
-            const newcartItems = [...state.cartItems, cartItem];
+            const newcartItems = [...state.cartItems, { ...cartItem }];
             return {
               cartItems: newcartItems,
               coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
@@ -39,12 +39,21 @@ const useCartStore = create<CartState>()(
           });
         },
         updateCart(cartItem) {
-          set((state) => ({
-            cartItems: state.cartItems.map((ci) =>
-              ci.productItemId === cartItem.productItemId ? cartItem : ci
-            ),
-            coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
-          }));
+          set((state) => {
+            console.log(cartItem);
+            return {
+              cartItems: state.cartItems.map((ci) =>
+                ci.productItemId === cartItem.productItemId
+                  ? {
+                      ...ci,
+                      isSelected: cartItem.isSelected ?? ci.isSelected,
+                      quantity: cartItem.quantity,
+                    }
+                  : ci
+              ),
+              coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
+            };
+          });
         },
         removeFromCart(productItemId) {
           set((state) => ({

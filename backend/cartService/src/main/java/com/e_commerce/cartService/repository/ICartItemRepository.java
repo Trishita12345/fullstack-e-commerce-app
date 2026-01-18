@@ -14,7 +14,8 @@ public interface ICartItemRepository extends JpaRepository<CartItem, UUID> {
     @Query(value = """
             SELECT CI.PRODUCT_ITEM_ID AS productItemId,
                 CI.QUANTITY AS quantity,
-                CI.price_snapshot AS priceSnapshot
+                CI.price_snapshot AS priceSnapshot,
+                        CI.is_selected AS isSelected
                          FROM CART_ITEMS CI
                          WHERE CI.CART_ID = :cartId
                         """, nativeQuery = true)

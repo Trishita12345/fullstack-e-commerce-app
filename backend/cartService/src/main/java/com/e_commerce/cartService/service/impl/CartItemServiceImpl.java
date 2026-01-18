@@ -37,8 +37,9 @@ public class CartItemServiceImpl implements ICartItemService {
                 CartItem cartItem = CartItem.builder()
                                 .productItemId(cartItemRequestDTO.getProductItemId())
                                 .priceSnapshot(cartItemRequestDTO.getPriceSnapshot())
-                                .quantity(cartItemRequestDTO.getQuantity()).build();
-
+                                .quantity(cartItemRequestDTO.getQuantity())
+                                .isSelected(true)
+                                .build();
                 Cart cart = cartRepository
                                 .findByUserIdAndStatus(userId, CartStatus.ACTIVE)
                                 .orElseGet(() -> {
@@ -67,6 +68,7 @@ public class CartItemServiceImpl implements ICartItemService {
                                 .orElseThrow(() -> new IllegalStateException("Item not found in cart"));
 
                 cartItem.setQuantity(dto.getQuantity());
+                if(dto.getIsSelected() != null) cartItem.setIsSelected(dto.getIsSelected());
                 cartItemRepository.save(cartItem);
         }
 

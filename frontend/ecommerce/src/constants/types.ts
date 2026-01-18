@@ -122,10 +122,10 @@ export interface ProductVariant {
   basePrice: number;
   discountedPrice: number;
   imgUrls: {
-    url: string,
-    isThumbnail: boolean
+    url: string;
+    isThumbnail: boolean;
   }[];
-   attributes: {
+  attributes: {
     [key: string]: string;
   };
 }
@@ -137,13 +137,13 @@ export interface VariantAttribute {
 }
 
 export interface ProductItemListing {
-  productItemId: string,
-  sku: string,
-  avlStock: number,
-  basePrice: number,
-  discountedPrice: number,
-  imgUrl: string,
-  attributes: string[]
+  productItemId: string;
+  sku: string;
+  avlStock: number;
+  basePrice: number;
+  discountedPrice: number;
+  imgUrl: string;
+  attributes: string[];
 }
 
 export interface AddEditCategoryResponseType {
@@ -179,7 +179,7 @@ export type ProductDetailsDTO = {
   noOfReviews: number;
 };
 export interface PdpCartDataDTO {
-    noOfItemsInCart: number,
+  noOfItemsInCart: number;
 }
 export interface ProductReviewsResponseDTO {
   productId: string;
@@ -201,7 +201,7 @@ export interface ReviewSummaryDTO {
 export interface UserDTO {
   id: string;
   name: string;
-  avatarUrl: string|null;
+  avatarUrl: string | null;
 }
 
 export interface ReviewDTO {
@@ -213,9 +213,10 @@ export interface ReviewDTO {
 }
 
 export interface CartItemDTO {
-  productItemId: string; 
+  productItemId: string;
   quantity: number;
-  priceSnapshot: number; 
+  priceSnapshot: number;
+  isSelected?: boolean;
 }
 
 export interface CartProducts {
@@ -228,5 +229,5 @@ export interface CartProducts {
 }
 
 export interface CartProductsDTO {
-  [productItemId: string]: CartProducts
+  [productItemId: string]: CartProducts;
 }

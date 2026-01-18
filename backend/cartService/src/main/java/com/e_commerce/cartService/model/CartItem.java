@@ -31,6 +31,9 @@ public class CartItem extends AuditEntity {
     @Column(name = "price_snapshot", nullable = false, precision = 10, scale = 2)
     private BigDecimal priceSnapshot;
 
+    @Column(nullable = false)
+    private Boolean isSelected;
+
     @ManyToOne
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;

@@ -12,16 +12,21 @@ const PriceDetailsBox = ({
   const cartItems = useCartItems();
   const donation = useDonation();
   const { couponDiscount } = useCoupon();
-  const totalPrice = cartItems.reduce(
-    (sum, item) =>
-      (sum += cartProducts[item.productItemId].basePrice * item.quantity),
-    0
-  );
-  const totalDiscountedPrice = cartItems.reduce(
-    (sum, item) =>
-      (sum += cartProducts[item.productItemId].discountedPrice * item.quantity),
-    0
-  );
+  const totalPrice = cartItems
+    .filter((ci) => ci.isSelected)
+    .reduce(
+      (sum, item) =>
+        (sum += cartProducts[item.productItemId].basePrice * item.quantity),
+      0
+    );
+  const totalDiscountedPrice = cartItems
+    .filter((ci) => ci.isSelected)
+    .reduce(
+      (sum, item) =>
+        (sum +=
+          cartProducts[item.productItemId].discountedPrice * item.quantity),
+      0
+    );
   return (
     <Stack gap={16}>
       <Text size="11px" c="black.7" fw={600} lts={0.5}>

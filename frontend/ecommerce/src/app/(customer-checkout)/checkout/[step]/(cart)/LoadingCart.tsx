@@ -25,6 +25,7 @@ const LoadingCart = () => {
       withBorder
       shadow="sm"
       radius="sm"
+      p={10}
       styles={{
         root: { border: "1px solid var(--mantine-color-black-1)" },
       }}
@@ -36,7 +37,7 @@ const LoadingCart = () => {
           alignItems: "start",
         }}
       >
-        <Skeleton height={120} width={90} />
+        <Skeleton height={140} width={105} />
         <Group justify="space-between" w="100%" align="start">
           <Stack flex={11} gap={16}>
             <Skeleton height={18} width={300} />
@@ -124,8 +125,8 @@ const LoadingCart = () => {
           <Skeleton height={10} width={250} />
         </Group>
         <Group gap={8}>
-          {[1, 1, 1, 1, 1].map((donation) => (
-            <Skeleton height={10} width={50} />
+          {[1, 2, 3, 4, 5].map((donation) => (
+            <Skeleton height={10} width={50} key={donation} />
           ))}
         </Group>
         <Text
@@ -194,8 +195,9 @@ const LoadingCart = () => {
               </Stack>
               <Skeleton height={40} width={120} />
             </Group>
-            {[1, 1].map((i) => (
-              <LoadingCartItem />
+            <Skeleton height={18} width={300} pt={24} pb={12} />
+            {[1, 2].map((i) => (
+              <LoadingCartItem key={i} />
             ))}
           </Stack>
         </GridCol>

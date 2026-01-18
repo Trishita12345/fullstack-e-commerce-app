@@ -3,7 +3,16 @@ import { CartItemDTO, CartProducts } from "@/constants/types";
 import { authClient } from "@/lib/auth-client";
 import { notify, formattedPrice } from "@/utils/helperFunctions";
 import { useCartActions } from "@/utils/store/cart";
-import { Card, Box, Group, Stack, Text, Badge, Popover } from "@mantine/core";
+import {
+  Card,
+  Box,
+  Group,
+  Stack,
+  Text,
+  Badge,
+  Popover,
+  Checkbox,
+} from "@mantine/core";
 import {
   IconArrowNarrowDown,
   IconArrowNarrowUp,
@@ -98,6 +107,7 @@ const Quantity = ({
   stopLoading,
   isLoggedIn,
   priceSnapshot,
+  isSelected,
 }: {
   quantity: number;
   availableStock: number;
@@ -106,6 +116,7 @@ const Quantity = ({
   stopLoading: () => void;
   isLoggedIn: boolean;
   priceSnapshot: number;
+  isSelected: boolean;
 }) => {
   const [opened, setOpened] = useState(false);
   const { updateCart } = useCartActions();
@@ -207,6 +218,7 @@ const CartItemCard = ({
   stopLoading,
 }: CartItemCardProps) => {
   const { data: session } = authClient.useSession();
+  const { updateCart } = useCartActions();
   const isLoggedIn = Boolean(session?.user?.id);
   const {
     productName = "",
@@ -217,11 +229,42 @@ const CartItemCard = ({
     imgUrl,
   } = productItem;
 
+  const handleCheck = async (e: React.MouseEvent<HTMLInputElement>) => {
+    const isSelected = e.currentTarget.checked;
+    try {
+      const payload: CartItemDTO = {
+        ...cartItem,
+        isSelected,
+      };
+      if (!isLoggedIn) {
+        notify({
+          variant: "error",
+          title: "Error!",
+          message: "Please log in first!",
+        });
+        // updateCart(payload);
+        return;
+      } else {
+        showLoading();
+        await updateCartAction(payload);
+      }
+      updateCart(payload);
+    } catch (err) {
+      notify({
+        variant: "error",
+        title: "Error!",
+        message: "Failed to update your cart!",
+      });
+    } finally {
+      stopLoading();
+    }
+  };
   return (
     <Card
       withBorder
       shadow="sm"
       radius="sm"
+      p={10}
       styles={{
         root: { border: "1px solid var(--mantine-color-black-1)" },
       }}
@@ -232,9 +275,20 @@ const CartItemCard = ({
           gap: "16px",
           alignItems: "start",
         }}
+        pos="relative"
       >
+        <Checkbox
+          checked={cartItem.isSelected}
+          color={"primaryDark.7"}
+          style={{
+            position: "absolute",
+            top: 4,
+            left: 4,
+          }}
+          onClick={handleCheck}
+        />
         <Link href={`/products/${productItemId}`}>
-          <Image src={imgUrl} height={120} width={90} alt={productName} />
+          <Image src={imgUrl} height={140} width={105} alt={productName} />
         </Link>
         <Group justify="space-between" w="100%" align="start">
           <Stack flex={11} gap={8}>
@@ -256,6 +310,7 @@ const CartItemCard = ({
               stopLoading={stopLoading}
               isLoggedIn={isLoggedIn}
               priceSnapshot={cartItem.priceSnapshot}
+              isSelected={cartItem?.isSelected || true}
             />
             <Group gap={4} id="ship">
               <IconTruckDelivery
