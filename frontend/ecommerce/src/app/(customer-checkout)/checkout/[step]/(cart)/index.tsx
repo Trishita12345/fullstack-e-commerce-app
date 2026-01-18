@@ -23,6 +23,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import CartItemsSection from "./CartItemsSection";
 import CartEmpty from "./CartEmpty";
 import { getProductDetailsAction } from "./cartActions";
+import LoadingCart from "./LoadingCart";
 
 const Cart = ({
   showLoading,
@@ -66,9 +67,7 @@ const Cart = ({
     <Box w={{ base: "90%", md: "85%", lg: "70%" }} mx="auto">
       <>
         {isLoading ? (
-          <Box h={300} bg="red">
-            Cart Shimmer Loading...
-          </Box>
+          <LoadingCart />
         ) : (
           <>
             {Object.keys(cartProducts).length ? (
@@ -77,9 +76,8 @@ const Cart = ({
                   pr={{ base: 0, lg: 24 }}
                   span={{ base: 12, lg: 8 }}
                   style={{
-                    borderRight: `${
-                      width < 1200 ? 0 : 1
-                    }px solid var(--mantine-color-gray-1)`,
+                    borderRight: `${width < 1200 ? 0 : 1
+                      }px solid var(--mantine-color-gray-1)`,
                   }}
                 >
                   <Stack my={24}>
