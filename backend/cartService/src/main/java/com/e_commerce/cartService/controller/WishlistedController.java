@@ -3,10 +3,8 @@ package com.e_commerce.cartService.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.e_commerce.cartService.model.dto.CartItemRequestDTO;
 import com.e_commerce.cartService.service.IWishlistedService;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -17,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -54,7 +51,7 @@ public class WishlistedController {
                 wishlistedService.isItemWishlisted(authentication.getName(), productItemId));
     }
 
-    @PostMapping("/move-to-wishlist")
+    @PostMapping("/move-to-wishlist/{productItemId}")
     public ResponseEntity<Void> moveFromCartToWishlisted(
             Authentication authentication, @PathVariable UUID productItemId) {
         wishlistedService.moveFromCartToWishlisted(authentication.getName(), productItemId);

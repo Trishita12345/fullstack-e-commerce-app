@@ -24,18 +24,21 @@ import CartItemsSection from "./CartItemsSection";
 import CartEmpty from "./CartEmpty";
 import { getProductDetailsAction } from "./cartActions";
 
-const Cart = () => {
+const Cart = ({
+  showLoading,
+  stopLoading,
+}: {
+  showLoading: () => void;
+  stopLoading: () => void;
+}) => {
   const [cartDataLoaded, setCartDataLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [visible, { open, close }] = useDisclosure(false);
   const { width } = useViewportSize();
   const { data: session } = authClient.useSession();
   const isLoggedIn = Boolean(session?.user?.id);
   const { getInitialCartData } = useCartActions();
   const cartItems = useCartItems();
-  const [cartProducts, setCartProducts] = useState<CartProductsDTO | undefined>(
-    undefined
-  );
+  const [cartProducts, setCartProducts] = useState<CartProductsDTO>({});
   useEffect(() => {
     if (isLoggedIn) {
       (async () => {
@@ -59,7 +62,6 @@ const Cart = () => {
       getCartProducts();
     }
   }, [cartItems, cartDataLoaded]);
-
   return (
     <Box w={{ base: "90%", md: "85%", lg: "70%" }} mx="auto">
       <>
@@ -69,43 +71,35 @@ const Cart = () => {
           </Box>
         ) : (
           <>
-            {cartProducts ? (
-              <Box pos="relative">
-                <LoadingOverlay
-                  visible={visible}
-                  loaderProps={{
-                    children: <Loader size={30} color="primaryDark.7" />,
+            {Object.keys(cartProducts).length ? (
+              <Grid>
+                <GridCol
+                  pr={{ base: 0, lg: 24 }}
+                  span={{ base: 12, lg: 8 }}
+                  style={{
+                    borderRight: `${
+                      width < 1200 ? 0 : 1
+                    }px solid var(--mantine-color-gray-1)`,
                   }}
-                />
-                <Grid>
-                  <GridCol
-                    pr={{ base: 0, lg: 24 }}
-                    span={{ base: 12, lg: 8 }}
-                    style={{
-                      borderRight: `${
-                        width < 1200 ? 0 : 1
-                      }px solid var(--mantine-color-gray-1)`,
-                    }}
-                  >
-                    <Stack my={24}>
-                      <AddressBox />
-                      <CartItemsSection
-                        cartProducts={cartProducts}
-                        showLoading={open}
-                        stopLoading={close}
-                      />
-                    </Stack>
-                  </GridCol>
-                  <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>
-                    <Stack my={24} gap={18}>
-                      <CouponBox cartProducts={cartProducts} />
-                      <GiftBox />
-                      <DonateBox />
-                      <PriceDetailsBox cartProducts={cartProducts} />
-                    </Stack>
-                  </GridCol>
-                </Grid>
-              </Box>
+                >
+                  <Stack my={24}>
+                    <AddressBox />
+                    <CartItemsSection
+                      cartProducts={cartProducts}
+                      showLoading={showLoading}
+                      stopLoading={stopLoading}
+                    />
+                  </Stack>
+                </GridCol>
+                <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>
+                  <Stack my={24} gap={18}>
+                    <CouponBox cartProducts={cartProducts} />
+                    <GiftBox />
+                    <DonateBox />
+                    <PriceDetailsBox cartProducts={cartProducts} />
+                  </Stack>
+                </GridCol>
+              </Grid>
             ) : (
               <CartEmpty />
             )}

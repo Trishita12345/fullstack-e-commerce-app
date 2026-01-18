@@ -17,6 +17,7 @@ import Image from "next/image";
 import { InfoIcon } from "@/(components)/InfoIcon";
 import { useState } from "react";
 import Link from "next/link";
+import DeleteCartItem from "./DeleteCartItem";
 
 interface CartItemCardProps {
   cartItem: CartItemDTO;
@@ -79,14 +80,16 @@ const Price = ({
         </>
       )}
       <InfoIcon
-        info={`Total price you see on ${en.logoText
-          } is an all-inclusive price. It
-                    includesthe product price, taxes and GST charges of ${discountedPrice * 0.05
-          }.`}
+        info={`Total price you see on ${
+          en.logoText
+        } is an all-inclusive price. It
+                    includesthe product price, taxes and GST charges of ${
+                      discountedPrice * 0.05
+                    }.`}
       />
     </Group>
   );
-}
+};
 
 const Quantity = ({
   quantity,
@@ -201,7 +204,7 @@ const Quantity = ({
       </Popover.Dropdown>
     </Popover>
   );
-}
+};
 
 const CartItemCard = ({
   cartItem,
@@ -211,7 +214,6 @@ const CartItemCard = ({
 }: CartItemCardProps) => {
   const { data: session } = authClient.useSession();
   const isLoggedIn = Boolean(session?.user?.id);
-  const { removeFromCart } = useCartActions();
   const {
     productName = "",
     productItemId = "",
@@ -220,23 +222,6 @@ const CartItemCard = ({
     availableStock = 0,
     imgUrl,
   } = productItem;
-  const handleRemoveFromCart = async (productItemId: string) => {
-    try {
-      showLoading();
-      if (isLoggedIn) {
-        removeFromCartAction(productItemId);
-      }
-      removeFromCart(productItemId);
-      notify({
-        variant: "success",
-        title: "Success!",
-        message: "Item removed from cart successfully!",
-      });
-    } catch {
-    } finally {
-      stopLoading();
-    }
-  };
 
   return (
     <Card
@@ -288,11 +273,12 @@ const CartItemCard = ({
               </Text>
             </Group>
           </Stack>
-          <IconTrash
-            color="var(--mantine-color-primaryDark-5)"
-            size={18}
-            style={{ cursor: "pointer" }}
-            onClick={() => handleRemoveFromCart(productItemId)}
+          <DeleteCartItem
+            productItemId={productItemId}
+            isLoggedIn={isLoggedIn}
+            showLoading={showLoading}
+            stopLoading={stopLoading}
+            productImg={imgUrl}
           />
         </Group>
       </Box>

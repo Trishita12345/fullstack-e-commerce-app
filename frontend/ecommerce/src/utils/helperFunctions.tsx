@@ -167,3 +167,6 @@ export const clearStorage = (level: "session" | "local" | "all" = "local") => {
       break;
   }
 };
+
+export const dummyDelay = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
