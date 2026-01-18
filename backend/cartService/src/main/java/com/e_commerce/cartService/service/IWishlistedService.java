@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.e_commerce.cartService.model.dto.CartItemRequestDTO;
-
 public interface IWishlistedService {
 
     List<UUID> getWishlistedItems(String userId);
@@ -16,6 +14,6 @@ public interface IWishlistedService {
 
     Map<String, Boolean> isItemWishlisted(String userId, UUID productItemId);
 
-    void moveToCartFromWishlisted(String userId, CartItemRequestDTO cartItemRequestDTO);
+    void moveFromCartToWishlisted(String userId, UUID productItemId);
 
 }

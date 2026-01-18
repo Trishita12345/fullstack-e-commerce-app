@@ -9,14 +9,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.e_commerce.cartService.model.Cart;
-import com.e_commerce.cartService.model.CartItem;
 import com.e_commerce.cartService.model.Wishlisted;
-import com.e_commerce.cartService.model.dto.CartItemRequestDTO;
-import com.e_commerce.cartService.model.enums.CartStatus;
-import com.e_commerce.cartService.repository.ICartItemRepository;
-import com.e_commerce.cartService.repository.ICartRepository;
 import com.e_commerce.cartService.repository.IWishlistedRepository;
+import com.e_commerce.cartService.service.ICartItemService;
 import com.e_commerce.cartService.service.IWishlistedService;
 
 import jakarta.transaction.Transactional;
@@ -26,9 +21,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class WishlistedServiceImpl implements IWishlistedService {
 
+    private static final String IS_WISHLISTED = "isWishlisted";
     private final IWishlistedRepository wishlistedRepository;
-    private final ICartRepository cartRepository;
-    private final ICartItemRepository cartItemRepository;
+    private final ICartItemService cartItemService;
 
     @Override
     public List<UUID> getWishlistedItems(String userId) {
@@ -58,42 +53,20 @@ public class WishlistedServiceImpl implements IWishlistedService {
         Optional<Wishlisted> wishlisted = wishlistedRepository.findByUserIdAndProductItemId(userId, productItemId);
         Map<String, Boolean> res = new HashMap<>();
         if (wishlisted.isPresent()) {
-            res.put("isWishlisted", true);
+            res.put(IS_WISHLISTED, true);
         } else {
-            res.put("isWishlisted", false);
+            res.put(IS_WISHLISTED, false);
         }
         return res;
     }
 
     @Override
     @Transactional
-    public void moveToCartFromWishlisted(String userId, CartItemRequestDTO cartItemRequestDTO) {
-        System.out.println("wishlisted log: " + cartItemRequestDTO.getProductItemId() + " " + userId);
-        Wishlisted wishlisted = wishlistedRepository
-                .findByUserIdAndProductItemId(userId, cartItemRequestDTO.getProductItemId())
-                .orElseThrow(() -> new IllegalStateException("Wishlisted Item not found"));
-        wishlistedRepository.delete(wishlisted);
-        Cart cart = cartRepository
-                .findByUserIdAndStatus(userId, CartStatus.ACTIVE)
-                .orElseGet(() -> {
-                    Cart newCart = Cart.builder()
-                            .userId(userId)
-                            .status(CartStatus.ACTIVE)
-                            .items(new ArrayList<>())
-                            .build();
-                    return newCart;
-                });
-        CartItem cartItem = cartItemRepository
-                .findByCartIdAndProductItemId(cart.getId(), cartItemRequestDTO.getProductItemId())
-                .orElseGet(
-                        () -> CartItem.builder()
-                                .productItemId(cartItemRequestDTO.getProductItemId())
-                                .priceSnapshot(cartItemRequestDTO.getPriceSnapshot())
-                                .quantity(1).build());
-
-        cartItem.setCart(cart);
-        cart.getItems().add(cartItem);
-        cartRepository.save(cart);
+    public void moveFromCartToWishlisted(String userId, UUID productItemId) {
+        cartItemService.deleteItemInCart(productItemId, userId);
+        if (isItemWishlisted(userId, productItemId).get(IS_WISHLISTED))
+            return;
+        addtoWishlist(userId, productItemId);
     }
 
 }

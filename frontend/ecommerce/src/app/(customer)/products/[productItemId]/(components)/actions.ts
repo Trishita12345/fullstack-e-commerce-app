@@ -56,12 +56,11 @@ export async function removeFromWishListed(productItemId: string) {
   revalidatePath('/wishlist')
 }
 
-export async function moveFromWishListedToCart(values: CartItemDTO) {
+export async function moveFromCartToWishlisted(productItemId: string) {
   await apiFetch<void>(
-    `/cart-service/wishlisted/move-to-cart`,
+    `/cart-service/wishlisted/move-to-wishlist/${productItemId}`,
     {
       method: "POST",
-      body: values
     }
   );
   revalidatePath('/wishlist')

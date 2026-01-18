@@ -1,11 +1,11 @@
 "use client"
 import { Button, Text } from "@mantine/core";
-import { addOrUpdateCartAction, moveFromWishListedToCart, removeFromWishListed } from "../products/[productItemId]/(components)/actions";
+import { addOrUpdateCartAction, removeFromWishListed } from "../products/[productItemId]/(components)/actions";
 import { CartProducts } from "@/constants/types";
 import { useRouter } from "next/navigation";
 import { notify } from "@/utils/helperFunctions";
 import { useState } from "react";
-import { useCartActions, useCartItemById, useCartItems } from "@/utils/store/cart";
+import { useCartActions, useCartItemById } from "@/utils/store/cart";
 
 const MoveToBagButton = ({ isOutOfStock, wishlistedDetails }: { isOutOfStock: boolean; wishlistedDetails: CartProducts }) => {
     const router = useRouter();
@@ -13,7 +13,6 @@ const MoveToBagButton = ({ isOutOfStock, wishlistedDetails }: { isOutOfStock: bo
     const { addToCart, updateCart } = useCartActions();
     const existingCartItem = useCartItemById(wishlistedDetails.productItemId);
     const handleMoveToCart = async () => {
-        debugger;
         if (isOutOfStock) return;
         const payload = {
             priceSnapshot: wishlistedDetails.discountedPrice,

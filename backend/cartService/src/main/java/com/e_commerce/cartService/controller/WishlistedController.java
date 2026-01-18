@@ -54,11 +54,10 @@ public class WishlistedController {
                 wishlistedService.isItemWishlisted(authentication.getName(), productItemId));
     }
 
-    @PostMapping("/move-to-cart")
-    public ResponseEntity<Void> moveToCartFromWishlisted(
-            Authentication authentication,
-            @Valid @RequestBody CartItemRequestDTO cartItemRequestDTO) {
-        wishlistedService.moveToCartFromWishlisted(authentication.getName(), cartItemRequestDTO);
+    @PostMapping("/move-to-wishlist")
+    public ResponseEntity<Void> moveFromCartToWishlisted(
+            Authentication authentication, @PathVariable UUID productItemId) {
+        wishlistedService.moveFromCartToWishlisted(authentication.getName(), productItemId);
         return ResponseEntity.noContent().build();
     }
 
