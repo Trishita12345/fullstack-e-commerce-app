@@ -69,7 +69,7 @@ const DeleteCartItem = ({
       <Modal
         opened={opened}
         withCloseButton={false}
-        centered
+        yOffset="25vh"
         onClose={close}
         styles={{
           body: {

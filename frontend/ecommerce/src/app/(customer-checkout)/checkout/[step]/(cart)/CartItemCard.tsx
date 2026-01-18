@@ -9,10 +9,9 @@ import {
   IconArrowNarrowUp,
   IconCaretDownFilled,
   IconCheck,
-  IconTrash,
   IconTruckDelivery,
 } from "@tabler/icons-react";
-import { removeFromCartAction, updateCartAction } from "./cartActions";
+import { updateCartAction } from "./cartActions";
 import Image from "next/image";
 import { InfoIcon } from "@/(components)/InfoIcon";
 import { useState } from "react";
@@ -150,7 +149,6 @@ const Quantity = ({
       setOpened(false);
     }
   };
-
   return (
     <Popover
       width={200}
@@ -173,17 +171,13 @@ const Quantity = ({
           }}
           onClick={() => setOpened((prev) => !prev)}
         >
-          <Text size="xs" fw={600} visibleFrom="xs">
+          <Text size="xs" fw={600}>
             {`Qty: ${quantity}`}
           </Text>
           <IconCaretDownFilled size={"12px"} />
         </Group>
       </Popover.Target>
-      <Popover.Dropdown
-        h={"15vw"}
-        style={{ overflowY: "auto" }}
-        w="max-content"
-      >
+      <Popover.Dropdown h="50vh" style={{ overflowY: "auto" }} w="max-content">
         {data.map((i) => {
           return (
             <Group
