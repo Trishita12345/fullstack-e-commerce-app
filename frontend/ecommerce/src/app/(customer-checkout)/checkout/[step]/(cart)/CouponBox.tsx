@@ -80,7 +80,10 @@ const CouponBoxModal = ({
   const cartItems = useCartItems();
 
   const [textValue, setTextValue] = useState<string>("");
-  const [textValueErr, setTextValueErr] = useState<boolean>(false);
+  const [textValueErr, setTextValueErr] = useState<{
+    error: boolean;
+    msg: string;
+  }>({ error: false, msg: "" });
   const [totalDiscountedPrice, setTotalDiscountedPrice] = useState<number>(0);
   const [selectedCoupon, setSelectedCoupon] = useState<
     CouponTypeDTO | undefined
@@ -106,15 +109,41 @@ const CouponBoxModal = ({
   }, [cartItems]);
 
   const handleCheck = () => {
-    const couponExists = coupons.find((c) => c.couponCode === textValue);
-    setSelectedCoupon(couponExists);
-    setTextValueErr(couponExists === undefined);
+    const couponExists = coupons.find(
+      (c) => c.couponCode.toLowerCase() === textValue.toLowerCase()
+    );
+    if (couponExists) {
+      if (
+        couponExists.minPurchaseAmount <= getTotalDiscountedPriceTemp(cartItems)
+      ) {
+        setSelectedCoupon(couponExists);
+        setTextValueErr({
+          error: false,
+          msg: "",
+        });
+      } else {
+        setSelectedCoupon(undefined);
+        setTextValueErr({
+          error: true,
+          msg: `Shop more ${formattedPrice(
+            couponExists.minPurchaseAmount -
+              getTotalDiscountedPriceTemp(cartItems)
+          )} to apply this coupon.`,
+        });
+      }
+    } else {
+      setSelectedCoupon(undefined);
+      setTextValueErr({
+        error: true,
+        msg: "Sorry, this coupon is not valid for this user account.",
+      });
+    }
   };
 
   const handleCloseModal = () => {
     close();
     setTextValue("");
-    setTextValueErr(false);
+    setTextValueErr({ error: true, msg: "" });
     const totalDiscountedPriceTemp = getTotalDiscountedPriceTemp(cartItems);
     setTotalDiscountedPrice(totalDiscountedPriceTemp);
     setSelectedCoupon(
@@ -127,14 +156,15 @@ const CouponBoxModal = ({
     if (selectedCoupon) {
       setCoupon(
         selectedCoupon.couponCode,
-        (totalDiscountedPrice * selectedCoupon.discountPercent) / 100
+        (totalDiscountedPrice * selectedCoupon.discountPercent) / 100,
+        selectedCoupon.minPurchaseAmount
       );
     } else {
-      setCoupon("", 0);
+      setCoupon("", 0, 0);
     }
     close();
     setTextValue("");
-    setTextValueErr(false);
+    setTextValueErr({ error: true, msg: "" });
   };
   return (
     <Modal
@@ -158,7 +188,8 @@ const CouponBoxModal = ({
               value={textValue}
               onChange={(e) => {
                 setTextValue(e.target.value.trim());
-                if (e.target.value.trim() === "") setTextValueErr(false);
+                if (e.target.value.trim() === "")
+                  setTextValueErr({ error: true, msg: "" });
               }}
               styles={{
                 section: { width: "150px", padding: 0 },
@@ -178,9 +209,9 @@ const CouponBoxModal = ({
               </Text>
             </Button>
           </Box>
-          {textValueErr ? (
+          {textValueErr.error ? (
             <Text size="xs" c="red" p={4}>
-              Sorry, this coupon is not valid for this user account.
+              {textValueErr.msg}
             </Text>
           ) : null}
         </Card>
@@ -294,7 +325,6 @@ const CouponBoxModal = ({
 
 const CouponBox = ({ cartProducts }: { cartProducts: CartProductsDTO }) => {
   const [opened, { open, close }] = useDisclosure(false);
-
   return (
     <Stack gap={16}>
       <Text size="11px" fw={700} c="black.7" tt={"uppercase"} lts={0.5}>

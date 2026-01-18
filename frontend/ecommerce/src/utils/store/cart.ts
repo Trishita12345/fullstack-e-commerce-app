@@ -11,44 +11,48 @@ type CartActions = {
   updateCart: (cartItem: CartItemDTO) => void;
   removeFromCart: (productItemId: string) => void;
   setDonation: (amount: number) => void;
-  setCoupon: (code: string, amount: number) => void;
-  getInitialCartData: () => void;
+  setCoupon: (code: string, amount: number, maxValue: number) => void;
+  getInitialCartData: () => Promise<void>;
   clearCartData: () => void;
 };
 
 type CartState = {
   cartItems: CartItemDTO[];
   donation: number;
-  coupon: {couponCode: string, couponDiscount: number};
+  coupon: { couponCode: string; couponDiscount: number; maxValue: number };
   actions: CartActions;
 };
 const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       cartItems: [],
-      
       donation: 0,
-      coupon: {couponCode: '', couponDiscount: 0},
+      coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
       actions: {
         addToCart(cartItem) {
-          set((state) => ({ cartItems: [...state.cartItems, cartItem] }));
-          set({ coupon: {couponCode: '', couponDiscount: 0}})
+          set((state) => {
+            const newcartItems = [...state.cartItems, cartItem];
+            return {
+              cartItems: newcartItems,
+              coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
+            };
+          });
         },
         updateCart(cartItem) {
           set((state) => ({
             cartItems: state.cartItems.map((ci) =>
               ci.productItemId === cartItem.productItemId ? cartItem : ci
             ),
+            coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
           }));
-          set({ coupon: { couponCode: '', couponDiscount: 0 } })
         },
         removeFromCart(productItemId) {
           set((state) => ({
             cartItems: state.cartItems.filter(
               (ci) => ci.productItemId !== productItemId
             ),
+            coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
           }));
-          set({ coupon: {couponCode: '', couponDiscount: 0}})
         },
         async getInitialCartData() {
           const cartItemsFromDb = await apiFetch<CartItemDTO[]>(
@@ -57,16 +61,22 @@ const useCartStore = create<CartState>()(
           set({ cartItems: cartItemsFromDb });
         },
         clearCartData() {
-          set({ cartItems: [] });
-          set({ coupon: {couponCode: '', couponDiscount: 0}})
+          set({
+            cartItems: [],
+            coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
+          });
         },
         setDonation(amount) {
           set({ donation: amount });
         },
-        setCoupon(code, amount) {
-          if(code) set({ coupon: { couponCode: code, couponDiscount: amount } });
-          else set({ coupon: {couponCode: '', couponDiscount: 0}});
-        }
+        setCoupon(code, amount, maxValue) {
+          if (code)
+            set({
+              coupon: { couponCode: code, couponDiscount: amount, maxValue },
+            });
+          else
+            set({ coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 } });
+        },
       },
     }),
     {
@@ -74,7 +84,7 @@ const useCartStore = create<CartState>()(
       partialize: (state) => ({
         cartItems: state.cartItems,
         donation: state.donation,
-        coupon: state.coupon
+        coupon: state.coupon,
       }),
     }
   )

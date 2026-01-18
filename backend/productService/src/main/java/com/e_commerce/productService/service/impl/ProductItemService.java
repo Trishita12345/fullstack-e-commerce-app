@@ -317,6 +317,9 @@ public class ProductItemService implements IProductItemService {
 
         @Override
         public Map<UUID, CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds) {
+                Map<UUID, CartProductItemInfoResponse> map = new HashMap<>();
+                if (productItemIds.size() == 0)
+                        return map;
                 List<CartProductItemInfoResponse> cartProductItemInfoResponseList = productItemRepository
                                 .getCarProductItemInfos(productItemIds).stream()
                                 .map(i -> {
@@ -324,7 +327,6 @@ public class ProductItemService implements IProductItemService {
                                         return i;
                                 })
                                 .toList();
-                Map<UUID, CartProductItemInfoResponse> map = new HashMap<>();
                 cartProductItemInfoResponseList
                                 .forEach(item -> {
                                         map.put(item.getProductItemId(), item);
