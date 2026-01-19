@@ -29,7 +29,7 @@ const PopoverItems: PopoverContentItemProps[] = [
   },
   {
     label: en.savedAddesses,
-    href: "/manage-profile/#addesses",
+    href: "/saved-addresses",
     icon: faHouse,
   },
 ];

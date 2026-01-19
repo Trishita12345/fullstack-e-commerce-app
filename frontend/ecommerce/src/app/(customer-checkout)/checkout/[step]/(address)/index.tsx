@@ -2,181 +2,73 @@
 import { Box, Button, Grid, GridCol, Group, Stack, Text } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import PriceDetailsBox from "../(cart)/PriceDetailsBox";
-import { AddressDTO, AddressType, CartProductsDTO } from "@/constants/types";
+import { AddressDTO, CartProductsDTO } from "@/constants/types";
 import AddressCard from "./AddressCard";
 import { useEffect, useState } from "react";
-import { authClient } from "@/lib/auth-client";
 import { unauthorized } from "next/navigation";
 import { useSession } from "@/utils/store/session";
-import LoadingCart from "../(cart)/LoadingCart";
 import LoadingAddresses from "./LoadingAddresses";
 import { useAddressActions, useAllAddresses } from "@/utils/store/address";
+import { AddressListSection } from "./AddressSection";
 
 const Address = ({
-  showLoading,
-  stopLoading,
-  cartProducts,
-  isLoading,
+    showLoading,
+    stopLoading,
+    cartProducts,
+    isLoading,
 }: {
-  showLoading: () => void;
-  stopLoading: () => void;
-  cartProducts: CartProductsDTO;
-  isLoading: boolean;
+    showLoading: () => void;
+    stopLoading: () => void;
+    cartProducts: CartProductsDTO;
+    isLoading: boolean;
 }) => {
-  const [addressLoading, setAddressLoading] = useState<boolean>(false);
-  const addresses = useAllAddresses();
-  const { getAllAddresses } = useAddressActions();
-  const session = useSession();
-  const isLoggedIn = Boolean(session?.session?.userId);
-  if (!isLoggedIn) unauthorized();
-  //     {
-  //       addressId: "213123-213123-123123-213",
-  //       fullName: "Trishita Majumder",
-  //       addressType: AddressType.HOME,
-  //       addressLine1: "Lad Colive PG, Green Glen Layout",
-  //       addressLine2: "Bellandur",
-  //       landmark: "Beside Enrich Salon",
-  //       city: "Banglore",
-  //       state: "Karnataka",
-  //       postalCode: "5601013",
-  //       country: "India",
-  //       phoneNumber: "7690292019",
-  //       isDefault: true,
-  //     },
-  //     {
-  //       addressId: "21312213-213123-12123213123-213",
-  //       fullName: "Trishita Majumder",
-  //       addressType: AddressType.OFFICE,
-  //       addressLine1: "Lad Colive PG, Green Glen Layout",
-  //       addressLine2: "Bellandur",
-  //       landmark: "Beside Enrich Salon",
-  //       city: "Banglore",
-  //       state: "Karnataka",
-  //       postalCode: "5601013",
-  //       country: "India",
-  //       phoneNumber: "7690292019",
-  //       isDefault: false,
-  //     },
-  //     {
-  //       addressId: "213123-21313213123-123123-213",
-  //       fullName: "Trishita Majumder",
-  //       addressType: AddressType.HOME,
-  //       addressLine1: "Lad Colive PG, Green Glen Layout",
-  //       addressLine2: "Bellandur",
-  //       landmark: "Beside Enrich Salon",
-  //       city: "Banglore",
-  //       state: "Karnataka",
-  //       postalCode: "5601013",
-  //       country: "India",
-  //       phoneNumber: "7690292019",
-  //       isDefault: false,
-  //     },
-  //     {
-  //       addressId: "213123-2131123123-123123-213",
-  //       fullName: "Trishita Majumder",
-  //       addressType: AddressType.OTHER,
-  //       addressLine1: "Lad Colive PG, Green Glen Layout",
-  //       addressLine2: "Bellandur",
-  //       landmark: "Beside Enrich Salon",
-  //       city: "Banglore",
-  //       state: "Karnataka",
-  //       postalCode: "5601013",
-  //       country: "India",
-  //       phoneNumber: "7690292019",
-  //       isDefault: false,
-  //     },
-  //   ];
-  const defaultAddress =
-    addresses && addresses.find((address) => address.isDefault);
-  const otherAddress =
-    (addresses && addresses.filter((address) => !address.isDefault)) || [];
+    const [addressLoading, setAddressLoading] = useState<boolean>(false);
+    const addresses = useAllAddresses();
+    const { getAllAddresses } = useAddressActions();
+    const session = useSession();
+    const isLoggedIn = Boolean(session?.session?.userId);
+    if (!isLoggedIn) unauthorized();
 
-  const { width } = useViewportSize();
 
-  useEffect(() => {
-    (async () => {
-      setAddressLoading(true);
-      await getAllAddresses();
-      setAddressLoading(false);
-    })();
-  }, []);
+    const { width } = useViewportSize();
 
-  return (
-    <Box w={{ base: "90%", md: "85%", lg: "70%" }} mx="auto">
-      {isLoading || addressLoading ? (
-        <LoadingAddresses />
-      ) : (
-        <>
-          {Object.keys(cartProducts).length > 0 && (
-            <Grid>
-              <GridCol
-                pr={{ base: 0, lg: 24 }}
-                span={{ base: 12, lg: 8 }}
-                style={{
-                  borderRight: `${
-                    width < 1200 ? 0 : 1
-                  }px solid var(--mantine-color-gray-1)`,
-                }}
-              >
-                <Stack my={16} gap={18}>
-                  <Group justify="space-between">
-                    <Text size="lg" fw={600}>
-                      Select Delivery Address
-                    </Text>
-                    <Button variant="outline" color="primaryDark.7">
-                      Add New Adress
-                    </Button>
-                  </Group>
-                  <Text
-                    size="10px"
-                    c={"dimmed"}
-                    fw={600}
-                    tt={"uppercase"}
-                    lts={0.7}
-                  >
-                    Default address
-                  </Text>
-                  {defaultAddress && (
-                    <AddressCard
-                      address={defaultAddress}
-                      showLoading={showLoading}
-                      stopLoading={stopLoading}
-                    />
-                  )}
-                  {otherAddress?.length > 0 && (
-                    <>
-                      <Text
-                        size="10px"
-                        c={"dimmed"}
-                        fw={600}
-                        tt={"uppercase"}
-                        lts={0.7}
-                      >
-                        Other address
-                      </Text>
-                      {otherAddress.map((address) => (
-                        <AddressCard
-                          key={address.addressId}
-                          address={address}
-                          showLoading={showLoading}
-                          stopLoading={stopLoading}
-                        />
-                      ))}
-                    </>
-                  )}
-                </Stack>
-              </GridCol>
-              <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>
-                <Stack my={16}>
-                  <PriceDetailsBox cartProducts={cartProducts} />
-                </Stack>
-              </GridCol>
-            </Grid>
-          )}
-        </>
-      )}
-    </Box>
-  );
+    useEffect(() => {
+        (async () => {
+            setAddressLoading(true);
+            await getAllAddresses();
+            setAddressLoading(false);
+        })();
+    }, []);
+
+    return (
+        <Box w={{ base: "90%", md: "85%", lg: "70%" }} mx="auto">
+            {isLoading || addressLoading ? (
+                <LoadingAddresses />
+            ) : (
+                <>
+                    {Object.keys(cartProducts).length > 0 && (
+                        <Grid>
+                            <GridCol
+                                pr={{ base: 0, lg: 24 }}
+                                span={{ base: 12, lg: 8 }}
+                                style={{
+                                    borderRight: `${width < 1200 ? 0 : 1
+                                        }px solid var(--mantine-color-gray-1)`,
+                                }}
+                            >
+                                <AddressListSection addresses={addresses} showLoading={showLoading} stopLoading={stopLoading} />
+                            </GridCol>
+                            <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>
+                                <Stack my={16}>
+                                    <PriceDetailsBox cartProducts={cartProducts} />
+                                </Stack>
+                            </GridCol>
+                        </Grid>
+                    )}
+                </>
+            )}
+        </Box>
+    );
 };
 
 export default Address;
