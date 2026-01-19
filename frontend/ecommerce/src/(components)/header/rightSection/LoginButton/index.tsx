@@ -10,9 +10,12 @@ import { authClient } from "@/lib/auth-client";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
+import { useAuthActions, useSession } from "@/utils/store/session";
 
 const LoginButton = () => {
-  const { data: session, isPending } = authClient.useSession();
+  const session = useSession();
+  const { setSession } = useAuthActions();
+  const { data } = authClient.useSession();
 
   const handleSocialLogIn = async () => {
     const { error } = await authClient.signIn.social({
@@ -27,25 +30,11 @@ const LoginButton = () => {
     }
   };
 
-  if (isPending) {
-    return (
-      <Button
-        c="black.9"
-        py={2}
-        px={{ base: 0, xs: 12 }}
-        style={{
-          fontSize: "13px",
-          cursor: "default",
-        }}
-        radius="xs"
-        variant="transparent"
-      >
-        <Text size="xs" visibleFrom="xs">
-          Logging in...
-        </Text>
-      </Button>
-    );
-  }
+  useEffect(() => {
+    setSession(data);
+  }, [data])
+
+
 
   return (
     <>

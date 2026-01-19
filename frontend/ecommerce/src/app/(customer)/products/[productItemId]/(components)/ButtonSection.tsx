@@ -21,6 +21,7 @@ import {
   removeFromWishListed,
 } from "./actions";
 import { useCartActions } from "@/utils/store/cart";
+import { useSession } from "@/utils/store/session";
 
 const ButtonSection = ({
   pdpData,
@@ -30,7 +31,7 @@ const ButtonSection = ({
   productItemId: string;
 }) => {
   const router = useRouter();
-  const { data: session } = authClient.useSession();
+  const session = useSession();
   const isLoggedIn = Boolean(session?.user?.id);
   const [cartButtonLoader, setCartButtonLoader] = useState<boolean>(true);
   const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
@@ -81,20 +82,19 @@ const ButtonSection = ({
         priceSnapshot: pdpData.discountedPrice,
       };
       if (!isLoggedIn) {
-        notify({
-          variant: "error",
-          title: "Error!",
-          message: "Please log in first!",
-        });
-        return;
-        // if (type === "add") addToCart(payload);
+        // notify({
+        //   variant: "error",
+        //   title: "Error!",
+        //   message: "Please log in first!",
+        // });
+        // return;
       } else {
         setCartButtonLoader(true);
         await addOrUpdateCartAction(payload, type);
         getInitialCartData();
-        if (type === "add") addToCart(payload);
       }
       if (type === "update") updateCart(payload);
+      else addToCart(payload);
       notify({
         variant: "success",
         title: "Success!",

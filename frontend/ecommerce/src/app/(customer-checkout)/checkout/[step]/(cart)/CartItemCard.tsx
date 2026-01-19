@@ -26,6 +26,7 @@ import { InfoIcon } from "@/(components)/InfoIcon";
 import { useState } from "react";
 import Link from "next/link";
 import DeleteCartItem from "./DeleteCartItem";
+import { useSession } from "@/utils/store/session";
 
 interface CartItemCardProps {
   cartItem: CartItemDTO;
@@ -88,12 +89,10 @@ const Price = ({
         </>
       )}
       <InfoIcon
-        info={`Total price you see on ${
-          en.logoText
-        } is an all-inclusive price. It
-                    includesthe product price, taxes and GST charges of ${
-                      discountedPrice * 0.05
-                    }.`}
+        info={`Total price you see on ${en.logoText
+          } is an all-inclusive price. It
+                    includesthe product price, taxes and GST charges of ${discountedPrice * 0.05
+          }.`}
       />
     </Group>
   );
@@ -217,7 +216,7 @@ const CartItemCard = ({
   showLoading,
   stopLoading,
 }: CartItemCardProps) => {
-  const { data: session } = authClient.useSession();
+  const session = useSession();
   const { updateCart } = useCartActions();
   const isLoggedIn = Boolean(session?.user?.id);
   const {
@@ -236,15 +235,7 @@ const CartItemCard = ({
         ...cartItem,
         isSelected,
       };
-      if (!isLoggedIn) {
-        notify({
-          variant: "error",
-          title: "Error!",
-          message: "Please log in first!",
-        });
-        // updateCart(payload);
-        return;
-      } else {
+      if (isLoggedIn) {
         showLoading();
         await updateCartAction(payload);
       }

@@ -7,8 +7,9 @@ import { useCartActions, useCartItems } from "@/utils/store/cart";
 import Link from "next/link";
 import { useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/utils/store/session";
 const CartButton = () => {
-  const { data: session } = authClient.useSession();
+  const session = useSession();
   const isLoggedIn = Boolean(session?.user?.id);
   const { getInitialCartData } = useCartActions();
 
@@ -17,7 +18,7 @@ const CartButton = () => {
     if (isLoggedIn) {
       getInitialCartData();
     }
-  }, [isLoggedIn]);
+  }, []);
   return (
     <Link href={"/checkout/cart"}>
       {cartItems.length ? (

@@ -23,17 +23,16 @@ const PriceDetailsBox = ({
     .filter((ci) => ci.isSelected)
     .reduce(
       (sum, item) =>
-        (sum +=
-          cartProducts[item.productItemId].discountedPrice * item.quantity),
+      (sum +=
+        cartProducts[item.productItemId].discountedPrice * item.quantity),
       0
     );
   return (
     <Box h={600}>
       <Stack gap={16} pos={"sticky"} top={16}>
         <Text size="11px" c="black.7" fw={600} lts={0.5}>
-          {`PRICE DETAILS (${cartItems.length} Item${
-            cartItems.length > 1 ? "s" : ""
-          })`}
+          {`PRICE DETAILS (${cartItems.length} Item${cartItems.length > 1 ? "s" : ""
+            })`}
         </Text>
         <Stack gap={8}>
           <Group justify="space-between">
@@ -92,8 +91,9 @@ const PriceDetailsBox = ({
             {formattedPrice(totalDiscountedPrice - couponDiscount + donation)}
           </Text>
         </Group>
-        <Button color="primaryDark.7" size="md">
-          <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
+
+        <Button color="primaryDark.7" size="md" disabled={totalDiscountedPrice == 0} component="a" href="./address">
+          <Text tt="uppercase" size="13px" fw={600} lts={1.2} >
             place order
           </Text>
         </Button>

@@ -231,3 +231,23 @@ export interface CartProducts {
 export interface CartProductsDTO {
   [productItemId: string]: CartProducts;
 }
+
+export enum AddressType {
+  HOME = "HOME",
+  OFFICE = "OFFICE",
+  OTHER = "OTHER"
+}
+export interface AddressDTO {
+  addressId?: string;
+  fullName: string;
+  phoneNumber: string;
+  addressLine1: string;
+  addressLine2?: string | null;
+  landmark?: string | null;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  addressType: AddressType;
+  isDefault: boolean;
+}

@@ -10,10 +10,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Box, Button, Text } from "@mantine/core";
 import PopoverContentItems from "./PopoverContentItems";
-import { authClient } from "@/lib/auth-client";
 import { redirect, usePathname } from "next/navigation";
 import { User } from "@/lib/auth";
 import { useCartActions } from "@/utils/store/cart";
+import { useAuthActions } from "@/utils/store/session";
 
 const PopoverItems: PopoverContentItemProps[] = [
   {
@@ -35,8 +35,9 @@ const PopoverItems: PopoverContentItemProps[] = [
 const PopoverContent = ({ user }: { user: User }) => {
   const pathname = usePathname();
   const { clearCartData } = useCartActions();
+  const { setSession } = useAuthActions();
   const handleLogout = async () => {
-    await authClient.signOut();
+    setSession(null);
     clearCartData();
     redirect("/");
   };
