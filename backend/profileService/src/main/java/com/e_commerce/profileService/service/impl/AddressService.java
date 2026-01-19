@@ -1,6 +1,7 @@
 package com.e_commerce.profileService.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class AddressService implements IAddressService {
     @Override
     @Transactional
     public AddressDTO addAddress(AddressDTO addressDTO, String userId) {
+        Optional<Address> isDefaultAddress = addressRepository.getAnyDefaultAddress(userId);
+        Boolean isDefault = !isDefaultAddress.isPresent();
         Address address = Address.builder()
                 .userId(userId)
                 .fullName(addressDTO.getFullName())
@@ -36,7 +39,7 @@ public class AddressService implements IAddressService {
                 .postalCode(addressDTO.getPostalCode())
                 .country(addressDTO.getCountry())
                 .addressType(addressDTO.getAddressType())
-                .isDefault(addressDTO.isDefault())
+                .isDefault(isDefault)
         .build();
         Address savedAddress = addressRepository.save(address);
         return addressEntityToDTOMapper(savedAddress);
@@ -45,19 +48,35 @@ public class AddressService implements IAddressService {
     @Override
     @Transactional
     public AddressDTO updateAddress(AddressDTO addressDTO, String userId) {
-        Address address = getAddressByIdInternal(addressDTO.getAddressId(), userId);
-        address.setFullName(addressDTO.getFullName());
-        address.setPhoneNumber(addressDTO.getPhoneNumber());
-        address.setAddressLine1(addressDTO.getAddressLine1());
-        address.setAddressLine2(addressDTO.getAddressLine2());
-        address.setLandmark(addressDTO.getLandmark());
-        address.setCity(addressDTO.getCity());
-        address.setState(addressDTO.getState());
-        address.setPostalCode(addressDTO.getPostalCode());
-        address.setCountry(addressDTO.getCountry());
-        address.setAddressType(addressDTO.getAddressType());
-        address.setDefault(addressDTO.isDefault());
-        Address savedAddress = addressRepository.save(address);
+        Address existingAddress = getAddressByIdInternal(addressDTO.getAddressId(), userId);
+        Boolean isDefault = addressDTO.getIsDefault();
+        if (existingAddress.getIsDefault()) {
+            if (!addressDTO.getIsDefault()) {
+                throw new RuntimeException("First mark any other existing Address as default");
+            }
+        } else {
+            if (addressDTO.getIsDefault()) {
+                Optional<Address> isDefaultAddress = addressRepository.getAnyDefaultAddress(userId);
+                if (isDefaultAddress.isPresent()) {
+                    Address existingDefaultAddress = isDefaultAddress.get();
+                    existingDefaultAddress.setIsDefault(false);
+                    addressRepository.save(existingDefaultAddress);
+                }
+                isDefault = true;
+            } 
+        }
+        existingAddress.setFullName(addressDTO.getFullName());
+        existingAddress.setPhoneNumber(addressDTO.getPhoneNumber());
+        existingAddress.setAddressLine1(addressDTO.getAddressLine1());
+        existingAddress.setAddressLine2(addressDTO.getAddressLine2());
+        existingAddress.setLandmark(addressDTO.getLandmark());
+        existingAddress.setCity(addressDTO.getCity());
+        existingAddress.setState(addressDTO.getState());
+        existingAddress.setPostalCode(addressDTO.getPostalCode());
+        existingAddress.setCountry(addressDTO.getCountry());
+        existingAddress.setAddressType(addressDTO.getAddressType());
+        existingAddress.setIsDefault(isDefault);
+        Address savedAddress = addressRepository.save(existingAddress);
         return addressEntityToDTOMapper(savedAddress);
     }
 
@@ -65,6 +84,8 @@ public class AddressService implements IAddressService {
     @Transactional
     public void deleteAddress(UUID addressId, String userId) {
         Address address = getAddressByIdInternal(addressId, userId);
+        if (address.getIsDefault())
+            throw new RuntimeException("Default address cannot be deleted");
         addressRepository.delete(address);
     }
 
@@ -96,7 +117,7 @@ public class AddressService implements IAddressService {
                 .postalCode(address.getPostalCode())
                 .country(address.getCountry())
                 .addressType(address.getAddressType())
-                .isDefault(address.isDefault())
+                .isDefault(address.getIsDefault())
         .build();
     }
 

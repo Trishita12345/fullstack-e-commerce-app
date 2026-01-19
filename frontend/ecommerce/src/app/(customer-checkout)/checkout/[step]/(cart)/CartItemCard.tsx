@@ -20,7 +20,7 @@ import {
   IconCheck,
   IconTruckDelivery,
 } from "@tabler/icons-react";
-import { updateCartAction } from "./cartActions";
+import { updateCartAction } from "../../cartActions";
 import Image from "next/image";
 import { InfoIcon } from "@/(components)/InfoIcon";
 import { useState } from "react";
@@ -69,7 +69,7 @@ const Price = ({
                   size="xs"
                   tt={"capitalize"}
                 >{`Price Increased by ${formattedPrice(
-                  discountedPrice - priceSnapshot
+                  discountedPrice - priceSnapshot,
                 )}`}</Text>
               </Group>
             </Badge>
@@ -81,7 +81,7 @@ const Price = ({
                   size="xs"
                   tt={"capitalize"}
                 >{`Price Decreased by ${formattedPrice(
-                  priceSnapshot - discountedPrice
+                  priceSnapshot - discountedPrice,
                 )}`}</Text>
               </Group>
             </Badge>
@@ -89,10 +89,12 @@ const Price = ({
         </>
       )}
       <InfoIcon
-        info={`Total price you see on ${en.logoText
-          } is an all-inclusive price. It
-                    includesthe product price, taxes and GST charges of ${discountedPrice * 0.05
-          }.`}
+        info={`Total price you see on ${
+          en.logoText
+        } is an all-inclusive price. It
+                    includesthe product price, taxes and GST charges of ${
+                      discountedPrice * 0.05
+                    }.`}
       />
     </Group>
   );
@@ -121,7 +123,7 @@ const Quantity = ({
   const { updateCart } = useCartActions();
   const data = Array.from(
     { length: Math.min(availableStock, 25) },
-    (_, i) => i + 1
+    (_, i) => i + 1,
   );
   const setValue = async (value: number) => {
     try {

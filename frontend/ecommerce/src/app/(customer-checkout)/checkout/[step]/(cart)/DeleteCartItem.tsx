@@ -1,5 +1,8 @@
 import { IconCross, IconTrash, IconX } from "@tabler/icons-react";
-import { moveFromCartToWishlisted, removeFromCartAction } from "./cartActions";
+import {
+  moveFromCartToWishlisted,
+  removeFromCartAction,
+} from "../../cartActions";
 import { useCartActions } from "@/utils/store/cart";
 import { dummyDelay, notify } from "@/utils/helperFunctions";
 import { useDisclosure } from "@mantine/hooks";

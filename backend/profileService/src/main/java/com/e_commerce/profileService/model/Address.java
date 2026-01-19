@@ -55,5 +55,5 @@ public class Address {
     private AddressType addressType = AddressType.HOME;
 
     @Column(name = "is_default", nullable = false)
-    private boolean isDefault;
+    private Boolean isDefault;
 }

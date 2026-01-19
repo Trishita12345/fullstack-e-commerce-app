@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
 import { CartProductsDTO } from "@/constants/types";
-import { getProductDetailsAction } from "./(cart)/cartActions";
+import { getProductDetailsAction } from "../cartActions";
 import Address from "./(address)";
 import { useSession } from "@/utils/store/session";
 
@@ -30,7 +30,9 @@ const Checkout = () => {
         await getInitialCartData();
         setCartDataLoaded(true);
       })();
-    } else { setCartDataLoaded(true); }
+    } else {
+      setCartDataLoaded(true);
+    }
   }, []);
   const getCartProducts = async () => {
     try {
@@ -58,8 +60,22 @@ const Checkout = () => {
       />
       <CustomerCheckoutHeader step={step as StepType} />
       <Box py={8}>
-        {step === "cart" && <Cart showLoading={open} stopLoading={close} isLoading={isLoading} cartProducts={cartProducts} />}
-        {step === "address" && <Address showLoading={open} stopLoading={close} cartProducts={cartProducts} />}
+        {step === "cart" && (
+          <Cart
+            showLoading={open}
+            stopLoading={close}
+            isLoading={isLoading}
+            cartProducts={cartProducts}
+          />
+        )}
+        {step === "address" && (
+          <Address
+            showLoading={open}
+            stopLoading={close}
+            cartProducts={cartProducts}
+            isLoading={isLoading}
+          />
+        )}
       </Box>
     </Box>
   );

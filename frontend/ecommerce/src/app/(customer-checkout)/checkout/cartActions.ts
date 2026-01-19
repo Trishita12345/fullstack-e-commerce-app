@@ -23,7 +23,7 @@ export async function getProductDetailsAction(cartItems: CartItemDTO[]) {
     {
       method: "POST",
       body: cartItems.map((ci) => ci.productItemId),
-    }
+    },
   );
   return data;
 }
@@ -33,7 +33,7 @@ export async function moveFromCartToWishlisted(productItemId: string) {
     `/cart-service/wishlisted/move-to-wishlist/${productItemId}`,
     {
       method: "POST",
-    }
+    },
   );
   revalidatePath("/wishlist");
 }

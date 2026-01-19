@@ -32,9 +32,7 @@ const LoginButton = () => {
 
   useEffect(() => {
     setSession(data);
-  }, [data])
-
-
+  }, [data]);
 
   return (
     <>

@@ -60,5 +60,5 @@ public class AddressDTO {
     private AddressType addressType;
 
     @NotNull
-    private boolean isDefault;
+    private Boolean isDefault;
 }
