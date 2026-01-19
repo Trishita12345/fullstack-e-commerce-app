@@ -7,20 +7,27 @@ import type {
 } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 
-// export async function updateCartAction(values: CartItemDTO) {
-//   await apiFetch<void>(`/cart-service/cart-items/update`, {
-//     method: "PUT",
-//     body: values,
-//   });
-// }
+export async function addAddress(values: AddressDTO) {
+  await apiFetch<void>(`/profile-service/address/add`, {
+    method: "POST",
+    body: values,
+  });
+}
+export async function updateAddress(values: AddressDTO) {
+  await apiFetch<void>(`/profile-service/address/${values.addressId}`, {
+    method: "PUT",
+    body: values,
+  });
+}
+export async function deleteAddress(addressId: string) {
+  await apiFetch<void>(`/profile-service/address/${addressId}`, {
+    method: "DELETE",
+  });
+}
 
-// export async function removeFromCartAction(productItemId: string) {
-//   await apiFetch<void>(`/cart-service/cart-items/delete/${productItemId}`, {
-//     method: "DELETE",
-//   });
-// }
-
-export async function getAllAddresses() {
-  const data = await apiFetch<AddressDTO[]>("/profile-service/address/all");
+export async function getAddressById(addressId: string) {
+  const data = await apiFetch<AddressDTO[]>(
+    `/profile-service/address/${addressId}`,
+  );
   return data;
 }

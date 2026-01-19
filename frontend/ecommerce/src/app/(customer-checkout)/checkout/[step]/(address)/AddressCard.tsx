@@ -1,4 +1,5 @@
 import { AddressDTO, AddressType } from "@/constants/types";
+import { notify } from "@/utils/helperFunctions";
 import {
   Badge,
   Button,
@@ -10,27 +11,121 @@ import {
   Text,
 } from "@mantine/core";
 import { Dispatch, SetStateAction, useState } from "react";
+import { addAddress, deleteAddress, updateAddress } from "../../addressActions";
+import {
+  useAddressActions,
+  useAllAddresses,
+  useSelectedAddressId,
+} from "@/utils/store/address";
 
 const AddressCard = ({
-  checked,
-  setChecked,
+  showLoading,
+  stopLoading,
   address,
 }: {
-  checked: string | undefined;
-  setChecked: Dispatch<SetStateAction<string | undefined>>;
+  showLoading: () => void;
+  stopLoading: () => void;
   address: AddressDTO;
 }) => {
+  const selectedAddressId = useSelectedAddressId();
+  const { setSelectedAddressId, getAllAddresses } = useAddressActions();
+
+  const handleAddAddress = async (payload: AddressDTO) => {
+    try {
+      showLoading();
+      await updateAddress(payload);
+      await getAllAddresses();
+      notify({
+        variant: "success",
+        title: "Success!",
+        message: "Address added succesfully!",
+      });
+    } catch {
+      notify({
+        variant: "error",
+        title: "Error!",
+        message: "Failed to add address!",
+      });
+    } finally {
+      stopLoading();
+    }
+  };
+
+  const handleUpdateAddress = async (payload: AddressDTO) => {
+    try {
+      showLoading();
+      await updateAddress(payload);
+      await getAllAddresses();
+      notify({
+        variant: "success",
+        title: "Success!",
+        message: "Address updated succesfully!",
+      });
+    } catch {
+      notify({
+        variant: "error",
+        title: "Error!",
+        message: "Failed to update address!",
+      });
+    } finally {
+      stopLoading();
+    }
+  };
+  const handleDeleteAddress = async () => {
+    try {
+      if (address.isDefault) {
+        notify({
+          variant: "error",
+          title: "Error!",
+          message:
+            "Please mark any other address as default or create a new one to proceed!",
+        });
+      } else if (address.addressId === selectedAddressId) {
+        notify({
+          variant: "error",
+          title: "Error!",
+          message:
+            "Please select any other address or create a new one to proceed!",
+        });
+      } else {
+        showLoading();
+        await deleteAddress(address.addressId || "");
+        await getAllAddresses();
+        notify({
+          variant: "success",
+          title: "Success!",
+          message: "Address deleted succesfully!",
+        });
+      }
+    } catch {
+      notify({
+        variant: "error",
+        title: "Error!",
+        message: "Failed to delete address!",
+      });
+    } finally {
+      stopLoading();
+    }
+  };
+  const updateSelected = () => {
+    setSelectedAddressId(address.addressId);
+  };
+
+  const handleMarkAsDefault = () => {
+    handleUpdateAddress({ ...address, isDefault: true });
+  };
+
   return (
     <Card
       radius="md"
       shadow="md"
-      bd={`1.5px solid ${checked == address.addressId ? "var(--mantine-color-gray-1)" : "1.5px solid white"}`}
+      bd={`1.5px solid ${selectedAddressId == address.addressId ? "var(--mantine-color-gray-1)" : "1.5px solid white"}`}
     >
       <Group align="baseline" gap={16}>
         <RadioIndicator
           color={"primaryDark.7"}
-          checked={checked == address.addressId}
-          onClick={() => setChecked(address.addressId)}
+          checked={selectedAddressId == address.addressId}
+          onClick={updateSelected}
         />
         <Stack w={{ base: "90%", md: "93%" }}>
           <Group justify="space-between">
@@ -55,6 +150,7 @@ const AddressCard = ({
                     borderBottom: "1.5px dashed var(--mantine-color-black-7)",
                   },
                 }}
+                onClick={handleMarkAsDefault}
               >
                 Mark as Default
               </Button>
@@ -72,7 +168,11 @@ const AddressCard = ({
             Mobile - {address.phoneNumber}
           </Text>
           <Group>
-            <Button color={"black.7"} variant="outline">
+            <Button
+              color={"black.7"}
+              variant="outline"
+              onClick={handleDeleteAddress}
+            >
               Remove
             </Button>
             <Button color={"black.7"} variant="outline">

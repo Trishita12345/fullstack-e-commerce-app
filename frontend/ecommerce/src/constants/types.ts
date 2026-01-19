@@ -235,7 +235,7 @@ export interface CartProductsDTO {
 export enum AddressType {
   HOME = "HOME",
   OFFICE = "OFFICE",
-  OTHER = "OTHER"
+  OTHER = "OTHER",
 }
 export interface AddressDTO {
   addressId?: string;
@@ -250,4 +250,5 @@ export interface AddressDTO {
   country: string;
   addressType: AddressType;
   isDefault: boolean;
+  isSelected: boolean;
 }

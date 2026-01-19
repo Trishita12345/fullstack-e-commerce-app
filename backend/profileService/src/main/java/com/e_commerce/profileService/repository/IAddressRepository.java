@@ -23,4 +23,5 @@ public interface IAddressRepository extends JpaRepository<Address, UUID>{
             """, nativeQuery = true)
     Optional<Address> getAnyDefaultAddress(String userId);
 
+
 }

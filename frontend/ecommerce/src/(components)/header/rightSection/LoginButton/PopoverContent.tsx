@@ -14,6 +14,7 @@ import { redirect, usePathname } from "next/navigation";
 import { User } from "@/lib/auth";
 import { useCartActions } from "@/utils/store/cart";
 import { useAuthActions } from "@/utils/store/session";
+import { useAddressActions } from "@/utils/store/address";
 
 const PopoverItems: PopoverContentItemProps[] = [
   {
@@ -36,9 +37,11 @@ const PopoverContent = ({ user }: { user: User }) => {
   const pathname = usePathname();
   const { clearCartData } = useCartActions();
   const { setSession } = useAuthActions();
+  const { clearAddressData } = useAddressActions();
   const handleLogout = async () => {
     setSession(null);
     clearCartData();
+    clearAddressData();
     redirect("/");
   };
   return (

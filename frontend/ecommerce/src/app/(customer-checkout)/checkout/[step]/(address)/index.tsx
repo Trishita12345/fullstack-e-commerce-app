@@ -10,7 +10,7 @@ import { unauthorized } from "next/navigation";
 import { useSession } from "@/utils/store/session";
 import LoadingCart from "../(cart)/LoadingCart";
 import LoadingAddresses from "./LoadingAddresses";
-import { getAllAddresses } from "../../addressActions";
+import { useAddressActions, useAllAddresses } from "@/utils/store/address";
 
 const Address = ({
   showLoading,
@@ -24,12 +24,11 @@ const Address = ({
   isLoading: boolean;
 }) => {
   const [addressLoading, setAddressLoading] = useState<boolean>(false);
-  const [addresses, setAddresses] = useState<AddressDTO[] | undefined>();
+  const addresses = useAllAddresses();
+  const { getAllAddresses } = useAddressActions();
   const session = useSession();
   const isLoggedIn = Boolean(session?.session?.userId);
   if (!isLoggedIn) unauthorized();
-  const [checked, setChecked] = useState<string | undefined>();
-  //   const addresses: AddressDTO[] = [
   //     {
   //       addressId: "213123-213123-123123-213",
   //       fullName: "Trishita Majumder",
@@ -90,22 +89,16 @@ const Address = ({
   const defaultAddress =
     addresses && addresses.find((address) => address.isDefault);
   const otherAddress =
-    addresses && addresses.filter((address) => !address.isDefault);
+    (addresses && addresses.filter((address) => !address.isDefault)) || [];
+
   const { width } = useViewportSize();
-  console.log(addresses);
-  const getAddresses = async () => {
-    try {
-      setAddressLoading(true);
-      const data = await getAllAddresses();
-      setAddresses(data);
-    } catch {
-    } finally {
-      setAddressLoading(false);
-    }
-  };
 
   useEffect(() => {
-    getAddresses();
+    (async () => {
+      setAddressLoading(true);
+      await getAllAddresses();
+      setAddressLoading(false);
+    })();
   }, []);
 
   return (
@@ -145,29 +138,32 @@ const Address = ({
                   </Text>
                   {defaultAddress && (
                     <AddressCard
-                      checked={checked}
-                      setChecked={setChecked}
                       address={defaultAddress}
+                      showLoading={showLoading}
+                      stopLoading={stopLoading}
                     />
                   )}
-                  <Text
-                    size="10px"
-                    c={"dimmed"}
-                    fw={600}
-                    tt={"uppercase"}
-                    lts={0.7}
-                  >
-                    Other address
-                  </Text>
-                  {otherAddress &&
-                    otherAddress.map((address) => (
-                      <AddressCard
-                        key={address.addressId}
-                        checked={checked}
-                        setChecked={setChecked}
-                        address={address}
-                      />
-                    ))}
+                  {otherAddress?.length > 0 && (
+                    <>
+                      <Text
+                        size="10px"
+                        c={"dimmed"}
+                        fw={600}
+                        tt={"uppercase"}
+                        lts={0.7}
+                      >
+                        Other address
+                      </Text>
+                      {otherAddress.map((address) => (
+                        <AddressCard
+                          key={address.addressId}
+                          address={address}
+                          showLoading={showLoading}
+                          stopLoading={stopLoading}
+                        />
+                      ))}
+                    </>
+                  )}
                 </Stack>
               </GridCol>
               <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>

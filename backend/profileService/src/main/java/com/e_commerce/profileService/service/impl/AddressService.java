@@ -63,7 +63,7 @@ public class AddressService implements IAddressService {
                     addressRepository.save(existingDefaultAddress);
                 }
                 isDefault = true;
-            } 
+            }
         }
         existingAddress.setFullName(addressDTO.getFullName());
         existingAddress.setPhoneNumber(addressDTO.getPhoneNumber());

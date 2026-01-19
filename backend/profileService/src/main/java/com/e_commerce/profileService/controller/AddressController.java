@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.e_commerce.profileService.model.dto.AddressDTO;
 import com.e_commerce.profileService.service.IAddressService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -30,16 +31,16 @@ public class AddressController {
     private final IAddressService addressService;
     
     @PostMapping("/add")
-    public ResponseEntity<AddressDTO> addAddress(@RequestBody AddressDTO addressDTO, Authentication authentication) {
+    public ResponseEntity<AddressDTO> addAddress(@Valid @RequestBody AddressDTO addressDTO, Authentication authentication) {
         return ResponseEntity.ok(addressService.addAddress(addressDTO, authentication.getName()));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<AddressDTO> updateAddress(@RequestBody AddressDTO addressDTO, Authentication authentication) {
+    @PutMapping("/{addressId}")
+    public ResponseEntity<AddressDTO> updateAddress(@PathVariable UUID addressId, @Valid @RequestBody AddressDTO addressDTO, Authentication authentication) {
         return ResponseEntity.ok(addressService.updateAddress(addressDTO, authentication.getName()));
     }
     
-    @DeleteMapping("/delete/{addressId}")
+    @DeleteMapping("/{addressId}")
     public ResponseEntity<Void> deleteAddress(@PathVariable UUID addressId, Authentication authentication) {
         addressService.deleteAddress(addressId, authentication.getName());
         return ResponseEntity.noContent().build();

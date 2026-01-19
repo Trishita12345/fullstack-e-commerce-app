@@ -11,11 +11,13 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
 import { useAuthActions, useSession } from "@/utils/store/session";
+import { useAddressActions } from "@/utils/store/address";
 
 const LoginButton = () => {
   const session = useSession();
   const { setSession } = useAuthActions();
   const { data } = authClient.useSession();
+  const { getAllAddresses } = useAddressActions();
 
   const handleSocialLogIn = async () => {
     const { error } = await authClient.signIn.social({
@@ -31,7 +33,10 @@ const LoginButton = () => {
   };
 
   useEffect(() => {
-    setSession(data);
+    if (data?.user) {
+      setSession(data);
+      getAllAddresses();
+    }
   }, [data]);
 
   return (

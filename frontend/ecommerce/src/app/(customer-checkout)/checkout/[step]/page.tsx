@@ -13,6 +13,7 @@ import { CartProductsDTO } from "@/constants/types";
 import { getProductDetailsAction } from "../cartActions";
 import Address from "./(address)";
 import { useSession } from "@/utils/store/session";
+import { useAddressActions } from "@/utils/store/address";
 
 const Checkout = () => {
   const { step } = useParams<{ step: string }>();
@@ -24,6 +25,8 @@ const Checkout = () => {
   const cartItems = useCartItems();
   const [cartProducts, setCartProducts] = useState<CartProductsDTO>({});
   const [isLoading, setIsLoading] = useState(true);
+  const { getAllAddresses } = useAddressActions();
+
   useEffect(() => {
     if (isLoggedIn) {
       (async () => {
@@ -34,6 +37,15 @@ const Checkout = () => {
       setCartDataLoaded(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      (async () => {
+        await getAllAddresses();
+      })();
+    }
+  }, []);
+
   const getCartProducts = async () => {
     try {
       const data = await getProductDetailsAction(cartItems);
