@@ -3,6 +3,8 @@ import { CartProductsDTO } from "@/constants/types";
 import { formattedPrice } from "@/utils/helperFunctions";
 import { useCartItems, useCoupon, useDonation } from "@/utils/store/cart";
 import { Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
 const PriceDetailsBox = ({
   cartProducts,
@@ -27,6 +29,7 @@ const PriceDetailsBox = ({
         cartProducts[item.productItemId].discountedPrice * item.quantity),
       0
     );
+  const { step } = useParams();
   return (
     <Box h={600}>
       <Stack gap={16} pos={"sticky"} top={16}>
@@ -92,13 +95,15 @@ const PriceDetailsBox = ({
           </Text>
         </Group>
 
-        <Button color="primaryDark.7" size="md" disabled={totalDiscountedPrice == 0} component="a" href="./address">
-          <Text tt="uppercase" size="13px" fw={600} lts={1.2} >
-            place order
-          </Text>
-        </Button>
+        {step !== 'payment' && <Link href={`${step == "cart" ? "./address" : './payment'}`}>
+          <Button color="primaryDark.7" size="md" fullWidth>
+            <Text tt="uppercase" size="13px" fw={600} lts={1.2} >
+              place order
+            </Text>
+          </Button>
+        </Link>}
       </Stack>
-    </Box>
+    </Box >
   );
 };
 

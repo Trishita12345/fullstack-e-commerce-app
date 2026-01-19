@@ -14,6 +14,7 @@ import { getProductDetailsAction } from "../cartActions";
 import Address from "./(address)";
 import { useSession } from "@/utils/store/session";
 import { useAddressActions } from "@/utils/store/address";
+import Payment from "./(payment)";
 
 const Checkout = () => {
   const { step } = useParams<{ step: string }>();
@@ -86,6 +87,13 @@ const Checkout = () => {
             stopLoading={close}
             cartProducts={cartProducts}
             isLoading={isLoading}
+          />
+        )}
+        {step === "payment" && (
+          <Payment
+            showLoading={open}
+            stopLoading={close}
+            cartProducts={cartProducts}
           />
         )}
       </Box>
