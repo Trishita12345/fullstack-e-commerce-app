@@ -22,55 +22,22 @@ const AddressCard = ({
   showLoading,
   stopLoading,
   address,
+  open,
+  close,
+  setAddressData,
+  handleUpdateAddress,
 }: {
   showLoading: () => void;
   stopLoading: () => void;
   address: AddressDTO;
+  open: () => void;
+  close: () => void;
+  setAddressData: (address: AddressDTO | undefined) => void;
+  handleUpdateAddress: (payload: AddressDTO) => void;
 }) => {
   const selectedAddressId = useSelectedAddressId();
   const { setSelectedAddressId, getAllAddresses } = useAddressActions();
 
-  const handleAddAddress = async (payload: AddressDTO) => {
-    try {
-      showLoading();
-      await updateAddress(payload);
-      await getAllAddresses();
-      notify({
-        variant: "success",
-        title: "Success!",
-        message: "Address added succesfully!",
-      });
-    } catch {
-      notify({
-        variant: "error",
-        title: "Error!",
-        message: "Failed to add address!",
-      });
-    } finally {
-      stopLoading();
-    }
-  };
-
-  const handleUpdateAddress = async (payload: AddressDTO) => {
-    try {
-      showLoading();
-      await updateAddress(payload);
-      await getAllAddresses();
-      notify({
-        variant: "success",
-        title: "Success!",
-        message: "Address updated succesfully!",
-      });
-    } catch {
-      notify({
-        variant: "error",
-        title: "Error!",
-        message: "Failed to update address!",
-      });
-    } finally {
-      stopLoading();
-    }
-  };
   const handleDeleteAddress = async () => {
     try {
       if (address.isDefault) {
@@ -175,7 +142,14 @@ const AddressCard = ({
             >
               Remove
             </Button>
-            <Button color={"black.7"} variant="outline">
+            <Button
+              color={"black.7"}
+              variant="outline"
+              onClick={() => {
+                setAddressData(address);
+                open();
+              }}
+            >
               Edit
             </Button>
           </Group>
