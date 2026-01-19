@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.e_commerce.profileService.model.dto.AddressDTO;
-import com.e_commerce.service.IAddressService;
+import com.e_commerce.profileService.service.IAddressService;
 
 import lombok.AllArgsConstructor;
 
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,29 +30,29 @@ public class AddressController {
     private final IAddressService addressService;
     
     @PostMapping("/add")
-    public ResponseEntity<AddressDTO> addAddress(@RequestBody AddressDTO addressDTO) {
-        return ResponseEntity.ok(addressService.addAddress(addressDTO));
+    public ResponseEntity<AddressDTO> addAddress(@RequestBody AddressDTO addressDTO, Authentication authentication) {
+        return ResponseEntity.ok(addressService.addAddress(addressDTO, authentication.getName()));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<AddressDTO> updateAddress(@RequestBody AddressDTO addressDTO) {
-        return ResponseEntity.ok(addressService.updateAddress(addressDTO));
+    public ResponseEntity<AddressDTO> updateAddress(@RequestBody AddressDTO addressDTO, Authentication authentication) {
+        return ResponseEntity.ok(addressService.updateAddress(addressDTO, authentication.getName()));
     }
     
     @DeleteMapping("/delete/{addressId}")
-    public ResponseEntity<Void> deleteAddress(@PathVariable UUID addressId) {
-        addressService.deleteAddress(addressId);
+    public ResponseEntity<Void> deleteAddress(@PathVariable UUID addressId, Authentication authentication) {
+        addressService.deleteAddress(addressId, authentication.getName());
         return ResponseEntity.noContent().build();
     }
     
     @GetMapping("/all")
-    public ResponseEntity<List<AddressDTO>> getAllAddresses() {
-        return ResponseEntity.ok(addressService.getAllAddresses());
+    public ResponseEntity<List<AddressDTO>> getAllAddresses(Authentication authentication) {
+        return ResponseEntity.ok(addressService.getAllAddresses(authentication.getName()));
     }
 
     @GetMapping("/{addressId}")
-    public ResponseEntity<AddressDTO> getAddressbyId(@PathVariable UUID addressId) {
-        return ResponseEntity.ok(addressService.getAddressbyId(addressId));
+    public ResponseEntity<AddressDTO> getAddressbyId(@PathVariable UUID addressId, Authentication authentication) {
+        return ResponseEntity.ok(addressService.getAddressbyId(addressId, authentication.getName()));
     }
     
     
