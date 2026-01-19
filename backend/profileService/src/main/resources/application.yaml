@@ -1,0 +1,35 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: profileService
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5434/profile_db
+    username: user
+    password: pass123
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db-changelog-master.yaml
+
+logging:
+  level:
+    org:
+      springframework:
+        security: debug
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    config-url: /api/profile-service/v3/api-docs/swagger-config
+    url: /api/profile-service/v3/api-docs
+
+gateway:
+  base-url: http://localhost:8080/api/profile-service
+  api-description: Swagger UI Documentation for profile Service

@@ -2,7 +2,7 @@ import { InfoIcon } from "@/(components)/InfoIcon";
 import { CartProductsDTO } from "@/constants/types";
 import { formattedPrice } from "@/utils/helperFunctions";
 import { useCartItems, useCoupon, useDonation } from "@/utils/store/cart";
-import { Button, Divider, Group, Stack, Text } from "@mantine/core";
+import { Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
 
 const PriceDetailsBox = ({
   cartProducts,
@@ -28,51 +28,52 @@ const PriceDetailsBox = ({
       0
     );
   return (
-    <Stack gap={16}>
-      <Text size="11px" c="black.7" fw={600} lts={0.5}>
-        {`PRICE DETAILS (${cartItems.length} Item${
-          cartItems.length > 1 ? "s" : ""
-        })`}
-      </Text>
-      <Stack gap={8}>
-        <Group justify="space-between">
-          <Text c={"black.7"} size="xs">
-            Total MRP
-          </Text>
-          <Text fw={400} size="xs">
-            {formattedPrice(totalPrice)}
-          </Text>
-        </Group>
-        <Group justify="space-between">
-          <Text c={"black.7"} size="xs">
-            Discount on MRP
-          </Text>
-          <Text c={"green"} fw={400} size="xs">
-            - {formattedPrice(totalPrice - totalDiscountedPrice)}
-          </Text>
-        </Group>
-        {couponDiscount > 0 && (
-          <Group justify="space-between" id="coupon">
+    <Box h={600}>
+      <Stack gap={16} pos={"sticky"} top={16}>
+        <Text size="11px" c="black.7" fw={600} lts={0.5}>
+          {`PRICE DETAILS (${cartItems.length} Item${
+            cartItems.length > 1 ? "s" : ""
+          })`}
+        </Text>
+        <Stack gap={8}>
+          <Group justify="space-between">
             <Text c={"black.7"} size="xs">
-              Coupon Discount
+              Total MRP
             </Text>
-            <Text c={"green"} size="xs">
-              - {formattedPrice(couponDiscount)}
+            <Text fw={400} size="xs">
+              {formattedPrice(totalPrice)}
             </Text>
           </Group>
-        )}
-        {donation > 0 && (
-          <Group justify="space-between" id="donation">
-            <Group gap={4}>
+          <Group justify="space-between">
+            <Text c={"black.7"} size="xs">
+              Discount on MRP
+            </Text>
+            <Text c={"green"} fw={400} size="xs">
+              - {formattedPrice(totalPrice - totalDiscountedPrice)}
+            </Text>
+          </Group>
+          {couponDiscount > 0 && (
+            <Group justify="space-between" id="coupon">
               <Text c={"black.7"} size="xs">
-                Donation
+                Coupon Discount
               </Text>
-              <InfoIcon info="** Donation has been added as per choice you have selected above" />
+              <Text c={"green"} size="xs">
+                - {formattedPrice(couponDiscount)}
+              </Text>
             </Group>
-            <Text size="xs">{formattedPrice(donation)}</Text>
-          </Group>
-        )}
-        {/* <Group justify="space-between" id="gift wrap">
+          )}
+          {donation > 0 && (
+            <Group justify="space-between" id="donation">
+              <Group gap={4}>
+                <Text c={"black.7"} size="xs">
+                  Donation
+                </Text>
+                <InfoIcon info="** Donation has been added as per choice you have selected above" />
+              </Group>
+              <Text size="xs">{formattedPrice(donation)}</Text>
+            </Group>
+          )}
+          {/* <Group justify="space-between" id="gift wrap">
           <Group gap={4}>
             <Text c={"black.7"} size="xs">
               Gift wrap charges
@@ -81,22 +82,23 @@ const PriceDetailsBox = ({
           </Group>
           <Text size="xs">₹35.00</Text>
         </Group> */}
+        </Stack>
+        <Divider color="gray.1" mt={4} />
+        <Group justify="space-between">
+          <Text fw={600} size="sm">
+            Total Amount
+          </Text>
+          <Text fw={600} size="sm">
+            {formattedPrice(totalDiscountedPrice - couponDiscount + donation)}
+          </Text>
+        </Group>
+        <Button color="primaryDark.7" size="md">
+          <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
+            place order
+          </Text>
+        </Button>
       </Stack>
-      <Divider color="gray.1" mt={4} />
-      <Group justify="space-between">
-        <Text fw={600} size="sm">
-          Total Amount
-        </Text>
-        <Text fw={600} size="sm">
-          {formattedPrice(totalDiscountedPrice - couponDiscount + donation)}
-        </Text>
-      </Group>
-      <Button color="primaryDark.7" size="md">
-        <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
-          place order
-        </Text>
-      </Button>
-    </Stack>
+    </Box>
   );
 };
 

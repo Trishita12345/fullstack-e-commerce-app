@@ -1,0 +1,21 @@
+services:
+  profile_service:
+    image: "postgres:16"
+    container_name: profile_service_postgres_container
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d profile_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass123
+      POSTGRES_DB: profile_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - profile_data:/var/lib/postgresql/data
+
+volumes:
+  profile_data:

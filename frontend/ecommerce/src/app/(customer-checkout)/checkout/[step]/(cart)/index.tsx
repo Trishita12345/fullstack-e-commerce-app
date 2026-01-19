@@ -76,8 +76,9 @@ const Cart = ({
                   pr={{ base: 0, lg: 24 }}
                   span={{ base: 12, lg: 8 }}
                   style={{
-                    borderRight: `${width < 1200 ? 0 : 1
-                      }px solid var(--mantine-color-gray-1)`,
+                    borderRight: `${
+                      width < 1200 ? 0 : 1
+                    }px solid var(--mantine-color-gray-1)`,
                   }}
                 >
                   <Stack my={24}>
@@ -90,7 +91,7 @@ const Cart = ({
                   </Stack>
                 </GridCol>
                 <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>
-                  <Stack my={24} gap={18}>
+                  <Stack my={24} gap={18} pos={"relative"}>
                     <CouponBox cartProducts={cartProducts} />
                     <GiftBox />
                     <DonateBox />

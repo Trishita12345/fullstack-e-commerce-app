@@ -2,13 +2,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ProfileServiceApplication",
+      "request": "launch",
+      "mainClass": "com.e_commerce.profileService.ProfileServiceApplication"
+    },
+    {
+      "type": "java",
       "name": "Spring Boot-ProductServiceApplication<productService>",
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "mainClass": "com.e_commerce.productService.ProductServiceApplication",
       "projectName": "productService",
       "args": "",
-      "envFile": "${workspaceFolder}/.env"
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=60166 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=productService"
     },
     {
       "type": "java",
@@ -39,6 +46,16 @@
       "cwd": "${workspaceFolder}",
       "mainClass": "com.e_commerce.Main",
       "projectName": "common-auth",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-ProfileServiceApplication<profileService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.profileService.ProfileServiceApplication",
+      "projectName": "profileService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
     }

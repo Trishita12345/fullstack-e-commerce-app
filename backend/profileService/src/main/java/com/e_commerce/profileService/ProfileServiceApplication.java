@@ -1,0 +1,18 @@
+package com.e_commerce.profileService;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+
+@SpringBootApplication
+@ComponentScan(basePackages = {
+		"com.e_commerce.profileService",
+		"com.e_commerce.common"
+})
+public class ProfileServiceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ProfileServiceApplication.class, args);
+	}
+
+}

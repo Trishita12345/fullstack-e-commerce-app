@@ -1,0 +1,90 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-addresses-table
+      author: trishita
+      changes:
+        - createTable:
+            tableName: addresses
+            columns:
+              - column:
+                  name: address_id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: text
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: full_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: phone_number
+                  type: varchar(15)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: address_line_1
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: address_line_2
+                  type: varchar(255)
+
+              - column:
+                  name: landmark
+                  type: varchar(150)
+
+              - column:
+                  name: city
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: state
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: postal_code
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: country
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: address_type
+                  type: varchar(20)
+                  defaultValue: HOME
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_default
+                  type: boolean
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            tableName: addresses
+            indexName: idx_addresses_user_id
+            columns:
+              - column:
+                  name: user_id
