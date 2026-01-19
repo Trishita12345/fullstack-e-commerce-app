@@ -1,27 +1,14 @@
 "use client";
-import {
-  Box,
-  Button,
-  Grid,
-  GridCol,
-  Group,
-  Modal,
-  Stack,
-  Text,
-} from "@mantine/core";
-import { useDisclosure, useViewportSize } from "@mantine/hooks";
+import { Box, Grid, GridCol, Stack } from "@mantine/core";
+import { useViewportSize } from "@mantine/hooks";
 import PriceDetailsBox from "../(cart)/PriceDetailsBox";
-import { AddressDTO, CartProductsDTO } from "@/constants/types";
-import AddressCard from "./AddressCard";
+import { CartProductsDTO } from "@/constants/types";
 import { useEffect, useState } from "react";
 import { unauthorized } from "next/navigation";
 import { useSession } from "@/utils/store/session";
 import LoadingAddresses from "./LoadingAddresses";
 import { useAddressActions, useAllAddresses } from "@/utils/store/address";
 import { AddressListSection } from "./AddressListSection";
-import AddEditAddressAddressForm from "./AddEditAddressAddressForm";
-import { notify } from "@/utils/helperFunctions";
-import { updateAddress } from "../../addressActions";
 
 const Address = ({
   showLoading,

@@ -127,7 +127,7 @@ const AddressCard = ({
             {address.addressLine1}
             {address.addressLine2 && ", " + address.addressLine2}
             <br />{" "}
-            {address.landmark + ", " && address.landmark + ", " + address.city}
+            {(address.landmark ? address.landmark + ", " : "") + address.city}
             <br />
             {address.state} - {address.postalCode}, {address.country}
           </Text>

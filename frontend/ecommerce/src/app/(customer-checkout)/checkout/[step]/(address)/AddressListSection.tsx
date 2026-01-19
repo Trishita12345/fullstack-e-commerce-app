@@ -3,7 +3,7 @@ import { Stack, Group, Button, Text, Modal } from "@mantine/core";
 import AddressCard from "./AddressCard";
 import { IconMapOff } from "@tabler/icons-react";
 import { notify } from "@/utils/helperFunctions";
-import { updateAddress } from "../../addressActions";
+import { addAddress, updateAddress } from "../../addressActions";
 import { useAddressActions } from "@/utils/store/address";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
@@ -30,13 +30,14 @@ export const AddressListSection = ({
   const handleAddAddress = async (payload: AddressDTO) => {
     try {
       showLoading();
-      await updateAddress(payload);
+      await addAddress(payload);
       await getAllAddresses();
       notify({
         variant: "success",
         title: "Success!",
         message: "Address added succesfully!",
       });
+      handleModalClose();
     } catch {
       notify({
         variant: "error",
@@ -58,6 +59,7 @@ export const AddressListSection = ({
         title: "Success!",
         message: "Address updated succesfully!",
       });
+      handleModalClose();
     } catch {
       notify({
         variant: "error",
@@ -68,12 +70,26 @@ export const AddressListSection = ({
       stopLoading();
     }
   };
+  const handleModalClose = () => {
+    close();
+    setAddressDataForPopup(undefined);
+  };
   return (
     <>
       <Modal
+        size={"lg"}
         opened={opened}
-        onClose={close}
-        title={`${addressDataForPopup ? "Update" : "Add"} Address`}
+        onClose={handleModalClose}
+        title={
+          <Text tt="uppercase" size="sm" fw={600} c="black.7">
+            {addressDataForPopup ? "Update" : "Add New "} Address
+          </Text>
+        }
+        styles={{
+          body: {
+            padding: 0,
+          },
+        }}
       >
         <AddEditAddressAddressForm
           addressData={addressDataForPopup}
@@ -102,7 +118,7 @@ export const AddressListSection = ({
                 showLoading={showLoading}
                 stopLoading={stopLoading}
                 open={open}
-                close={close}
+                close={handleModalClose}
                 setAddressData={setAddressDataForPopup}
                 handleUpdateAddress={handleUpdateAddress}
               />
@@ -120,7 +136,7 @@ export const AddressListSection = ({
                 </Text>
                 {otherAddress.map((address) => (
                   <AddressCard
-                    address={defaultAddress}
+                    address={address}
                     showLoading={showLoading}
                     stopLoading={stopLoading}
                     open={open}
