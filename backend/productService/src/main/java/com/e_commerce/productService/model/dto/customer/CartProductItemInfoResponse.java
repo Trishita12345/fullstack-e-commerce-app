@@ -10,6 +10,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class CartProductItemInfoResponse {
+    private String sku;
     private String productName;
     private UUID productItemId;
     private Double basePrice;

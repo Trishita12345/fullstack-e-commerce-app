@@ -54,7 +54,7 @@ const AddEditProductVariantForm = ({
   const router = useRouter();
   const variantAttributesFormFields = variantAttributes.map((va) => ({
     [`attributes.${va.variantName}`]: isNotEmpty(
-      `${va.variantName} cannot be empty`
+      `${va.variantName} cannot be empty`,
     ),
   }));
   const form = useForm({
@@ -96,7 +96,7 @@ const AddEditProductVariantForm = ({
     if (value === null) value = "";
     form.setFieldValue(`attributes.${key}`, value);
     const variantNotSelected = variantAttributes.some(
-      (va) => !form.getValues().attributes?.[va.variantName]
+      (va) => !form.getValues().attributes?.[va.variantName],
     );
     setGenerateSKUButtonDisabled(variantNotSelected);
     form.setFieldValue("sku", "");
@@ -107,7 +107,7 @@ const AddEditProductVariantForm = ({
       setSkuLoading(true);
       const value = await generateProductSKU(
         productId,
-        form.getValues().attributes
+        form.getValues().attributes,
       );
       form.setFieldValue("sku", value);
     } catch {
@@ -215,22 +215,18 @@ const AddEditProductVariantForm = ({
                 key={form.key("discountedPrice")}
               />
               <Group>
-                {productVariantId ? (
-                  <></>
-                ) : (
-                  <Button
-                    variant="light"
-                    color="primaryDark.7"
-                    size="xs"
-                    w={"max-content"}
-                    loading={skuLoading}
-                    disabled={generateSKUButtonDisabled}
-                    leftSection={<IconSparkles />}
-                    onClick={generateSKU}
-                  >
-                    {form.getValues().sku ? "Regenerate SKU" : "Generate SKU"}
-                  </Button>
-                )}
+                <Button
+                  variant="light"
+                  color="primaryDark.7"
+                  size="xs"
+                  w={"max-content"}
+                  loading={skuLoading}
+                  disabled={generateSKUButtonDisabled}
+                  leftSection={<IconSparkles />}
+                  onClick={generateSKU}
+                >
+                  {form.getValues().sku ? "Regenerate SKU" : "Generate SKU"}
+                </Button>
                 {form.getValues().sku && (
                   <Group gap={0}>
                     <Text size="sm" fw={600}>

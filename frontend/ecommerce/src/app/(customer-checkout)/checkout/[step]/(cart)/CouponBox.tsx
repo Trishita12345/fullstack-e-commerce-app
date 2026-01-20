@@ -158,7 +158,7 @@ const CouponBoxModal = ({
     if (selectedCoupon) {
       setCoupon(
         selectedCoupon.couponCode,
-        (totalDiscountedPrice * selectedCoupon.discountPercent) / 100,
+        selectedCoupon.discountPercent,
         selectedCoupon.minPurchaseAmount,
       );
     } else {

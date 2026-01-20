@@ -220,6 +220,7 @@ export interface CartItemDTO {
 }
 
 export interface CartProducts {
+  sku: string;
   productName: string;
   productItemId: string;
   basePrice: number;

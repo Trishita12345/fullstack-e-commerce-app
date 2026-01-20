@@ -1,7 +1,11 @@
 import { en } from "@/constants/en";
 import { CartItemDTO, CartProducts } from "@/constants/types";
 import { authClient } from "@/lib/auth-client";
-import { notify, formattedPrice } from "@/utils/helperFunctions";
+import {
+  notify,
+  formattedPrice,
+  decodeSkuToken,
+} from "@/utils/helperFunctions";
 import { useCartActions } from "@/utils/store/cart";
 import {
   Card,
@@ -219,9 +223,10 @@ const CartItemCard = ({
   stopLoading,
 }: CartItemCardProps) => {
   const session = useSession();
-  const { updateCart } = useCartActions();
+  const { updateCartSelected } = useCartActions();
   const isLoggedIn = Boolean(session?.user?.id);
   const {
+    sku,
     productName = "",
     productItemId = "",
     basePrice = 0,
@@ -229,7 +234,6 @@ const CartItemCard = ({
     availableStock = 0,
     imgUrl,
   } = productItem;
-
   const handleCheck = async (e: React.MouseEvent<HTMLInputElement>) => {
     const isSelected = e.currentTarget.checked;
     try {
@@ -241,7 +245,7 @@ const CartItemCard = ({
         showLoading();
         await updateCartAction(payload);
       }
-      updateCart(payload);
+      updateCartSelected(payload);
     } catch (err) {
       notify({
         variant: "error",
@@ -252,6 +256,7 @@ const CartItemCard = ({
       stopLoading();
     }
   };
+  const variants = decodeSkuToken(sku);
   return (
     <Card
       withBorder
@@ -286,15 +291,10 @@ const CartItemCard = ({
         <Group justify="space-between" w="100%" align="start">
           <Stack flex={11} gap={8}>
             <Link href={`/products/${productItemId}`}>
-              <Text size="sm" c="black.8">
-                {productName}
+              <Text size="xs" c="black.8" tt="capitalize" fw={500}>
+                {[productName, ...variants].join(" | ")}
               </Text>
             </Link>
-            <Price
-              basePrice={basePrice}
-              discountedPrice={discountedPrice}
-              priceSnapshot={cartItem.priceSnapshot}
-            />
             <Quantity
               availableStock={availableStock}
               quantity={cartItem.quantity}
@@ -304,6 +304,11 @@ const CartItemCard = ({
               isLoggedIn={isLoggedIn}
               priceSnapshot={cartItem.priceSnapshot}
               isSelected={cartItem?.isSelected || true}
+            />
+            <Price
+              basePrice={basePrice}
+              discountedPrice={discountedPrice}
+              priceSnapshot={cartItem.priceSnapshot}
             />
             <Group gap={4} id="ship">
               <IconTruckDelivery

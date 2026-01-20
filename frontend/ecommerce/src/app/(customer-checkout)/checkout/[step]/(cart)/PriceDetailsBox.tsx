@@ -69,7 +69,8 @@ const PriceDetailsBox = ({
                 Coupon Discount
               </Text>
               <Text c={"green"} size="xs">
-                - {formattedPrice(couponDiscount)}
+                -{" "}
+                {formattedPrice(totalDiscountedPrice * (couponDiscount / 100))}
               </Text>
             </Group>
           )}

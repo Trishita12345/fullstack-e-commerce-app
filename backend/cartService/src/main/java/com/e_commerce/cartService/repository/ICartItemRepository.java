@@ -17,7 +17,8 @@ public interface ICartItemRepository extends JpaRepository<CartItem, UUID> {
                 CI.price_snapshot AS priceSnapshot,
                         CI.is_selected AS isSelected
                          FROM CART_ITEMS CI
-                         WHERE CI.CART_ID = :cartId
+                                 WHERE CI.CART_ID = :cartId
+                         order by ci.is_selected desc, ci.updated_at desc
                         """, nativeQuery = true)
     List<CartItemRequestDTO> getAllByCartId(UUID cartId);
 

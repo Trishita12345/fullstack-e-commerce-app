@@ -9,10 +9,11 @@ import { persist } from "zustand/middleware";
 type CartActions = {
   addToCart: (cartItem: CartItemDTO) => void;
   updateCart: (cartItem: CartItemDTO) => void;
+  updateCartSelected: (cartItem: CartItemDTO) => void;
   removeFromCart: (productItemId: string) => void;
   setDonation: (amount: number) => void;
   setGiftWrap: () => void;
-  setCoupon: (code: string, amount: number, maxValue: number) => void;
+  setCoupon: (code: string, discountParcent: number, maxValue: number) => void;
   getInitialCartData: () => Promise<void>;
   clearCartData: () => void;
 };
@@ -43,7 +44,6 @@ const useCartStore = create<CartState>()(
         },
         updateCart(cartItem) {
           set((state) => {
-            console.log(cartItem);
             return {
               cartItems: state.cartItems.map((ci) =>
                 ci.productItemId === cartItem.productItemId
@@ -54,6 +54,23 @@ const useCartStore = create<CartState>()(
                     }
                   : ci,
               ),
+              coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
+            };
+          });
+        },
+        updateCartSelected(cartItem) {
+          set((state) => {
+            const nonUpdatedItems = state.cartItems.filter(
+              (ci) => ci.productItemId !== cartItem.productItemId,
+            );
+            let updatedArr;
+            if (cartItem.isSelected) {
+              updatedArr = [cartItem, ...nonUpdatedItems];
+            } else {
+              updatedArr = [...nonUpdatedItems, cartItem];
+            }
+            return {
+              cartItems: updatedArr,
               coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
             };
           });
@@ -84,10 +101,14 @@ const useCartStore = create<CartState>()(
         setGiftWrap() {
           set((state) => ({ giftWrap: state.giftWrap === 35 ? 0 : 35 }));
         },
-        setCoupon(code, amount, maxValue) {
+        setCoupon(code, discountParcent, maxValue) {
           if (code)
             set({
-              coupon: { couponCode: code, couponDiscount: amount, maxValue },
+              coupon: {
+                couponCode: code,
+                couponDiscount: discountParcent,
+                maxValue,
+              },
             });
           else
             set({ coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 } });

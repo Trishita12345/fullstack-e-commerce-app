@@ -157,6 +157,7 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
 
     @Query(value = """
             SELECT
+            pi.sku as sku,
             p.name as productName,
             pi.id as productItemId,
             CAST(pi.base_price AS DOUBLE PRECISION) as basePrice,

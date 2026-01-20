@@ -68,7 +68,7 @@ async function getPresignedUrl(file: File) {
         contentType: file.type,
       },
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
   return url;
 }
@@ -128,7 +128,7 @@ export const shareProduct = async (product: ShareProductType) => {
 export const saveToStorage = (
   key: string,
   value: string,
-  session?: boolean
+  session?: boolean,
 ) => {
   if (session) {
     sessionStorage.setItem(key, value);
@@ -170,3 +170,12 @@ export const clearStorage = (level: "session" | "local" | "all" = "local") => {
 
 export const dummyDelay = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+export function decodeSkuToken(token: string) {
+  if (!token) return [];
+  return token
+    .replace("_", " ")
+    .split("-")
+    .slice(1, -1)
+    .map((word) => word.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()));
+}
