@@ -97,7 +97,7 @@ const CouponBoxModal = ({
         (sum, item) =>
           (sum +=
             cartProducts[item.productItemId].discountedPrice * item.quantity),
-        0
+        0,
       );
   };
   useEffect(() => {
@@ -106,13 +106,13 @@ const CouponBoxModal = ({
     setSelectedCoupon(
       couponFromStore.couponCode !== ""
         ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
-        : getBestCoupon(totalDiscountedPriceTemp)
+        : getBestCoupon(totalDiscountedPriceTemp),
     );
   }, [cartItems]);
 
   const handleCheck = () => {
     const couponExists = coupons.find(
-      (c) => c.couponCode.toLowerCase() === textValue.toLowerCase()
+      (c) => c.couponCode.toLowerCase() === textValue.toLowerCase(),
     );
     if (couponExists) {
       if (
@@ -129,7 +129,7 @@ const CouponBoxModal = ({
           error: true,
           msg: `Shop more ${formattedPrice(
             couponExists.minPurchaseAmount -
-              getTotalDiscountedPriceTemp(cartItems)
+              getTotalDiscountedPriceTemp(cartItems),
           )} to apply this coupon.`,
         });
       }
@@ -151,7 +151,7 @@ const CouponBoxModal = ({
     setSelectedCoupon(
       couponFromStore.couponCode !== ""
         ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
-        : getBestCoupon(totalDiscountedPriceTemp)
+        : getBestCoupon(totalDiscountedPriceTemp),
     );
   };
   const applyCoupon = () => {
@@ -159,7 +159,7 @@ const CouponBoxModal = ({
       setCoupon(
         selectedCoupon.couponCode,
         (totalDiscountedPrice * selectedCoupon.discountPercent) / 100,
-        selectedCoupon.minPurchaseAmount
+        selectedCoupon.minPurchaseAmount,
       );
     } else {
       setCoupon("", 0, 0);
@@ -263,13 +263,13 @@ const CouponBoxModal = ({
                         <Text size="xs" c="red">
                           {`Shop more ${formattedPrice(
                             c.minPurchaseAmount -
-                              getTotalDiscountedPriceTemp(cartItems)
+                              getTotalDiscountedPriceTemp(cartItems),
                           )} to apply this coupon.`}
                         </Text>
                       ) : null}
                       <Text fw={600} size="sm" lts={0.3}>
                         {`Save ${formattedPrice(
-                          (totalDiscountedPrice * c.discountPercent) / 100
+                          (totalDiscountedPrice * c.discountPercent) / 100,
                         )}`}
                       </Text>
                       <Text size="13px" lts={0.3} c="black.7">
@@ -305,7 +305,7 @@ const CouponBoxModal = ({
                 {selectedCoupon
                   ? formattedPrice(
                       (totalDiscountedPrice * selectedCoupon.discountPercent) /
-                        100
+                        100,
                     )
                   : formattedPrice(0)}
               </Text>

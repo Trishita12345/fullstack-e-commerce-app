@@ -1,49 +1,22 @@
 import { InfoIcon } from "@/(components)/InfoIcon";
+import LoginComponent, { LoggedOutProps } from "@/(components)/LoginComponent";
 import { CartProductsDTO } from "@/constants/types";
 import { authClient } from "@/lib/auth-client";
 import { formattedPrice } from "@/utils/helperFunctions";
-import { useAddressActions } from "@/utils/store/address";
 import { useCartItems, useCoupon, useDonation } from "@/utils/store/cart";
-import { useAuthActions, useSession } from "@/utils/store/session";
 import { Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
 
 const PriceDetailsBox = ({
   cartProducts,
 }: {
   cartProducts: CartProductsDTO;
 }) => {
-  const session = useSession();
-  const isLoggedIn = Boolean(session?.user?.id);
   const cartItems = useCartItems();
   const donation = useDonation();
   const { couponDiscount } = useCoupon();
-  const { setSession } = useAuthActions();
-  const { data } = authClient.useSession();
-  const { getAllAddresses } = useAddressActions();
-
-  const handleSocialLogIn = async () => {
-    const { error } = await authClient.signIn.social({
-      provider: "google",
-    });
-    if (error) {
-      notifications.show({
-        title: "Login Failed",
-        message: error.message,
-        color: "red",
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (data?.user) {
-      setSession(data);
-      getAllAddresses();
-    }
-  }, [data]);
 
   const totalPrice = cartItems
     .filter((ci) => ci.isSelected)
@@ -126,31 +99,33 @@ const PriceDetailsBox = ({
             {formattedPrice(totalDiscountedPrice - couponDiscount + donation)}
           </Text>
         </Group>
-
-        {isLoggedIn ? (
-          <>
-            {step !== "payment" && (
-              <Link href={`${step == "cart" ? "./address" : "./payment"}`}>
-                <Button color="primaryDark.7" size="md" fullWidth>
-                  <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
-                    place order
-                  </Text>
-                </Button>
-              </Link>
-            )}
-          </>
-        ) : (
-          <Button
-            color="primaryDark.7"
-            size="md"
-            fullWidth
-            onClick={handleSocialLogIn}
-          >
-            <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
-              Login to Proceed
-            </Text>
-          </Button>
-        )}
+        <LoginComponent
+          LoggedInComponent={() => (
+            <>
+              {step !== "payment" && (
+                <Link href={`${step == "cart" ? "./address" : "./payment"}`}>
+                  <Button color="primaryDark.7" size="md" fullWidth>
+                    <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
+                      place order
+                    </Text>
+                  </Button>
+                </Link>
+              )}
+            </>
+          )}
+          NotLoggedInComponent={({ openLoginPopUp }: LoggedOutProps) => (
+            <Button
+              color="primaryDark.7"
+              size="md"
+              fullWidth
+              onClick={openLoginPopUp}
+            >
+              <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
+                Login to Proceed
+              </Text>
+            </Button>
+          )}
+        />
       </Stack>
     </Box>
   );
