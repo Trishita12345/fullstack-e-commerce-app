@@ -15,6 +15,7 @@ import { User } from "@/lib/auth";
 import { useCartActions } from "@/utils/store/cart";
 import { useAuthActions } from "@/utils/store/session";
 import { useAddressActions } from "@/utils/store/address";
+import { authClient } from "@/lib/auth-client";
 
 const PopoverItems: PopoverContentItemProps[] = [
   {
@@ -39,6 +40,7 @@ const PopoverContent = ({ user }: { user: User }) => {
   const { setSession } = useAuthActions();
   const { clearAddressData } = useAddressActions();
   const handleLogout = async () => {
+    await authClient.signOut();
     setSession(null);
     clearCartData();
     clearAddressData();

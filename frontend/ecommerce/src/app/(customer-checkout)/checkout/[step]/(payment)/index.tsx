@@ -5,6 +5,7 @@ import { unauthorized } from "next/navigation";
 import { CartProductsDTO } from "@/constants/types";
 import { useViewportSize } from "@mantine/hooks";
 import PaymentOptionsSection from "./PaymentOptionsSection";
+import LoadingPayment from "./LoadingPayment";
 
 const Payment = ({ showLoading, stopLoading, cartProducts }: { showLoading: () => void; stopLoading: () => void, cartProducts: CartProductsDTO }) => {
 
@@ -14,7 +15,8 @@ const Payment = ({ showLoading, stopLoading, cartProducts }: { showLoading: () =
     const { width } = useViewportSize()
     return (
         <Box w={{ base: "90%", md: "85%", lg: "70%" }} mx="auto">
-            {Object.keys(cartProducts).length > 0 && (
+
+            {Object.keys(cartProducts).length > 0 ? (
                 <Grid>
                     <GridCol
                         pr={{ base: 0, lg: 24 }}
@@ -32,7 +34,8 @@ const Payment = ({ showLoading, stopLoading, cartProducts }: { showLoading: () =
                         </Stack>
                     </GridCol>
                 </Grid>
-            )}
+            ) : <LoadingPayment />
+            }
 
         </Box>
     );
