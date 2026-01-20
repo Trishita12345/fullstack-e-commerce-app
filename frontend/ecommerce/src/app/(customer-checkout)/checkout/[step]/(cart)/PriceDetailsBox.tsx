@@ -1,41 +1,73 @@
 import { InfoIcon } from "@/(components)/InfoIcon";
 import { CartProductsDTO } from "@/constants/types";
+import { authClient } from "@/lib/auth-client";
 import { formattedPrice } from "@/utils/helperFunctions";
+import { useAddressActions } from "@/utils/store/address";
 import { useCartItems, useCoupon, useDonation } from "@/utils/store/cart";
+import { useAuthActions, useSession } from "@/utils/store/session";
 import { Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
 const PriceDetailsBox = ({
   cartProducts,
 }: {
   cartProducts: CartProductsDTO;
 }) => {
+  const session = useSession();
+  const isLoggedIn = Boolean(session?.user?.id);
   const cartItems = useCartItems();
   const donation = useDonation();
   const { couponDiscount } = useCoupon();
+  const { setSession } = useAuthActions();
+  const { data } = authClient.useSession();
+  const { getAllAddresses } = useAddressActions();
+
+  const handleSocialLogIn = async () => {
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+    });
+    if (error) {
+      notifications.show({
+        title: "Login Failed",
+        message: error.message,
+        color: "red",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (data?.user) {
+      setSession(data);
+      getAllAddresses();
+    }
+  }, [data]);
+
   const totalPrice = cartItems
     .filter((ci) => ci.isSelected)
     .reduce(
       (sum, item) =>
         (sum += cartProducts[item.productItemId].basePrice * item.quantity),
-      0
+      0,
     );
   const totalDiscountedPrice = cartItems
     .filter((ci) => ci.isSelected)
     .reduce(
       (sum, item) =>
-      (sum +=
-        cartProducts[item.productItemId].discountedPrice * item.quantity),
-      0
+        (sum +=
+          cartProducts[item.productItemId].discountedPrice * item.quantity),
+      0,
     );
   const { step } = useParams();
   return (
     <Box h={600}>
       <Stack gap={16} pos={"sticky"} top={16}>
         <Text size="11px" c="black.7" fw={600} lts={0.5}>
-          {`PRICE DETAILS (${cartItems.length} Item${cartItems.length > 1 ? "s" : ""
-            })`}
+          {`PRICE DETAILS (${cartItems.length} Item${
+            cartItems.length > 1 ? "s" : ""
+          })`}
         </Text>
         <Stack gap={8}>
           <Group justify="space-between">
@@ -95,15 +127,32 @@ const PriceDetailsBox = ({
           </Text>
         </Group>
 
-        {step !== 'payment' && <Link href={`${step == "cart" ? "./address" : './payment'}`}>
-          <Button color="primaryDark.7" size="md" fullWidth>
-            <Text tt="uppercase" size="13px" fw={600} lts={1.2} >
-              place order
+        {isLoggedIn ? (
+          <>
+            {step !== "payment" && (
+              <Link href={`${step == "cart" ? "./address" : "./payment"}`}>
+                <Button color="primaryDark.7" size="md" fullWidth>
+                  <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
+                    place order
+                  </Text>
+                </Button>
+              </Link>
+            )}
+          </>
+        ) : (
+          <Button
+            color="primaryDark.7"
+            size="md"
+            fullWidth
+            onClick={handleSocialLogIn}
+          >
+            <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
+              Login to Proceed
             </Text>
           </Button>
-        </Link>}
+        )}
       </Stack>
-    </Box >
+    </Box>
   );
 };
 

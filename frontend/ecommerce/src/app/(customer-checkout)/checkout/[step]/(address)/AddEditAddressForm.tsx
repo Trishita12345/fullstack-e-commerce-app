@@ -8,6 +8,7 @@ import {
   Grid,
   GridCol,
   Group,
+  Radio,
   ScrollArea,
   Select,
   Stack,
@@ -23,7 +24,7 @@ const CustomLabel = ({ label }: { label: string }) => (
     {label}
   </Text>
 );
-const AddEditAddressAddressForm = ({
+const AddEditAddressForm = ({
   addressData,
   handleAddAddress,
   handleUpdateAddress,
@@ -121,6 +122,23 @@ const AddEditAddressAddressForm = ({
               <Text tt="uppercase" size="xs" fw={600} mb={8} mt={28}>
                 Address
               </Text>
+              <Radio.Group
+                pb={4}
+                name="addressType"
+                {...form.getInputProps("addressType")}
+                key={form.key("addressType")}
+              >
+                <Group mt="xs">
+                  {Object.values(AddressType).map((i) => (
+                    <Radio
+                      value={i}
+                      label={i}
+                      size="xs"
+                      color="primaryDark.7"
+                    />
+                  ))}
+                </Group>
+              </Radio.Group>
               <TextInput
                 {...form.getInputProps("addressLine1")}
                 withAsterisk
@@ -186,4 +204,4 @@ const AddEditAddressAddressForm = ({
   );
 };
 
-export default AddEditAddressAddressForm;
+export default AddEditAddressForm;

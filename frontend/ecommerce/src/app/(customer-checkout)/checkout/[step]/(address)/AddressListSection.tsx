@@ -7,7 +7,7 @@ import { addAddress, updateAddress } from "../../addressActions";
 import { useAddressActions } from "@/utils/store/address";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
-import AddEditAddressAddressForm from "./AddEditAddressAddressForm";
+import AddEditAddressForm from "./AddEditAddressForm";
 
 export const AddressListSection = ({
   addresses,
@@ -27,11 +27,14 @@ export const AddressListSection = ({
   const otherAddress =
     (addresses && addresses.filter((address) => !address.isDefault)) || [];
   const { getAllAddresses } = useAddressActions();
+  const { setSelectedAddressId } = useAddressActions();
+
   const handleAddAddress = async (payload: AddressDTO) => {
     try {
       showLoading();
-      await addAddress(payload);
+      const addressId = await addAddress(payload);
       await getAllAddresses();
+      setSelectedAddressId(addressId);
       notify({
         variant: "success",
         title: "Success!",
@@ -54,6 +57,7 @@ export const AddressListSection = ({
       showLoading();
       await updateAddress(payload);
       await getAllAddresses();
+      setSelectedAddressId(payload.addressId);
       notify({
         variant: "success",
         title: "Success!",
@@ -91,7 +95,7 @@ export const AddressListSection = ({
           },
         }}
       >
-        <AddEditAddressAddressForm
+        <AddEditAddressForm
           addressData={addressDataForPopup}
           handleAddAddress={handleAddAddress}
           handleUpdateAddress={handleUpdateAddress}

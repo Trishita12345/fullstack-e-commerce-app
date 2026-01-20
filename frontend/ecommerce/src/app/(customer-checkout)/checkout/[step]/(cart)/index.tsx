@@ -1,12 +1,7 @@
 "use client";
 
 import { CartProductsDTO } from "@/constants/types";
-import {
-  Box,
-  Grid,
-  GridCol,
-  Stack,
-} from "@mantine/core";
+import { Box, Grid, GridCol, Stack } from "@mantine/core";
 import AddressBox from "./AddressBox";
 import CouponBox from "./CouponBox";
 import { useDisclosure, useViewportSize } from "@mantine/hooks";
@@ -21,13 +16,12 @@ const Cart = ({
   showLoading,
   stopLoading,
   isLoading,
-  cartProducts
+  cartProducts,
 }: {
   showLoading: () => void;
   stopLoading: () => void;
   isLoading: boolean;
-  cartProducts: CartProductsDTO
-
+  cartProducts: CartProductsDTO;
 }) => {
   const { width } = useViewportSize();
 
@@ -44,12 +38,16 @@ const Cart = ({
                   pr={{ base: 0, lg: 24 }}
                   span={{ base: 12, lg: 8 }}
                   style={{
-                    borderRight: `${width < 1200 ? 0 : 1
-                      }px solid var(--mantine-color-gray-1)`,
+                    borderRight: `${
+                      width < 1200 ? 0 : 1
+                    }px solid var(--mantine-color-gray-1)`,
                   }}
                 >
                   <Stack my={24}>
-                    <AddressBox />
+                    <AddressBox
+                      showLoading={showLoading}
+                      stopLoading={stopLoading}
+                    />
                     <CartItemsSection
                       cartProducts={cartProducts}
                       showLoading={showLoading}

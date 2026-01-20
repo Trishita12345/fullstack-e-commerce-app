@@ -234,7 +234,7 @@ export interface CartProductsDTO {
 
 export enum AddressType {
   HOME = "HOME",
-  OFFICE = "OFFICE",
+  OFFICE = "WORK",
   OTHER = "OTHER",
 }
 export interface AddressDTO {

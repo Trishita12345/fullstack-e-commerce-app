@@ -8,10 +8,11 @@ import type {
 import { apiFetch } from "@/lib/apiFetch";
 
 export async function addAddress(values: AddressDTO) {
-  await apiFetch<void>(`/profile-service/address/add`, {
+  const address = await apiFetch<AddressDTO>(`/profile-service/address/add`, {
     method: "POST",
     body: values,
   });
+  return address.addressId;
 }
 export async function updateAddress(values: AddressDTO) {
   await apiFetch<void>(`/profile-service/address/${values.addressId}`, {
