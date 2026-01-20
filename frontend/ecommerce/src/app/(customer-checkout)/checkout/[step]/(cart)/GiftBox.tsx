@@ -1,7 +1,10 @@
+import { useCartActions, useGiftWrap } from "@/utils/store/cart";
 import { Button, Card, Divider, Group, Stack, Text } from "@mantine/core";
 import { IconGiftFilled } from "@tabler/icons-react";
 
 const GiftBox = () => {
+  const giftWrap = useGiftWrap();
+  const { setGiftWrap } = useCartActions();
   return (
     <Stack gap={16}>
       <Text size="11px" fw={700} c="black.7" tt={"uppercase"} lts={0.5}>
@@ -23,8 +26,9 @@ const GiftBox = () => {
               c="primaryDark.7"
               tt={"uppercase"}
               style={{ cursor: "pointer" }}
+              onClick={setGiftWrap}
             >
-              Add Gift Package
+              {!giftWrap ? "Add Gift Package" : "Remove Gift Package"}
             </Text>
           </Stack>
         </Group>

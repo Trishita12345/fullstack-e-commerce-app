@@ -1,11 +1,14 @@
 import { InfoIcon } from "@/(components)/InfoIcon";
 import LoginComponent, { LoggedOutProps } from "@/(components)/LoginComponent";
 import { CartProductsDTO } from "@/constants/types";
-import { authClient } from "@/lib/auth-client";
 import { formattedPrice } from "@/utils/helperFunctions";
-import { useCartItems, useCoupon, useDonation } from "@/utils/store/cart";
+import {
+  useCartItems,
+  useCoupon,
+  useDonation,
+  useGiftWrap,
+} from "@/utils/store/cart";
 import { Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -16,6 +19,7 @@ const PriceDetailsBox = ({
 }) => {
   const cartItems = useCartItems();
   const donation = useDonation();
+  const giftWrap = useGiftWrap();
   const { couponDiscount } = useCoupon();
 
   const totalPrice = cartItems
@@ -80,15 +84,17 @@ const PriceDetailsBox = ({
               <Text size="xs">{formattedPrice(donation)}</Text>
             </Group>
           )}
-          {/* <Group justify="space-between" id="gift wrap">
-          <Group gap={4}>
-            <Text c={"black.7"} size="xs">
-              Gift wrap charges
-            </Text>
-            <InfoIcon info="** Gift charges has been added as you have selected above" />
-          </Group>
-          <Text size="xs">₹35.00</Text>
-        </Group> */}
+          {giftWrap > 0 && (
+            <Group justify="space-between" id="gift wrap">
+              <Group gap={4}>
+                <Text c={"black.7"} size="xs">
+                  Gift wrap charges
+                </Text>
+                <InfoIcon info="** Gift charges has been added as you have selected above" />
+              </Group>
+              <Text size="xs">{formattedPrice(giftWrap)}</Text>
+            </Group>
+          )}
         </Stack>
         <Divider color="gray.1" mt={4} />
         <Group justify="space-between">
@@ -96,7 +102,9 @@ const PriceDetailsBox = ({
             Total Amount
           </Text>
           <Text fw={600} size="sm">
-            {formattedPrice(totalDiscountedPrice - couponDiscount + donation)}
+            {formattedPrice(
+              totalDiscountedPrice - couponDiscount + donation + giftWrap,
+            )}
           </Text>
         </Group>
         <LoginComponent

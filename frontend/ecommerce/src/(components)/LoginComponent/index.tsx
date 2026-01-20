@@ -4,16 +4,7 @@ import { Session } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
 import { useAddressActions } from "@/utils/store/address";
 import { useSession, useAuthActions } from "@/utils/store/session";
-import {
-  Box,
-  Button,
-  Card,
-  Group,
-  Modal,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Button, Modal, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useEffect } from "react";
@@ -90,7 +81,6 @@ const LoginComponent = ({
               </Stack>
               <Stack>
                 <Button
-                  // bg="white"
                   color="primaryDark.7"
                   variant="outline"
                   leftSection={
