@@ -28,7 +28,7 @@ export async function generateStaticParams() {
     {
       cache: "force-cache",
       revalidate: 3600,
-    }
+    },
   );
   return productItemIds;
 }
@@ -39,7 +39,7 @@ async function getPDPData(productItemId: string) {
     {
       cache: "force-cache",
       revalidate: 3600,
-    }
+    },
   );
 }
 export async function generateMetadata({ params }: PageProps) {
@@ -58,8 +58,7 @@ export async function generateMetadata({ params }: PageProps) {
 const PDP = async ({ params }: PageProps) => {
   const { productItemId } = await params;
   const pdpData = await getPDPData(productItemId);
-  // const noOfItemsInCart = await getPdpCartData(productItemId);
-  // const isWishlisted = await getIsWishListed(productItemId);
+  console.log("pdpData: ", pdpData);
   const reviews = reviewData;
   const breadcrumbs = [
     { title: "Home", href: "/" },

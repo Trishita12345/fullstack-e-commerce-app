@@ -9,7 +9,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
-import { CartProductsDTO } from "@/constants/types";
+import { CartItemDTO, CartProductsDTO } from "@/constants/types";
 import { getProductDetailsAction } from "../cartActions";
 import Address from "./(address)";
 import { useSession } from "@/utils/store/session";
@@ -22,7 +22,7 @@ const Checkout = () => {
   const [cartDataLoaded, setCartDataLoaded] = useState<boolean>(false);
   const session = useSession();
   const isLoggedIn = Boolean(session?.user?.id);
-  const { getInitialCartData } = useCartActions();
+  const { getInitialCartData, setCartItems } = useCartActions();
   const cartItems = useCartItems();
   const [cartProducts, setCartProducts] = useState<CartProductsDTO>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -51,6 +51,21 @@ const Checkout = () => {
     try {
       const data = await getProductDetailsAction(cartItems);
       setCartProducts(data);
+      const updatedCart = cartItems.map((c) => ({
+        ...c,
+        updatedQuantity:
+          data[c.productItemId].availableStock < c.quantity
+            ? data[c.productItemId].availableStock
+            : c.quantity,
+      }));
+      let updatedCartOutOfStock: CartItemDTO[] = [];
+      let updatedCartInStock: CartItemDTO[] = [];
+      updatedCart.forEach((i) => {
+        if (i.updatedQuantity === 0) {
+          updatedCartOutOfStock.push({ ...i, isSelected: false });
+        } else updatedCartInStock.push(i);
+      });
+      setCartItems([...updatedCartInStock, ...updatedCartOutOfStock]);
     } catch {
     } finally {
       setIsLoading(false);
@@ -61,7 +76,7 @@ const Checkout = () => {
     if (cartDataLoaded) {
       getCartProducts();
     }
-  }, [cartItems, cartDataLoaded]);
+  }, [cartDataLoaded]);
   return (
     <Box pos="relative">
       <LoadingOverlay

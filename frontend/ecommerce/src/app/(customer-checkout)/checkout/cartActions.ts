@@ -1,10 +1,10 @@
 "use server";
 
-import type { CartItemDTO, CartProductsDTO } from "@/constants/types";
+import type { CartItemDbDTO, CartProductsDTO } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { revalidatePath } from "next/cache";
 
-export async function updateCartAction(values: CartItemDTO) {
+export async function updateCartAction(values: CartItemDbDTO) {
   await apiFetch<void>(`/cart-service/cart-items/update`, {
     method: "PUT",
     body: values,
@@ -17,7 +17,7 @@ export async function removeFromCartAction(productItemId: string) {
   });
 }
 
-export async function getProductDetailsAction(cartItems: CartItemDTO[]) {
+export async function getProductDetailsAction(cartItems: CartItemDbDTO[]) {
   const data = await apiFetch<CartProductsDTO>(
     "/product-service/public/products/cart-item-details",
     {

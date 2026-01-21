@@ -1,3 +1,6 @@
+import { MIN_PURCHASE_VALUE } from "@/utils/constants";
+import { formattedPrice } from "@/utils/helperFunctions";
+
 export const en = {
   logoText: "Loom & Lume",
   logoName: "Loom&Lume",
@@ -57,6 +60,7 @@ export const en = {
   Dashboard: "Dashboard",
   Categories: "Categories",
   SellerMode: "Seller Mode",
-  shippingContent: "<p> Free shipping on orders above ₹999.<br /> Delivered safely to your doorstep within 3–5 business days.</p>",
-  returnContent: "<p> **Returns / Replacements are accepted only in case of damaged products.<br /> Please ensure an unboxing video is recorded for verification.</p>"
+  shippingContent: `<p> Free shipping on orders above ${formattedPrice(MIN_PURCHASE_VALUE)}.<br /> Delivered safely to your doorstep within 3-5 business days.</p>`,
+  returnContent:
+    "<p> **Returns / Replacements are accepted only in case of damaged products.<br /> Please ensure an unboxing video is recorded for verification.</p>",
 };

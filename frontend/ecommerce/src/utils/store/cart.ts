@@ -1,10 +1,11 @@
 "use client";
 
 import { CouponTypeDTO } from "@/app/(customer-checkout)/checkout/[step]/(cart)/CouponBox";
-import { CartItemDTO } from "@/constants/types";
+import { CartItemDbDTO, CartItemDTO } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { GIFT_WRAP_CHARGE } from "../constants";
 
 const coupons: CouponTypeDTO[] = [
   {
@@ -38,8 +39,9 @@ const coupons: CouponTypeDTO[] = [
 ];
 
 type CartActions = {
-  addToCart: (cartItem: CartItemDTO) => void;
-  updateCart: (cartItem: CartItemDTO) => void;
+  setCartItems: (cartItem: CartItemDTO[]) => void;
+  addToCart: (cartItem: CartItemDbDTO) => void;
+  updateCart: (cartItem: CartItemDbDTO) => void;
   updateCartSelected: (cartItem: CartItemDTO) => void;
   removeFromCart: (productItemId: string) => void;
   setDonation: (amount: number) => void;
@@ -66,9 +68,15 @@ const useCartStore = create<CartState>()(
       giftWrap: false,
       selectedCouponCode: undefined,
       actions: {
+        setCartItems(cartItems) {
+          set({ cartItems });
+        },
         addToCart(cartItem) {
           set((state) => {
-            const newcartItems = [...state.cartItems, { ...cartItem }];
+            const newcartItems = [
+              ...state.cartItems,
+              { ...cartItem, updatedQuantity: cartItem.quantity },
+            ];
             return {
               cartItems: newcartItems,
               selectedCouponCode: undefined,
@@ -82,8 +90,8 @@ const useCartStore = create<CartState>()(
                 ci.productItemId === cartItem.productItemId
                   ? {
                       ...ci,
-                      isSelected: cartItem.isSelected ?? ci.isSelected,
                       quantity: cartItem.quantity,
+                      updatedQuantity: cartItem.quantity,
                     }
                   : ci,
               ),
@@ -117,10 +125,15 @@ const useCartStore = create<CartState>()(
           }));
         },
         async getInitialCartData() {
-          const cartItemsFromDb = await apiFetch<CartItemDTO[]>(
+          const cartItemsFromDb = await apiFetch<CartItemDbDTO[]>(
             "/cart-service/cart-items",
           );
-          set({ cartItems: cartItemsFromDb });
+          set({
+            cartItems: cartItemsFromDb.map((c) => ({
+              ...c,
+              updatedQuantity: c.quantity,
+            })),
+          });
         },
         clearCartData() {
           set({
@@ -154,7 +167,7 @@ const useCartStore = create<CartState>()(
 export const useCartActions = () => useCartStore((state) => state.actions);
 export const useDonation = () => useCartStore((state) => state.donation);
 export const useGiftWrap = () =>
-  useCartStore((state) => (state.giftWrap ? 35 : 0));
+  useCartStore((state) => (state.giftWrap ? GIFT_WRAP_CHARGE : 0));
 export const useCartItems = () => useCartStore((state) => state.cartItems);
 export const useCartItemById = (id: string) =>
   useCartStore((state) => state.cartItems.find((c) => c.productItemId === id));

@@ -75,7 +75,8 @@ const CouponBoxModal = ({
       .reduce(
         (sum, item) =>
           (sum +=
-            cartProducts[item.productItemId].discountedPrice * item.quantity),
+            cartProducts[item.productItemId].discountedPrice *
+            item.updatedQuantity),
         0,
       );
   };

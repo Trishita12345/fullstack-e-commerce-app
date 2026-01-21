@@ -18,6 +18,7 @@ const Variants = ({
             va={va}
             key={va.variantName}
             productItemId={productItemId}
+            availableStock={pdpData.availableStock}
           />
         ))}
     </Stack>

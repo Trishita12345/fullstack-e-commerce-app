@@ -1,7 +1,7 @@
 import { CartProductsDTO } from "@/constants/types";
 import { useCartItems } from "@/utils/store/cart";
 import CartItemCard from "./(CartItemCard)";
-import { Box, Text } from "@mantine/core";
+import { Box, Stack, Text } from "@mantine/core";
 
 interface CartItemsSectionProps {
   cartProducts: CartProductsDTO;
@@ -26,17 +26,19 @@ const CartItemsSection = ({
         fw={600}
         c="primaryDark.9"
       >{`${noOfSelected}/${noOfCartItems} items Selected`}</Text>
-      {cartItems.map((c) => {
-        return (
-          <CartItemCard
-            key={c.productItemId}
-            cartItem={c}
-            productItem={cartProducts[c.productItemId]}
-            stopLoading={stopLoading}
-            showLoading={showLoading}
-          />
-        );
-      })}
+      <Stack>
+        {cartItems.map((c) => {
+          return (
+            <CartItemCard
+              key={c.productItemId}
+              cartItem={c}
+              productItem={cartProducts[c.productItemId]}
+              stopLoading={stopLoading}
+              showLoading={showLoading}
+            />
+          );
+        })}
+      </Stack>
     </Box>
   );
 };

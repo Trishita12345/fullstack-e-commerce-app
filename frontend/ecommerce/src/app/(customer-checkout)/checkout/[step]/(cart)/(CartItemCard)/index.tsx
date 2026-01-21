@@ -89,7 +89,9 @@ const CartItemCard = ({
       radius="sm"
       p={10}
       styles={{
-        root: { border: "1px solid var(--mantine-color-black-1)" },
+        root: {
+          border: `1px solid ${cartItem.updatedQuantity === 0 ? "red" : "var(--mantine-color-black-1)"}`,
+        },
       }}
     >
       <Box
@@ -101,6 +103,7 @@ const CartItemCard = ({
         pos="relative"
       >
         <Checkbox
+          disabled={cartItem.updatedQuantity === 0}
           checked={cartItem.isSelected}
           color={"primaryDark.7"}
           style={{
@@ -111,7 +114,15 @@ const CartItemCard = ({
           onClick={handleCheck}
         />
         <Link href={`/products/${productItemId}`}>
-          <Image src={imgUrl} height={140} width={105} alt={productName} />
+          <Image
+            src={imgUrl}
+            height={140}
+            width={105}
+            alt={productName}
+            style={{
+              filter: cartItem.updatedQuantity === 0 ? "grayscale(1)" : "none",
+            }}
+          />
         </Link>
         <Group justify="space-between" w="100%" align="start">
           <Stack flex={11} gap={8}>
@@ -123,6 +134,7 @@ const CartItemCard = ({
             <Quantity
               availableStock={availableStock}
               quantity={cartItem.quantity}
+              updatedQuantity={cartItem.updatedQuantity}
               productItemId={productItemId}
               showLoading={showLoading}
               stopLoading={stopLoading}

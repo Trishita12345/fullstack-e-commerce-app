@@ -1,5 +1,9 @@
 "use client";
-import { CartItemDTO, ProductDetailsDTO } from "@/constants/types";
+import {
+  CartItemDbDTO,
+  CartItemDTO,
+  ProductDetailsDTO,
+} from "@/constants/types";
 import { getToken } from "@/lib/apiFetch";
 import { authClient } from "@/lib/auth-client";
 import { notify } from "@/utils/helperFunctions";
@@ -40,7 +44,7 @@ const ButtonSection = ({
   const [noOfItemsInCart, setNoOfItemsInCart] = useState<number>(0);
   const [noOfItemsInCartLocal, setNoOfItemsInCartLocal] = useState<number>(1);
   const { addToCart, updateCart } = useCartActions();
-
+  const outOfStock = pdpData.availableStock === 0;
   const getInitialCartData = async () => {
     try {
       setCartButtonLoader(true);
@@ -76,7 +80,7 @@ const ButtonSection = ({
 
   const addOrUpdateCart = async (type: "add" | "update") => {
     try {
-      const payload: CartItemDTO = {
+      const payload: CartItemDbDTO = {
         productItemId,
         quantity: noOfItemsInCartLocal,
         priceSnapshot: pdpData.discountedPrice,
@@ -187,8 +191,11 @@ const ButtonSection = ({
   };
   return (
     <Grid my={12}>
-      <GridCol span={{ base: 12, md: 12, lg: 7 }}>
+      <GridCol
+        span={{ base: outOfStock ? 9 : 12, md: outOfStock ? 10 : 12, lg: 7 }}
+      >
         <Button
+          disabled={outOfStock}
           aria-label="addToCart"
           fullWidth
           color="black"
@@ -197,56 +204,60 @@ const ButtonSection = ({
           loaderProps={{ type: "dots" }}
           onClick={handleAddToCart}
           rightSection={
-            noOfItemsInCartLocal && noOfItemsInCart === noOfItemsInCartLocal ? (
-              <IconArrowRight />
-            ) : null
+            noOfItemsInCartLocal &&
+            noOfItemsInCart === noOfItemsInCartLocal &&
+            !outOfStock && <IconArrowRight />
           }
         >
-          {noOfItemsInCart === 0
-            ? "Add to Cart"
-            : noOfItemsInCart !== noOfItemsInCartLocal
-              ? "Update Cart"
-              : "Go to Cart"}
+          {pdpData.availableStock > 0
+            ? noOfItemsInCart === 0
+              ? "Add to Cart"
+              : noOfItemsInCart !== noOfItemsInCartLocal
+                ? "Update Cart"
+                : "Go to Cart"
+            : "Out of stock"}
         </Button>
       </GridCol>
-      <GridCol span={{ base: 9, md: 10, lg: 3.5 }}>
-        <Button.Group>
-          <Button
-            aria-label="minus"
-            px={16}
-            size="lg"
-            variant="outline"
-            color="black"
-            onClick={() => {
-              if (noOfItemsInCartLocal > 1)
-                setNoOfItemsInCartLocal((prev) => --prev);
-            }}
-          >
-            <IconMinus size="20px" />
-          </Button>
-          <Button.GroupSection
-            color="black"
-            size="lg"
-            variant="outline"
-            w="100%"
-          >
-            <Text>{noOfItemsInCartLocal}</Text>
-          </Button.GroupSection>
-          <Button
-            aria-label="plus"
-            px={16}
-            size="lg"
-            variant="outline"
-            color="black"
-            onClick={() => {
-              if (noOfItemsInCartLocal < pdpData.availableStock)
-                setNoOfItemsInCartLocal((prev) => ++prev);
-            }}
-          >
-            <IconPlus size="20px" />
-          </Button>
-        </Button.Group>
-      </GridCol>
+      {!outOfStock && (
+        <GridCol span={{ base: 9, md: 10, lg: 3.5 }}>
+          <Button.Group>
+            <Button
+              aria-label="minus"
+              px={16}
+              size="lg"
+              variant="outline"
+              color="black"
+              onClick={() => {
+                if (noOfItemsInCartLocal > 1)
+                  setNoOfItemsInCartLocal((prev) => --prev);
+              }}
+            >
+              <IconMinus size="20px" />
+            </Button>
+            <Button.GroupSection
+              color="black"
+              size="lg"
+              variant="outline"
+              w="100%"
+            >
+              <Text>{noOfItemsInCartLocal}</Text>
+            </Button.GroupSection>
+            <Button
+              aria-label="plus"
+              px={16}
+              size="lg"
+              variant="outline"
+              color="black"
+              onClick={() => {
+                if (noOfItemsInCartLocal < pdpData.availableStock)
+                  setNoOfItemsInCartLocal((prev) => ++prev);
+              }}
+            >
+              <IconPlus size="20px" />
+            </Button>
+          </Button.Group>
+        </GridCol>
+      )}
       <GridCol span={{ base: 3, md: 2, lg: 1.5 }}>
         <Button
           aria-label="wishlist"
@@ -255,7 +266,9 @@ const ButtonSection = ({
           variant="outline"
           fullWidth
           px={16}
-          onClick={!isWishlisted ? addToWishlistHandler : removeFromWishlistHandler}
+          onClick={
+            !isWishlisted ? addToWishlistHandler : removeFromWishlistHandler
+          }
           loading={wishlistButtonLoader}
           loaderProps={{ type: "dots" }}
         >

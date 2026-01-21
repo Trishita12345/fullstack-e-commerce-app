@@ -215,6 +215,13 @@ export interface ReviewDTO {
 export interface CartItemDTO {
   productItemId: string;
   quantity: number;
+  updatedQuantity: number;
+  priceSnapshot: number;
+  isSelected?: boolean;
+}
+export interface CartItemDbDTO {
+  productItemId: string;
+  quantity: number;
   priceSnapshot: number;
   isSelected?: boolean;
 }
