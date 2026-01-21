@@ -6,6 +6,37 @@ import { apiFetch } from "@/lib/apiFetch";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+const coupons: CouponTypeDTO[] = [
+  {
+    couponCode: "PREPAID5",
+    discountPercent: 5,
+    description: "5%  off on all prepaid orders.",
+    expiresOn: "18th January 2026 | 11:59 PM",
+    minPurchaseAmount: 0,
+  },
+  {
+    couponCode: "SAVE10",
+    discountPercent: 10,
+    description: "10%  off on minimum purchase of Rs. 999.",
+    expiresOn: "18th January 2026 | 11:59 PM",
+    minPurchaseAmount: 999,
+  },
+  {
+    couponCode: "SAVE15",
+    discountPercent: 15,
+    description: "15%  off on minimum purchase of Rs. 1499.",
+    expiresOn: "18th January 2026 | 11:59 PM",
+    minPurchaseAmount: 1499,
+  },
+  {
+    couponCode: "SAVE20",
+    discountPercent: 20,
+    description: "20%  off on minimum purchase of Rs. 1999.",
+    expiresOn: "18th January 2026 | 11:59 PM",
+    minPurchaseAmount: 1999,
+  },
+];
+
 type CartActions = {
   addToCart: (cartItem: CartItemDTO) => void;
   updateCart: (cartItem: CartItemDTO) => void;
@@ -13,7 +44,7 @@ type CartActions = {
   removeFromCart: (productItemId: string) => void;
   setDonation: (amount: number) => void;
   setGiftWrap: () => void;
-  setCoupon: (code: string, discountParcent: number, maxValue: number) => void;
+  setSelectedCouponCode: (selectedCouponCode: string | undefined) => void;
   getInitialCartData: () => Promise<void>;
   clearCartData: () => void;
 };
@@ -21,24 +52,26 @@ type CartActions = {
 type CartState = {
   cartItems: CartItemDTO[];
   donation: number;
-  giftWrap: number;
-  coupon: { couponCode: string; couponDiscount: number; maxValue: number };
+  giftWrap: boolean;
+  selectedCouponCode: string | undefined;
+  allCoupons: CouponTypeDTO[];
   actions: CartActions;
 };
 const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       cartItems: [],
+      allCoupons: coupons,
       donation: 0,
-      giftWrap: 0,
-      coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
+      giftWrap: false,
+      selectedCouponCode: undefined,
       actions: {
         addToCart(cartItem) {
           set((state) => {
             const newcartItems = [...state.cartItems, { ...cartItem }];
             return {
               cartItems: newcartItems,
-              coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
+              selectedCouponCode: undefined,
             };
           });
         },
@@ -54,7 +87,7 @@ const useCartStore = create<CartState>()(
                     }
                   : ci,
               ),
-              coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
+              selectedCouponCode: undefined,
             };
           });
         },
@@ -71,7 +104,7 @@ const useCartStore = create<CartState>()(
             }
             return {
               cartItems: updatedArr,
-              coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
+              selectedCouponCode: undefined,
             };
           });
         },
@@ -80,7 +113,7 @@ const useCartStore = create<CartState>()(
             cartItems: state.cartItems.filter(
               (ci) => ci.productItemId !== productItemId,
             ),
-            coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
+            selectedCouponCode: undefined,
           }));
         },
         async getInitialCartData() {
@@ -92,26 +125,17 @@ const useCartStore = create<CartState>()(
         clearCartData() {
           set({
             cartItems: [],
-            coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 },
+            selectedCouponCode: undefined,
           });
         },
         setDonation(amount) {
           set({ donation: amount });
         },
         setGiftWrap() {
-          set((state) => ({ giftWrap: state.giftWrap === 35 ? 0 : 35 }));
+          set((state) => ({ giftWrap: !state.giftWrap }));
         },
-        setCoupon(code, discountParcent, maxValue) {
-          if (code)
-            set({
-              coupon: {
-                couponCode: code,
-                couponDiscount: discountParcent,
-                maxValue,
-              },
-            });
-          else
-            set({ coupon: { couponCode: "", couponDiscount: 0, maxValue: 0 } });
+        setSelectedCouponCode(selectedCouponCode) {
+          set({ selectedCouponCode });
         },
       },
     }),
@@ -120,7 +144,8 @@ const useCartStore = create<CartState>()(
       partialize: (state) => ({
         cartItems: state.cartItems,
         donation: state.donation,
-        coupon: state.coupon,
+        selectedCouponCode: state.selectedCouponCode,
+        giftWrap: state.giftWrap,
       }),
     },
   ),
@@ -128,8 +153,19 @@ const useCartStore = create<CartState>()(
 
 export const useCartActions = () => useCartStore((state) => state.actions);
 export const useDonation = () => useCartStore((state) => state.donation);
-export const useGiftWrap = () => useCartStore((state) => state.giftWrap);
-export const useCoupon = () => useCartStore((state) => state.coupon);
+export const useGiftWrap = () =>
+  useCartStore((state) => (state.giftWrap ? 35 : 0));
 export const useCartItems = () => useCartStore((state) => state.cartItems);
 export const useCartItemById = (id: string) =>
   useCartStore((state) => state.cartItems.find((c) => c.productItemId === id));
+export const useSelectedCouponCode = () =>
+  useCartStore((state) => state.selectedCouponCode);
+export const useCouponDetailsByCouponCode = (couponCode: string) =>
+  useCartStore((state) =>
+    state.allCoupons.find((c) => c.couponCode === couponCode),
+  );
+export const useSelectedCouponDetails = () =>
+  useCartStore((state) =>
+    state.allCoupons.find((c) => c.couponCode === state.selectedCouponCode),
+  );
+export const useAllCoupons = () => useCartStore((state) => state.allCoupons);

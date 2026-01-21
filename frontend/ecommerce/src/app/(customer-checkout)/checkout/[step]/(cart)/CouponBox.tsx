@@ -1,6 +1,11 @@
 import { CartItemDTO, CartProductsDTO } from "@/constants/types";
 import { formattedPrice } from "@/utils/helperFunctions";
-import { useCartActions, useCartItems, useCoupon } from "@/utils/store/cart";
+import {
+  useAllCoupons,
+  useCartActions,
+  useCartItems,
+  useSelectedCouponDetails,
+} from "@/utils/store/cart";
 import {
   Box,
   Button,
@@ -26,38 +31,11 @@ export interface CouponTypeDTO {
   minPurchaseAmount: number;
 }
 
-const coupons: CouponTypeDTO[] = [
-  {
-    couponCode: "PREPAID5",
-    discountPercent: 5,
-    description: "5%  off on all prepaid orders.",
-    expiresOn: "18th January 2026 | 11:59 PM",
-    minPurchaseAmount: 0,
-  },
-  {
-    couponCode: "SAVE10",
-    discountPercent: 10,
-    description: "10%  off on minimum purchase of Rs. 999.",
-    expiresOn: "18th January 2026 | 11:59 PM",
-    minPurchaseAmount: 999,
-  },
-  {
-    couponCode: "SAVE15",
-    discountPercent: 15,
-    description: "15%  off on minimum purchase of Rs. 1499.",
-    expiresOn: "18th January 2026 | 11:59 PM",
-    minPurchaseAmount: 1499,
-  },
-  {
-    couponCode: "SAVE20",
-    discountPercent: 20,
-    description: "20%  off on minimum purchase of Rs. 1999.",
-    expiresOn: "18th January 2026 | 11:59 PM",
-    minPurchaseAmount: 1999,
-  },
-];
-function getBestCoupon(purchaseAmount: number): CouponTypeDTO | undefined {
-  const val = coupons
+function getBestCoupon(
+  allCoupons: CouponTypeDTO[],
+  purchaseAmount: number,
+): CouponTypeDTO | undefined {
+  const val = allCoupons
     .filter((coupon) => coupon.minPurchaseAmount <= purchaseAmount)
     .reduce<CouponTypeDTO | null>((best, current) => {
       if (!best) return current;
@@ -88,8 +66,9 @@ const CouponBoxModal = ({
   const [selectedCoupon, setSelectedCoupon] = useState<
     CouponTypeDTO | undefined
   >(undefined);
-  const { setCoupon } = useCartActions();
-  const couponFromStore = useCoupon();
+  const { setSelectedCouponCode } = useCartActions();
+  const coupons = useAllCoupons();
+  const couponFromStore = useSelectedCouponDetails();
   const getTotalDiscountedPriceTemp = (cartItems: CartItemDTO[]) => {
     return cartItems
       .filter((ci) => ci.isSelected)
@@ -104,9 +83,9 @@ const CouponBoxModal = ({
     const totalDiscountedPriceTemp = getTotalDiscountedPriceTemp(cartItems);
     setTotalDiscountedPrice(totalDiscountedPriceTemp);
     setSelectedCoupon(
-      couponFromStore.couponCode !== ""
+      couponFromStore
         ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
-        : getBestCoupon(totalDiscountedPriceTemp),
+        : getBestCoupon(coupons, totalDiscountedPriceTemp),
     );
   }, [cartItems]);
 
@@ -149,20 +128,16 @@ const CouponBoxModal = ({
     const totalDiscountedPriceTemp = getTotalDiscountedPriceTemp(cartItems);
     setTotalDiscountedPrice(totalDiscountedPriceTemp);
     setSelectedCoupon(
-      couponFromStore.couponCode !== ""
+      couponFromStore
         ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
-        : getBestCoupon(totalDiscountedPriceTemp),
+        : getBestCoupon(coupons, totalDiscountedPriceTemp),
     );
   };
   const applyCoupon = () => {
     if (selectedCoupon) {
-      setCoupon(
-        selectedCoupon.couponCode,
-        selectedCoupon.discountPercent,
-        selectedCoupon.minPurchaseAmount,
-      );
+      setSelectedCouponCode(selectedCoupon.couponCode);
     } else {
-      setCoupon("", 0, 0);
+      setSelectedCouponCode(undefined);
     }
     close();
     setTextValue("");

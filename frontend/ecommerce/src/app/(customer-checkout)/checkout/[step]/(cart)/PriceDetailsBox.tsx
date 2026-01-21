@@ -4,9 +4,9 @@ import { CartProductsDTO } from "@/constants/types";
 import { formattedPrice } from "@/utils/helperFunctions";
 import {
   useCartItems,
-  useCoupon,
   useDonation,
   useGiftWrap,
+  useSelectedCouponDetails,
 } from "@/utils/store/cart";
 import { Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
 import Link from "next/link";
@@ -20,7 +20,7 @@ const PriceDetailsBox = ({
   const cartItems = useCartItems();
   const donation = useDonation();
   const giftWrap = useGiftWrap();
-  const { couponDiscount } = useCoupon();
+  const selectedCouponDetails = useSelectedCouponDetails();
 
   const totalPrice = cartItems
     .filter((ci) => ci.isSelected)
@@ -63,14 +63,17 @@ const PriceDetailsBox = ({
               - {formattedPrice(totalPrice - totalDiscountedPrice)}
             </Text>
           </Group>
-          {couponDiscount > 0 && (
+          {selectedCouponDetails && (
             <Group justify="space-between" id="coupon">
               <Text c={"black.7"} size="xs">
                 Coupon Discount
               </Text>
               <Text c={"green"} size="xs">
                 -{" "}
-                {formattedPrice(totalDiscountedPrice * (couponDiscount / 100))}
+                {formattedPrice(
+                  totalDiscountedPrice *
+                    (selectedCouponDetails.discountPercent / 100),
+                )}
               </Text>
             </Group>
           )}
@@ -104,7 +107,10 @@ const PriceDetailsBox = ({
           </Text>
           <Text fw={600} size="sm">
             {formattedPrice(
-              totalDiscountedPrice - couponDiscount + donation + giftWrap,
+              totalDiscountedPrice -
+                (selectedCouponDetails?.discountPercent || 0) +
+                donation +
+                giftWrap,
             )}
           </Text>
         </Group>
