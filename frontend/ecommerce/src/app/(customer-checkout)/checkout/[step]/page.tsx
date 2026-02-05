@@ -62,7 +62,7 @@ const Checkout = () => {
       let updatedCartInStock: CartItemDTO[] = [];
       updatedCart.forEach((i) => {
         if (i.updatedQuantity === 0) {
-          updatedCartOutOfStock.push({ ...i, isSelected: false });
+          updatedCartOutOfStock.push(i);
         } else updatedCartInStock.push(i);
       });
       setCartItems([...updatedCartInStock, ...updatedCartOutOfStock]);

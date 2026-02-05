@@ -1,0 +1,140 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-orders
+      author: trishita
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: text
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: order_status
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: payment_status
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: total_amount
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 002-create-order-items
+      author: trishita
+      changes:
+        - createTable:
+            tableName: order_items
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: order_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: product_item_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: price_snapshot
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: sku_snapshot
+                  type: varchar(100)
+
+              - column:
+                  name: product_name_snapshot
+                  type: varchar(255)
+
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: order_item_status
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: order_items
+            baseColumnNames: order_id
+            referencedTableName: orders
+            referencedColumnNames: id
+            constraintName: fk_order_items_order
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 003-add-indexes-for-performance
+      author: trishita
+      changes:
+        - createIndex:
+            tableName: orders
+            indexName: idx_orders_user_id
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: order_items
+            indexName: idx_order_items_order_id
+            columns:
+              - column:
+                  name: order_id

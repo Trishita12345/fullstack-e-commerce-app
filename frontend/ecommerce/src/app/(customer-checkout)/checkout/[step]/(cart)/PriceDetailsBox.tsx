@@ -12,6 +12,8 @@ import {
 import { Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import PriceDetailsBoxButton from "./(CartItemCard)/PriceDetailsBoxButton";
+import { StepType } from "@/(components)/CustomerCheckoutHeader";
 
 const PriceRow = ({
   label,
@@ -134,33 +136,7 @@ const PriceDetailsBox = ({
             )}
           </Text>
         </Group>
-        <LoginComponent
-          LoggedInComponent={() => (
-            <>
-              {step !== "payment" && (
-                <Link href={`${step == "cart" ? "./address" : "./payment"}`}>
-                  <Button color="primaryDark.7" size="md" fullWidth>
-                    <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
-                      place order
-                    </Text>
-                  </Button>
-                </Link>
-              )}
-            </>
-          )}
-          NotLoggedInComponent={({ openLoginPopUp }: LoggedOutProps) => (
-            <Button
-              color="primaryDark.7"
-              size="md"
-              fullWidth
-              onClick={openLoginPopUp}
-            >
-              <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
-                Login to Proceed
-              </Text>
-            </Button>
-          )}
-        />
+        <PriceDetailsBoxButton step={step as StepType} />
       </Stack>
     </Box>
   );

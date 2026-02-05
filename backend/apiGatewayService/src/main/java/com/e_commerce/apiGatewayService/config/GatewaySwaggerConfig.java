@@ -30,6 +30,10 @@ public class GatewaySwaggerConfig {
 
                 .addServersItem(new Server()
                         .url("http://localhost:8080/api/order-service")
-                        .description("Order Service"));
+                                        .description("Order Service"))
+                        
+                .addServersItem(new Server()
+                        .url("http://localhost:8080/api/profile-service")
+                        .description("Profile Service"));
     }
 }

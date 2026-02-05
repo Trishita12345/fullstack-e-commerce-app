@@ -19,7 +19,6 @@ import com.e_commerce.common.model.AuditEntity;
 public class Cart extends AuditEntity {
 
     @Id
-    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 

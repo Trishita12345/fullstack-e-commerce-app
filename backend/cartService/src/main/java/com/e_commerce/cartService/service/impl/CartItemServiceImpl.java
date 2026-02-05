@@ -14,6 +14,8 @@ import com.e_commerce.cartService.model.enums.CartStatus;
 import com.e_commerce.cartService.repository.ICartItemRepository;
 import com.e_commerce.cartService.repository.ICartRepository;
 import com.e_commerce.cartService.service.ICartItemService;
+import com.e_commerce.common.model.dto.CartDTO;
+import com.e_commerce.common.model.dto.CartItemDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -41,7 +43,7 @@ public class CartItemServiceImpl implements ICartItemService {
                                 .isSelected(true)
                                 .build();
                 Cart cart = cartRepository
-                                .findByUserIdAndStatus(userId, CartStatus.ACTIVE)
+                                .findByUserId(userId)
                                 .orElseGet(() -> {
                                         Cart newCart = Cart.builder()
                                                         .userId(userId)
@@ -60,7 +62,7 @@ public class CartItemServiceImpl implements ICartItemService {
         @Transactional
         public void updateItemInCart(CartItemRequestDTO dto, String userId) {
                 Cart cart = cartRepository
-                                .findByUserIdAndStatus(userId, CartStatus.ACTIVE)
+                                .findByUserId(userId)
                                 .orElseThrow(() -> new IllegalStateException("Active cart not found"));
 
                 CartItem cartItem = cartItemRepository
@@ -76,7 +78,7 @@ public class CartItemServiceImpl implements ICartItemService {
         @Transactional
         public void deleteItemInCart(UUID productItemId, String userId) {
                 Cart cart = cartRepository
-                                .findByUserIdAndStatus(userId, CartStatus.ACTIVE)
+                                .findByUserId(userId)
                                 .orElseThrow(() -> new IllegalStateException("Active cart not found"));
 
                 CartItem cartItem = cartItemRepository
@@ -88,18 +90,30 @@ public class CartItemServiceImpl implements ICartItemService {
 
         @Override
         public Integer getCartItemCount(String userId) {
-                Optional<Cart> optinalCart = cartRepository.findByUserIdAndStatus(userId, CartStatus.ACTIVE);
+                Optional<Cart> optionalCart = cartRepository.findByUserId(userId);
 
-                return optinalCart.isPresent() ? cartItemRepository.getCartItemCount(optinalCart.get().getId()) : 0;
+                return optionalCart.isPresent() ? cartItemRepository.getCartItemCount(optionalCart.get().getId()) : 0;
 
         }
 
         @Override
         public List<CartItemRequestDTO> getCartItems(String userId) {
-                Optional<Cart> optinalCart = cartRepository.findByUserIdAndStatus(userId, CartStatus.ACTIVE);
-                return optinalCart.isPresent()
-                                ? cartItemRepository.getAllByCartId(optinalCart.get().getId())
+                Optional<Cart> optionalCart = cartRepository.findByUserId(userId);
+                return optionalCart.isPresent()
+                                ? cartItemRepository.getAllByCartId(optionalCart.get().getId())
                                 : new ArrayList<>();
+        }
+
+        @Override
+        public CartDTO getSelectedItemsInCart(String userId) {
+                Optional<Cart> optionalCart = cartRepository.findByUserId(userId);
+                List<CartItemDTO> itemDTOs = optionalCart.isPresent()
+                        ? cartItemRepository.getAllByCartIdForOrder(optionalCart.get().getId())
+                                : new ArrayList<>();
+                return CartDTO.builder()
+                                .cartId(optionalCart.get().getId())
+                                .selectedCartItems(itemDTOs)
+                                .build();
         }
 
 }

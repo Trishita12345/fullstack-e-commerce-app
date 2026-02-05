@@ -58,6 +58,16 @@
       "projectName": "profileService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-OrderServiceApplication<orderService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.orderService.OrderServiceApplication",
+      "projectName": "orderService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

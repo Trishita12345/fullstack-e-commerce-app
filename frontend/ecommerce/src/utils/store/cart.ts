@@ -182,3 +182,9 @@ export const useSelectedCouponDetails = () =>
     state.allCoupons.find((c) => c.couponCode === state.selectedCouponCode),
   );
 export const useAllCoupons = () => useCartStore((state) => state.allCoupons);
+export const useIfOutOfStockItemSelected = () =>
+  useCartStore(
+    (state) =>
+      state.cartItems.filter((c) => c.isSelected && c.updatedQuantity === 0)
+        .length > 0,
+  );

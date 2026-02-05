@@ -11,14 +11,9 @@ import {
 import { useViewportSize } from "@mantine/hooks";
 import { LoadingPrice } from "../(cart)/LoadingCart";
 const LoadingAddressCard = () => (
-  <Card
-    radius="md"
-    shadow="md"
-  >
+  <Card radius="md" shadow="md">
     <Group align="baseline" gap={16}>
-      <RadioIndicator
-        color={"primaryDark.7"}
-      />
+      <RadioIndicator color={"primaryDark.7"} />
       <Stack w={{ base: "90%", md: "93%" }}>
         <Group justify="space-between">
           <Group>
@@ -36,7 +31,7 @@ const LoadingAddressCard = () => (
       </Stack>
     </Group>
   </Card>
-)
+);
 const LoadingAddresses = () => {
   const { width } = useViewportSize();
   return (
@@ -45,8 +40,9 @@ const LoadingAddresses = () => {
         pr={{ base: 0, lg: 24 }}
         span={{ base: 12, lg: 8 }}
         style={{
-          borderRight: `${width < 1200 ? 0 : 1
-            }px solid var(--mantine-color-gray-1)`,
+          borderRight: `${
+            width < 1200 ? 0 : 1
+          }px solid var(--mantine-color-gray-1)`,
         }}
       >
         <Stack my={16} gap={18}>
@@ -69,7 +65,7 @@ const LoadingAddresses = () => {
       </GridCol>
       <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>
         <Stack my={16}>
-          <LoadingPrice />
+          <LoadingPrice step={"address"} />
         </Stack>
       </GridCol>
     </Grid>

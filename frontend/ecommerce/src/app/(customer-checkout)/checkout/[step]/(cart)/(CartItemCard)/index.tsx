@@ -100,30 +100,33 @@ const CartItemCard = ({
           gap: "16px",
           alignItems: "start",
         }}
-        pos="relative"
       >
-        <Checkbox
-          disabled={cartItem.updatedQuantity === 0}
-          checked={cartItem.isSelected}
-          color={"primaryDark.7"}
-          style={{
-            position: "absolute",
-            top: 4,
-            left: 4,
-          }}
-          onClick={handleCheck}
-        />
-        <Link href={`/products/${productItemId}`}>
-          <Image
-            src={imgUrl}
-            height={140}
-            width={105}
-            alt={productName}
+        <Box pos="relative">
+          <Checkbox
+            disabled={cartItem.updatedQuantity === 0 && !cartItem.isSelected}
+            checked={cartItem.isSelected}
+            color={"primaryDark.7"}
             style={{
-              filter: cartItem.updatedQuantity === 0 ? "grayscale(1)" : "none",
+              position: "absolute",
+              top: 4,
+              left: 4,
+              zIndex: 10,
             }}
+            onClick={handleCheck}
           />
-        </Link>
+          <Link href={`/products/${productItemId}`}>
+            <Image
+              src={imgUrl}
+              height={140}
+              width={105}
+              alt={productName}
+              style={{
+                filter:
+                  cartItem.updatedQuantity === 0 ? "grayscale(1)" : "none",
+              }}
+            />
+          </Link>
+        </Box>
         <Group justify="space-between" w="100%" align="start">
           <Stack flex={11} gap={8}>
             <Link href={`/products/${productItemId}`}>

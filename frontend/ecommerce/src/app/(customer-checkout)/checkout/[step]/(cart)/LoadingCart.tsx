@@ -1,3 +1,4 @@
+import { StepType } from "@/(components)/CustomerCheckoutHeader";
 import {
   Box,
   Button,
@@ -17,7 +18,8 @@ import {
   IconTrash,
   IconTruckDelivery,
 } from "@tabler/icons-react";
-export const LoadingPrice = () => (
+
+export const LoadingPrice = ({ step }: { step: StepType }) => (
   <Stack gap={16}>
     <Text size="11px" c="black.7" fw={600} lts={0.5}>
       PRICE DETAILS
@@ -43,9 +45,11 @@ export const LoadingPrice = () => (
       </Text>
       <Skeleton height={10} width={30} />
     </Group>
-    <Button color="primaryDark.7" size="md">
-      <Skeleton height={10} width={50} />
-    </Button>
+    {step !== "payment" && (
+      <Button color="primaryDark.7" size="md">
+        <Skeleton height={10} width={50} />
+      </Button>
+    )}
   </Stack>
 );
 const LoadingCart = () => {
@@ -158,7 +162,7 @@ const LoadingCart = () => {
             variant="outline"
             color={"primaryDark.7"}
             size="xs"
-            onClick={() => { }}
+            onClick={() => {}}
           >
             <Text size="xs" lts={0.8} fw={600}>
               APPLY
@@ -176,8 +180,9 @@ const LoadingCart = () => {
           pr={{ base: 0, lg: 24 }}
           span={{ base: 12, lg: 8 }}
           style={{
-            borderRight: `${width < 1200 ? 0 : 1
-              }px solid var(--mantine-color-gray-1)`,
+            borderRight: `${
+              width < 1200 ? 0 : 1
+            }px solid var(--mantine-color-gray-1)`,
           }}
         >
           <Stack my={24}>
@@ -205,7 +210,7 @@ const LoadingCart = () => {
             <LoadingCoupon />
             <LoadingGiftBox />
             <LoadingDonation />
-            <LoadingPrice />
+            <LoadingPrice step={"cart"} />
           </Stack>
         </GridCol>
       </Grid>

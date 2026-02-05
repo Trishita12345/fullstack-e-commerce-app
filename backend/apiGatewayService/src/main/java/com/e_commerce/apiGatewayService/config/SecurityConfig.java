@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -29,7 +27,6 @@ public class SecurityConfig {
 
     @Bean(name = "security")
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-
         return http
                 .cors(cors -> Customizer.withDefaults()) // ✅ ENABLE CORS
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
@@ -52,8 +49,14 @@ public class SecurityConfig {
                                 "/api/cart-service/swagger-ui/**",
                                 "/api/cart-service/v3/api-docs/**",
                                 "/api/order-service/public/**",
+                                "/api/order-service/swagger-ui/**",
+                                "/api/order-service/v3/api-docs/**",
                                 "/api/payment-service/public/**",
+                                "/api/payment-service/swagger-ui/**",
+                                "/api/payment-service/v3/api-docs/**",
                                 "/api/notification-service/public/**",
+                                "/api/notification-service/swagger-ui/**",
+                                "/api/notification-service/v3/api-docs/**",
                                 "/error")
                         .permitAll()
                         .anyExchange().authenticated())
@@ -67,9 +70,7 @@ public class SecurityConfig {
      */
     @Bean
     public ReactiveJwtAuthenticationConverterAdapter reactiveJwtAuthenticationConverter() {
-
         JwtAuthenticationConverter delegate = new JwtAuthenticationConverter();
-
         delegate.setJwtGrantedAuthoritiesConverter(jwt -> {
             var authorities = new java.util.ArrayList<>(
                     new org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter()
