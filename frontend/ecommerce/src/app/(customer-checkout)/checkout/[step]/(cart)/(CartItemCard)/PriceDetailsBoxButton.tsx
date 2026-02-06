@@ -1,10 +1,12 @@
 import { StepType } from "@/(components)/CustomerCheckoutHeader";
 import LoginComponent, { LoggedOutProps } from "@/(components)/LoginComponent";
+import { useCartItems } from "@/utils/store/cart";
 import { Button, Text } from "@mantine/core";
 import { useRouter } from "next/navigation";
 
 const PriceDetailsBoxButton = ({ step }: { step: StepType }) => {
   const router = useRouter();
+  const selectedCartItems = useCartItems().filter((c) => c.isSelected);
 
   const handleClick = () => {
     const path = step == "cart" ? "./address" : "./payment";
@@ -20,6 +22,7 @@ const PriceDetailsBoxButton = ({ step }: { step: StepType }) => {
               size="md"
               fullWidth
               onClick={handleClick}
+              disabled={selectedCartItems.length === 0}
             >
               <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
                 Continue

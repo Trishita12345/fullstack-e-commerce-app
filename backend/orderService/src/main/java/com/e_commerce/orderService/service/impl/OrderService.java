@@ -47,10 +47,11 @@ public class OrderService implements IOrderService {
 
     @Override
     @Transactional
-    public void placeOrderAndReserveInventory(String userId, PlaceOrderReqDTO placeOrderReq) {
+    public BigDecimal placeOrderAndReserveInventory(String userId, PlaceOrderReqDTO placeOrderReq) {
         
         // 1. Calculate final price (your existing logic)
         BigDecimal finalPrice = calculateFinalPrice(userId, placeOrderReq);
+        return finalPrice;
 
         // 2. Reserve inventory
         // inventoryService.reserveStock(req.getItems());

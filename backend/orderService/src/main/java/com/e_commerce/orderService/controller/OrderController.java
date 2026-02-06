@@ -22,7 +22,7 @@ public class OrderController {
     private final IOrderService orderService;
     @PostMapping("/place-order")
     public ResponseEntity<BigDecimal> placeOrder(Authentication authentication, @RequestBody PlaceOrderReqDTO placeOrderReq) {
-        orderService.placeOrderAndReserveInventory(authentication.getName(), placeOrderReq);
-        return ResponseEntity.ok().build();
+        BigDecimal val = orderService.placeOrderAndReserveInventory(authentication.getName(), placeOrderReq);
+        return ResponseEntity.ok(val);
     }
 }
