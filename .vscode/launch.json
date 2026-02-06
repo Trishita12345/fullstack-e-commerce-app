@@ -68,6 +68,16 @@
       "projectName": "orderService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-OfferServiceApplication<offerService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.offerService.OfferServiceApplication",
+      "projectName": "offerService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

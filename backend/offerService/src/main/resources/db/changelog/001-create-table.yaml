@@ -1,0 +1,160 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-offers-table-with-data
+      author: trishita
+      changes:
+        # -----------------------------
+        # CREATE TABLE
+        # -----------------------------
+        - createTable:
+            tableName: offers
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValueComputed: gen_random_uuid()
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: coupon_code
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: discount_percent
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: min_purchase_amount
+                  type: DECIMAL(10,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+
+              - column:
+                  name: effective_from
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: expires_on
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: conditions
+                  type: JSON
+                  remarks: "Dynamic key-value conditions for coupon predicate evaluation"
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        # -----------------------------
+        # INSERT DATA
+        # -----------------------------
+        - insert:
+            tableName: offers
+            columns:
+              - column: { name: coupon_code, value: PREPAID5 }
+              - column: { name: discount_percent, valueNumeric: 5 }
+              - column: { name: min_purchase_amount, valueNumeric: 0 }
+              - column:
+                  { name: description, value: "5% off on all prepaid orders." }
+              - column:
+                  { name: effective_from, valueDate: "2025-01-01T00:00:00" }
+              - column: { name: expires_on, valueDate: "2026-01-18T23:59:00" }
+              - column:
+                  name: conditions
+                  value: |
+                    {
+                      "paymentMode": "PREPAID"
+                    }
+
+        - insert:
+            tableName: offers
+            columns:
+              - column: { name: coupon_code, value: SAVE10 }
+              - column: { name: discount_percent, valueNumeric: 10 }
+              - column: { name: min_purchase_amount, valueNumeric: 999 }
+              - column:
+                  {
+                    name: description,
+                    value: "10% off on minimum purchase of Rs. 999.",
+                  }
+              - column:
+                  { name: effective_from, valueDate: "2025-01-01T00:00:00" }
+              - column: { name: expires_on, valueDate: "2026-01-18T23:59:00" }
+              # - column:
+              #     name: conditions
+              #     value: |
+              #       {
+              #         "minCartValue": 999,
+              #         "applicableUserType": ["NEW", "EXISTING"]
+              #       }
+
+        - insert:
+            tableName: offers
+            columns:
+              - column: { name: coupon_code, value: SAVE15 }
+              - column: { name: discount_percent, valueNumeric: 15 }
+              - column: { name: min_purchase_amount, valueNumeric: 1499 }
+              - column:
+                  {
+                    name: description,
+                    value: "15% off on minimum purchase of Rs. 1499.",
+                  }
+              - column:
+                  { name: effective_from, valueDate: "2025-01-01T00:00:00" }
+              - column: { name: expires_on, valueDate: "2026-01-18T23:59:00" }
+              # - column:
+              #     name: conditions
+              #     value: |
+              #       {
+              #         "minCartValue": 1499,
+              #         "maxDiscountAmount": 500
+              #       }
+
+        - insert:
+            tableName: offers
+            columns:
+              - column: { name: coupon_code, value: SAVE20 }
+              - column: { name: discount_percent, valueNumeric: 20 }
+              - column: { name: min_purchase_amount, valueNumeric: 1999 }
+              - column:
+                  {
+                    name: description,
+                    value: "20% off on minimum purchase of Rs. 1999.",
+                  }
+              - column:
+                  { name: effective_from, valueDate: "2025-01-01T00:00:00" }
+              - column: { name: expires_on, valueDate: "2026-01-18T23:59:00" }
+              # - column:
+              #     name: conditions
+              #     value: |
+              #       {
+              #         "minCartValue": 1999,
+              #         "maxDiscountAmount": 800,
+              #         "excludedCategories": ["GIFT_CARD"]
+              #       }

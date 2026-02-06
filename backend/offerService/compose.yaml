@@ -1,0 +1,21 @@
+services:
+  offer_service:
+    image: "postgres:16"
+    container_name: offer_service_postgres_container
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d offer_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass123
+      POSTGRES_DB: offer_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - offer_data:/var/lib/postgresql/data
+
+volumes:
+  offer_data:

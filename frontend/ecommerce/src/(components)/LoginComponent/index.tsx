@@ -80,7 +80,7 @@ const LoginComponent = ({
                 </Text>
               </Stack>
               <Stack>
-                <Button
+                {/*<Button
                   color="primaryDark.7"
                   variant="outline"
                   leftSection={
@@ -93,7 +93,7 @@ const LoginComponent = ({
                   }
                 >
                   Sign In With Facebook
-                </Button>
+                </Button>*/}
                 <Button
                   color="primaryDark.7"
                   variant="outline"
