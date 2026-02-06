@@ -5,18 +5,18 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.e_commerce.offerService.model.Offer;
+import com.e_commerce.offerService.model.Coupon;
 import com.e_commerce.offerService.model.dto.CouponTypeDTO;
-import com.e_commerce.offerService.repository.IOfferRepository;
-import com.e_commerce.offerService.service.IOfferService;
+import com.e_commerce.offerService.repository.ICouponRepository;
+import com.e_commerce.offerService.service.ICouponService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class OfferService implements IOfferService {
+public class OfferService implements ICouponService {
 
-    private final IOfferRepository offerRepository;
+    private final ICouponRepository offerRepository;
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("dd'th' MMMM yyyy | hh:mm a");
 
@@ -28,13 +28,13 @@ public class OfferService implements IOfferService {
                 .toList();
     }
 
-    private CouponTypeDTO mapToDto(Offer offer) {
+    private CouponTypeDTO mapToDto(Coupon coupon) {
         return CouponTypeDTO.builder()
-                .couponCode(offer.getCouponCode())
-                .discountPercent(offer.getDiscountPercent())
-                .description(offer.getDescription())
-                .expiresOn(offer.getExpiresOn().format(FORMATTER))
-                .minPurchaseAmount(offer.getMinPurchaseAmount())
+                .couponCode(coupon.getCouponCode())
+                .discountPercent(coupon.getDiscountPercent())
+                .description(coupon.getDescription())
+                .expiresOn(coupon.getExpiresOn().format(FORMATTER))
+                .minPurchaseAmount(coupon.getMinPurchaseAmount())
                 .build();
     }
     

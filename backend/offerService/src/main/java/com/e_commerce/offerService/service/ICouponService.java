@@ -4,6 +4,6 @@ import java.util.List;
 
 import com.e_commerce.offerService.model.dto.CouponTypeDTO;
 
-public interface IOfferService {
+public interface ICouponService {
     List<CouponTypeDTO> getAllCoupons();
 }

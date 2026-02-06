@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.e_commerce.offerService.model.Offer;
+import com.e_commerce.offerService.model.Coupon;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,13 +12,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface IOfferRepository extends JpaRepository<Offer, UUID> {
+public interface ICouponRepository extends JpaRepository<Coupon, UUID> {
 
     // Find by coupon code
-    Optional<Offer> findByCouponCode(String couponCode);
+    Optional<Coupon> findByCouponCode(String couponCode);
 
     // Find active & valid coupon at current time
-    Optional<Offer> findByCouponCodeAndEffectiveFromLessThanEqualAndExpiresOnGreaterThanEqual(
+    Optional<Coupon> findByCouponCodeAndEffectiveFromLessThanEqualAndExpiresOnGreaterThanEqual(
             String couponCode,
             LocalDateTime now1,
             LocalDateTime now2
@@ -26,13 +26,13 @@ public interface IOfferRepository extends JpaRepository<Offer, UUID> {
     @Query(
         value = """
                 SELECT *
-                FROM offers
+                FROM coupons
                 WHERE effective_from <= CURRENT_TIMESTAMP
                 AND expires_on >= CURRENT_TIMESTAMP
                 """,
         nativeQuery = true
     )
-    List<Offer> findActiveCoupons();
+    List<Coupon> findActiveCoupons();
 
     // Check existence (useful before creation)
     boolean existsByCouponCode(String couponCode);

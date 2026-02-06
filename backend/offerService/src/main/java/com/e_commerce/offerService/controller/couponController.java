@@ -4,19 +4,19 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import com.e_commerce.offerService.model.dto.CouponTypeDTO;
-import com.e_commerce.offerService.service.IOfferService;
+import com.e_commerce.offerService.service.ICouponService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/")
 @AllArgsConstructor
-public class OfferController {
+public class couponController {
 
-    private final IOfferService offerService;
+    private final ICouponService couponService;
 
     @GetMapping(path = "/public/all-coupons")
     public List<CouponTypeDTO> getCoupons() {
-        return offerService.getAllCoupons();
+        return couponService.getAllCoupons();
     }
 }

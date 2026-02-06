@@ -1,13 +1,13 @@
 databaseChangeLog:
   - changeSet:
-      id: create-offers-table-with-data
+      id: create-coupons-table-with-data
       author: trishita
       changes:
         # -----------------------------
         # CREATE TABLE
         # -----------------------------
         - createTable:
-            tableName: offers
+            tableName: coupons
             columns:
               - column:
                   name: id
@@ -75,7 +75,7 @@ databaseChangeLog:
         # INSERT DATA
         # -----------------------------
         - insert:
-            tableName: offers
+            tableName: coupons
             columns:
               - column: { name: coupon_code, value: PREPAID5 }
               - column: { name: discount_percent, valueNumeric: 5 }
@@ -84,7 +84,7 @@ databaseChangeLog:
                   { name: description, value: "5% off on all prepaid orders." }
               - column:
                   { name: effective_from, valueDate: "2025-01-01T00:00:00" }
-              - column: { name: expires_on, valueDate: "2026-01-18T23:59:00" }
+              - column: { name: expires_on, valueDate: "2027-01-18T23:59:00" }
               - column:
                   name: conditions
                   value: |
@@ -93,7 +93,7 @@ databaseChangeLog:
                     }
 
         - insert:
-            tableName: offers
+            tableName: coupons
             columns:
               - column: { name: coupon_code, value: SAVE10 }
               - column: { name: discount_percent, valueNumeric: 10 }
@@ -105,7 +105,7 @@ databaseChangeLog:
                   }
               - column:
                   { name: effective_from, valueDate: "2025-01-01T00:00:00" }
-              - column: { name: expires_on, valueDate: "2026-01-18T23:59:00" }
+              - column: { name: expires_on, valueDate: "2027-01-18T23:59:00" }
               # - column:
               #     name: conditions
               #     value: |
@@ -115,7 +115,7 @@ databaseChangeLog:
               #       }
 
         - insert:
-            tableName: offers
+            tableName: coupons
             columns:
               - column: { name: coupon_code, value: SAVE15 }
               - column: { name: discount_percent, valueNumeric: 15 }
@@ -127,7 +127,7 @@ databaseChangeLog:
                   }
               - column:
                   { name: effective_from, valueDate: "2025-01-01T00:00:00" }
-              - column: { name: expires_on, valueDate: "2026-01-18T23:59:00" }
+              - column: { name: expires_on, valueDate: "2027-01-18T23:59:00" }
               # - column:
               #     name: conditions
               #     value: |
@@ -137,7 +137,7 @@ databaseChangeLog:
               #       }
 
         - insert:
-            tableName: offers
+            tableName: coupons
             columns:
               - column: { name: coupon_code, value: SAVE20 }
               - column: { name: discount_percent, valueNumeric: 20 }
@@ -149,7 +149,7 @@ databaseChangeLog:
                   }
               - column:
                   { name: effective_from, valueDate: "2025-01-01T00:00:00" }
-              - column: { name: expires_on, valueDate: "2026-01-18T23:59:00" }
+              - column: { name: expires_on, valueDate: "2027-01-18T23:59:00" }
               # - column:
               #     name: conditions
               #     value: |
