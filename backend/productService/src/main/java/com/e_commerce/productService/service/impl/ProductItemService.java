@@ -1,5 +1,7 @@
 package com.e_commerce.productService.service.impl;
 
+import com.e_commerce.common.model.dto.CartItemDTO;
+import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
 import com.e_commerce.productService.model.Category;
 import com.e_commerce.productService.model.Product;
 import com.e_commerce.productService.model.ProductItem;
@@ -333,4 +335,44 @@ public class ProductItemService implements IProductItemService {
                                 });
                 return map;
         }
+        
+        @Override
+        public TotalProductPriceResponseDTO getTotalProductPrice(List<CartItemDTO> cartItems) {
+                Map<UUID, ProductItem> productItemMap = productItemRepository
+                                .findAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
+                                .stream()
+                                .collect(Collectors.toMap(
+                                        ProductItem::getId,
+                                        productItem -> productItem
+                                ));
+                BigDecimal totalBasePrice = BigDecimal.valueOf(0);
+                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);       
+                for (CartItemDTO ci : cartItems) {
+                        ProductItem productItem = productItemMap.get(ci.getProductItemId());
+
+                        BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());
+
+                        totalBasePrice = totalBasePrice.add(
+                                productItem.getBasePrice().multiply(quantity)
+                        );
+
+                        totalDiscountedPrice = totalDiscountedPrice.add(
+                                productItem.getDiscountedPrice().multiply(quantity)
+                        );
+                }
+
+                return TotalProductPriceResponseDTO.builder()
+                        .totalBasePrice(totalBasePrice)
+                        .totalDiscountedPrice(totalDiscountedPrice)
+                        .build();
+        }
+
+        @Override
+        public TotalProductPriceResponseDTO getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems) {
+                List<ProductItem> allProductDetails = productItemRepository.findAllById(cartItems.stream().map(c -> c.getProductItemId()).toList());
+                return null;
+        }
+ 
+
+
 }

@@ -1,5 +1,7 @@
 package com.e_commerce.productService.service;
 
+import com.e_commerce.common.model.dto.CartItemDTO;
+import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
 import com.e_commerce.productService.model.dto.customer.CartProductItemInfoResponse;
 import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
 import com.e_commerce.productService.model.dto.customer.ProductItemIdDTO;
@@ -34,5 +36,8 @@ public interface IProductItemService {
     List<ProductItemIdDTO> getAllProductItemIds();
 
     Map<UUID, CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds);
+
+    TotalProductPriceResponseDTO getTotalProductPrice(List<CartItemDTO> cartItems);
+    TotalProductPriceResponseDTO getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems);
 
 }

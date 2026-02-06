@@ -28,6 +28,9 @@ public class CartItem extends AuditEntity {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @Column(name = "updated_quantity", nullable = false)
+    private Integer updatedQuantity;
+
     @Column(name = "price_snapshot", nullable = false, precision = 10, scale = 2)
     private BigDecimal priceSnapshot;
 

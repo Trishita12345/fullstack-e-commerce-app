@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.e_commerce.cartService.model.CartItem;
-import com.e_commerce.cartService.model.dto.CartItemRequestDTO;
+import com.e_commerce.cartService.model.dto.CartItemRequestDTOWithUpdatedQty;
 import com.e_commerce.common.model.dto.CartItemDTO;
 
 public interface ICartItemRepository extends JpaRepository<CartItem, UUID> {
@@ -16,12 +16,13 @@ public interface ICartItemRepository extends JpaRepository<CartItem, UUID> {
             SELECT CI.PRODUCT_ITEM_ID AS productItemId,
                 CI.QUANTITY AS quantity,
                 CI.price_snapshot AS priceSnapshot,
-                        CI.is_selected AS isSelected
+                        CI.is_selected AS isSelected,
+                CI.UPDATED_QUANTITY AS updatedQuantity
                          FROM CART_ITEMS CI
                                  WHERE CI.CART_ID = :cartId
                          order by ci.is_selected desc, ci.updated_at desc
                         """, nativeQuery = true)
-    List<CartItemRequestDTO> getAllByCartId(UUID cartId);
+    List<CartItemRequestDTOWithUpdatedQty> getAllByCartId(UUID cartId);
 
     Optional<CartItem> findByCartIdAndProductItemId(UUID cartId, UUID productItemId);
 
@@ -43,4 +44,11 @@ public interface ICartItemRepository extends JpaRepository<CartItem, UUID> {
             WHERE C.id = :cartId and ci.is_selected = true
                                     """, nativeQuery = true)
     List<CartItemDTO> getAllByCartIdForOrder(UUID cartId);
+
+    @Query(value = """
+            SELECT * FROM CART_ITEMS
+                    WHERE cart_id = :cartId
+            """, nativeQuery = true)
+    List<CartItem> getAllCartItemsByCartId(UUID cartId);
+
 }

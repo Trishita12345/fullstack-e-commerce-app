@@ -1,11 +1,23 @@
 "use server";
 
-import type { CartItemDbDTO, CartProductsDTO } from "@/constants/types";
+import type {
+  CartItemDbDTO,
+  CartItemDTO,
+  CartProductsDTO,
+  TotalPriceFromProductDTO,
+  TotalPriceFromProductDTORequest,
+} from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { revalidatePath } from "next/cache";
 
 export async function updateCartAction(values: CartItemDbDTO) {
   await apiFetch<void>(`/cart-service/cart-items/update`, {
+    method: "PUT",
+    body: values,
+  });
+}
+export async function updateOverallCartAction(values: CartItemDTO[]) {
+  await apiFetch<void>(`/cart-service/cart-items/update-all`, {
     method: "PUT",
     body: values,
   });
@@ -36,4 +48,16 @@ export async function moveFromCartToWishlisted(productItemId: string) {
     },
   );
   revalidatePath("/wishlist");
+}
+export async function getTotalProductPrice(
+  body: TotalPriceFromProductDTORequest[],
+) {
+  const data = await apiFetch<TotalPriceFromProductDTO>(
+    "/product-service/get-total-price",
+    {
+      method: "POST",
+      body,
+    },
+  );
+  return data;
 }

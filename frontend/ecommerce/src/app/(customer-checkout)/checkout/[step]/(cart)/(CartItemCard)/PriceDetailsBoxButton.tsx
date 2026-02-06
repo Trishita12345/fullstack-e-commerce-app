@@ -1,23 +1,12 @@
 import { StepType } from "@/(components)/CustomerCheckoutHeader";
 import LoginComponent, { LoggedOutProps } from "@/(components)/LoginComponent";
-import { notify } from "@/utils/helperFunctions";
-import { useIfOutOfStockItemSelected } from "@/utils/store/cart";
 import { Button, Text } from "@mantine/core";
 import { useRouter } from "next/navigation";
 
 const PriceDetailsBoxButton = ({ step }: { step: StepType }) => {
   const router = useRouter();
-  const isOutOfStockItemSelected = useIfOutOfStockItemSelected();
 
   const handleClick = () => {
-    if (isOutOfStockItemSelected) {
-      notify({
-        variant: "error",
-        title: "Error!",
-        message: "Please unselect all out of stock items to proceed.",
-      });
-      return;
-    }
     const path = step == "cart" ? "./address" : "./payment";
     router.push(path);
   };

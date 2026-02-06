@@ -16,6 +16,7 @@ import Image from "next/image";
 import { title } from "process";
 import { useState } from "react";
 import { placeOrder } from "../../paymentActions";
+import { usePlaceOrderReqBody } from "@/utils/store/cart";
 interface ModeCardProps {
   mode: "COD" | "PAID";
   selectedMode: "COD" | "PAID";
@@ -95,11 +96,12 @@ const PaymentOptionsSection = ({
   showLoading: () => void;
   stopLoading: () => void;
 }) => {
+  const placeOrderReqBody = usePlaceOrderReqBody();
   const [mode, setMode] = useState<"COD" | "PAID">("COD");
   const handlePlaceOrder = async () => {
     try {
       showLoading();
-      await placeOrder();
+      await placeOrder(placeOrderReqBody);
     } catch {
       notify({
         variant: "error",

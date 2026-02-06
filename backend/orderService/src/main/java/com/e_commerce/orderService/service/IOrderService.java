@@ -1,7 +1,7 @@
 package com.e_commerce.orderService.service;
 
-import com.e_commerce.common.model.dto.CartDTO;
+import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 
 public interface IOrderService {
-    CartDTO placeOrder(String userId);
+    void placeOrder(String userId, PlaceOrderReqDTO placeOrderReq);
 }

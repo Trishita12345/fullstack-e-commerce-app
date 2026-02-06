@@ -171,4 +171,6 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
             and pi.id in :productItemIds
                                     """, nativeQuery = true)
     List<CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds);
+
+
 }

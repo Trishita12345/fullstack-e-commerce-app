@@ -103,14 +103,13 @@ const CartItemCard = ({
       >
         <Box pos="relative">
           <Checkbox
-            disabled={cartItem.updatedQuantity === 0 && !cartItem.isSelected}
+            disabled={cartItem.updatedQuantity === 0}
             checked={cartItem.isSelected}
             color={"primaryDark.7"}
             style={{
               position: "absolute",
               top: 4,
               left: 4,
-              zIndex: 10,
             }}
             onClick={handleCheck}
           />

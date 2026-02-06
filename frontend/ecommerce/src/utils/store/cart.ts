@@ -1,7 +1,12 @@
 "use client";
 
 import { CouponTypeDTO } from "@/app/(customer-checkout)/checkout/[step]/(cart)/CouponBox";
-import { CartItemDbDTO, CartItemDTO } from "@/constants/types";
+import {
+  CartItemDbDTO,
+  CartItemDTO,
+  TotalPriceFromProductDTO,
+  TotalPriceFromProductDTORequest,
+} from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -19,6 +24,7 @@ type CartActions = {
   getInitialCartData: () => Promise<void>;
   getAllCoupons: () => Promise<void>;
   clearCartData: () => void;
+  setTotalPrice: (body: TotalPriceFromProductDTORequest[]) => Promise<void>;
 };
 
 type CartState = {
@@ -28,6 +34,8 @@ type CartState = {
   selectedCouponCode: string | undefined;
   allCoupons: CouponTypeDTO[];
   actions: CartActions;
+  totalBasePrice: number;
+  totalDiscountedPrice: number;
 };
 const useCartStore = create<CartState>()(
   persist(
@@ -37,6 +45,8 @@ const useCartStore = create<CartState>()(
       donation: 0,
       giftWrap: false,
       selectedCouponCode: undefined,
+      totalBasePrice: 0,
+      totalDiscountedPrice: 0,
       actions: {
         setCartItems(cartItems) {
           set({ cartItems });
@@ -99,14 +109,11 @@ const useCartStore = create<CartState>()(
           }));
         },
         async getInitialCartData() {
-          const cartItemsFromDb = await apiFetch<CartItemDbDTO[]>(
+          const cartItemsFromDb = await apiFetch<CartItemDTO[]>(
             "/cart-service/cart-items",
           );
           set({
-            cartItems: cartItemsFromDb.map((c) => ({
-              ...c,
-              updatedQuantity: c.quantity,
-            })),
+            cartItems: cartItemsFromDb,
           });
         },
         async getAllCoupons() {
@@ -131,6 +138,20 @@ const useCartStore = create<CartState>()(
         },
         setSelectedCouponCode(selectedCouponCode) {
           set({ selectedCouponCode });
+        },
+        async setTotalPrice(body: TotalPriceFromProductDTORequest[]) {
+          const { totalBasePrice, totalDiscountedPrice } =
+            await apiFetch<TotalPriceFromProductDTO>(
+              "/product-service/public/products/get-total-price",
+              {
+                method: "POST",
+                body,
+              },
+            );
+          set({
+            totalBasePrice,
+            totalDiscountedPrice,
+          });
         },
       },
     }),
@@ -164,9 +185,20 @@ export const useSelectedCouponDetails = () =>
     state.allCoupons.find((c) => c.couponCode === state.selectedCouponCode),
   );
 export const useAllCoupons = () => useCartStore((state) => state.allCoupons);
-export const useIfOutOfStockItemSelected = () =>
-  useCartStore(
-    (state) =>
-      state.cartItems.filter((c) => c.isSelected && c.updatedQuantity === 0)
-        .length > 0,
-  );
+
+export const usePlaceOrderReqBody = () =>
+  useCartStore((state) => ({
+    donation: state.donation,
+    giftWrap: state.giftWrap,
+    selectedCouponCode: state.selectedCouponCode,
+  }));
+// export const useTotalPrice = () =>
+//   useCartStore((state) => ({
+//     totalBasePrice: state.totalBasePrice,
+//     totalDiscountedPrice: state.totalDiscountedPrice,
+//     totalDiscount: state.totalBasePrice - state.totalDiscountedPrice,
+//   }));
+export const useTotalBasePrice = () =>
+  useCartStore((state) => state.totalBasePrice);
+export const useTotalDiscountedPrice = () =>
+  useCartStore((state) => state.totalDiscountedPrice);

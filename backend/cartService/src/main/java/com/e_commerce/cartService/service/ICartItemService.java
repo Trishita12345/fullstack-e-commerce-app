@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.e_commerce.cartService.model.dto.CartItemRequestDTO;
+import com.e_commerce.cartService.model.dto.CartItemRequestDTOWithUpdatedQty;
 import com.e_commerce.common.model.dto.CartDTO;
 
 public interface ICartItemService {
@@ -18,8 +19,10 @@ public interface ICartItemService {
 
     Integer getCartItemCount(String userId);
 
-    List<CartItemRequestDTO> getCartItems(String userId);
+    List<CartItemRequestDTOWithUpdatedQty> getCartItems(String userId);
 
     CartDTO getSelectedItemsInCart(String userId);
+
+    void updateAllItemInCart(List<CartItemRequestDTOWithUpdatedQty> cartItemRequestDTOWithUpdatedQty, String userId);
 
 }

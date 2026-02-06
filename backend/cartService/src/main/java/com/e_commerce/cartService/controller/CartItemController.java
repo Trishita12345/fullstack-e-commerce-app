@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.e_commerce.cartService.model.dto.CartItemRequestDTO;
+import com.e_commerce.cartService.model.dto.CartItemRequestDTOWithUpdatedQty;
 import com.e_commerce.cartService.service.ICartItemService;
 
 import jakarta.validation.Valid;
@@ -66,8 +67,16 @@ public class CartItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CartItemRequestDTO>> getCartItems(Authentication authentication) {
+    public ResponseEntity<List<CartItemRequestDTOWithUpdatedQty>> getCartItems(Authentication authentication) {
         return ResponseEntity.ok(cartItemService.getCartItems(authentication.getName()));
+    }
+
+    @PutMapping("/update-all")
+    public ResponseEntity<Void> updateAllItemInCart(
+            @RequestBody List<CartItemRequestDTOWithUpdatedQty> cartItemRequestDTOWithUpdatedQty,
+            Authentication authentication) {
+        cartItemService.updateAllItemInCart(cartItemRequestDTOWithUpdatedQty, authentication.getName());
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -1,19 +1,27 @@
 import { InfoIcon } from "@/(components)/InfoIcon";
 import LoginComponent, { LoggedOutProps } from "@/(components)/LoginComponent";
-import { CartProductsDTO } from "@/constants/types";
+import {
+  CartProductsDTO,
+  TotalPriceFromProductDTORequest,
+} from "@/constants/types";
 import { MIN_PURCHASE_VALUE, SHIPPING_CHARGE } from "@/utils/constants";
 import { formattedPrice } from "@/utils/helperFunctions";
 import {
+  useCartActions,
   useCartItems,
   useDonation,
   useGiftWrap,
   useSelectedCouponDetails,
+  useTotalBasePrice,
+  useTotalDiscountedPrice,
+  // useTotalPrice,
 } from "@/utils/store/cart";
 import { Box, Button, Divider, Group, Stack, Text } from "@mantine/core";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import PriceDetailsBoxButton from "./(CartItemCard)/PriceDetailsBoxButton";
 import { StepType } from "@/(components)/CustomerCheckoutHeader";
+import { useEffect } from "react";
 
 const PriceRow = ({
   label,
@@ -45,27 +53,25 @@ const PriceDetailsBox = ({
   cartProducts: CartProductsDTO;
 }) => {
   const cartItems = useCartItems();
+  const selectedCartItems = cartItems.filter((c) => c.isSelected);
   const donation = useDonation();
   const giftWrap = useGiftWrap();
   const selectedCouponDetails = useSelectedCouponDetails();
+  const totalBasePrice = useTotalBasePrice();
+  const totalDiscountedPrice = useTotalDiscountedPrice();
+  const { setTotalPrice } = useCartActions();
 
-  const totalPrice = cartItems
-    .filter((ci) => ci.isSelected)
-    .reduce(
-      (sum, item) =>
-        (sum +=
-          cartProducts[item.productItemId].basePrice * item.updatedQuantity),
-      0,
+  const getTotalPrice = async () => {
+    const body: TotalPriceFromProductDTORequest[] = selectedCartItems.map(
+      (i) => ({ productItemId: i.productItemId, quantity: i.quantity }),
     );
-  const totalDiscountedPrice = cartItems
-    .filter((ci) => ci.isSelected)
-    .reduce(
-      (sum, item) =>
-        (sum +=
-          cartProducts[item.productItemId].discountedPrice *
-          item.updatedQuantity),
-      0,
-    );
+    await setTotalPrice(body);
+  };
+
+  useEffect(() => {
+    getTotalPrice();
+  }, [cartItems]);
+
   const totalDiscountedPriceAfterCoupon =
     totalDiscountedPrice - (selectedCouponDetails?.discountPercent || 0);
   const { step } = useParams();
@@ -73,15 +79,15 @@ const PriceDetailsBox = ({
     <Box h={600}>
       <Stack gap={16} pos={"sticky"} top={16}>
         <Text size="11px" c="black.7" fw={600} lts={0.5}>
-          {`PRICE DETAILS (${cartItems.length} Item${
-            cartItems.length > 1 ? "s" : ""
+          {`PRICE DETAILS (${selectedCartItems.length} Item${
+            selectedCartItems.length > 1 ? "s" : ""
           })`}
         </Text>
         <Stack gap={8}>
-          <PriceRow label="Total MRP" price={formattedPrice(totalPrice)} />
+          <PriceRow label="Total MRP" price={formattedPrice(totalBasePrice)} />
           <PriceRow
             label="Discount on MRP"
-            price={`-${formattedPrice(totalPrice - totalDiscountedPrice)}`}
+            price={`-${formattedPrice(totalBasePrice - totalDiscountedPrice)}`}
             color="green"
           />
           {selectedCouponDetails && (

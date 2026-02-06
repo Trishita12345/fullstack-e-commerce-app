@@ -10,7 +10,10 @@ import { useEffect, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
 import { CartItemDTO, CartProductsDTO } from "@/constants/types";
-import { getProductDetailsAction } from "../cartActions";
+import {
+  getProductDetailsAction,
+  updateOverallCartAction,
+} from "../cartActions";
 import Address from "./(address)";
 import { useSession } from "@/utils/store/session";
 import { useAddressActions } from "@/utils/store/address";
@@ -57,7 +60,12 @@ const Checkout = () => {
           data[c.productItemId].availableStock < c.quantity
             ? data[c.productItemId].availableStock
             : c.quantity,
+        isSelected:
+          data[c.productItemId].availableStock === 0 ? false : c.isSelected,
       }));
+      if (isLoggedIn) {
+        await updateOverallCartAction(updatedCart);
+      }
       let updatedCartOutOfStock: CartItemDTO[] = [];
       let updatedCartInStock: CartItemDTO[] = [];
       updatedCart.forEach((i) => {

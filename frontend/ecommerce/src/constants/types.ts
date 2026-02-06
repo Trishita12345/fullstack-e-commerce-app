@@ -225,6 +225,14 @@ export interface CartItemDbDTO {
   priceSnapshot: number;
   isSelected?: boolean;
 }
+export interface TotalPriceFromProductDTO {
+  totalBasePrice: number;
+  totalDiscountedPrice: number;
+}
+export interface TotalPriceFromProductDTORequest {
+  productItemId: string;
+  quantity: number;
+}
 
 export interface CartProducts {
   sku: string;
@@ -259,4 +267,10 @@ export interface AddressDTO {
   addressType: AddressType;
   isDefault: boolean;
   isSelected: boolean;
+}
+
+export interface PlaceOrderReqDTO {
+  donation: number;
+  giftWrap: boolean;
+  selectedCouponCode?: string;
 }
