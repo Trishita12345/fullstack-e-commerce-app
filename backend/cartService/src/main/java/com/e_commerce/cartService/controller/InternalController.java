@@ -17,11 +17,6 @@ public class InternalController {
 
     private final ICartItemService cartItemService;
 
-    @GetMapping("/demo")
-    public String demo(Authentication authentication) {
-        return "cart service called";
-    }
-
     @GetMapping("/cart/selected-items")
     public CartDTO getSelectedItemsInCart(Authentication authentication) {
         return cartItemService.getSelectedItemsInCart(authentication.getName());

@@ -39,7 +39,7 @@ public interface ICartItemRepository extends JpaRepository<CartItem, UUID> {
                                     """, nativeQuery = true)
     Integer getCartItemCount(UUID cartId);
     @Query(value = """
-            SELECT CI.product_item_id AS productItemId, CI.QUANTITY AS quantity FROM CARTS C
+            SELECT CI.product_item_id AS productItemId, CI.UPDATED_QUANTITY AS quantity FROM CARTS C
             JOIN CART_ITEMS CI ON C.id = CI.cart_id
             WHERE C.id = :cartId and ci.is_selected = true
                                     """, nativeQuery = true)

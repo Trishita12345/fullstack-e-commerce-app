@@ -169,8 +169,7 @@ const useCartStore = create<CartState>()(
 
 export const useCartActions = () => useCartStore((state) => state.actions);
 export const useDonation = () => useCartStore((state) => state.donation);
-export const useGiftWrap = () =>
-  useCartStore((state) => (state.giftWrap ? GIFT_WRAP_CHARGE : 0));
+export const useGiftWrap = () => useCartStore((state) => state.giftWrap);
 export const useCartItems = () => useCartStore((state) => state.cartItems);
 export const useCartItemById = (id: string) =>
   useCartStore((state) => state.cartItems.find((c) => c.productItemId === id));
@@ -186,17 +185,11 @@ export const useSelectedCouponDetails = () =>
   );
 export const useAllCoupons = () => useCartStore((state) => state.allCoupons);
 
-export const usePlaceOrderReqBody = () =>
-  useCartStore((state) => ({
-    donation: state.donation,
-    giftWrap: state.giftWrap,
-    selectedCouponCode: state.selectedCouponCode,
-  }));
-// export const useTotalPrice = () =>
+// export const usePlaceOrderReqBody = () =>
 //   useCartStore((state) => ({
-//     totalBasePrice: state.totalBasePrice,
-//     totalDiscountedPrice: state.totalDiscountedPrice,
-//     totalDiscount: state.totalBasePrice - state.totalDiscountedPrice,
+//     donation: state.donation,
+//     giftWrap: state.giftWrap,
+//     selectedCouponCode: state.selectedCouponCode,
 //   }));
 export const useTotalBasePrice = () =>
   useCartStore((state) => state.totalBasePrice);

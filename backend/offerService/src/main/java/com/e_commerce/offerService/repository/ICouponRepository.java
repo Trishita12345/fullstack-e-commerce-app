@@ -36,5 +36,18 @@ public interface ICouponRepository extends JpaRepository<Coupon, UUID> {
 
     // Check existence (useful before creation)
     boolean existsByCouponCode(String couponCode);
+
+    @Query(
+        value = """
+                SELECT *
+                FROM coupons
+                WHERE
+                coupon_code = :couponCode
+                AND effective_from <= CURRENT_TIMESTAMP
+                AND expires_on >= CURRENT_TIMESTAMP
+                """,
+        nativeQuery = true
+    )
+    Optional<Coupon> getActiveCouponByCouponCode(String couponCode);
 }
 

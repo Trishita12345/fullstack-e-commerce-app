@@ -5,6 +5,8 @@ import {
   useCartActions,
   useCartItems,
   useSelectedCouponDetails,
+  useTotalBasePrice,
+  useTotalDiscountedPrice,
 } from "@/utils/store/cart";
 import { useSession } from "@/utils/store/session";
 import {
@@ -57,7 +59,6 @@ const CouponBoxModal = ({
   close: () => void;
   cartProducts: CartProductsDTO;
 }) => {
-  const cartItems = useCartItems();
   const { getAllCoupons } = useCartActions();
   const { setSelectedCouponCode } = useCartActions();
   const coupons = useAllCoupons();
@@ -68,60 +69,45 @@ const CouponBoxModal = ({
     error: boolean;
     msg: string;
   }>({ error: false, msg: "" });
-  const [totalDiscountedPrice, setTotalDiscountedPrice] = useState<number>(0);
-  const [selectedCoupon, setSelectedCoupon] = useState<
+  const [selectedCouponLocal, setSelectedCouponLocal] = useState<
     CouponTypeDTO | undefined
   >(undefined);
 
+  const totalDiscountedPrice = useTotalDiscountedPrice();
   useEffect(() => {
     getAllCoupons();
   }, []);
-  const getTotalDiscountedPriceTemp = (cartItems: CartItemDTO[]) => {
-    return cartItems
-      .filter((ci) => ci.isSelected)
-      .reduce(
-        (sum, item) =>
-          (sum +=
-            cartProducts[item.productItemId].discountedPrice *
-            item.updatedQuantity),
-        0,
-      );
-  };
+
   useEffect(() => {
-    const totalDiscountedPriceTemp = getTotalDiscountedPriceTemp(cartItems);
-    setTotalDiscountedPrice(totalDiscountedPriceTemp);
-    setSelectedCoupon(
+    setSelectedCouponLocal(
       couponFromStore
         ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
-        : getBestCoupon(coupons, totalDiscountedPriceTemp),
+        : getBestCoupon(coupons, totalDiscountedPrice),
     );
-  }, [cartItems, coupons]);
+  }, [coupons, totalDiscountedPrice]);
 
   const handleCheck = () => {
     const couponExists = coupons.find(
       (c) => c.couponCode.toLowerCase() === textValue.toLowerCase(),
     );
     if (couponExists) {
-      if (
-        couponExists.minPurchaseAmount <= getTotalDiscountedPriceTemp(cartItems)
-      ) {
-        setSelectedCoupon(couponExists);
+      if (couponExists.minPurchaseAmount <= totalDiscountedPrice) {
+        setSelectedCouponLocal(couponExists);
         setTextValueErr({
           error: false,
           msg: "",
         });
       } else {
-        setSelectedCoupon(undefined);
+        setSelectedCouponLocal(undefined);
         setTextValueErr({
           error: true,
           msg: `Shop more ${formattedPrice(
-            couponExists.minPurchaseAmount -
-              getTotalDiscountedPriceTemp(cartItems),
+            couponExists.minPurchaseAmount - totalDiscountedPrice,
           )} to apply this coupon.`,
         });
       }
     } else {
-      setSelectedCoupon(undefined);
+      setSelectedCouponLocal(undefined);
       setTextValueErr({
         error: true,
         msg: "Sorry, this coupon is not valid for this user account.",
@@ -133,17 +119,15 @@ const CouponBoxModal = ({
     close();
     setTextValue("");
     setTextValueErr({ error: true, msg: "" });
-    const totalDiscountedPriceTemp = getTotalDiscountedPriceTemp(cartItems);
-    setTotalDiscountedPrice(totalDiscountedPriceTemp);
-    setSelectedCoupon(
+    setSelectedCouponLocal(
       couponFromStore
         ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
-        : getBestCoupon(coupons, totalDiscountedPriceTemp),
+        : getBestCoupon(coupons, totalDiscountedPrice),
     );
   };
   const applyCoupon = () => {
-    if (selectedCoupon) {
-      setSelectedCouponCode(selectedCoupon.couponCode);
+    if (selectedCouponLocal) {
+      setSelectedCouponCode(selectedCouponLocal.couponCode);
     } else {
       setSelectedCouponCode(undefined);
     }
@@ -208,23 +192,20 @@ const CouponBoxModal = ({
                 <Card bdrs={0} key={c.id}>
                   <Group align="start">
                     <Checkbox
-                      disabled={
-                        getTotalDiscountedPriceTemp(cartItems) <
-                        c.minPurchaseAmount
-                      }
+                      disabled={totalDiscountedPrice < c.minPurchaseAmount}
                       style={{ cursor: "pointer" }}
                       checked={
-                        selectedCoupon
-                          ? selectedCoupon.couponCode === c.couponCode
+                        selectedCouponLocal
+                          ? selectedCouponLocal.couponCode === c.couponCode
                           : false
                       }
                       onClick={() => {
                         if (
-                          selectedCoupon &&
-                          selectedCoupon.couponCode === c.couponCode
+                          selectedCouponLocal &&
+                          selectedCouponLocal.couponCode === c.couponCode
                         )
-                          setSelectedCoupon(undefined);
-                        else setSelectedCoupon(c);
+                          setSelectedCouponLocal(undefined);
+                        else setSelectedCouponLocal(c);
                       }}
                       color={"primaryDark.7"}
                       size="xs"
@@ -243,12 +224,10 @@ const CouponBoxModal = ({
                         </Text>
                       </Box>
                       <Stack gap={8}>
-                        {getTotalDiscountedPriceTemp(cartItems) <
-                        c.minPurchaseAmount ? (
+                        {totalDiscountedPrice < c.minPurchaseAmount ? (
                           <Text size="xs" c="red">
                             {`Shop more ${formattedPrice(
-                              c.minPurchaseAmount -
-                                getTotalDiscountedPriceTemp(cartItems),
+                              c.minPurchaseAmount - totalDiscountedPrice,
                             )} to apply this coupon.`}
                           </Text>
                         ) : null}
@@ -293,9 +272,10 @@ const CouponBoxModal = ({
                 Maximum Savings:
               </Text>
               <Text fw={500}>
-                {selectedCoupon
+                {selectedCouponLocal
                   ? formattedPrice(
-                      (totalDiscountedPrice * selectedCoupon.discountPercent) /
+                      (totalDiscountedPrice *
+                        selectedCouponLocal.discountPercent) /
                         100,
                     )
                   : formattedPrice(0)}

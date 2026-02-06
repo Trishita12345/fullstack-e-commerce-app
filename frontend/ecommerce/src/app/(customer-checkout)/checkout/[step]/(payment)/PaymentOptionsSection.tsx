@@ -16,7 +16,11 @@ import Image from "next/image";
 import { title } from "process";
 import { useState } from "react";
 import { placeOrder } from "../../paymentActions";
-import { usePlaceOrderReqBody } from "@/utils/store/cart";
+import {
+  useDonation,
+  useGiftWrap,
+  useSelectedCouponCode,
+} from "@/utils/store/cart";
 interface ModeCardProps {
   mode: "COD" | "PAID";
   selectedMode: "COD" | "PAID";
@@ -96,12 +100,15 @@ const PaymentOptionsSection = ({
   showLoading: () => void;
   stopLoading: () => void;
 }) => {
-  const placeOrderReqBody = usePlaceOrderReqBody();
+  const donation = useDonation();
+  const giftWrap = useGiftWrap();
+  const selectedCouponCode = useSelectedCouponCode();
   const [mode, setMode] = useState<"COD" | "PAID">("COD");
   const handlePlaceOrder = async () => {
     try {
       showLoading();
-      await placeOrder(placeOrderReqBody);
+      const data = await placeOrder({ donation, giftWrap, selectedCouponCode });
+      alert(data);
     } catch {
       notify({
         variant: "error",

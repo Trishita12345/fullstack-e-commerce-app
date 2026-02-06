@@ -39,3 +39,5 @@ feign:
       url: http://localhost:8081
     cart-service:
       url: http://localhost:8082
+    offer-service:
+      url: http://localhost:8085

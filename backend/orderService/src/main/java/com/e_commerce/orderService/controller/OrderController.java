@@ -1,5 +1,7 @@
 package com.e_commerce.orderService.controller;
 
+import java.math.BigDecimal;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +21,8 @@ public class OrderController {
 
     private final IOrderService orderService;
     @PostMapping("/place-order")
-    public ResponseEntity<Void> placeOrder(Authentication authentication, @RequestBody PlaceOrderReqDTO placeOrderReq) {
-        orderService.placeOrder(authentication.getName(), placeOrderReq);
+    public ResponseEntity<BigDecimal> placeOrder(Authentication authentication, @RequestBody PlaceOrderReqDTO placeOrderReq) {
+        orderService.placeOrderAndReserveInventory(authentication.getName(), placeOrderReq);
         return ResponseEntity.ok().build();
     }
 }

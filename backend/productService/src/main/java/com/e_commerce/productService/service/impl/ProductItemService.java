@@ -368,9 +368,36 @@ public class ProductItemService implements IProductItemService {
         }
 
         @Override
-        public TotalProductPriceResponseDTO getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems) {
-                List<ProductItem> allProductDetails = productItemRepository.findAllById(cartItems.stream().map(c -> c.getProductItemId()).toList());
-                return null;
+        public BigDecimal getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems) {
+                Map<UUID, ProductItem> productItemMap = productItemRepository
+                                .findAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
+                                .stream()
+                                .collect(Collectors.toMap(
+                                        ProductItem::getId,
+                                        productItem -> productItem
+                                ));
+                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);       
+                for (CartItemDTO ci : cartItems) {
+                        ProductItem productItem = productItemMap.get(ci.getProductItemId());
+                        if (productItem == null) {
+                                throw new RuntimeException(
+                                        "Product not found: " + ci.getProductItemId()
+                                );
+                        }
+
+                        if (productItem.getAvailableStock() < ci.getQuantity()) {
+                                throw new RuntimeException(
+                                        "Insufficient stock for product: " + productItem.getId()
+                                );
+                        }
+                        BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());    
+
+                        totalDiscountedPrice = totalDiscountedPrice.add(
+                                productItem.getDiscountedPrice().multiply(quantity)
+                        );
+                }
+
+                return totalDiscountedPrice;
         }
  
 

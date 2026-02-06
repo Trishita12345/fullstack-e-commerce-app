@@ -9,6 +9,7 @@ import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemListingDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,6 +39,6 @@ public interface IProductItemService {
     Map<UUID, CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds);
 
     TotalProductPriceResponseDTO getTotalProductPrice(List<CartItemDTO> cartItems);
-    TotalProductPriceResponseDTO getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems);
+    BigDecimal getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems);
 
 }

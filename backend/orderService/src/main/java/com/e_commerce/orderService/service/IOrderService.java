@@ -1,7 +1,11 @@
 package com.e_commerce.orderService.service;
 
+import java.math.BigDecimal;
+
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 
 public interface IOrderService {
-    void placeOrder(String userId, PlaceOrderReqDTO placeOrderReq);
+    BigDecimal calculateFinalPrice(String userId, PlaceOrderReqDTO placeOrderReq);
+
+    void placeOrderAndReserveInventory(String name, PlaceOrderReqDTO placeOrderReq);
 }

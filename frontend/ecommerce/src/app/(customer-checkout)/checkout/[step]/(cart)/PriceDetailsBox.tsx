@@ -4,7 +4,11 @@ import {
   CartProductsDTO,
   TotalPriceFromProductDTORequest,
 } from "@/constants/types";
-import { MIN_PURCHASE_VALUE, SHIPPING_CHARGE } from "@/utils/constants";
+import {
+  GIFT_WRAP_CHARGE,
+  MIN_PURCHASE_VALUE,
+  SHIPPING_CHARGE,
+} from "@/utils/constants";
 import { formattedPrice } from "@/utils/helperFunctions";
 import {
   useCartActions,
@@ -56,6 +60,7 @@ const PriceDetailsBox = ({
   const selectedCartItems = cartItems.filter((c) => c.isSelected);
   const donation = useDonation();
   const giftWrap = useGiftWrap();
+  const giftWrapCharge = giftWrap ? GIFT_WRAP_CHARGE : 0;
   const selectedCouponDetails = useSelectedCouponDetails();
   const totalBasePrice = useTotalBasePrice();
   const totalDiscountedPrice = useTotalDiscountedPrice();
@@ -63,7 +68,7 @@ const PriceDetailsBox = ({
 
   const getTotalPrice = async () => {
     const body: TotalPriceFromProductDTORequest[] = selectedCartItems.map(
-      (i) => ({ productItemId: i.productItemId, quantity: i.quantity }),
+      (i) => ({ productItemId: i.productItemId, quantity: i.updatedQuantity }),
     );
     await setTotalPrice(body);
   };
@@ -73,7 +78,8 @@ const PriceDetailsBox = ({
   }, [cartItems]);
 
   const totalDiscountedPriceAfterCoupon =
-    totalDiscountedPrice - (selectedCouponDetails?.discountPercent || 0);
+    totalDiscountedPrice *
+    ((100 - (selectedCouponDetails?.discountPercent || 0)) / 100);
   const { step } = useParams();
   return (
     <Box h={600}>
@@ -90,40 +96,44 @@ const PriceDetailsBox = ({
             price={`-${formattedPrice(totalBasePrice - totalDiscountedPrice)}`}
             color="green"
           />
-          {selectedCouponDetails && (
-            <PriceRow
-              label="Coupon Discount"
-              price={`-${
-                totalDiscountedPrice *
-                (selectedCouponDetails.discountPercent / 100)
-              }`}
-              color="green"
-            />
-          )}
-          {donation > 0 && (
-            <PriceRow
-              label="Donation"
-              price={formattedPrice(donation)}
-              infoText={
-                "** Donation has been added as per choice you have selected above"
-              }
-            />
-          )}
-          {giftWrap > 0 && (
-            <PriceRow
-              label="Gift wrap charges"
-              price={formattedPrice(giftWrap)}
-              infoText={
-                "** Gift charges has been added as you have selected above"
-              }
-            />
-          )}
-          {totalDiscountedPriceAfterCoupon < MIN_PURCHASE_VALUE && (
-            <PriceRow
-              label="Shipping"
-              price={formattedPrice(SHIPPING_CHARGE)}
-              infoText={`Shop more ${formattedPrice(MIN_PURCHASE_VALUE - totalDiscountedPriceAfterCoupon)} to avoid shipping charges`}
-            />
+          {totalBasePrice !== 0 && (
+            <>
+              {selectedCouponDetails && (
+                <PriceRow
+                  label="Coupon Discount"
+                  price={`-${
+                    totalDiscountedPrice *
+                    (selectedCouponDetails.discountPercent / 100)
+                  }`}
+                  color="green"
+                />
+              )}
+              {donation > 0 && (
+                <PriceRow
+                  label="Donation"
+                  price={formattedPrice(donation)}
+                  infoText={
+                    "** Donation has been added as per choice you have selected above"
+                  }
+                />
+              )}
+              {giftWrap && (
+                <PriceRow
+                  label="Gift wrap charges"
+                  price={formattedPrice(giftWrapCharge)}
+                  infoText={
+                    "** Gift charges has been added as you have selected above"
+                  }
+                />
+              )}
+              {totalDiscountedPriceAfterCoupon < MIN_PURCHASE_VALUE && (
+                <PriceRow
+                  label="Shipping"
+                  price={formattedPrice(SHIPPING_CHARGE)}
+                  infoText={`Shop more ${formattedPrice(MIN_PURCHASE_VALUE - totalDiscountedPriceAfterCoupon)} to avoid shipping charges`}
+                />
+              )}
+            </>
           )}
         </Stack>
         <Divider color="gray.1" mt={4} />
@@ -132,14 +142,16 @@ const PriceDetailsBox = ({
             Total Amount
           </Text>
           <Text fw={600} size="sm">
-            {formattedPrice(
-              totalDiscountedPriceAfterCoupon +
-                donation +
-                giftWrap +
-                (totalDiscountedPriceAfterCoupon < MIN_PURCHASE_VALUE
-                  ? SHIPPING_CHARGE
-                  : 0),
-            )}
+            {totalBasePrice === 0
+              ? 0
+              : formattedPrice(
+                  totalDiscountedPriceAfterCoupon +
+                    donation +
+                    giftWrapCharge +
+                    (totalDiscountedPriceAfterCoupon < MIN_PURCHASE_VALUE
+                      ? SHIPPING_CHARGE
+                      : 0),
+                )}
           </Text>
         </Group>
         <PriceDetailsBoxButton step={step as StepType} />
