@@ -7,37 +7,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { GIFT_WRAP_CHARGE } from "../constants";
 
-const coupons: CouponTypeDTO[] = [
-  {
-    couponCode: "PREPAID5",
-    discountPercent: 5,
-    description: "5%  off on all prepaid orders.",
-    expiresOn: "18th January 2026 | 11:59 PM",
-    minPurchaseAmount: 0,
-  },
-  {
-    couponCode: "SAVE10",
-    discountPercent: 10,
-    description: "10%  off on minimum purchase of Rs. 999.",
-    expiresOn: "18th January 2026 | 11:59 PM",
-    minPurchaseAmount: 999,
-  },
-  {
-    couponCode: "SAVE15",
-    discountPercent: 15,
-    description: "15%  off on minimum purchase of Rs. 1499.",
-    expiresOn: "18th January 2026 | 11:59 PM",
-    minPurchaseAmount: 1499,
-  },
-  {
-    couponCode: "SAVE20",
-    discountPercent: 20,
-    description: "20%  off on minimum purchase of Rs. 1999.",
-    expiresOn: "18th January 2026 | 11:59 PM",
-    minPurchaseAmount: 1999,
-  },
-];
-
 type CartActions = {
   setCartItems: (cartItem: CartItemDTO[]) => void;
   addToCart: (cartItem: CartItemDbDTO) => void;
@@ -48,6 +17,7 @@ type CartActions = {
   setGiftWrap: () => void;
   setSelectedCouponCode: (selectedCouponCode: string | undefined) => void;
   getInitialCartData: () => Promise<void>;
+  getAllCoupons: () => Promise<void>;
   clearCartData: () => void;
 };
 
@@ -63,7 +33,7 @@ const useCartStore = create<CartState>()(
   persist(
     (set) => ({
       cartItems: [],
-      allCoupons: coupons,
+      allCoupons: [],
       donation: 0,
       giftWrap: false,
       selectedCouponCode: undefined,
@@ -75,7 +45,11 @@ const useCartStore = create<CartState>()(
           set((state) => {
             const newcartItems = [
               ...state.cartItems,
-              { ...cartItem, updatedQuantity: cartItem.quantity },
+              {
+                ...cartItem,
+                updatedQuantity: cartItem.quantity,
+                isSelected: true,
+              },
             ];
             return {
               cartItems: newcartItems,
@@ -133,6 +107,14 @@ const useCartStore = create<CartState>()(
               ...c,
               updatedQuantity: c.quantity,
             })),
+          });
+        },
+        async getAllCoupons() {
+          const couponsFromDb = await apiFetch<CouponTypeDTO[]>(
+            "/offer-service/public/all-coupons",
+          );
+          set({
+            allCoupons: couponsFromDb,
           });
         },
         clearCartData() {

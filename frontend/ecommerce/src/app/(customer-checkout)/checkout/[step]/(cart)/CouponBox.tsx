@@ -6,6 +6,7 @@ import {
   useCartItems,
   useSelectedCouponDetails,
 } from "@/utils/store/cart";
+import { useSession } from "@/utils/store/session";
 import {
   Box,
   Button,
@@ -24,6 +25,7 @@ import { IconTag } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 export interface CouponTypeDTO {
+  id: string;
   couponCode: string;
   discountPercent: number;
   description: string;
@@ -56,6 +58,10 @@ const CouponBoxModal = ({
   cartProducts: CartProductsDTO;
 }) => {
   const cartItems = useCartItems();
+  const { getAllCoupons } = useCartActions();
+  const { setSelectedCouponCode } = useCartActions();
+  const coupons = useAllCoupons();
+  const couponFromStore = useSelectedCouponDetails();
 
   const [textValue, setTextValue] = useState<string>("");
   const [textValueErr, setTextValueErr] = useState<{
@@ -66,9 +72,10 @@ const CouponBoxModal = ({
   const [selectedCoupon, setSelectedCoupon] = useState<
     CouponTypeDTO | undefined
   >(undefined);
-  const { setSelectedCouponCode } = useCartActions();
-  const coupons = useAllCoupons();
-  const couponFromStore = useSelectedCouponDetails();
+
+  useEffect(() => {
+    getAllCoupons();
+  }, []);
   const getTotalDiscountedPriceTemp = (cartItems: CartItemDTO[]) => {
     return cartItems
       .filter((ci) => ci.isSelected)
@@ -88,7 +95,7 @@ const CouponBoxModal = ({
         ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
         : getBestCoupon(coupons, totalDiscountedPriceTemp),
     );
-  }, [cartItems]);
+  }, [cartItems, coupons]);
 
   const handleCheck = () => {
     const couponExists = coupons.find(
@@ -193,74 +200,82 @@ const CouponBoxModal = ({
             </Text>
           ) : null}
         </Card>
+
         <ScrollArea h={"50vh"}>
-          <Stack gap={8}>
-            {coupons.map((c) => (
-              <Card bdrs={0}>
-                <Group align="start">
-                  <Checkbox
-                    disabled={
-                      getTotalDiscountedPriceTemp(cartItems) <
-                      c.minPurchaseAmount
-                    }
-                    style={{ cursor: "pointer" }}
-                    checked={
-                      selectedCoupon
-                        ? selectedCoupon.couponCode === c.couponCode
-                        : false
-                    }
-                    onClick={() => {
-                      if (
-                        selectedCoupon &&
-                        selectedCoupon.couponCode === c.couponCode
-                      )
-                        setSelectedCoupon(undefined);
-                      else setSelectedCoupon(c);
-                    }}
-                    color={"primaryDark.7"}
-                    size="xs"
-                    pt={10}
-                  />
-                  <Stack gap={16}>
-                    <Box
-                      bd={"1px dashed var(--mantine-color-primaryDark-7)"}
-                      px={16}
-                      py={6}
-                      bdrs={"xs"}
-                      w="max-content"
-                    >
-                      <Text size="sm" c={"primaryDark.7"} fw={500}>
-                        {c.couponCode}
-                      </Text>
-                    </Box>
-                    <Stack gap={8}>
-                      {getTotalDiscountedPriceTemp(cartItems) <
-                      c.minPurchaseAmount ? (
-                        <Text size="xs" c="red">
-                          {`Shop more ${formattedPrice(
-                            c.minPurchaseAmount -
-                              getTotalDiscountedPriceTemp(cartItems),
-                          )} to apply this coupon.`}
+          {coupons.length > 0 ? (
+            <Stack gap={8}>
+              {coupons.map((c) => (
+                <Card bdrs={0} key={c.id}>
+                  <Group align="start">
+                    <Checkbox
+                      disabled={
+                        getTotalDiscountedPriceTemp(cartItems) <
+                        c.minPurchaseAmount
+                      }
+                      style={{ cursor: "pointer" }}
+                      checked={
+                        selectedCoupon
+                          ? selectedCoupon.couponCode === c.couponCode
+                          : false
+                      }
+                      onClick={() => {
+                        if (
+                          selectedCoupon &&
+                          selectedCoupon.couponCode === c.couponCode
+                        )
+                          setSelectedCoupon(undefined);
+                        else setSelectedCoupon(c);
+                      }}
+                      color={"primaryDark.7"}
+                      size="xs"
+                      pt={10}
+                    />
+                    <Stack gap={16}>
+                      <Box
+                        bd={"1px dashed var(--mantine-color-primaryDark-7)"}
+                        px={16}
+                        py={6}
+                        bdrs={"xs"}
+                        w="max-content"
+                      >
+                        <Text size="sm" c={"primaryDark.7"} fw={500}>
+                          {c.couponCode}
                         </Text>
-                      ) : null}
-                      <Text fw={600} size="sm" lts={0.3}>
-                        {`Save ${formattedPrice(
-                          (totalDiscountedPrice * c.discountPercent) / 100,
-                        )}`}
-                      </Text>
-                      <Text size="13px" lts={0.3} c="black.7">
-                        {c.description}
-                      </Text>
-                      <Text size="13px" lts={0.3} c="black.7">
-                        Expires on: {c.expiresOn}
-                      </Text>
+                      </Box>
+                      <Stack gap={8}>
+                        {getTotalDiscountedPriceTemp(cartItems) <
+                        c.minPurchaseAmount ? (
+                          <Text size="xs" c="red">
+                            {`Shop more ${formattedPrice(
+                              c.minPurchaseAmount -
+                                getTotalDiscountedPriceTemp(cartItems),
+                            )} to apply this coupon.`}
+                          </Text>
+                        ) : null}
+                        <Text fw={600} size="sm" lts={0.3}>
+                          {`Save ${formattedPrice(
+                            (totalDiscountedPrice * c.discountPercent) / 100,
+                          )}`}
+                        </Text>
+                        <Text size="13px" lts={0.3} c="black.7">
+                          {c.description}
+                        </Text>
+                        <Text size="13px" lts={0.3} c="black.7">
+                          Expires on: {c.expiresOn}
+                        </Text>
+                      </Stack>
                     </Stack>
-                  </Stack>
-                </Group>
-              </Card>
-            ))}
-          </Stack>
+                  </Group>
+                </Card>
+              ))}
+            </Stack>
+          ) : (
+            <Box px={24}>
+              <Text>Sorry you donot have any active coupon right now.</Text>
+            </Box>
+          )}
         </ScrollArea>
+
         <Box>
           <Box
             w="100%"
