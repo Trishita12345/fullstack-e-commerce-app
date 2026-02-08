@@ -11,6 +11,10 @@ import { apiFetch } from "@/lib/apiFetch";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { GIFT_WRAP_CHARGE } from "../constants";
+import {
+  getAllCouponsAction,
+  getTotalProductPrice,
+} from "@/app/(customer-checkout)/checkout/cartActions";
 
 type CartActions = {
   setCartItems: (cartItem: CartItemDTO[]) => void;
@@ -21,7 +25,6 @@ type CartActions = {
   setDonation: (amount: number) => void;
   setGiftWrap: () => void;
   setSelectedCouponCode: (selectedCouponCode: string | undefined) => void;
-  getInitialCartData: () => Promise<void>;
   getAllCoupons: () => Promise<void>;
   clearCartData: () => void;
   setTotalPrice: (body: TotalPriceFromProductDTORequest[]) => Promise<void>;
@@ -108,18 +111,8 @@ const useCartStore = create<CartState>()(
             selectedCouponCode: undefined,
           }));
         },
-        async getInitialCartData() {
-          const cartItemsFromDb = await apiFetch<CartItemDTO[]>(
-            "/cart-service/cart-items",
-          );
-          set({
-            cartItems: cartItemsFromDb,
-          });
-        },
         async getAllCoupons() {
-          const couponsFromDb = await apiFetch<CouponTypeDTO[]>(
-            "/offer-service/public/all-coupons",
-          );
+          const couponsFromDb = await getAllCouponsAction();
           set({
             allCoupons: couponsFromDb,
           });
@@ -141,13 +134,7 @@ const useCartStore = create<CartState>()(
         },
         async setTotalPrice(body: TotalPriceFromProductDTORequest[]) {
           const { totalBasePrice, totalDiscountedPrice } =
-            await apiFetch<TotalPriceFromProductDTO>(
-              "/product-service/public/products/get-total-price",
-              {
-                method: "POST",
-                body,
-              },
-            );
+            await getTotalProductPrice(body);
           set({
             totalBasePrice,
             totalDiscountedPrice,
@@ -185,12 +172,6 @@ export const useSelectedCouponDetails = () =>
   );
 export const useAllCoupons = () => useCartStore((state) => state.allCoupons);
 
-// export const usePlaceOrderReqBody = () =>
-//   useCartStore((state) => ({
-//     donation: state.donation,
-//     giftWrap: state.giftWrap,
-//     selectedCouponCode: state.selectedCouponCode,
-//   }));
 export const useTotalBasePrice = () =>
   useCartStore((state) => state.totalBasePrice);
 export const useTotalDiscountedPrice = () =>

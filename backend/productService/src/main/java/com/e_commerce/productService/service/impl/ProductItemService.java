@@ -1,6 +1,8 @@
 package com.e_commerce.productService.service.impl;
 
 import com.e_commerce.common.model.dto.CartItemDTO;
+import com.e_commerce.common.model.dto.ProductPriceDTO;
+import com.e_commerce.common.model.dto.ProductPriceDetailsDTO;
 import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
 import com.e_commerce.productService.model.Category;
 import com.e_commerce.productService.model.Product;
@@ -335,71 +337,75 @@ public class ProductItemService implements IProductItemService {
                                 });
                 return map;
         }
-        
+
         @Override
         public TotalProductPriceResponseDTO getTotalProductPrice(List<CartItemDTO> cartItems) {
                 Map<UUID, ProductItem> productItemMap = productItemRepository
                                 .findAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
                                 .stream()
                                 .collect(Collectors.toMap(
-                                        ProductItem::getId,
-                                        productItem -> productItem
-                                ));
+                                                ProductItem::getId,
+                                                productItem -> productItem));
                 BigDecimal totalBasePrice = BigDecimal.valueOf(0);
-                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);       
+                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);
                 for (CartItemDTO ci : cartItems) {
                         ProductItem productItem = productItemMap.get(ci.getProductItemId());
 
                         BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());
 
                         totalBasePrice = totalBasePrice.add(
-                                productItem.getBasePrice().multiply(quantity)
-                        );
+                                        productItem.getBasePrice().multiply(quantity));
 
                         totalDiscountedPrice = totalDiscountedPrice.add(
-                                productItem.getDiscountedPrice().multiply(quantity)
-                        );
+                                        productItem.getDiscountedPrice().multiply(quantity));
                 }
 
                 return TotalProductPriceResponseDTO.builder()
-                        .totalBasePrice(totalBasePrice)
-                        .totalDiscountedPrice(totalDiscountedPrice)
-                        .build();
+                                .totalBasePrice(totalBasePrice)
+                                .totalDiscountedPrice(totalDiscountedPrice)
+                                .build();
         }
 
         @Override
-        public BigDecimal getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems) {
+        public ProductPriceDTO getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems) {
+                List<ProductPriceDetailsDTO> productPriceDetailsDTOs = new ArrayList<>();
                 Map<UUID, ProductItem> productItemMap = productItemRepository
                                 .findAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
                                 .stream()
                                 .collect(Collectors.toMap(
-                                        ProductItem::getId,
-                                        productItem -> productItem
-                                ));
-                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);       
+                                                ProductItem::getId,
+                                                productItem -> productItem));
+                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);
                 for (CartItemDTO ci : cartItems) {
                         ProductItem productItem = productItemMap.get(ci.getProductItemId());
                         if (productItem == null) {
                                 throw new RuntimeException(
-                                        "Product not found: " + ci.getProductItemId()
-                                );
+                                                "Product not found: " + ci.getProductItemId());
                         }
 
                         if (productItem.getAvailableStock() < ci.getQuantity()) {
                                 throw new RuntimeException(
-                                        "Insufficient stock for product: " + productItem.getId()
-                                );
+                                                "Insufficient stock for product: " + productItem.getId());
                         }
-                        BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());    
-
+                        BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());
+                        ProductPriceDetailsDTO productPriceDetailsDTO = ProductPriceDetailsDTO
+                                        .builder()
+                                        .inventoryDiscountedPrice(productItem.getDiscountedPrice())
+                                        .quantity(ci.getQuantity())
+                                        .productItemId(productItem.getId())
+                                        .sku(productItem.getSku())
+                                        .gstPercentage(productItem.getGstTaxSlab().getGstRate())
+                                        .build();
+                        productPriceDetailsDTOs.add(productPriceDetailsDTO);
                         totalDiscountedPrice = totalDiscountedPrice.add(
-                                productItem.getDiscountedPrice().multiply(quantity)
-                        );
+                                        productItem.getDiscountedPrice().multiply(quantity));
                 }
 
-                return totalDiscountedPrice;
+                return ProductPriceDTO
+                                .builder()
+                                .totalPrice(totalDiscountedPrice)
+                                .priceDetailsDTOs(productPriceDetailsDTOs)
+                                .build();
         }
- 
-
 
 }

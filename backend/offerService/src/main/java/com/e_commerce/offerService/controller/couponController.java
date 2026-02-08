@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/")
 @AllArgsConstructor
-public class couponController {
+public class CouponController {
 
     private final ICouponService couponService;
 

@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import com.e_commerce.common.model.AuditEntity;
+import com.e_commerce.orderService.model.enums.OrderItemStatus;
 
 @Getter
 @Setter
@@ -29,15 +30,57 @@ public class OrderItem extends AuditEntity {
     private UUID productItemId;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderItemStatus orderItemStatus;
+
+    @Column(nullable = false)
     private Integer quantity;
-
-    @Column(name = "price_snapshot", nullable = false, precision = 12, scale = 2)
-    private BigDecimal priceSnapshot;
-
 
     private String skuSnapshot;
 
-    private String productNameSnapshot;
+    /**
+     * Price shown to user (GST inclusive MRP at purchase time)
+     */
+    @Column(name = "unit_price_incl_gst", nullable = false, precision = 12, scale = 2)
+    private BigDecimal unitPriceIncludingGST;
+
+    // ================= TAX BREAKUP =================
+
+    /**
+     * taxable price BEFORE coupon allocation
+     */
+    @Column(name = "taxable_value_before_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal taxableValueBeforeDiscount;
+
+    /**
+     * gst BEFORE coupon allocation
+     */
+    @Column(name = "gst_before_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal gstBeforeDiscount;
+
+    /**
+     * discount allocated to THIS item (very important)
+     */
+    @Column(name = "discount_allocated", nullable = false, precision = 12, scale = 2)
+    private BigDecimal discountAllocated;
+
+    /**
+     * taxable value AFTER discount
+     */
+    @Column(name = "taxable_value_after_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal taxableValueAfterDiscount;
+
+    /**
+     * gst AFTER discount (this is what you actually owe govt)
+     */
+    @Column(name = "gst_after_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal gstAfterDiscount;
+
+    /**
+     * final amount customer paid for THIS order item
+     * (this is the refund amount)
+     */
+    @Column(name = "final_item_amount_paid", nullable = false, precision = 12, scale = 2)
+    private BigDecimal finalItemAmountPaid;
 
 }
-

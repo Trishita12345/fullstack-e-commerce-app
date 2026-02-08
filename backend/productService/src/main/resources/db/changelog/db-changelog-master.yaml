@@ -9,4 +9,13 @@ databaseChangeLog:
       file: classpath:/db/changelog/004-add-unique-constraint-name-variant-attribute.yaml
   - include:
       file: classpath:/db/changelog/005-add-image-description-in-catergories.yaml
-      
+  - include:
+      file: classpath:/db/changelog/006-create-gst-tax-slab-table.yaml
+  - include:
+      file: classpath:/db/changelog/007-insert-gst-tax-slabs.yaml
+  - include:
+      file: classpath:/db/changelog/008-add-hsn-column-to-product-item.yaml
+  - include:
+      file: classpath:/db/changelog/009-update-existing-products-hsn.yaml
+  - include:
+      file: classpath:/db/changelog/010-make-hsn-not-null.yaml

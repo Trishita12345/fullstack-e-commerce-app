@@ -50,75 +50,110 @@ databaseChangeLog:
                     nullable: false
 
   - changeSet:
-      id: 002-create-order-items
+      id: create-order-items-table
       author: trishita
+
       changes:
         - createTable:
             tableName: order_items
             columns:
+              # ================= PRIMARY KEY =================
               - column:
                   name: id
-                  type: uuid
+                  type: UUID
                   constraints:
                     primaryKey: true
                     nullable: false
 
+              # ================= ORDER FK =================
               - column:
                   name: order_id
-                  type: uuid
+                  type: UUID
                   constraints:
                     nullable: false
 
               - column:
                   name: product_item_id
-                  type: uuid
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: quantity
-                  type: int
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: price_snapshot
-                  type: decimal(10,2)
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: sku_snapshot
-                  type: varchar(100)
-
-              - column:
-                  name: product_name_snapshot
-                  type: varchar(255)
-
-              - column:
-                  name: created_at
-                  type: timestamp
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: updated_at
-                  type: timestamp
+                  type: UUID
                   constraints:
                     nullable: false
 
               - column:
                   name: order_item_status
-                  type: varchar(30)
+                  type: VARCHAR(50)
                   constraints:
                     nullable: false
 
+              - column:
+                  name: quantity
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: sku_snapshot
+                  type: VARCHAR(255)
+
+              # ================= PRICE SNAPSHOT =================
+              - column:
+                  name: unit_price_incl_gst
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+
+              # ================= TAX BREAKUP =================
+              - column:
+                  name: taxable_value_before_discount
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: gst_before_discount
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: discount_allocated
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: taxable_value_after_discount
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: gst_after_discount
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: final_item_amount_paid
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+
+              # ================= AUDIT FIELDS =================
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+
+        # ================= FOREIGN KEY =================
         - addForeignKeyConstraint:
+            constraintName: fk_order_items_order
             baseTableName: order_items
             baseColumnNames: order_id
             referencedTableName: orders
             referencedColumnNames: id
-            constraintName: fk_order_items_order
             onDelete: CASCADE
 
   - changeSet:
@@ -133,8 +168,15 @@ databaseChangeLog:
                   name: user_id
 
         - createIndex:
+            indexName: idx_order_items_product_item
             tableName: order_items
-            indexName: idx_order_items_order_id
             columns:
               - column:
-                  name: order_id
+                  name: product_item_id
+
+        - createIndex:
+            indexName: idx_order_items_status
+            tableName: order_items
+            columns:
+              - column:
+                  name: order_item_status

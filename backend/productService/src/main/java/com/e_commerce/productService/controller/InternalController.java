@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.e_commerce.common.model.dto.CartItemDTO;
+import com.e_commerce.common.model.dto.ProductPriceDTO;
 import com.e_commerce.productService.service.IProductItemService;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class InternalController {
     private final IProductItemService productItemService;
 
     @PostMapping("/product/get-total-price")
-    public BigDecimal getSelectedItemsInCart(@RequestBody List<CartItemDTO> cartItems) {
+    public ProductPriceDTO getSelectedItemsInCart(@RequestBody List<CartItemDTO> cartItems) {
         return productItemService.getTotalProductPriceForPlaceOrder(cartItems);
     }
 }

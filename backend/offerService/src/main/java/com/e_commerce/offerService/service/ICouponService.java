@@ -8,5 +8,5 @@ import com.e_commerce.offerService.model.dto.CouponTypeDTO;
 public interface ICouponService {
     List<CouponTypeDTO> getAllCoupons();
 
-    BigDecimal getTotalProductDiscountedPriceAfterCoupon(String couponCode, BigDecimal totalProductDiscountedPrice);
+    BigDecimal getCouponDiscountPercent(String couponCode, BigDecimal totalProductDiscountedPrice);
 }

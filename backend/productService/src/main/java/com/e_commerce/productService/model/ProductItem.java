@@ -45,4 +45,8 @@ public class ProductItem extends AuditEntity {
     @ManyToMany
     @JoinTable(name = "productItemVariantAttributes", joinColumns = @JoinColumn(name = "productItemId"), inverseJoinColumns = @JoinColumn(name = "variantAttributeId"))
     private Set<VariantAttribute> variantAttributes;
+
+    @ManyToOne
+    @JoinColumn(name = "hsn_code", nullable = false)
+    private GstTaxSlab gstTaxSlab;
 }

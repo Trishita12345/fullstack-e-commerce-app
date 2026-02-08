@@ -4,12 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.kafka.annotation.EnableKafka;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
 		"com.e_commerce.orderService",
 		"com.e_commerce.common"
 })
+@EnableKafka
 @EnableFeignClients
 public class OrderServiceApplication {
 

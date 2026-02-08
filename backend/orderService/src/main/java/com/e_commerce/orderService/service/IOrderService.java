@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 
 public interface IOrderService {
-    BigDecimal calculateFinalPrice(String userId, PlaceOrderReqDTO placeOrderReq);
 
     BigDecimal placeOrderAndReserveInventory(String userId, PlaceOrderReqDTO placeOrderReq);
 }

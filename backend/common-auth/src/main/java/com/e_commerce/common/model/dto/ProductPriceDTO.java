@@ -1,14 +1,16 @@
 package com.e_commerce.common.model.dto;
 
 import java.math.BigDecimal;
-import java.util.UUID;
+import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
+@Builder
 public class ProductPriceDTO {
-    private UUID productItemId;
-    private BigDecimal price;
-    private String sku;
-    private String productName;
+    BigDecimal totalPrice;
+    List<ProductPriceDetailsDTO> priceDetailsDTOs;
 }
