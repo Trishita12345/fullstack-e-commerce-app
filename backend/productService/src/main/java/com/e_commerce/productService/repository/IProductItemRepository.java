@@ -3,7 +3,10 @@ package com.e_commerce.productService.repository;
 import com.e_commerce.productService.model.ProductItem;
 import com.e_commerce.productService.model.dto.customer.CartProductItemInfoResponse;
 import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
+import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
+import com.e_commerce.productService.model.dto.productItem.ProductItemPriceDTO;
+import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
 
 import jakarta.persistence.LockModeType;
 
@@ -16,6 +19,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -176,6 +180,23 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
     List<CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query(value = "SELECT * FROM product_item WHERE id = :id", nativeQuery = true)
+    @Query("""
+                SELECT pi FROM ProductItem pi
+                WHERE pi.id = :id
+            """)
     Optional<ProductItem> findByIdForUpdate(@Param("id") UUID id);
+
+    @Query(value = """
+                        SELECT pi.base_price as basePrice,
+            pi.discounted_price as discountedPrice,
+            pi.sku as sku,
+            pi.id as id,
+            gts.gst_rate as gstRate,
+            p.name as productName
+            FROM product_items pi
+            JOIN  gst_tax_slab gts on gts.hsn_code = pi.hsn_code
+            JOIN  products p on p.id = pi.product_id
+            WHERE pi.id in :productItemIds
+                        """, nativeQuery = true)
+    List<ProductItemPriceDTO> getAllById(List<UUID> productItemIds);
 }

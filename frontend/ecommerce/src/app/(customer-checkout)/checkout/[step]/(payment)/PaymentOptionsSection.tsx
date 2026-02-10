@@ -21,9 +21,10 @@ import {
   useGiftWrap,
   useSelectedCouponCode,
 } from "@/utils/store/cart";
+import { PaymentModeType } from "@/constants/types";
 interface ModeCardProps {
-  mode: "COD" | "PAID";
-  selectedMode: "COD" | "PAID";
+  mode: PaymentModeType;
+  selectedMode: PaymentModeType;
   onClick: () => void;
   title: string;
   subtitle: string;
@@ -88,7 +89,7 @@ const modeData = {
     title: "Cash on Delivery ( COD )",
     subtitle: "Pay once the product reached to you, after delivery.",
   },
-  PAID: {
+  PREPAID: {
     title: "Paid ( Prepaid - Card / UPI )",
     subtitle: "Pay now using UPI or CARD for hassle free experience",
   },
@@ -103,17 +104,22 @@ const PaymentOptionsSection = ({
   const donation = useDonation();
   const giftWrap = useGiftWrap();
   const selectedCouponCode = useSelectedCouponCode();
-  const [mode, setMode] = useState<"COD" | "PAID">("COD");
+  const [mode, setMode] = useState<PaymentModeType>(PaymentModeType.PREPAID);
   const handlePlaceOrder = async () => {
     try {
       showLoading();
-      const data = await placeOrder({ donation, giftWrap, selectedCouponCode });
+      const data = await placeOrder({
+        donation,
+        giftWrap,
+        selectedCouponCode,
+        paymentMode: mode,
+      });
       alert(data);
     } catch {
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to delete address!",
+        message: "Failed to place order!",
       });
     } finally {
       stopLoading();
@@ -126,18 +132,18 @@ const PaymentOptionsSection = ({
       </Text>
 
       <ModeCard
-        mode="COD"
+        mode={PaymentModeType.COD}
         selectedMode={mode}
-        onClick={() => setMode("COD")}
-        title={modeData["COD"].title}
-        subtitle={modeData["COD"].subtitle}
+        onClick={() => setMode(PaymentModeType.COD)}
+        title={modeData[PaymentModeType.COD].title}
+        subtitle={modeData[PaymentModeType.COD].subtitle}
       />
       <ModeCard
-        mode="PAID"
+        mode={PaymentModeType.PREPAID}
         selectedMode={mode}
-        onClick={() => setMode("PAID")}
-        title={modeData["PAID"].title}
-        subtitle={modeData["PAID"].subtitle}
+        onClick={() => setMode(PaymentModeType.PREPAID)}
+        title={modeData[PaymentModeType.PREPAID].title}
+        subtitle={modeData[PaymentModeType.PREPAID].subtitle}
       />
 
       <Button radius={"md"} color="primaryDark.8" onClick={handlePlaceOrder}>

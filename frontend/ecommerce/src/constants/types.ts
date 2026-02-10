@@ -265,10 +265,16 @@ export interface AddressDTO {
   isSelected: boolean;
 }
 
+export enum PaymentModeType {
+  COD = "COD",
+  PREPAID = "PREPAID",
+}
+
 export interface PlaceOrderReqDTO {
   donation: number;
   giftWrap: boolean;
   selectedCouponCode: string | null;
+  paymentMode: PaymentModeType;
 }
 export interface PriceSummaryResponse {
   itemsTotalMrp: number;
@@ -276,7 +282,6 @@ export interface PriceSummaryResponse {
   couponDiscount: number;
   donation: number;
   giftWrapFee: number;
-  roundingAdjustment: number;
   payableAmount: number;
   shippingFee: number;
   amountToAvoidShippingFee: number;

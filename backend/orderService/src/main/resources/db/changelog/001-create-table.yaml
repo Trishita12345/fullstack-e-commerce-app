@@ -32,6 +32,36 @@ databaseChangeLog:
                     nullable: false
 
               - column:
+                  name: coupon_code
+                  type: varchar(30)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: payment_mode
+                  type: varchar(30)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: gift_wrap_charge
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: donation
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: shipping_charge
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
                   name: total_amount
                   type: numeric(12,2)
                   constraints:
@@ -94,9 +124,19 @@ databaseChangeLog:
                   name: sku_snapshot
                   type: VARCHAR(255)
 
+              - column:
+                  name: product_name
+                  type: VARCHAR(255)
+
               # ================= PRICE SNAPSHOT =================
               - column:
-                  name: unit_price_incl_gst
+                  name: unit_base_price_incl_gst
+                  type: DECIMAL(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: unit_selling_price_incl_gst
                   type: DECIMAL(12,2)
                   constraints:
                     nullable: false
@@ -104,12 +144,6 @@ databaseChangeLog:
               # ================= TAX BREAKUP =================
               - column:
                   name: taxable_value_before_discount
-                  type: DECIMAL(12,2)
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: gst_before_discount
                   type: DECIMAL(12,2)
                   constraints:
                     nullable: false

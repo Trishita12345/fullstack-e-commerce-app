@@ -23,8 +23,6 @@ public class PriceSummaryResponseDTO {
 
     private BigDecimal giftWrapFee;
 
-    private BigDecimal roundingAdjustment;
-
     private BigDecimal payableAmount;
 
     private BigDecimal shippingFee;

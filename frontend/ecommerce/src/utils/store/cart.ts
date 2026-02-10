@@ -54,7 +54,6 @@ const useCartStore = create<CartState>()(
         couponDiscount: 0,
         donation: 0,
         giftWrapFee: 0,
-        roundingAdjustment: 0,
         payableAmount: 0,
         shippingFee: 0,
         amountToAvoidShippingFee: 0,

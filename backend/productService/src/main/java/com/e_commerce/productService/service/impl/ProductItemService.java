@@ -18,6 +18,7 @@ import com.e_commerce.productService.model.dto.productItem.ImageDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
 import com.e_commerce.productService.model.dto.productItem.ProductItemListingDTO;
+import com.e_commerce.productService.model.dto.productItem.ProductItemPriceDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
 import com.e_commerce.productService.repository.IProductItemImageRepository;
 import com.e_commerce.productService.repository.IProductItemRepository;
@@ -371,15 +372,15 @@ public class ProductItemService implements IProductItemService {
         @Override
         public ProductPriceDTO getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems) {
                 List<ProductPriceDetailsDTO> productPriceDetailsDTOs = new ArrayList<>();
-                Map<UUID, ProductItem> productItemMap = productItemRepository
-                                .findAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
+                Map<UUID, ProductItemPriceDTO> productItemMap = productItemRepository
+                                .getAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
                                 .stream()
                                 .collect(Collectors.toMap(
-                                                ProductItem::getId,
+                                                ProductItemPriceDTO::getId,
                                                 productItem -> productItem));
                 BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);
                 for (CartItemDTO ci : cartItems) {
-                        ProductItem productItem = productItemMap.get(ci.getProductItemId());
+                        ProductItemPriceDTO productItem = productItemMap.get(ci.getProductItemId());
                         if (productItem == null) {
                                 throw new RuntimeException(
                                                 "Product not found: " + ci.getProductItemId());
@@ -392,11 +393,13 @@ public class ProductItemService implements IProductItemService {
                         BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());
                         ProductPriceDetailsDTO productPriceDetailsDTO = ProductPriceDetailsDTO
                                         .builder()
+                                        .productName(productItem.getProductName())
+                                        .inventoryBasePrice(productItem.getBasePrice())
                                         .inventoryDiscountedPrice(productItem.getDiscountedPrice())
                                         .quantity(ci.getQuantity())
                                         .productItemId(productItem.getId())
                                         .sku(productItem.getSku())
-                                        .gstPercentage(productItem.getGstTaxSlab().getGstRate())
+                                        .gstPercentage(productItem.getGstRate())
                                         .build();
                         productPriceDetailsDTOs.add(productPriceDetailsDTO);
                         totalDiscountedPrice = totalDiscountedPrice.add(

@@ -48,6 +48,7 @@ public class InventoryReservationService implements IInventoryReservationService
     }
 
     @Override
+    @Transactional
     public int getSellableStock(UUID productItemId) {
         // 1️⃣ LOCK product row
         ProductItem productItem = productItemRepository

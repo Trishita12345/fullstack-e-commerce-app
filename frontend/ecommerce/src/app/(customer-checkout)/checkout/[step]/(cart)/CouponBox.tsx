@@ -293,34 +293,42 @@ const CouponBoxModal = ({
 
 const CouponBox = ({ cartProducts }: { cartProducts: CartProductsDTO }) => {
   const [opened, { open, close }] = useDisclosure(false);
+  const selectedCouponFromStore = useSelectedCouponDetails();
   return (
     <Stack gap={16}>
       <Text size="11px" fw={700} c="black.7" tt={"uppercase"} lts={0.5}>
         COUPONS
       </Text>
-      <Group justify="space-between">
-        <Group gap={8}>
-          <IconTag size={18} />
-          <Text size="13px" fw={600}>
-            Apply Coupons
-          </Text>
+      <Stack gap={8}>
+        <Group justify="space-between">
+          <Group gap={8}>
+            <IconTag size={18} />
+            <Text size="13px" fw={600}>
+              Apply Coupons
+            </Text>
+          </Group>
+          <CouponBoxModal
+            cartProducts={cartProducts}
+            close={close}
+            opened={opened}
+          />
+          <Button
+            variant="outline"
+            color={"primaryDark.7"}
+            size="xs"
+            onClick={open}
+          >
+            <Text size="xs" lts={0.8} fw={600}>
+              {selectedCouponFromStore ? "MODIFY" : "APPLY"}
+            </Text>
+          </Button>
         </Group>
-        <CouponBoxModal
-          cartProducts={cartProducts}
-          close={close}
-          opened={opened}
-        />
-        <Button
-          variant="outline"
-          color={"primaryDark.7"}
-          size="xs"
-          onClick={open}
-        >
-          <Text size="xs" lts={0.8} fw={600}>
-            APPLY
+        {selectedCouponFromStore && (
+          <Text size="xs" c="green">
+            {selectedCouponFromStore?.couponCode} Applied!
           </Text>
-        </Button>
-      </Group>
+        )}
+      </Stack>
       <Divider color="gray.1" mt={4} />
     </Stack>
   );

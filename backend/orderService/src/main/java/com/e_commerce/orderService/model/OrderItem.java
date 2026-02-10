@@ -38,11 +38,19 @@ public class OrderItem extends AuditEntity {
 
     private String skuSnapshot;
 
+    private String productName;
+
     /**
      * Price shown to user (GST inclusive MRP at purchase time)
      */
-    @Column(name = "unit_price_incl_gst", nullable = false, precision = 12, scale = 2)
-    private BigDecimal unitPriceIncludingGST;
+    @Column(name = "unit_base_price_incl_gst", nullable = false, precision = 12, scale = 2)
+    private BigDecimal unitBasePriceIncludingGST;
+
+    /**
+     * gst BEFORE coupon allocation
+     */
+    @Column(name = "unit_selling_price_incl_gst", nullable = false, precision = 12, scale = 2)
+    private BigDecimal unitSellingPriceIncludingGST;
 
     // ================= TAX BREAKUP =================
 
@@ -51,12 +59,6 @@ public class OrderItem extends AuditEntity {
      */
     @Column(name = "taxable_value_before_discount", nullable = false, precision = 12, scale = 2)
     private BigDecimal taxableValueBeforeDiscount;
-
-    /**
-     * gst BEFORE coupon allocation
-     */
-    @Column(name = "gst_before_discount", nullable = false, precision = 12, scale = 2)
-    private BigDecimal gstBeforeDiscount;
 
     /**
      * discount allocated to THIS item (very important)
@@ -77,7 +79,7 @@ public class OrderItem extends AuditEntity {
     private BigDecimal gstAfterDiscount;
 
     /**
-     * final amount customer paid for THIS order item
+     * final amount customer paid for THIS order item * quantity
      * (this is the refund amount)
      */
     @Column(name = "final_item_amount_paid", nullable = false, precision = 12, scale = 2)

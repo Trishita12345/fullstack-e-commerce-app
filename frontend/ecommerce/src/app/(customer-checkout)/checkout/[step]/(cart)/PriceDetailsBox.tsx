@@ -70,7 +70,6 @@ const PriceDetailsBox = () => {
     couponDiscount,
     donation,
     giftWrapFee,
-    roundingAdjustment,
     shippingFee,
     amountToAvoidShippingFee,
     payableAmount,
@@ -150,12 +149,6 @@ const PriceDetailsBox = () => {
                     infoText={
                       "** Gift charges has been added as you have selected above"
                     }
-                  />
-                )}
-                {roundingAdjustment > 0 && (
-                  <PriceRow
-                    label="Rounding Adjustment"
-                    price={formattedPrice(roundingAdjustment)}
                   />
                 )}
                 {shippingFee > 0 && (
