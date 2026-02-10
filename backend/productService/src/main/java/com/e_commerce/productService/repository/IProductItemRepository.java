@@ -5,9 +5,12 @@ import com.e_commerce.productService.model.dto.customer.CartProductItemInfoRespo
 import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
 
+import jakarta.persistence.LockModeType;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -172,5 +175,7 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
                                     """, nativeQuery = true)
     List<CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds);
 
-
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query(value = "SELECT * FROM product_item WHERE id = :id", nativeQuery = true)
+    Optional<ProductItem> findByIdForUpdate(@Param("id") UUID id);
 }

@@ -11,6 +11,7 @@ import com.e_commerce.common.model.dto.CartDTO;
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 import com.e_commerce.common.model.dto.ProductPriceDTO;
 import com.e_commerce.common.model.dto.ProductPriceDetailsDTO;
+import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
 import com.e_commerce.common.model.event.OrderCreatedEvent;
 import com.e_commerce.orderService.client.ICartClient;
 import com.e_commerce.orderService.client.IOfferClient;
@@ -18,6 +19,8 @@ import com.e_commerce.orderService.client.IProductClient;
 import com.e_commerce.orderService.kafka.OrderEventProducer;
 import com.e_commerce.orderService.model.Order;
 import com.e_commerce.orderService.model.OrderItem;
+import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
+import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
 import com.e_commerce.orderService.model.enums.OrderItemStatus;
 import com.e_commerce.orderService.model.enums.OrderStatus;
 import com.e_commerce.orderService.model.enums.PaymentStatus;
@@ -52,28 +55,26 @@ public class OrderService implements IOrderService {
         return price.subtract(taxable);
     }
 
-    private BigDecimal fetchCouponPercent(PlaceOrderReqDTO req, ProductPriceDTO priceDTO) {
+    private BigDecimal fetchCouponPercent(PlaceOrderReqDTO req, BigDecimal totalPrice) {
 
         if (req.getSelectedCouponCode() == null)
             return ZERO;
 
         return offerClient.getCouponDiscountPercent(
                 req.getSelectedCouponCode(),
-                priceDTO.getTotalPrice());
+                totalPrice);
     }
 
-    private BigDecimal calculateFinalCartAmount(ProductPriceDTO priceDTO,
-            PlaceOrderReqDTO req,
-            BigDecimal couponPercent) {
+    private BigDecimal calculateShippingFee(BigDecimal total) {
+        return total.compareTo(MIN_PURCHASE_VALUE) < 0 ? SHIPPING_CHARGE : ZERO;
+    }
 
-        BigDecimal total = priceDTO.getTotalPrice();
+    private BigDecimal calculateFinalCartAmount(BigDecimal total,
+            PlaceOrderReqDTO req,
+            BigDecimal couponDiscountAmount) {
 
         // coupon
-        if (couponPercent.compareTo(ZERO) > 0) {
-            BigDecimal discount = total.multiply(couponPercent)
-                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
-            total = total.subtract(discount);
-        }
+        total = total.subtract(couponDiscountAmount);
 
         // donation
         total = total.add(req.getDonation());
@@ -83,17 +84,25 @@ public class OrderService implements IOrderService {
             total = total.add(GIFT_WRAP_CHARGE);
 
         // shipping
-        if (total.compareTo(MIN_PURCHASE_VALUE) < 0)
-            total = total.add(SHIPPING_CHARGE);
+        total = total.add(calculateShippingFee(total));
 
         return total;
+    }
+
+    private BigDecimal calculateCouponDiscountAmount(BigDecimal total, BigDecimal couponPercent) {
+        if (couponPercent.compareTo(ZERO) > 0) {
+            return total.multiply(couponPercent)
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        } else {
+            return BigDecimal.ZERO;
+        }
     }
 
     private Order createOrder(String userId, BigDecimal amount) {
         return Order.builder()
                 .userId(userId)
                 .totalAmount(amount)
-                .orderStatus(OrderStatus.OPEN)
+                .orderStatus(OrderStatus.PENDING)
                 .paymentStatus(PaymentStatus.PENDING)
                 .build();
     }
@@ -164,11 +173,14 @@ public class OrderService implements IOrderService {
 
         CartDTO cart = cartClient.getSelectedItemsInCart();
 
-        ProductPriceDTO priceDTO = productClient.getPrices(cart.getSelectedCartItems());
+        ProductPriceDTO priceDTO = productClient.getPricesForPlaceOrder(cart.getSelectedCartItems());
 
-        BigDecimal couponPercent = fetchCouponPercent(placeOrderReq, priceDTO);
+        BigDecimal couponPercent = fetchCouponPercent(placeOrderReq, priceDTO.getTotalPrice());
 
-        BigDecimal finalAmount = calculateFinalCartAmount(priceDTO, placeOrderReq, couponPercent);
+        BigDecimal couponDiscountAmount = calculateCouponDiscountAmount(priceDTO.getTotalPrice(), couponPercent);
+
+        BigDecimal finalAmount = calculateFinalCartAmount(priceDTO.getTotalPrice(), placeOrderReq,
+                couponDiscountAmount);
 
         Order order = createOrder(userId, finalAmount);
 
@@ -180,6 +192,41 @@ public class OrderService implements IOrderService {
         publishOrderCreatedEvent(order, userId, finalAmount, cart);
 
         return finalAmount;
+    }
+
+    @Override
+    public PriceSummaryResponseDTO getPriceSummary(PriceSummaryRequestDTO priceSummaryRequestDTO) {
+        TotalProductPriceResponseDTO totalProductPriceResponseDTO = productClient
+                .getPrices(priceSummaryRequestDTO.getCartItems());
+
+        BigDecimal totalBasePrice = totalProductPriceResponseDTO.getTotalBasePrice();
+        BigDecimal totalDiscountedPriceBeforeCoupon = totalProductPriceResponseDTO.getTotalDiscountedPrice();
+        BigDecimal discountAllocated = totalBasePrice
+                .subtract(totalDiscountedPriceBeforeCoupon);
+
+        PlaceOrderReqDTO placeOrderReqDTO = priceSummaryRequestDTO.getPlaceOrderReqDTO();
+
+        BigDecimal couponPercent = fetchCouponPercent(placeOrderReqDTO,
+                totalDiscountedPriceBeforeCoupon);
+        BigDecimal couponDiscount = calculateCouponDiscountAmount(totalDiscountedPriceBeforeCoupon, couponPercent);
+
+        BigDecimal totalDiscountedPriceAfterCoupon = totalDiscountedPriceBeforeCoupon.subtract(couponDiscount);
+
+        BigDecimal finalAmount = calculateFinalCartAmount(totalProductPriceResponseDTO.getTotalDiscountedPrice(),
+                placeOrderReqDTO, couponDiscount);
+
+        return PriceSummaryResponseDTO.builder()
+                .itemsTotalMrp(totalBasePrice)
+                .productDiscount(discountAllocated)
+                .couponDiscount(couponDiscount)
+                .donation(placeOrderReqDTO.getDonation())
+                .giftWrapFee(
+                        placeOrderReqDTO.getGiftWrap() ? GIFT_WRAP_CHARGE : BigDecimal.ZERO)
+                .shippingFee(calculateShippingFee(totalDiscountedPriceAfterCoupon))
+                .amountToAvoidShippingFee(MIN_PURCHASE_VALUE.subtract(totalDiscountedPriceAfterCoupon))
+                .roundingAdjustment(BigDecimal.ZERO) // can be calculated if needed
+                .payableAmount(finalAmount)
+                .build();
     }
 
 }

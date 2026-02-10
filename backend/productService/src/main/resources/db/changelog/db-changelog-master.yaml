@@ -19,3 +19,5 @@ databaseChangeLog:
       file: classpath:/db/changelog/009-update-existing-products-hsn.yaml
   - include:
       file: classpath:/db/changelog/010-make-hsn-not-null.yaml
+  - include:
+      file: classpath:/db/changelog/011-create-inventory-reservation.yaml

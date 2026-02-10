@@ -4,6 +4,8 @@ import type {
   CartItemDbDTO,
   CartItemDTO,
   CartProductsDTO,
+  PriceSummaryRequest,
+  PriceSummaryResponse,
   TotalPriceFromProductDTO,
   TotalPriceFromProductDTORequest,
 } from "@/constants/types";
@@ -55,11 +57,9 @@ export async function moveFromCartToWishlisted(productItemId: string) {
   );
   revalidatePath("/wishlist");
 }
-export async function getTotalProductPrice(
-  body: TotalPriceFromProductDTORequest[],
-) {
-  const data = await apiFetch<TotalPriceFromProductDTO>(
-    "/product-service/public/products/get-total-price",
+export async function getTotalProductPrice(body: PriceSummaryRequest) {
+  const data = await apiFetch<PriceSummaryResponse>(
+    "/order-service/public/price-summary",
     {
       method: "POST",
       body,

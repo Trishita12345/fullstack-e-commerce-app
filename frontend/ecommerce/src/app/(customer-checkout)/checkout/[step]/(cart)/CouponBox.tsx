@@ -1,14 +1,12 @@
-import { CartItemDTO, CartProductsDTO } from "@/constants/types";
+import { CartProductsDTO } from "@/constants/types";
 import { formattedPrice } from "@/utils/helperFunctions";
 import {
   useAllCoupons,
   useCartActions,
-  useCartItems,
+  usePriceSummary,
+  useSelectedCouponCode,
   useSelectedCouponDetails,
-  useTotalBasePrice,
-  useTotalDiscountedPrice,
 } from "@/utils/store/cart";
-import { useSession } from "@/utils/store/session";
 import {
   Box,
   Button,
@@ -62,7 +60,7 @@ const CouponBoxModal = ({
   const { getAllCoupons } = useCartActions();
   const { setSelectedCouponCode } = useCartActions();
   const coupons = useAllCoupons();
-  const couponFromStore = useSelectedCouponDetails();
+  const selectedCouponFromStore = useSelectedCouponDetails();
 
   const [textValue, setTextValue] = useState<string>("");
   const [textValueErr, setTextValueErr] = useState<{
@@ -73,16 +71,15 @@ const CouponBoxModal = ({
     CouponTypeDTO | undefined
   >(undefined);
 
-  const totalDiscountedPrice = useTotalDiscountedPrice();
+  const { itemsTotalMrp, productDiscount } = usePriceSummary();
+  const totalDiscountedPrice = itemsTotalMrp - productDiscount;
   useEffect(() => {
     getAllCoupons();
   }, []);
 
   useEffect(() => {
     setSelectedCouponLocal(
-      couponFromStore
-        ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
-        : getBestCoupon(coupons, totalDiscountedPrice),
+      selectedCouponFromStore || getBestCoupon(coupons, totalDiscountedPrice),
     );
   }, [coupons, totalDiscountedPrice]);
 
@@ -120,9 +117,7 @@ const CouponBoxModal = ({
     setTextValue("");
     setTextValueErr({ error: true, msg: "" });
     setSelectedCouponLocal(
-      couponFromStore
-        ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
-        : getBestCoupon(coupons, totalDiscountedPrice),
+      selectedCouponFromStore || getBestCoupon(coupons, totalDiscountedPrice),
     );
   };
   const applyCoupon = () => {

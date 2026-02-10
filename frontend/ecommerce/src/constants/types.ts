@@ -229,10 +229,6 @@ export interface TotalPriceFromProductDTO {
   totalBasePrice: number;
   totalDiscountedPrice: number;
 }
-export interface TotalPriceFromProductDTORequest {
-  productItemId: string;
-  quantity: number;
-}
 
 export interface CartProducts {
   sku: string;
@@ -272,5 +268,28 @@ export interface AddressDTO {
 export interface PlaceOrderReqDTO {
   donation: number;
   giftWrap: boolean;
-  selectedCouponCode?: string;
+  selectedCouponCode: string | null;
+}
+export interface PriceSummaryResponse {
+  itemsTotalMrp: number;
+  productDiscount: number;
+  couponDiscount: number;
+  donation: number;
+  giftWrapFee: number;
+  roundingAdjustment: number;
+  payableAmount: number;
+  shippingFee: number;
+  amountToAvoidShippingFee: number;
+}
+
+export interface TotalPriceFromProductDTORequest {
+  productItemId: string;
+  quantity: number;
+}
+export interface PriceSummaryRequest {
+  placeOrderReqDTO: PlaceOrderReqDTO;
+  cartItems: {
+    productItemId: string;
+    quantity: number;
+  }[];
 }

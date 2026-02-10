@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-inventory-reservation-table
+      author: trishita
+      changes:
+        - createTable:
+            tableName: inventory_reservation
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: order_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: product_item_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: quantity
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: status
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: expires_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            indexName: idx_inventory_reservation_product
+            tableName: inventory_reservation
+            columns:
+              - column:
+                  name: product_item_id
+
+        - createIndex:
+            indexName: idx_inventory_reservation_status_expiry
+            tableName: inventory_reservation
+            columns:
+              - column:
+                  name: status
+              - column:
+                  name: expires_at

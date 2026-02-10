@@ -22,6 +22,7 @@ import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesD
 import com.e_commerce.productService.repository.IProductItemImageRepository;
 import com.e_commerce.productService.repository.IProductItemRepository;
 import com.e_commerce.productService.repository.IVariantAttributeRepository;
+import com.e_commerce.productService.service.IInventoryReservationService;
 import com.e_commerce.productService.service.IProductItemService;
 import com.e_commerce.productService.service.IProductService;
 import com.e_commerce.productService.service.IS3Service;
@@ -54,6 +55,7 @@ public class ProductItemService implements IProductItemService {
         private final IVariantAttributeRepository variantAttributeRepository;
         private final IProductItemRepository productItemRepository;
         private final IProductItemImageRepository productItemImageRepository;
+        private final IInventoryReservationService inventoryReservationService;
         private final IS3Service s3Service;
 
         @Override
@@ -383,7 +385,7 @@ public class ProductItemService implements IProductItemService {
                                                 "Product not found: " + ci.getProductItemId());
                         }
 
-                        if (productItem.getAvailableStock() < ci.getQuantity()) {
+                        if (inventoryReservationService.getSellableStock(productItem.getId()) < ci.getQuantity()) {
                                 throw new RuntimeException(
                                                 "Insufficient stock for product: " + productItem.getId());
                         }

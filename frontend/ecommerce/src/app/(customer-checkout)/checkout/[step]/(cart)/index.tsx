@@ -60,7 +60,7 @@ const Cart = ({
                     <CouponBox cartProducts={cartProducts} />
                     <GiftBox />
                     <DonateBox />
-                    <PriceDetailsBox cartProducts={cartProducts} />
+                    <PriceDetailsBox />
                   </Stack>
                 </GridCol>
               </Grid>
