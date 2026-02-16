@@ -40,6 +40,7 @@ public interface IProductItemService {
     Map<UUID, CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds);
 
     TotalProductPriceResponseDTO getTotalProductPrice(List<CartItemDTO> cartItems);
+
     ProductPriceDTO getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems);
 
 }

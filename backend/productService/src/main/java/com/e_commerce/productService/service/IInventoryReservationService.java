@@ -2,8 +2,11 @@ package com.e_commerce.productService.service;
 
 import java.util.UUID;
 
-public interface IInventoryReservationService {
-    boolean reserveInventory(UUID orderId, UUID productItemId, int qty);
+import com.e_commerce.common.model.event.InventoryReserveEvent;
+import com.e_commerce.common.model.event.OrderCreatedEvent;
 
+public interface IInventoryReservationService {
     int getSellableStock(UUID productItemId);
+
+    InventoryReserveEvent reserveInventoryForOrder(OrderCreatedEvent event);
 }

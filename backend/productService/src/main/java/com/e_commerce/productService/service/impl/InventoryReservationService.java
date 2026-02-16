@@ -5,6 +5,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.model.dto.CartItemDTO;
+import com.e_commerce.common.model.event.InventoryReserveEvent;
+import com.e_commerce.common.model.event.OrderCreatedEvent;
 import com.e_commerce.productService.model.InventoryReservation;
 import com.e_commerce.productService.model.ProductItem;
 import com.e_commerce.productService.model.enums.ReservationStatus;
@@ -22,8 +25,6 @@ public class InventoryReservationService implements IInventoryReservationService
     private final IProductItemRepository productItemRepository;
     private final IInventoryReservationRepository reservationRepository;
 
-    @Transactional
-    @Override
     public boolean reserveInventory(UUID orderId, UUID productItemId, int qty) {
 
         int sellableStock = getSellableStock(productItemId);
@@ -64,6 +65,29 @@ public class InventoryReservationService implements IInventoryReservationService
 
         int sellableStock = totalStock - reserved;
         return sellableStock;
+    }
+
+    @Override
+    @Transactional
+    public InventoryReserveEvent reserveInventoryForOrder(OrderCreatedEvent event) {
+        boolean success = true;
+        String message = "Inventory reserved successfully";
+
+        for (CartItemDTO item : event.getItems()) {
+            boolean reserved = reserveInventory(event.getOrderId(), item.getProductItemId(), item.getQuantity());
+            if (!reserved) {
+                success = false;
+                message = "Failed to reserve inventory for product item: " + item.getProductItemId();
+                break;
+            }
+        }
+
+        InventoryReserveEvent reservationEvent = InventoryReserveEvent.builder()
+                .orderId(event.getOrderId())
+                .success(success)
+                .message(message)
+                .build();
+        return reservationEvent;
     }
 
 }

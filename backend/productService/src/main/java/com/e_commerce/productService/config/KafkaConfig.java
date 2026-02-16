@@ -1,4 +1,4 @@
-package com.e_commerce.orderService.config;
+package com.e_commerce.productService.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +19,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 
-import com.e_commerce.common.model.event.InventoryReserveEvent;
+import com.e_commerce.common.model.event.OrderCreatedEvent;
 
 @Configuration
 @EnableKafka
@@ -47,9 +47,9 @@ public class KafkaConfig {
     }
 
     @Bean(name = "kafkaListenerContainerFactory")
-    ConcurrentKafkaListenerContainerFactory<String, InventoryReserveEvent> kafkaListenerContainerFactory() {
+    ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> kafkaListenerContainerFactory() {
 
-        ConcurrentKafkaListenerContainerFactory<String, InventoryReserveEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, OrderCreatedEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactory());
         return factory;

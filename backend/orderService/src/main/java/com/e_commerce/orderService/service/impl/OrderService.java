@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -189,7 +190,7 @@ public class OrderService implements IOrderService {
 
         @Override
         @Transactional
-        public BigDecimal placeOrderAndReserveInventory(String userId, PlaceOrderReqDTO placeOrderReq) {
+        public BigDecimal placeOrder(String userId, PlaceOrderReqDTO placeOrderReq) {
 
                 CartDTO cart = cartClient.getSelectedItemsInCart();
 
@@ -251,6 +252,19 @@ public class OrderService implements IOrderService {
                                 .amountToAvoidShippingFee(MIN_PURCHASE_VALUE.subtract(totalDiscountedPriceAfterCoupon))
                                 .payableAmount(finalAmount)
                                 .build();
+        }
+
+        @Transactional
+        @Override
+        public void updateOrderStatus(UUID orderId, OrderStatus confirmed) {
+                Order order = orderRepository.findById(orderId)
+                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                if (order.getOrderStatus() == OrderStatus.CONFIRMED ||
+                                order.getOrderStatus() == OrderStatus.CANCELLED) {
+                        return; // ignore duplicate event
+                }
+                order.setOrderStatus(confirmed);
+                orderRepository.save(order);
         }
 
 }
