@@ -1,39 +1,40 @@
 server:
   port: 8084
+
 spring:
   application:
     name: orderService
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: true
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5435/order_db
     username: user
     password: pass123
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db-changelog-master.yaml
+
   kafka:
     bootstrap-servers: localhost:9092
 
-logging:
-  level:
-    org:
-      springframework:
-        security: debug
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
-    config-url: /api/order-service/v3/api-docs/swagger-config
-    url: /api/order-service/v3/api-docs
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
 
-gateway:
-  base-url: http://localhost:8080/api/order-service
-  api-description: Swagger UI Documentation for order Service
+    consumer:
+      group-id: order-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.e_commerce.common.model.event.InventoryReserveEvent
 
 feign:
   client:
