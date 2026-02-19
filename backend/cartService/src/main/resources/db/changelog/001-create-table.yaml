@@ -107,4 +107,3 @@ databaseChangeLog:
             columns:
               - column:
                   name: cart_id
-        

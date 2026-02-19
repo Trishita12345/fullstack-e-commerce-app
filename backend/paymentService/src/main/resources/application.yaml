@@ -1,13 +1,13 @@
 server:
-  port: 8084
+  port: 8086
 
 spring:
   application:
-    name: orderService
+    name: paymentService
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5435/order_db
+    url: jdbc:postgresql://localhost:5437/payment_db
     username: user
     password: pass123
 
@@ -28,21 +28,10 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
 
     consumer:
-      group-id: order-service-group
+      group-id: payment-service-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
-        spring.json.value.default.type: com.e_commerce.common.model.event.InventoryReserveEvent
-
-feign:
-  client:
-    product-service:
-      url: http://localhost:8081
-    cart-service:
-      url: http://localhost:8082
-    offer-service:
-      url: http://localhost:8085
-    payment-service:
-      url: http://localhost:8086
+        spring.json.value.default.type: com.e_commerce.common.model.event.OrderReservedEvent

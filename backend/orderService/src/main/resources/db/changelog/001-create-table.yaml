@@ -41,6 +41,12 @@ databaseChangeLog:
                   name: payment_mode
                   type: varchar(30)
                   constraints:
+                    nullable: false
+
+              - column:
+                  name: payment_gateway
+                  type: varchar(30)
+                  constraints:
                     nullable: true
 
               - column:
@@ -78,6 +84,16 @@ databaseChangeLog:
                   type: timestamp
                   constraints:
                     nullable: false
+              - column:
+                  name: transaction_id
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: razorpay_order_id
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
 
   - changeSet:
       id: create-order-items-table

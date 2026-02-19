@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.e_commerce.common.model.event.InventoryReserveEvent;
 import com.e_commerce.common.model.event.OrderCreatedEvent;
+import com.e_commerce.common.utils.Constants;
 import com.e_commerce.productService.service.IInventoryReservationService;
 
 @Service
@@ -16,7 +17,7 @@ public class OrderCreatedEventConsumer {
     private final IInventoryReservationService inventoryReservationService;
     private final InventoryReservationEventProducer inventoryReservationEventProducer;
 
-    @KafkaListener(topics = "order-created", groupId = "product-service-group")
+    @KafkaListener(topics = Constants.ORDER_CREATED_TOPIC, groupId = "product-service-group")
     public void consumeOrderCreatedEvent(OrderCreatedEvent event) {
         System.out.println("Consumed order created event: " + event.toString());
         // Process the order created event and reserve inventory

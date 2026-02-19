@@ -113,6 +113,7 @@ const PaymentOptionsSection = ({
         giftWrap,
         selectedCouponCode,
         paymentMode: mode,
+        paymentGateway: mode === PaymentModeType.COD ? undefined : "RAZORPAY",
       });
       alert(data);
     } catch {

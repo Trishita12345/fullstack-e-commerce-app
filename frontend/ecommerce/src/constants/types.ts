@@ -275,6 +275,7 @@ export interface PlaceOrderReqDTO {
   giftWrap: boolean;
   selectedCouponCode: string | null;
   paymentMode: PaymentModeType;
+  paymentGateway?: string;
 }
 export interface PriceSummaryResponse {
   itemsTotalMrp: number;

@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.e_commerce.common.model.AuditEntity;
+import com.e_commerce.common.model.enums.PaymentGateway;
 import com.e_commerce.common.model.enums.PaymentMode;
 import com.e_commerce.orderService.model.enums.OrderStatus;
 import com.e_commerce.orderService.model.enums.PaymentStatus;
@@ -54,6 +55,13 @@ public class Order extends AuditEntity {
     @Enumerated(EnumType.STRING)
     private PaymentMode paymentMode;
 
+    @Column(name = "payment_gateway")
+    @Enumerated(EnumType.STRING)
+    private PaymentGateway paymentGateway;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<OrderItem> orderItems;
+
+    private String transactionId;
+    private String razorpayOrderId;
 }

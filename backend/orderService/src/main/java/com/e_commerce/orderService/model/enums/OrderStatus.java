@@ -1,9 +1,10 @@
 package com.e_commerce.orderService.model.enums;
 
 public enum OrderStatus {
-    PENDING, // → user clicked place order
-    CONFIRMED, // → inventory reserved successfully
-    FAILED, // → inventory reservation failed
-    CANCELLED, // → user cancelled / timeout
+    CREATED, // → user clicked place order
+    RESERVED, // → inventory reserved successfully
+    FAILED, // → inventory reservation failed/ timeout
+    CONFIRMED, // → payment successful
+    CANCELLED, // → user cancelled
 
 }

@@ -8,6 +8,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.common.model.event.InventoryReserveEvent;
+import com.e_commerce.common.utils.Constants;
 import com.e_commerce.orderService.model.enums.OrderStatus;
 
 @Service
@@ -16,18 +17,18 @@ public class InventoryEventConsumer {
 
     private final IOrderService orderService;
 
-    @KafkaListener(topics = "inventory-reservation", groupId = "order-service-group")
+    @KafkaListener(topics = Constants.INVENTORY_RESERVATION_TOPIC, groupId = "order-service-group")
     public void consumeInventoryReservationResult(InventoryReserveEvent event) {
         System.out.println("Consumed inventory reservation result: " + event.toString());
         if (event.isSuccess()) {
             // Update order status to CONFIRMED
             System.out.println("Inventory reserved successfully for order: " + event.getOrderId());
-            orderService.updateOrderStatus(event.getOrderId(), OrderStatus.CONFIRMED);
+            orderService.updateOrderStatusAndPublish(event.getOrderId(), OrderStatus.RESERVED);
         } else {
             // Update order status to FAILED
             System.out.println("Inventory reservation failed for order: " + event.getOrderId() + ". Reason: "
                     + event.getMessage());
-            orderService.updateOrderStatus(event.getOrderId(), OrderStatus.FAILED);
+            orderService.updateOrderStatusAndPublish(event.getOrderId(), OrderStatus.FAILED);
         }
     }
 }

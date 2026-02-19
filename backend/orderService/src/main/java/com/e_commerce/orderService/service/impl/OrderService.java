@@ -13,13 +13,18 @@ import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 import com.e_commerce.common.model.dto.ProductPriceDTO;
 import com.e_commerce.common.model.dto.ProductPriceDetailsDTO;
 import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
+import com.e_commerce.common.model.enums.PaymentMode;
 import com.e_commerce.common.model.event.OrderCreatedEvent;
+import com.e_commerce.common.model.event.OrderReservedEvent;
+import com.e_commerce.common.model.event.PaymentCreatedEvent;
+import com.e_commerce.common.utils.Constants;
 import com.e_commerce.orderService.client.ICartClient;
 import com.e_commerce.orderService.client.IOfferClient;
 import com.e_commerce.orderService.client.IProductClient;
 import com.e_commerce.orderService.kafka.OrderEventProducer;
 import com.e_commerce.orderService.model.Order;
 import com.e_commerce.orderService.model.OrderItem;
+import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
 import com.e_commerce.orderService.model.enums.OrderItemStatus;
@@ -43,11 +48,6 @@ public class OrderService implements IOrderService {
 
         private final IOrderRepository orderRepository;
 
-        private static final BigDecimal GIFT_WRAP_CHARGE = BigDecimal.valueOf(35);
-        private static final BigDecimal SHIPPING_CHARGE = BigDecimal.valueOf(99);
-        private static final BigDecimal MIN_PURCHASE_VALUE = BigDecimal.valueOf(999);
-        private static final BigDecimal ZERO = BigDecimal.ZERO;
-
         private BigDecimal extractGstFromInclusive(BigDecimal price, BigDecimal gstPercent) {
                 BigDecimal taxable = price
                                 .multiply(BigDecimal.valueOf(100))
@@ -59,7 +59,7 @@ public class OrderService implements IOrderService {
         private BigDecimal fetchCouponPercent(PlaceOrderReqDTO req, BigDecimal totalPrice) {
 
                 if (req.getSelectedCouponCode() == null)
-                        return ZERO;
+                        return Constants.ZERO;
 
                 return offerClient.getCouponDiscountPercent(
                                 req.getSelectedCouponCode(),
@@ -67,7 +67,7 @@ public class OrderService implements IOrderService {
         }
 
         private BigDecimal calculateShippingFee(BigDecimal total) {
-                return total.compareTo(MIN_PURCHASE_VALUE) < 0 ? SHIPPING_CHARGE : ZERO;
+                return total.compareTo(Constants.MIN_PURCHASE_VALUE) < 0 ? Constants.SHIPPING_CHARGE : Constants.ZERO;
         }
 
         private BigDecimal calculateFinalCartAmount(BigDecimal total, PlaceOrderReqDTO req) {
@@ -79,13 +79,13 @@ public class OrderService implements IOrderService {
 
                 // gift wrap
                 if (req.getGiftWrap())
-                        total = total.add(GIFT_WRAP_CHARGE);
+                        total = total.add(Constants.GIFT_WRAP_CHARGE);
 
                 return total;
         }
 
         private BigDecimal calculateCouponDiscountAmount(BigDecimal total, BigDecimal couponPercent) {
-                if (couponPercent.compareTo(ZERO) > 0) {
+                if (couponPercent.compareTo(Constants.ZERO) > 0) {
                         return total.multiply(couponPercent)
                                         .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
                 } else {
@@ -100,11 +100,14 @@ public class OrderService implements IOrderService {
                                 .totalAmount(amount)
                                 .couponCode(placeOrderReq.getSelectedCouponCode())
                                 .donation(placeOrderReq.getDonation())
-                                .giftWrapCharge(placeOrderReq.getGiftWrap() ? GIFT_WRAP_CHARGE : BigDecimal.ZERO)
+                                .giftWrapCharge(placeOrderReq.getGiftWrap() ? Constants.GIFT_WRAP_CHARGE
+                                                : BigDecimal.ZERO)
                                 .shippingCharge(shippingCharge)
-                                .orderStatus(OrderStatus.PENDING)
-                                .paymentStatus(PaymentStatus.PENDING)
+                                .orderStatus(OrderStatus.CREATED)
+                                .paymentStatus(PaymentStatus.NOT_INITIATED)
                                 .paymentMode(placeOrderReq.getPaymentMode())
+                                .paymentGateway(placeOrderReq.getPaymentMode() == PaymentMode.COD ? null
+                                                : placeOrderReq.getPaymentGateway())
                                 .build();
         }
 
@@ -247,23 +250,72 @@ public class OrderService implements IOrderService {
                                 .couponDiscount(couponDiscount)
                                 .donation(placeOrderReqDTO.getDonation())
                                 .giftWrapFee(
-                                                placeOrderReqDTO.getGiftWrap() ? GIFT_WRAP_CHARGE : BigDecimal.ZERO)
+                                                placeOrderReqDTO.getGiftWrap() ? Constants.GIFT_WRAP_CHARGE
+                                                                : BigDecimal.ZERO)
                                 .shippingFee(calculateShippingFee(totalDiscountedPriceAfterCoupon))
-                                .amountToAvoidShippingFee(MIN_PURCHASE_VALUE.subtract(totalDiscountedPriceAfterCoupon))
+                                .amountToAvoidShippingFee(
+                                                Constants.MIN_PURCHASE_VALUE.subtract(totalDiscountedPriceAfterCoupon))
                                 .payableAmount(finalAmount)
                                 .build();
         }
 
         @Transactional
         @Override
-        public void updateOrderStatus(UUID orderId, OrderStatus confirmed) {
+        public void updateOrderStatusAndPublish(UUID orderId, OrderStatus status) {
                 Order order = orderRepository.findById(orderId)
                                 .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
-                if (order.getOrderStatus() == OrderStatus.CONFIRMED ||
-                                order.getOrderStatus() == OrderStatus.CANCELLED) {
-                        return; // ignore duplicate event
+                if (order.getOrderStatus() == OrderStatus.CREATED) {
+                        order.getOrderItems().forEach(item -> {
+                                if (status == OrderStatus.RESERVED) {
+                                        item.setOrderItemStatus(OrderItemStatus.RESERVED);
+
+                                } else if (status == OrderStatus.FAILED) {
+                                        item.setOrderItemStatus(OrderItemStatus.FAILED);
+                                }
+                        });
+                        order.setOrderStatus(status);
+                        if (status == OrderStatus.RESERVED) {
+                                order.setPaymentStatus(PaymentStatus.PENDING);
+                        }
+                        orderRepository.save(order);
+                        orderEventProducer.publishOrderReserved(OrderReservedEvent.builder()
+                                        .orderId(order.getId())
+                                        .amount(order.getTotalAmount())
+                                        .paymentGateway(order.getPaymentGateway())
+                                        .userId(order.getUserId())
+                                        .build());
+                } else {
+                        return; // Ignore if order is not in CREATED state (idempotency)
                 }
-                order.setOrderStatus(confirmed);
+        }
+
+        @Override
+        public OrderStatusResponseDTO getOrderStatus(UUID orderId) {
+                Order order = orderRepository.findById(orderId)
+                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                return OrderStatusResponseDTO.builder()
+                                .orderId(orderId)
+                                .orderStatus(order.getOrderStatus().name())
+                                .paymentStatus(order.getPaymentStatus().name())
+                                .transactionId(order.getTransactionId())
+                                .razorpayOrderId(order.getRazorpayOrderId())
+                                .amount(order.getTotalAmount())
+                                .build();
+        }
+
+        @Override
+        public String getPaymentSession(UUID orderId, String paymentGateway) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'getPaymentSession'");
+        }
+
+        @Override
+        public void updatePaymentOrder(PaymentCreatedEvent event) {
+                Order order = orderRepository.findById(event.getOrderId())
+                                .orElseThrow(() -> new RuntimeException("Order not found: " + event.getOrderId()));
+                order.setPaymentStatus(PaymentStatus.INITIATED);
+                order.setTransactionId(event.getTransactionId());
+                order.setRazorpayOrderId(event.getGatewayOrderId());
                 orderRepository.save(order);
         }
 
