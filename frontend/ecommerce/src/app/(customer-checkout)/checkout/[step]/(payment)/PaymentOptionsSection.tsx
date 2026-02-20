@@ -1,10 +1,5 @@
 import { notify } from "@/utils/helperFunctions";
 import {
-  faMoneyBill1Wave,
-  faUpRightFromSquare,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
   Button,
   Card,
   Group,
@@ -13,7 +8,6 @@ import {
   Text,
 } from "@mantine/core";
 import Image from "next/image";
-import { title } from "process";
 import { useState } from "react";
 import { placeOrder } from "../../paymentActions";
 import {
@@ -22,6 +16,7 @@ import {
   useSelectedCouponCode,
 } from "@/utils/store/cart";
 import { PaymentModeType } from "@/constants/types";
+import { redirect, useRouter } from "next/navigation";
 interface ModeCardProps {
   mode: PaymentModeType;
   selectedMode: PaymentModeType;
@@ -105,18 +100,20 @@ const PaymentOptionsSection = ({
   const giftWrap = useGiftWrap();
   const selectedCouponCode = useSelectedCouponCode();
   const [mode, setMode] = useState<PaymentModeType>(PaymentModeType.PREPAID);
+  const router = useRouter();
   const handlePlaceOrder = async () => {
     try {
       showLoading();
-      const data = await placeOrder({
+      const orderId = await placeOrder({
         donation,
         giftWrap,
         selectedCouponCode,
         paymentMode: mode,
         paymentGateway: mode === PaymentModeType.COD ? undefined : "RAZORPAY",
       });
-      alert(data);
-    } catch {
+      router.push("/create-checkout-session?orderId=" + orderId);
+    } catch (error) {
+      console.log(error);
       notify({
         variant: "error",
         title: "Error!",

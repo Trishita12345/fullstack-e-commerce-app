@@ -20,6 +20,7 @@ import com.e_commerce.common.model.event.PaymentCreatedEvent;
 import com.e_commerce.common.utils.Constants;
 import com.e_commerce.orderService.client.ICartClient;
 import com.e_commerce.orderService.client.IOfferClient;
+import com.e_commerce.orderService.client.IPaymentClient;
 import com.e_commerce.orderService.client.IProductClient;
 import com.e_commerce.orderService.kafka.OrderEventProducer;
 import com.e_commerce.orderService.model.Order;
@@ -41,6 +42,7 @@ import lombok.AllArgsConstructor;
 public class OrderService implements IOrderService {
 
         private final OrderEventProducer orderEventProducer;
+        private final IPaymentClient paymentClient;
 
         private final ICartClient cartClient;
         private final IProductClient productClient;
@@ -193,7 +195,7 @@ public class OrderService implements IOrderService {
 
         @Override
         @Transactional
-        public BigDecimal placeOrder(String userId, PlaceOrderReqDTO placeOrderReq) {
+        public UUID placeOrder(String userId, PlaceOrderReqDTO placeOrderReq) {
 
                 CartDTO cart = cartClient.getSelectedItemsInCart();
 
@@ -220,7 +222,7 @@ public class OrderService implements IOrderService {
 
                 publishOrderCreatedEvent(order, userId, finalAmount, cart);
 
-                return finalAmount;
+                return order.getId();
         }
 
         @Override
@@ -298,15 +300,19 @@ public class OrderService implements IOrderService {
                                 .orderStatus(order.getOrderStatus().name())
                                 .paymentStatus(order.getPaymentStatus().name())
                                 .transactionId(order.getTransactionId())
-                                .razorpayOrderId(order.getRazorpayOrderId())
+                                .gatewayOrderId(order.getGatewayOrderId())
                                 .amount(order.getTotalAmount())
                                 .build();
         }
 
         @Override
-        public String getPaymentSession(UUID orderId, String paymentGateway) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'getPaymentSession'");
+        public String getGatewayMerchantKey(UUID orderId) {
+                Order order = orderRepository.findById(orderId)
+                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                if (order.getPaymentGateway() != null)
+                        return paymentClient.getGatewayMerchantKey(order.getPaymentGateway().name());
+                else
+                        throw new RuntimeException("Payment gateway not set for order: " + orderId);
         }
 
         @Override
@@ -315,7 +321,7 @@ public class OrderService implements IOrderService {
                                 .orElseThrow(() -> new RuntimeException("Order not found: " + event.getOrderId()));
                 order.setPaymentStatus(PaymentStatus.INITIATED);
                 order.setTransactionId(event.getTransactionId());
-                order.setRazorpayOrderId(event.getGatewayOrderId());
+                order.setGatewayOrderId(event.getGatewayOrderId());
                 orderRepository.save(order);
         }
 

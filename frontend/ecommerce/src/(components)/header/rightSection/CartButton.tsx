@@ -6,44 +6,40 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
 import Link from "next/link";
 import { useEffect } from "react";
-import { authClient } from "@/lib/auth-client";
 import { useSession } from "@/utils/store/session";
+import { getCartItemsAction } from "@/app/(customer-checkout)/checkout/cartActions";
 const CartButton = () => {
   const session = useSession();
   const isLoggedIn = Boolean(session?.user?.id);
-  const { getInitialCartData } = useCartActions();
+  const { setCartItems } = useCartActions();
 
   const cartItems = useCartItems();
   useEffect(() => {
-    if (isLoggedIn) {
-      getInitialCartData();
-    }
-  }, []);
+    const fetchCartItems = async () => {
+      if (isLoggedIn) {
+        const cartItemsFromDb = await getCartItemsAction();
+        setCartItems(cartItemsFromDb);
+      }
+    };
+    fetchCartItems();
+  }, [isLoggedIn]);
+
   return (
     <Link href={"/checkout/cart"}>
-      {cartItems.length ? (
-        <Indicator
-          inline
-          label={cartItems.length}
-          size={16}
-          color={"primaryDark.6"}
-          processing
-        >
-          <Tooltip label={en.myCart}>
-            <FontAwesomeIcon
-              icon={faCartShopping}
-              style={{ cursor: "pointer" }}
-            />
-          </Tooltip>
-        </Indicator>
-      ) : (
+      <Indicator
+        inline
+        label={cartItems.filter((item) => item.isSelected).length}
+        size={16}
+        color={"primaryDark.6"}
+        processing
+      >
         <Tooltip label={en.myCart}>
           <FontAwesomeIcon
             icon={faCartShopping}
             style={{ cursor: "pointer" }}
           />
         </Tooltip>
-      )}
+      </Indicator>
     </Link>
   );
 };

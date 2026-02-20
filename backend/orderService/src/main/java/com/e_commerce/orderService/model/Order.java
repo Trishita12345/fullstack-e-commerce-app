@@ -63,5 +63,5 @@ public class Order extends AuditEntity {
     private Set<OrderItem> orderItems;
 
     private String transactionId;
-    private String razorpayOrderId;
+    private String gatewayOrderId;
 }

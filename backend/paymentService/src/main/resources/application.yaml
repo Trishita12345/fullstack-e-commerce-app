@@ -35,3 +35,20 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
         spring.json.value.default.type: com.e_commerce.common.model.event.OrderReservedEvent
+
+payment:
+  razorpay:
+    merchant.key: SI4DgzfFgdwe9h
+    api-key: rzp_test_SIQZ5fbnfovuwn
+    secret-key: CGFn8t7y9Y5GbG5l8LXuDCHz
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    config-url: /api/payment-service/v3/api-docs/swagger-config
+    url: /api/payment-service/v3/api-docs
+gateway:
+  base-url: http://localhost:8080/api/payment-service
+  api-description: Swagger UI Documentation for Payment Service

@@ -14,7 +14,7 @@ public class ReservationCleanupJob {
 
     private final IInventoryReservationRepository inventoryReservationRepository;
 
-    @Scheduled(fixedRate = 120000) // every 2 minutes
+    @Scheduled(fixedRate = 300000) // every 5 minutes
     @Transactional
     public void expireReservations() {
         int count = inventoryReservationRepository.expireReservations();

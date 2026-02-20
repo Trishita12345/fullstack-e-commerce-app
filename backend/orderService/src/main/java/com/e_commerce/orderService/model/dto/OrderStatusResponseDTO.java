@@ -3,6 +3,7 @@ package com.e_commerce.orderService.model.dto;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,7 @@ public class OrderStatusResponseDTO {
     private String orderStatus;
     private String paymentStatus;
     private String transactionId;
-    private String razorpayOrderId;
+    @Nullable
+    private String gatewayOrderId;
     private BigDecimal amount;
 }

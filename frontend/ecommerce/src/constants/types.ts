@@ -299,3 +299,12 @@ export interface PriceSummaryRequest {
     quantity: number;
   }[];
 }
+
+export interface OrderStatusPollingResponse {
+  orderId: string;
+  orderStatus: string;
+  paymentStatus: string;
+  transactionId: string;
+  gatewayOrderId: string;
+  amount: number;
+}

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
@@ -20,7 +19,6 @@ import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
 import com.e_commerce.orderService.service.IOrderService;
 
-import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -31,9 +29,9 @@ public class OrderController {
     private final IOrderService orderService;
 
     @PostMapping("/place-order")
-    public ResponseEntity<BigDecimal> placeOrder(Authentication authentication,
+    public ResponseEntity<UUID> placeOrder(Authentication authentication,
             @RequestBody PlaceOrderReqDTO placeOrderReq) {
-        BigDecimal val = orderService.placeOrder(authentication.getName(), placeOrderReq);
+        UUID val = orderService.placeOrder(authentication.getName(), placeOrderReq);
         return ResponseEntity.ok(val);
     }
 
@@ -49,11 +47,11 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderStatus(orderId));
     }
 
-    @GetMapping("/{orderId}/payment-session") // TODO: Get payment key through feign
-    public ResponseEntity<Map<String, String>> getPaymentSession(@PathVariable UUID orderId,
-            @Nullable @RequestParam String paymentGateway) {
+    @GetMapping("/{orderId}/merchant-key")
+    public ResponseEntity<Map<String, String>> getGatewayMerchantKey(
+            @PathVariable UUID orderId) {
         return ResponseEntity
                 .ok(Map.of("key",
-                        orderService.getPaymentSession(orderId, paymentGateway == null ? "RAZORPAY" : paymentGateway)));
+                        orderService.getGatewayMerchantKey(orderId)));
     }
 }

@@ -12,7 +12,7 @@ import com.e_commerce.orderService.model.enums.OrderStatus;
 
 public interface IOrderService {
 
-    BigDecimal placeOrder(String userId, PlaceOrderReqDTO placeOrderReq);
+    UUID placeOrder(String userId, PlaceOrderReqDTO placeOrderReq);
 
     PriceSummaryResponseDTO getPriceSummary(PriceSummaryRequestDTO priceSummaryRequestDTO);
 
@@ -20,7 +20,7 @@ public interface IOrderService {
 
     OrderStatusResponseDTO getOrderStatus(UUID orderId);
 
-    String getPaymentSession(UUID orderId, String paymentGateway);
+    String getGatewayMerchantKey(UUID orderId);
 
     void updatePaymentOrder(PaymentCreatedEvent event);
 }

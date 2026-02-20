@@ -4,13 +4,17 @@ import com.e_commerce.common.model.event.OrderReservedEvent;
 import com.e_commerce.common.model.event.PaymentCreatedEvent;
 import com.e_commerce.paymentService.kafka.PaymentCreatedEventProducer;
 import com.e_commerce.paymentService.model.Payment;
+import com.e_commerce.paymentService.model.dto.GatewayOrderResponse;
 import com.e_commerce.paymentService.model.dto.PaymentResponse;
 import com.e_commerce.paymentService.model.enums.PaymentStatus;
 import com.e_commerce.paymentService.repository.IPaymentRepository;
+import com.e_commerce.paymentService.service.IPaymentGateway;
 import com.e_commerce.paymentService.service.IPaymentService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +23,9 @@ public class PaymentService implements IPaymentService {
 
     private final IPaymentRepository paymentRepository;
     private final PaymentCreatedEventProducer paymentCreatedEventProducer;
+
+    @Qualifier("razorpayGateway")
+    private final IPaymentGateway paymentGateway;
 
     private String generateTransactionId() {
         // Example: TXN-9f1c2d4a7c3e4b2a
@@ -36,16 +43,16 @@ public class PaymentService implements IPaymentService {
             return; // Payment already exists for this order, skip processing
         }
 
-        // TODO: Razorpay integration logic to process payment and update status
-        // accordingly
+        GatewayOrderResponse gatewayOrderResponse = paymentGateway
+                .createOrder(orderReservedEvent.getOrderId().toString(), orderReservedEvent.getAmount());
         Payment payment = Payment.builder()
                 .orderId(orderReservedEvent.getOrderId())
                 .amount(orderReservedEvent.getAmount())
                 .userId(orderReservedEvent.getUserId())
                 .paymentStatus(PaymentStatus.INITIATED)
+                .gatewayOrderId(gatewayOrderResponse.getGatewayOrderId())
                 .gateway(orderReservedEvent.getPaymentGateway())
                 .transactionId(generateTransactionId())
-                .gatewayOrderId(null) // This will be set after creating order in payment gateway
                 .build();
         Payment savedPayment = paymentRepository.save(payment);
         PaymentCreatedEvent paymentCreatedEvent = PaymentCreatedEvent.builder()
