@@ -9,7 +9,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: CHAR(36)
+                  type: uuid
                   constraints:
                     primaryKey: true
                     primaryKeyName: pk_payments

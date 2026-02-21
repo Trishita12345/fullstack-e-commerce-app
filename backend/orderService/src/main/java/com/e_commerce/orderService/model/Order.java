@@ -59,7 +59,7 @@ public class Order extends AuditEntity {
     @Enumerated(EnumType.STRING)
     private PaymentGateway paymentGateway;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<OrderItem> orderItems;
 
     private String transactionId;

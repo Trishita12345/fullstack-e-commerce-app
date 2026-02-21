@@ -274,7 +274,7 @@ export interface PlaceOrderReqDTO {
   donation: number;
   giftWrap: boolean;
   selectedCouponCode: string | null;
-  paymentMode: PaymentModeType;
+  paymentMode?: PaymentModeType;
   paymentGateway?: string;
 }
 export interface PriceSummaryResponse {

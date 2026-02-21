@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -199,4 +200,12 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
             WHERE pi.id in :productItemIds
                         """, nativeQuery = true)
     List<ProductItemPriceDTO> getAllById(List<UUID> productItemIds);
+
+    @Modifying
+    @Query(value = """
+            UPDATE product_items
+            SET available_stock = available_stock - :quantity
+            WHERE id = :productItemId
+            """, nativeQuery = true)
+    int decreaseAvailableStock(UUID productItemId, Integer quantity);
 }

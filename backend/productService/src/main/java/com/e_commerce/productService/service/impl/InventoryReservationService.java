@@ -1,6 +1,7 @@
 package com.e_commerce.productService.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.e_commerce.common.model.dto.CartItemDTO;
 import com.e_commerce.common.model.event.InventoryReserveEvent;
 import com.e_commerce.common.model.event.OrderCreatedEvent;
+import com.e_commerce.common.model.event.OrderFulfilledEvent;
 import com.e_commerce.productService.model.InventoryReservation;
 import com.e_commerce.productService.model.ProductItem;
 import com.e_commerce.productService.model.enums.ReservationStatus;
@@ -88,6 +90,36 @@ public class InventoryReservationService implements IInventoryReservationService
                 .message(message)
                 .build();
         return reservationEvent;
+    }
+
+    @Override
+    @Transactional
+    public void updateInventoryForConfirmedOrder(OrderFulfilledEvent event) {
+        UUID orderId = event.getOrderId();
+        List<InventoryReservation> reservations = reservationRepository.findAllByOrderId(orderId);
+        reservations.forEach(reservation -> {
+            if (reservation.getStatus() != ReservationStatus.RESERVED) {
+                return; // Skip if not in RESERVED status
+            }
+            reservation.setStatus(ReservationStatus.CONFIRMED);
+            productItemRepository.decreaseAvailableStock(reservation.getProductItemId(), reservation.getQuantity());
+            reservationRepository.save(reservation);
+        });
+
+    }
+
+    @Override
+    @Transactional
+    public void updateInventoryForFailedOrder(OrderFulfilledEvent event) {
+        UUID orderId = event.getOrderId();
+        List<InventoryReservation> reservations = reservationRepository.findAllByOrderId(orderId);
+        reservations.forEach(reservation -> {
+            if (reservation.getStatus() != ReservationStatus.RESERVED) {
+                return; // Skip if not in RESERVED status
+            }
+            reservation.setStatus(ReservationStatus.RELEASED);
+            reservationRepository.save(reservation);
+        });
     }
 
 }

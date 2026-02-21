@@ -2,7 +2,7 @@ package com.e_commerce.paymentService.service.impl;
 
 import com.e_commerce.common.model.event.OrderReservedEvent;
 import com.e_commerce.common.model.event.PaymentCreatedEvent;
-import com.e_commerce.paymentService.kafka.PaymentCreatedEventProducer;
+import com.e_commerce.paymentService.kafka.PaymentEventProducer;
 import com.e_commerce.paymentService.model.Payment;
 import com.e_commerce.paymentService.model.dto.GatewayOrderResponse;
 import com.e_commerce.paymentService.model.dto.PaymentResponse;
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 public class PaymentService implements IPaymentService {
 
     private final IPaymentRepository paymentRepository;
-    private final PaymentCreatedEventProducer paymentCreatedEventProducer;
+    private final PaymentEventProducer paymentEventProducer;
 
     @Qualifier("razorpayGateway")
     private final IPaymentGateway paymentGateway;
@@ -61,7 +61,7 @@ public class PaymentService implements IPaymentService {
                 .transactionId(savedPayment.getTransactionId())
                 .gatewayOrderId(savedPayment.getGatewayOrderId())
                 .build();
-        paymentCreatedEventProducer.publishPaymentCreated(paymentCreatedEvent);
+        paymentEventProducer.publishPaymentCreated(paymentCreatedEvent);
     }
 
     private PaymentResponse mapToResponse(Payment savedPayment) {

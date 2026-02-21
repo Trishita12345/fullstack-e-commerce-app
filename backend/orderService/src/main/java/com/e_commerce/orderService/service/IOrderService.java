@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 import com.e_commerce.common.model.event.PaymentCreatedEvent;
+import com.e_commerce.common.model.event.PaymentStatusEvent;
 import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
@@ -22,5 +23,7 @@ public interface IOrderService {
 
     String getGatewayMerchantKey(UUID orderId);
 
-    void updatePaymentOrder(PaymentCreatedEvent event);
+    void updatePaymentInitiated(PaymentCreatedEvent event);
+
+    void updatePaymentStatus(PaymentStatusEvent event);
 }

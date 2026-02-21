@@ -29,6 +29,8 @@ const enum PaymentStatuses {
 const CreateCheckoutSession = () => {
   const router = useRouter();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const verifyingPayment = useRef(false);
+  const verificationTimeout = useRef<NodeJS.Timeout | null>(null);
   const orderId = useSearchParams().get("orderId");
   const razorpayOpened = useRef(false);
   const [loaderMsg, setLoaderMsg] = useState<string>(
@@ -36,9 +38,25 @@ const CreateCheckoutSession = () => {
   );
   const session = useSession();
 
+  const startPolling = (orderId: string) => {
+    if (intervalRef.current) return;
+
+    intervalRef.current = setInterval(() => {
+      checkPayment(orderId);
+    }, 2500);
+  };
+
+  const stopPolling = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
   const redirectToRazorPay = async (orderData: OrderStatusPollingResponse) => {
     if (razorpayOpened.current) return;
     razorpayOpened.current = true;
+    stopPolling();
     const key = await getMerchantKey(orderData.orderId);
     const isLoaded = await loadRazorpay();
     if (!isLoaded) {
@@ -46,7 +64,6 @@ const CreateCheckoutSession = () => {
       return;
     }
 
-    // 2️⃣ options
     const options: any = {
       key,
       amount: orderData.amount * 100, // paise
@@ -54,42 +71,32 @@ const CreateCheckoutSession = () => {
       name: en.logoText,
       description: "Order Payment",
       order_id: orderData.gatewayOrderId,
-      callback_url: "http://localhost:8080/api/payment/razorpay/callback",
-      redirect: true,
-
       prefill: {
         name: session?.user.name,
         email: session?.user.email,
       },
+      handler: function (response: any) {
+        verifyingPayment.current = true;
+        setLoaderMsg("Payment received. Confirming with server...");
+        startPolling(orderId!);
+      },
       modal: {
         ondismiss: async () => {
-          console.log("User closed Razorpay checkout");
-
-          // stop polling
-          if (intervalRef.current) clearInterval(intervalRef.current);
-
-          try {
-            // inform backend user abandoned payment
-            await fetch("http://localhost:8080/api/payment/abandon", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                orderId: orderData.orderId,
-              }),
-            });
-          } catch (e) {
-            console.error("abandon api failed", e);
+          razorpayOpened.current = false;
+          if (!verifyingPayment.current) {
+            stopPolling();
+            router.replace("/checkout/cart");
           }
-
-          // send user back to cart
-          router.replace("/checkout/cart");
         },
+        backdropclose: false, // user can't click outside
+        escape: false, // ESC won't close
+        handleback: true, // back button controlled
+        confirm_close: true,
       },
       theme: {
         color: "#3399cc",
       },
     };
-    // 3️⃣ open razorpay
     const paymentObject = new (window as any).Razorpay(options);
     paymentObject.open();
   };
@@ -102,7 +109,6 @@ const CreateCheckoutSession = () => {
           setLoaderMsg("Preparing secure payment...  ");
         } else if (res.paymentStatus === PaymentStatuses.INITIATED) {
           setLoaderMsg("Opening secure payment gateway...  ");
-          clearInterval(intervalRef.current!);
           await redirectToRazorPay(res);
         }
       } else if (
@@ -122,18 +128,18 @@ const CreateCheckoutSession = () => {
       ) {
         setLoaderMsg("Payment successful. Redirecting to success page...");
         clearInterval(intervalRef.current!);
-        setTimeout(() => {
-          router.replace("/payment-success");
-        }, 2000);
+        router.replace(
+          `/payment-success?orderId=${orderId}&transactionId=${res.transactionId}`,
+        );
       } else if (
         res.orderStatus === OrderStatuses.FAILED &&
         res.paymentStatus === PaymentStatuses.FAILED
       ) {
         setLoaderMsg("Payment failed. Redirecting to failure page...");
         clearInterval(intervalRef.current!);
-        setTimeout(() => {
-          router.replace("/payment-failed");
-        }, 2000);
+        router.replace(
+          `/payment-failed?orderId=${orderId}&transactionId=${res.transactionId}`,
+        );
       }
     } catch (err) {
       console.error(err);
@@ -141,17 +147,11 @@ const CreateCheckoutSession = () => {
   };
 
   useEffect(() => {
-    if (session === null) unauthorized();
-    if (!orderId) return;
-
-    intervalRef.current = setInterval(() => {
-      checkPayment(orderId);
-    }, 2000);
-
+    startPolling(orderId!);
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      stopPolling();
     };
-  }, [orderId, session]);
+  }, [orderId]);
 
   return (
     <>

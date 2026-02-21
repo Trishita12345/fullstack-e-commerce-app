@@ -4,6 +4,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.common.model.event.OrderCreatedEvent;
+import com.e_commerce.common.model.event.OrderFulfilledEvent;
 import com.e_commerce.common.model.event.OrderReservedEvent;
 import com.e_commerce.common.utils.Constants;
 
@@ -23,5 +24,10 @@ public class OrderEventProducer {
     public void publishOrderReserved(OrderReservedEvent event) {
 
         kafkaTemplate.send(Constants.ORDER_RESERVED_TOPIC, event.getOrderId().toString(), event);
+    }
+
+    public void publishOrderFulfilled(OrderFulfilledEvent event) {
+
+        kafkaTemplate.send(Constants.ORDER_FULFILLED_TOPIC, event.getOrderId().toString(), event);
     }
 }

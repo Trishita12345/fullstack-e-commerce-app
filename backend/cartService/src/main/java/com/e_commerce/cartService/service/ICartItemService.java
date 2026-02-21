@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.e_commerce.cartService.model.dto.CartItemRequestDTO;
 import com.e_commerce.cartService.model.dto.CartItemRequestDTOWithUpdatedQty;
 import com.e_commerce.common.model.dto.CartDTO;
+import com.e_commerce.common.model.dto.CartItemDTO;
 
 public interface ICartItemService {
 
@@ -24,5 +25,7 @@ public interface ICartItemService {
     CartDTO getSelectedItemsInCart(String userId);
 
     void updateAllItemInCart(List<CartItemRequestDTOWithUpdatedQty> cartItemRequestDTOWithUpdatedQty, String userId);
+
+    void removeCartItems(List<CartItemDTO> items, String userId);
 
 }

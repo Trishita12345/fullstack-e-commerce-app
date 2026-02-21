@@ -1,25 +1,24 @@
 package com.e_commerce.paymentService.controller;
 
-import java.util.UUID;
-
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.e_commerce.common.model.enums.PaymentGateway;
-import com.e_commerce.paymentService.model.dto.PaymentResponse;
-import com.e_commerce.paymentService.model.dto.PaymentStatusRequest;
 import com.e_commerce.paymentService.service.IPaymentService;
+import com.e_commerce.paymentService.service.IWebhookService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @RestController
-@RequestMapping("/api/payments")
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class PaymentController {
 
@@ -28,18 +27,24 @@ public class PaymentController {
 
     private final IPaymentService paymentService;
 
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<PaymentResponse> getPaymentByOrderId(@PathVariable UUID orderId) {
-        PaymentResponse response = paymentService.getPaymentByOrderId(orderId);
-        return ResponseEntity.ok(response);
-    }
+    @Qualifier("razorpayWebhookService")
+    private final IWebhookService webhookService;
 
-    @GetMapping("/{paymentId}/status")
-    public ResponseEntity<PaymentResponse> getPaymentByOrderId(@PathVariable UUID paymentId,
-            @RequestBody PaymentStatusRequest paymentStatusRequest) {
-        PaymentResponse response = paymentService.updatePaymentStatus(paymentId, paymentStatusRequest.getStatus());
-        return ResponseEntity.ok(response);
-    }
+    // @GetMapping("/order/{orderId}")
+    // public ResponseEntity<PaymentResponse> getPaymentByOrderId(@PathVariable UUID
+    // orderId) {
+    // PaymentResponse response = paymentService.getPaymentByOrderId(orderId);
+    // return ResponseEntity.ok(response);
+    // }
+
+    // @GetMapping("/{paymentId}/status")
+    // public ResponseEntity<PaymentResponse> getPaymentByOrderId(@PathVariable UUID
+    // paymentId,
+    // @RequestBody PaymentStatusRequest paymentStatusRequest) {
+    // PaymentResponse response = paymentService.updatePaymentStatus(paymentId,
+    // paymentStatusRequest.getStatus());
+    // return ResponseEntity.ok(response);
+    // }
 
     @GetMapping("/{paymentGateway}/key")
     public String getGatewayApiKey(@PathVariable String paymentGateway) {
@@ -47,6 +52,13 @@ public class PaymentController {
             return apiKey;
         }
         throw new IllegalArgumentException("Unsupported payment gateway: " + paymentGateway);
+    }
+
+    @PostMapping("/public/webhook/razorpay")
+    public Void handleRazorpayWebhook(@RequestHeader("X-Razorpay-Signature") String signature,
+            @RequestBody String payload) {
+        webhookService.processWebhook(payload, signature);
+        return null;
     }
 
 }

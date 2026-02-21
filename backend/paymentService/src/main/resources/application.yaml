@@ -41,6 +41,7 @@ payment:
     merchant.key: SI4DgzfFgdwe9h
     api-key: rzp_test_SIQZ5fbnfovuwn
     secret-key: CGFn8t7y9Y5GbG5l8LXuDCHz
+    webhook-secret: whsec_test_webhook_secret
 
 springdoc:
   api-docs:

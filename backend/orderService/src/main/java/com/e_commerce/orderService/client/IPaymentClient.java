@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "payment-service", url = "${feign.client.payment-service.url}")
 public interface IPaymentClient {
 
-    @GetMapping("/api/payments/{paymentGateway}/key")
+    @GetMapping("/{paymentGateway}/key")
     String getGatewayMerchantKey(@PathVariable String paymentGateway);
 }

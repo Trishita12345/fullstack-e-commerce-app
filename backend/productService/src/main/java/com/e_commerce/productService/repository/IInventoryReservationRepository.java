@@ -1,5 +1,6 @@
 package com.e_commerce.productService.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,5 +29,7 @@ public interface IInventoryReservationRepository extends JpaRepository<Inventory
             AND expires_at < CURRENT_TIMESTAMP
             """, nativeQuery = true)
     int expireReservations();
+
+    List<InventoryReservation> findAllByOrderId(UUID orderId);
 
 }

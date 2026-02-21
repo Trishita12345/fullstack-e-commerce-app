@@ -11,12 +11,14 @@ import Image from "next/image";
 import { useState } from "react";
 import { placeOrder } from "../../paymentActions";
 import {
+  useCartItems,
   useDonation,
   useGiftWrap,
   useSelectedCouponCode,
 } from "@/utils/store/cart";
 import { PaymentModeType } from "@/constants/types";
 import { redirect, useRouter } from "next/navigation";
+import { set } from "better-auth";
 interface ModeCardProps {
   mode: PaymentModeType;
   selectedMode: PaymentModeType;
@@ -96,13 +98,17 @@ const PaymentOptionsSection = ({
   showLoading: () => void;
   stopLoading: () => void;
 }) => {
+  const [isDisabled, setIsDisabled] = useState(false);
   const donation = useDonation();
   const giftWrap = useGiftWrap();
   const selectedCouponCode = useSelectedCouponCode();
   const [mode, setMode] = useState<PaymentModeType>(PaymentModeType.PREPAID);
+  const selectedCartItems = useCartItems().filter((c) => c.isSelected);
+
   const router = useRouter();
   const handlePlaceOrder = async () => {
     try {
+      setIsDisabled(true);
       showLoading();
       const orderId = await placeOrder({
         donation,
@@ -119,7 +125,7 @@ const PaymentOptionsSection = ({
         title: "Error!",
         message: "Failed to place order!",
       });
-    } finally {
+      setIsDisabled(false);
       stopLoading();
     }
   };
@@ -144,7 +150,12 @@ const PaymentOptionsSection = ({
         subtitle={modeData[PaymentModeType.PREPAID].subtitle}
       />
 
-      <Button radius={"md"} color="primaryDark.8" onClick={handlePlaceOrder}>
+      <Button
+        radius={"md"}
+        color="primaryDark.8"
+        onClick={handlePlaceOrder}
+        disabled={isDisabled || selectedCartItems.length === 0}
+      >
         Place Order
       </Button>
     </Stack>

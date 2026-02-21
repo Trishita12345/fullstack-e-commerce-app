@@ -3,20 +3,24 @@ package com.e_commerce.orderService.service.impl;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.common.model.dto.CartDTO;
+import com.e_commerce.common.model.dto.CartItemDTO;
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 import com.e_commerce.common.model.dto.ProductPriceDTO;
 import com.e_commerce.common.model.dto.ProductPriceDetailsDTO;
 import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
 import com.e_commerce.common.model.enums.PaymentMode;
 import com.e_commerce.common.model.event.OrderCreatedEvent;
+import com.e_commerce.common.model.event.OrderFulfilledEvent;
 import com.e_commerce.common.model.event.OrderReservedEvent;
 import com.e_commerce.common.model.event.PaymentCreatedEvent;
+import com.e_commerce.common.model.event.PaymentStatusEvent;
 import com.e_commerce.common.utils.Constants;
 import com.e_commerce.orderService.client.ICartClient;
 import com.e_commerce.orderService.client.IOfferClient;
@@ -316,12 +320,47 @@ public class OrderService implements IOrderService {
         }
 
         @Override
-        public void updatePaymentOrder(PaymentCreatedEvent event) {
+        public void updatePaymentInitiated(PaymentCreatedEvent event) {
                 Order order = orderRepository.findById(event.getOrderId())
                                 .orElseThrow(() -> new RuntimeException("Order not found: " + event.getOrderId()));
                 order.setPaymentStatus(PaymentStatus.INITIATED);
                 order.setTransactionId(event.getTransactionId());
                 order.setGatewayOrderId(event.getGatewayOrderId());
+                orderRepository.save(order);
+        }
+
+        @Override
+        public void updatePaymentStatus(PaymentStatusEvent event) {
+                Order order = orderRepository.findById(event.getOrderId())
+                                .orElseThrow(() -> new RuntimeException("Order not found: " + event.getOrderId()));
+                if (order.getPaymentStatus() == PaymentStatus.SUCCESS
+                                || order.getPaymentStatus() == PaymentStatus.FAILED) {
+                        return; // Idempotency - ignore if payment status is already SUCCESS or FAILED
+                } else if (event.getPaymentStatus().equalsIgnoreCase(PaymentStatus.SUCCESS.name())) {
+                        order.setPaymentStatus(PaymentStatus.SUCCESS);
+                        order.setOrderStatus(OrderStatus.CONFIRMED);
+                        List<CartItemDTO> cartItems = order.getOrderItems().stream()
+                                        .map(o -> CartItemDTO.builder()
+                                                        .productItemId(o.getProductItemId())
+                                                        .quantity(o.getQuantity()).build())
+                                        .toList();
+                        OrderFulfilledEvent orderFulfilledEvent = OrderFulfilledEvent.builder()
+                                        .orderId(order.getId())
+                                        .orderStatus(OrderStatus.CONFIRMED.name())
+                                        .items(cartItems)
+                                        .userId(order.getUserId())
+                                        .build();
+                        orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
+                } else if (event.getPaymentStatus().equalsIgnoreCase(PaymentStatus.FAILED.name())) {
+                        order.setPaymentStatus(PaymentStatus.FAILED);
+                        order.setOrderStatus(OrderStatus.FAILED);
+                        OrderFulfilledEvent orderFulfilledEvent = OrderFulfilledEvent.builder()
+                                        .orderId(order.getId())
+                                        .orderStatus(OrderStatus.FAILED.name())
+                                        .build();
+                        orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
+                }
+
                 orderRepository.save(order);
         }
 

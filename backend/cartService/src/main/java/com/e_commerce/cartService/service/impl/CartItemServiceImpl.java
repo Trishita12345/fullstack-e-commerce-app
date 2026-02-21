@@ -75,7 +75,8 @@ public class CartItemServiceImpl implements ICartItemService {
 
                 cartItem.setQuantity(dto.getQuantity());
                 cartItem.setUpdatedQuantity(dto.getQuantity());
-                if(dto.getIsSelected() != null) cartItem.setIsSelected(dto.getIsSelected());
+                if (dto.getIsSelected() != null)
+                        cartItem.setIsSelected(dto.getIsSelected());
                 cartItemRepository.save(cartItem);
         }
 
@@ -120,43 +121,49 @@ public class CartItemServiceImpl implements ICartItemService {
                                 .selectedCartItems(itemDTOs)
                                 .build();
         }
-        
+
         @Transactional
         @Override
         public void updateAllItemInCart(List<CartItemRequestDTOWithUpdatedQty> items,
                         String userId) {
 
                 Cart cart = cartRepository
-                .findByUserId(userId)
-                .orElseThrow(() -> new IllegalStateException("Active cart not found"));
+                                .findByUserId(userId)
+                                .orElseThrow(() -> new IllegalStateException("Active cart not found"));
 
                 List<CartItem> cartItems = cartItemRepository.getAllCartItemsByCartId(cart.getId());
 
                 Map<UUID, CartItem> cartItemMap = cartItems.stream()
-                        .collect(Collectors.toMap(
-                                CartItem::getProductItemId,
-                                ci -> ci
-                        ));
+                                .collect(Collectors.toMap(
+                                                CartItem::getProductItemId,
+                                                ci -> ci));
 
                 for (CartItemRequestDTOWithUpdatedQty dto : items) {
-                CartItem cartItem = cartItemMap.get(dto.getProductItemId());
+                        CartItem cartItem = cartItemMap.get(dto.getProductItemId());
 
-                if (cartItem == null) {
-                        throw new IllegalStateException(
-                                "Item not found in cart: " + dto.getProductItemId()
-                        );
-                }
+                        if (cartItem == null) {
+                                throw new IllegalStateException(
+                                                "Item not found in cart: " + dto.getProductItemId());
+                        }
 
-                cartItem.setUpdatedQuantity(dto.getUpdatedQuantity());
+                        cartItem.setUpdatedQuantity(dto.getUpdatedQuantity());
 
-                if (dto.getUpdatedQuantity() == 0) {
-                        cartItem.setIsSelected(false);
-                }
+                        if (dto.getUpdatedQuantity() == 0) {
+                                cartItem.setIsSelected(false);
+                        }
                 }
 
                 cartItemRepository.saveAll(cartItems);
-                
+
         }
 
+        @Override
+        @Transactional
+        public void removeCartItems(List<CartItemDTO> items, String userId) {
+                List<UUID> productItemIds = items.stream()
+                                .map(CartItemDTO::getProductItemId)
+                                .collect(Collectors.toList());
+                cartItemRepository.deleteItems(productItemIds, userId);
+        }
 
 }
