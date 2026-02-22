@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.model.dto.AddressDTO;
 import com.e_commerce.common.model.dto.CartDTO;
 import com.e_commerce.common.model.dto.CartItemDTO;
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
@@ -27,6 +28,7 @@ import com.e_commerce.orderService.client.ICartClient;
 import com.e_commerce.orderService.client.IOfferClient;
 import com.e_commerce.orderService.client.IPaymentClient;
 import com.e_commerce.orderService.client.IProductClient;
+import com.e_commerce.orderService.client.IProfileClient;
 import com.e_commerce.orderService.kafka.OrderEventProducer;
 import com.e_commerce.orderService.model.Order;
 import com.e_commerce.orderService.model.OrderItem;
@@ -49,6 +51,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderService implements IOrderService {
 
+        private static final String COUNTRY_CODE_INDIA = "+91-";
+
         @Value("${s3.public-url}")
         private String s3PublicUrl;
 
@@ -58,6 +62,7 @@ public class OrderService implements IOrderService {
         private final ICartClient cartClient;
         private final IProductClient productClient;
         private final IOfferClient offerClient;
+        private final IProfileClient profileClient;
 
         private final IOrderRepository orderRepository;
 
@@ -108,7 +113,15 @@ public class OrderService implements IOrderService {
 
         private Order createOrder(String userId, BigDecimal amount, PlaceOrderReqDTO placeOrderReq,
                         BigDecimal shippingCharge, BigDecimal itemsTotalMrp, BigDecimal itemsTotalMrpAfterDiscount,
-                        BigDecimal couponDiscount) {
+                        BigDecimal couponDiscount, UUID addressId) {
+                AddressDTO addressDetails = profileClient.getAddressDetailsById(addressId);
+                String fullAddress = addressDetails.getAddressLine1() + ", " +
+                                (addressDetails.getAddressLine2() != null ? addressDetails.getAddressLine2() + ", "
+                                                : "")
+                                +
+                                (addressDetails.getLandmark() != null ? addressDetails.getLandmark() + ", " : "") +
+                                addressDetails.getCity() + ", " + addressDetails.getState() + " - " +
+                                addressDetails.getPostalCode() + ", " + addressDetails.getCountry();
                 return Order.builder()
                                 .userId(userId)
                                 .totalAmount(amount)
@@ -122,10 +135,9 @@ public class OrderService implements IOrderService {
                                 .shippingCharge(shippingCharge)
                                 .orderStatus(OrderStatus.CREATED)
                                 .paymentStatus(PaymentStatus.NOT_INITIATED)
-                                .deliveryName("Trishita Majumder")
-                                .deliveryAddressDetails(
-                                                "Kishori Bhaban, Gombhinnagar, Balidanga, Midnapore, West Midnapore, West Bengal - 721212, India")
-                                .contactNumber("09002469822")
+                                .deliveryName(addressDetails.getFullName())
+                                .deliveryAddressDetails(fullAddress)
+                                .contactNumber(addressDetails.getPhoneNumber())
                                 .paymentMode(placeOrderReq.getPaymentMode())
                                 .paymentGateway(placeOrderReq.getPaymentMode() == PaymentMode.COD ? null
                                                 : placeOrderReq.getPaymentGateway())
@@ -237,7 +249,7 @@ public class OrderService implements IOrderService {
                                 calculateShippingFee(totalAmountAfterCouponDiscount),
                                 productPriceDTO.getTotalBasePrice(),
                                 productPriceDTO.getTotalPrice(),
-                                couponDiscountAmount);
+                                couponDiscountAmount, placeOrderReq.getDeliveryAddressId());
 
                 Set<OrderItem> items = buildOrderItems(order, productPriceDTO, couponPercent,
                                 totalAmountAfterCouponDiscount);
@@ -437,7 +449,7 @@ public class OrderService implements IOrderService {
                                 .priceSummary(priceSummary)
                                 .deliveryAddressDetails(order.getDeliveryAddressDetails())
                                 .deliveryName(order.getDeliveryName())
-                                .contactNumber(order.getContactNumber())
+                                .contactNumber(COUNTRY_CODE_INDIA + order.getContactNumber())
                                 .items(itemSummaries)
                                 .build();
         }

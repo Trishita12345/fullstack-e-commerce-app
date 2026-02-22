@@ -1,7 +1,8 @@
 package com.e_commerce.profileService.model;
+
 import java.util.UUID;
 
-import com.e_commerce.profileService.model.enums.AddressType;
+import com.e_commerce.common.model.enums.AddressType;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +20,7 @@ public class Address {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID addressId;
 
-     @Column(nullable = false)
+    @Column(nullable = false)
     private String userId;
 
     @Column(name = "full_name", nullable = false, length = 100)

@@ -7,14 +7,13 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.e_commerce.common.model.dto.AddressDTO;
 import com.e_commerce.profileService.model.Address;
-import com.e_commerce.profileService.model.dto.AddressDTO;
 import com.e_commerce.profileService.repository.IAddressRepository;
 import com.e_commerce.profileService.service.IAddressService;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-
 
 @Service
 @AllArgsConstructor
@@ -40,7 +39,7 @@ public class AddressService implements IAddressService {
                 .country(addressDTO.getCountry())
                 .addressType(addressDTO.getAddressType())
                 .isDefault(isDefault)
-        .build();
+                .build();
         Address savedAddress = addressRepository.save(address);
         return addressEntityToDTOMapper(savedAddress);
     }
@@ -98,12 +97,12 @@ public class AddressService implements IAddressService {
     public AddressDTO getAddressbyId(UUID addressId, String userId) {
         return addressEntityToDTOMapper(getAddressByIdInternal(addressId, userId));
     }
-    
+
     private Address getAddressByIdInternal(UUID addressId, String userId) {
-    return addressRepository.findByAddressIdAndUserId(addressId, userId)
-            .orElseThrow(() -> new EntityNotFoundException("Address not found: " + addressId));
+        return addressRepository.findByAddressIdAndUserId(addressId, userId)
+                .orElseThrow(() -> new EntityNotFoundException("Address not found: " + addressId));
     }
-    
+
     private AddressDTO addressEntityToDTOMapper(Address address) {
         return AddressDTO.builder()
                 .addressId(address.getAddressId())
@@ -118,8 +117,14 @@ public class AddressService implements IAddressService {
                 .country(address.getCountry())
                 .addressType(address.getAddressType())
                 .isDefault(address.getIsDefault())
-        .build();
+                .build();
     }
 
-    
-} 
+    @Override
+    public AddressDTO getAddressbyId(UUID addressId) {
+        return addressRepository.findById(addressId)
+                .map(i -> addressEntityToDTOMapper(i))
+                .orElseThrow(() -> new EntityNotFoundException("Address not found: " + addressId));
+    }
+
+}
