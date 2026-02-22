@@ -15,4 +15,5 @@ public class ProductItemPriceDTO {
     private UUID id;
     private BigDecimal gstRate;
     private String productName;
+    private String thumbnailImage;
 }

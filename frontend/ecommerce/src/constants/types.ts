@@ -312,3 +312,38 @@ export interface OrderStatusPollingResponse {
   amount: number;
   paymentMode: string;
 }
+
+export interface PriceSummary {
+  itemsTotalMrp: number;
+  itemsTotalMrpAfterDiscount: number;
+  couponDiscount: number;
+  donation: number;
+  giftWrapFee: number;
+  shippingFee: number;
+  totalPaidAmount: number;
+}
+
+export interface OrderItem {
+  orderItemId: string;
+  sku: string;
+  productName: string;
+  productImg: string;
+  quantity: number;
+  basePrice: number;
+  discountedPrice: number;
+  couponDiscount: number;
+  finalPrice: number;
+}
+export interface OrderDetailsDTO {
+  orderId: string;
+  orderStatus: string;
+  createdAt: string; // ISO date string
+  priceSummary: PriceSummary;
+  paymentMode: string;
+  paymentStatus: string;
+  canRetryPayment: boolean;
+  canCancel: boolean;
+  items: OrderItem[];
+  deliveryAddressDetails: string;
+  contactNumber: string;
+}

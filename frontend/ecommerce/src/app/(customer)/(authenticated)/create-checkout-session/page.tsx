@@ -130,20 +130,19 @@ const CreateCheckoutSession = () => {
         } else if (res.paymentStatus === PaymentStatuses.SUCCESS) {
           setLoaderMsg("Payment successful. Redirecting to success page...");
           clearInterval(intervalRef.current!);
-          router.replace(
-            `/payment-success?orderId=${orderId}&transactionId=${res.transactionId}`,
-          );
+          router.replace(`/payment-success?orderId=${orderId}`);
         }
-      } else if (
-        res.orderStatus === OrderStatuses.FAILED &&
-        res.paymentStatus === PaymentStatuses.FAILED
-      ) {
-        setLoaderMsg("Payment failed. Redirecting to failure page...");
-        clearInterval(intervalRef.current!);
-        router.replace(
-          `/payment-failed?orderId=${orderId}&transactionId=${res.transactionId}`,
-        );
       }
+      // else if (
+      //   res.orderStatus === OrderStatuses.FAILED &&
+      //   res.paymentStatus === PaymentStatuses.FAILED
+      // ) {
+      //   setLoaderMsg("Payment failed. Redirecting to failure page...");
+      //   clearInterval(intervalRef.current!);
+      //   router.replace(
+      //     `/payment-failed?orderId=${orderId}&transactionId=${res.transactionId}`,
+      //   );
+      // }
     } catch (err) {
       console.error(err);
     }

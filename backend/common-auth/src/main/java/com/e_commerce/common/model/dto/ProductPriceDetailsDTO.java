@@ -12,6 +12,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class ProductPriceDetailsDTO {
     private UUID productItemId;
+    private String productItemThumbnailImage;
     private BigDecimal inventoryBasePrice;
     private BigDecimal inventoryDiscountedPrice;
     private String sku;

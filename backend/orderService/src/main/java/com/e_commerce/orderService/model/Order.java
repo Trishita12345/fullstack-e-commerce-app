@@ -37,6 +37,15 @@ public class Order extends AuditEntity {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
+    @Column(name = "items_total_mrp", nullable = false, precision = 12, scale = 2)
+    private BigDecimal itemsTotalMrp;
+
+    @Column(name = "items_total_mrp_after_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal itemsTotalMrpAfterDiscount;
+
+    @Column(name = "coupon_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal couponDiscount;
+
     @Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
@@ -65,5 +74,7 @@ public class Order extends AuditEntity {
     private String transactionId;
     private String gatewayOrderId;
 
-    private UUID deliveryAddressId;
+    private String deliveryName;
+    private String deliveryAddressDetails;
+    private String contactNumber;
 }

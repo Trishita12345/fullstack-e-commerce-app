@@ -379,6 +379,7 @@ public class ProductItemService implements IProductItemService {
                                                 ProductItemPriceDTO::getId,
                                                 productItem -> productItem));
                 BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);
+                BigDecimal totalBasePrice = BigDecimal.valueOf(0);
                 for (CartItemDTO ci : cartItems) {
                         ProductItemPriceDTO productItem = productItemMap.get(ci.getProductItemId());
                         if (productItem == null) {
@@ -394,6 +395,7 @@ public class ProductItemService implements IProductItemService {
                         ProductPriceDetailsDTO productPriceDetailsDTO = ProductPriceDetailsDTO
                                         .builder()
                                         .productName(productItem.getProductName())
+                                        .productItemThumbnailImage(productItem.getThumbnailImage())
                                         .inventoryBasePrice(productItem.getBasePrice())
                                         .inventoryDiscountedPrice(productItem.getDiscountedPrice())
                                         .quantity(ci.getQuantity())
@@ -402,6 +404,9 @@ public class ProductItemService implements IProductItemService {
                                         .gstPercentage(productItem.getGstRate())
                                         .build();
                         productPriceDetailsDTOs.add(productPriceDetailsDTO);
+                        totalBasePrice = totalBasePrice.add(
+                                        productItem.getBasePrice().multiply(quantity));
+
                         totalDiscountedPrice = totalDiscountedPrice.add(
                                         productItem.getDiscountedPrice().multiply(quantity));
                 }
@@ -409,6 +414,7 @@ public class ProductItemService implements IProductItemService {
                 return ProductPriceDTO
                                 .builder()
                                 .totalPrice(totalDiscountedPrice)
+                                .totalBasePrice(totalBasePrice)
                                 .priceDetailsDTOs(productPriceDetailsDTOs)
                                 .build();
         }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.common.model.dto.CartDTO;
@@ -30,8 +30,10 @@ import com.e_commerce.orderService.client.IProductClient;
 import com.e_commerce.orderService.kafka.OrderEventProducer;
 import com.e_commerce.orderService.model.Order;
 import com.e_commerce.orderService.model.OrderItem;
-import com.e_commerce.orderService.model.dto.OrderListingResponseDTO;
+import com.e_commerce.orderService.model.dto.OrderDetailsResponseDTO;
+import com.e_commerce.orderService.model.dto.OrderItemSummaryForOrderDetails;
 import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
+import com.e_commerce.orderService.model.dto.PriceSummaryForOrderDetails;
 import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
 import com.e_commerce.orderService.model.enums.OrderItemStatus;
@@ -41,11 +43,14 @@ import com.e_commerce.orderService.repository.IOrderRepository;
 import com.e_commerce.orderService.service.IOrderService;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OrderService implements IOrderService {
+
+        @Value("${s3.public-url}")
+        private String s3PublicUrl;
 
         private final OrderEventProducer orderEventProducer;
         private final IPaymentClient paymentClient;
@@ -102,18 +107,25 @@ public class OrderService implements IOrderService {
         }
 
         private Order createOrder(String userId, BigDecimal amount, PlaceOrderReqDTO placeOrderReq,
-                        BigDecimal shippingCharge) {
+                        BigDecimal shippingCharge, BigDecimal itemsTotalMrp, BigDecimal itemsTotalMrpAfterDiscount,
+                        BigDecimal couponDiscount) {
                 return Order.builder()
                                 .userId(userId)
                                 .totalAmount(amount)
                                 .couponCode(placeOrderReq.getSelectedCouponCode())
+                                .itemsTotalMrp(itemsTotalMrp)
+                                .itemsTotalMrpAfterDiscount(itemsTotalMrpAfterDiscount)
+                                .couponDiscount(couponDiscount)
                                 .donation(placeOrderReq.getDonation())
                                 .giftWrapCharge(placeOrderReq.getGiftWrap() ? Constants.GIFT_WRAP_CHARGE
                                                 : BigDecimal.ZERO)
                                 .shippingCharge(shippingCharge)
                                 .orderStatus(OrderStatus.CREATED)
                                 .paymentStatus(PaymentStatus.NOT_INITIATED)
-                                .deliveryAddressId(placeOrderReq.getDeliveryAddressId())
+                                .deliveryName("Trishita Majumder")
+                                .deliveryAddressDetails(
+                                                "Kishori Bhaban, Gombhinnagar, Balidanga, Midnapore, West Midnapore, West Bengal - 721212, India")
+                                .contactNumber("09002469822")
                                 .paymentMode(placeOrderReq.getPaymentMode())
                                 .paymentGateway(placeOrderReq.getPaymentMode() == PaymentMode.COD ? null
                                                 : placeOrderReq.getPaymentGateway())
@@ -170,6 +182,7 @@ public class OrderService implements IOrderService {
                                         .productItemId(pp.getProductItemId())
                                         .skuSnapshot(pp.getSku())
                                         .productName(pp.getProductName())
+                                        .productItemThumbnailImage(pp.getProductItemThumbnailImage())
                                         .quantity(pp.getQuantity())
                                         .orderItemStatus(OrderItemStatus.CREATED)
                                         .unitBasePriceIncludingGST(pp.getInventoryBasePrice())
@@ -221,7 +234,10 @@ public class OrderService implements IOrderService {
                                 placeOrderReq.getDonation(), placeOrderReq.getGiftWrap());
 
                 Order order = createOrder(userId, finalAmount, placeOrderReq,
-                                calculateShippingFee(totalAmountAfterCouponDiscount));
+                                calculateShippingFee(totalAmountAfterCouponDiscount),
+                                productPriceDTO.getTotalBasePrice(),
+                                productPriceDTO.getTotalPrice(),
+                                couponDiscountAmount);
 
                 Set<OrderItem> items = buildOrderItems(order, productPriceDTO, couponPercent,
                                 totalAmountAfterCouponDiscount);
@@ -387,9 +403,50 @@ public class OrderService implements IOrderService {
         }
 
         @Override
-        public Page<OrderListingResponseDTO> getOrderHistory(int page, int size) {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'getOrderHistory'");
+        public OrderDetailsResponseDTO getOrderDetailsById(UUID orderId) {
+                Order order = orderRepository.findById(orderId)
+                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                PriceSummaryForOrderDetails priceSummary = PriceSummaryForOrderDetails.builder()
+                                .itemsTotalMrp(order.getItemsTotalMrp())
+                                .itemsTotalMrpAfterDiscount(order.getItemsTotalMrpAfterDiscount())
+                                .couponDiscount(order.getCouponDiscount())
+                                .donation(order.getDonation())
+                                .giftWrapFee(order.getGiftWrapCharge())
+                                .shippingFee(order.getShippingCharge())
+                                .totalPaidAmount(order.getTotalAmount())
+                                .build();
+                List<OrderItemSummaryForOrderDetails> itemSummaries = order.getOrderItems().stream()
+                                .map(oi -> OrderItemSummaryForOrderDetails.builder()
+                                                .orderItemId(oi.getId())
+                                                .sku(oi.getSkuSnapshot())
+                                                .productName(oi.getProductName())
+                                                .productImg(buildFullUrl(oi.getProductItemThumbnailImage()))
+                                                .quantity(oi.getQuantity())
+                                                .basePrice(oi.getUnitBasePriceIncludingGST())
+                                                .discountedPrice(oi.getUnitSellingPriceIncludingGST())
+                                                .couponDiscount(oi.getDiscountAllocated())
+                                                .finalPrice(oi.getFinalItemAmountPaid())
+                                                .build())
+                                .toList();
+                return OrderDetailsResponseDTO.builder()
+                                .orderId(order.getId())
+                                .orderStatus(order.getOrderStatus())
+                                .createdAt(order.getCreatedAt().toString())
+                                .paymentMode(order.getPaymentMode())
+                                .paymentStatus(order.getPaymentStatus())
+                                .priceSummary(priceSummary)
+                                .deliveryAddressDetails(order.getDeliveryAddressDetails())
+                                .deliveryName(order.getDeliveryName())
+                                .contactNumber(order.getContactNumber())
+                                .items(itemSummaries)
+                                .build();
+        }
+
+        public String buildFullUrl(String key) {
+                if (key.startsWith("http")) {
+                        return key;
+                }
+                return s3PublicUrl + "/" + key;
         }
 
 }

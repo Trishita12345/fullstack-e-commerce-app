@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 import com.e_commerce.common.model.event.PaymentCreatedEvent;
 import com.e_commerce.common.model.event.PaymentStatusEvent;
-import com.e_commerce.orderService.model.dto.OrderListingResponseDTO;
+import com.e_commerce.orderService.model.dto.OrderDetailsResponseDTO;
 import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
@@ -31,5 +31,5 @@ public interface IOrderService {
 
     void updatePaymentSuccess(PaymentStatusEvent event);
 
-    Page<OrderListingResponseDTO> getOrderHistory(int page, int size);
+    OrderDetailsResponseDTO getOrderDetailsById(UUID orderId);
 }

@@ -193,10 +193,12 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
             pi.sku as sku,
             pi.id as id,
             gts.gst_rate as gstRate,
-            p.name as productName
+            p.name as productName,
+            pii.img_url as thumbnailImage
             FROM product_items pi
             JOIN  gst_tax_slab gts on gts.hsn_code = pi.hsn_code
             JOIN  products p on p.id = pi.product_id
+            JOIN product_item_images pii on pi.id = pii.product_item_id and pii.is_thumbnail = true
             WHERE pi.id in :productItemIds
                         """, nativeQuery = true)
     List<ProductItemPriceDTO> getAllById(List<UUID> productItemIds);

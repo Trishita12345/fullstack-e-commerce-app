@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
-import com.e_commerce.orderService.model.dto.OrderListingResponseDTO;
+import com.e_commerce.orderService.model.dto.OrderDetailsResponseDTO;
 import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
 import com.e_commerce.orderService.service.IOrderService;
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping(path = "/")
@@ -56,9 +57,14 @@ public class OrderController {
                         orderService.getGatewayMerchantKey(orderId)));
     }
 
+    @GetMapping("/order-details/{orderId}")
+    public ResponseEntity<OrderDetailsResponseDTO> getOrderDetails(@PathVariable UUID orderId) {
+        return ResponseEntity.ok(orderService.getOrderDetailsById(orderId));
+    }
+
     @GetMapping("/order-history/page/{page}/size/{size}")
-    public ResponseEntity<Page<OrderListingResponseDTO>> getOrderHistory(
+    public ResponseEntity<Page<OrderDetailsResponseDTO>> getOrderHistory(
             @PathVariable int page, @PathVariable int size) {
-        return ResponseEntity.ok(orderService.getOrderHistory(page, size));
+        return null; // TODO: Implement pagination in order history retrieval
     }
 }

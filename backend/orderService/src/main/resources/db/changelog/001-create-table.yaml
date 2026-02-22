@@ -50,6 +50,24 @@ databaseChangeLog:
                     nullable: true
 
               - column:
+                  name: items_total_mrp
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: items_total_mrp_after_discount
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: coupon_discount
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
                   name: gift_wrap_charge
                   type: numeric(12,2)
                   constraints:
@@ -96,8 +114,19 @@ databaseChangeLog:
                     nullable: true
 
               - column:
-                  name: delivery_address_id
-                  type: uuid
+                  name: delivery_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: delivery_address_details
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: contact_number
+                  type: varchar(20)
                   constraints:
                     nullable: false
 
@@ -127,6 +156,12 @@ databaseChangeLog:
               - column:
                   name: product_item_id
                   type: UUID
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: product_item_thumbnail_image
+                  type: varchar(500)
                   constraints:
                     nullable: false
 

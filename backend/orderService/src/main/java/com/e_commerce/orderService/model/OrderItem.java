@@ -26,6 +26,9 @@ public class OrderItem extends AuditEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
+    @Column(name = "product_item_thumbnail_image", nullable = false)
+    private String productItemThumbnailImage;
+
     @Column(name = "product_item_id", nullable = false)
     private UUID productItemId;
 

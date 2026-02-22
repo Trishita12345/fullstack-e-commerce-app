@@ -11,6 +11,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class ProductPriceDTO {
+    private BigDecimal totalBasePrice; // total MRP
     private BigDecimal totalPrice; // total selling price
     List<ProductPriceDetailsDTO> priceDetailsDTOs;
 }
