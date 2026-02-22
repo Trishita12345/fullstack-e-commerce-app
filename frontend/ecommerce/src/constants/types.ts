@@ -307,4 +307,5 @@ export interface OrderStatusPollingResponse {
   transactionId: string;
   gatewayOrderId: string;
   amount: number;
+  paymentMode: string;
 }

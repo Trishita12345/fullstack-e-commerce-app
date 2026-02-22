@@ -42,7 +42,6 @@ public class InventoryReservationService implements IInventoryReservationService
                 .productItemId(productItemId)
                 .quantity(qty)
                 .status(ReservationStatus.RESERVED)
-                .expiresAt(LocalDateTime.now().plusMinutes(10))
                 .build();
 
         reservationRepository.save(reservation);

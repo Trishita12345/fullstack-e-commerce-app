@@ -122,15 +122,18 @@ const CreateCheckoutSession = () => {
         });
         clearInterval(intervalRef.current!);
         router.replace("/checkout/cart");
-      } else if (
-        res.orderStatus === OrderStatuses.CONFIRMED &&
-        res.paymentStatus === PaymentStatuses.SUCCESS
-      ) {
-        setLoaderMsg("Payment successful. Redirecting to success page...");
-        clearInterval(intervalRef.current!);
-        router.replace(
-          `/payment-success?orderId=${orderId}&transactionId=${res.transactionId}`,
-        );
+      } else if (res.orderStatus === OrderStatuses.CONFIRMED) {
+        if (res.paymentMode === "COD") {
+          setLoaderMsg("Order reserved. Redirecting to success page...");
+          clearInterval(intervalRef.current!);
+          router.replace(`/payment-success?orderId=${orderId}`);
+        } else if (res.paymentStatus === PaymentStatuses.SUCCESS) {
+          setLoaderMsg("Payment successful. Redirecting to success page...");
+          clearInterval(intervalRef.current!);
+          router.replace(
+            `/payment-success?orderId=${orderId}&transactionId=${res.transactionId}`,
+          );
+        }
       } else if (
         res.orderStatus === OrderStatuses.FAILED &&
         res.paymentStatus === PaymentStatuses.FAILED

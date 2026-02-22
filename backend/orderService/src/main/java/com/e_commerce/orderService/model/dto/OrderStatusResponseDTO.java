@@ -19,4 +19,5 @@ public class OrderStatusResponseDTO {
     @Nullable
     private String gatewayOrderId;
     private BigDecimal amount;
+    private String paymentMode;
 }

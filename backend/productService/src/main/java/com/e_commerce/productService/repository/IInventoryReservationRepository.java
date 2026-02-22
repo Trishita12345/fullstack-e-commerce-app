@@ -17,18 +17,8 @@ public interface IInventoryReservationRepository extends JpaRepository<Inventory
                 FROM InventoryReservation ir
                 WHERE ir.productItemId = :productItemId
                 AND ir.status = :status
-                AND ir.expiresAt > CURRENT_TIMESTAMP
             """)
     Integer sumReservedQuantity(UUID productItemId, ReservationStatus status);
-
-    @Modifying
-    @Query(value = """
-            UPDATE inventory_reservation
-            SET status = 'EXPIRED'
-            WHERE status = 'RESERVED'
-            AND expires_at < CURRENT_TIMESTAMP
-            """, nativeQuery = true)
-    int expireReservations();
 
     List<InventoryReservation> findAllByOrderId(UUID orderId);
 

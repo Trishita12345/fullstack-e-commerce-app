@@ -15,4 +15,5 @@ import lombok.EqualsAndHashCode;
 public class PriceSummaryRequestDTO {
     List<CartItemDTO> cartItems;
     PlaceOrderReqDTO placeOrderReqDTO;
+
 }

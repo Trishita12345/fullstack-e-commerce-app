@@ -53,12 +53,13 @@ public class RazorpayWebhookService implements IWebhookService {
         payment.ifPresent(p -> {
             p.setPaymentStatus(PaymentStatus.SUCCESS);
             p.setGatewayPaymentId(razorpayPaymentId);
+            p.setPaymentMethod("COD"); // TODO: Map Razorpay payment method
             paymentRepository.save(p);
             PaymentStatusEvent event = PaymentStatusEvent.builder()
                     .orderId(p.getOrderId())
                     .paymentStatus(PaymentStatus.SUCCESS.name())
                     .build();
-            paymentEventProducer.publishPaymentStatusUpdated(event, p.getId());
+            paymentEventProducer.publishPaymentSuccess(event, p.getId());
         });
     }
 
@@ -69,11 +70,6 @@ public class RazorpayWebhookService implements IWebhookService {
         payment.ifPresent(p -> {
             p.setPaymentStatus(PaymentStatus.FAILED);
             paymentRepository.save(p);
-            PaymentStatusEvent event = PaymentStatusEvent.builder()
-                    .orderId(p.getOrderId())
-                    .paymentStatus(PaymentStatus.FAILED.name())
-                    .build();
-            paymentEventProducer.publishPaymentStatusUpdated(event, p.getId());
         });
     }
 

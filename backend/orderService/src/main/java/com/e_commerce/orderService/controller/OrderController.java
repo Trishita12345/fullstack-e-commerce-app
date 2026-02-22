@@ -1,9 +1,9 @@
 package com.e_commerce.orderService.controller;
 
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
+import com.e_commerce.orderService.model.dto.OrderListingResponseDTO;
 import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
@@ -53,5 +54,11 @@ public class OrderController {
         return ResponseEntity
                 .ok(Map.of("key",
                         orderService.getGatewayMerchantKey(orderId)));
+    }
+
+    @GetMapping("/order-history/page/{page}/size/{size}")
+    public ResponseEntity<Page<OrderListingResponseDTO>> getOrderHistory(
+            @PathVariable int page, @PathVariable int size) {
+        return ResponseEntity.ok(orderService.getOrderHistory(page, size));
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
@@ -12,6 +13,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 		"com.e_commerce.common"
 })
 @EnableFeignClients
+@EnableScheduling
 @EnableKafka
 public class OrderServiceApplication {
 

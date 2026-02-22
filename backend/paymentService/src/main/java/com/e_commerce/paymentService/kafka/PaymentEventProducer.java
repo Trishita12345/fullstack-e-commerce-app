@@ -22,8 +22,8 @@ public class PaymentEventProducer {
         kafkaTemplate.send(Constants.PAYMENT_CREATED_TOPIC, event.getPaymentId().toString(), event);
     }
 
-    public void publishPaymentStatusUpdated(PaymentStatusEvent event, UUID paymentId) {
+    public void publishPaymentSuccess(PaymentStatusEvent event, UUID paymentId) {
 
-        kafkaTemplate.send(Constants.PAYMENT_STATUS_UPDATED_TOPIC, paymentId.toString(), event);
+        kafkaTemplate.send(Constants.PAYMENT_SUCCESS_TOPIC, paymentId.toString(), event);
     }
 }

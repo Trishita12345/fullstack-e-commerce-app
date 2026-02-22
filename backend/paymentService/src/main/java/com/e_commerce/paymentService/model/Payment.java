@@ -2,7 +2,6 @@ package com.e_commerce.paymentService.model;
 
 import com.e_commerce.common.model.AuditEntity;
 import com.e_commerce.common.model.enums.PaymentGateway;
-import com.e_commerce.paymentService.model.enums.PaymentMethod;
 import com.e_commerce.paymentService.model.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -49,8 +48,7 @@ public class Payment extends AuditEntity {
 
     private String gatewayPaymentId;
 
-    @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod;
+    private String paymentMethod;
 
     private String gatewayOrderId;
 

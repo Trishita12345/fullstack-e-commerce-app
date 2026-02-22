@@ -21,8 +21,8 @@ public class PaymentEventConsumer {
         orderService.updatePaymentInitiated(event);
     }
 
-    @KafkaListener(topics = Constants.PAYMENT_STATUS_UPDATED_TOPIC, groupId = "order-service-group")
-    public void consumePaymentUpdatedEvent(PaymentStatusEvent event) {
-        orderService.updatePaymentStatus(event);
+    @KafkaListener(topics = Constants.PAYMENT_SUCCESS_TOPIC, groupId = "order-service-group")
+    public void consumePaymentSuccessEvent(PaymentStatusEvent event) {
+        orderService.updatePaymentSuccess(event);
     }
 }

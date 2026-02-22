@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.common.model.dto.CartDTO;
@@ -29,6 +30,7 @@ import com.e_commerce.orderService.client.IProductClient;
 import com.e_commerce.orderService.kafka.OrderEventProducer;
 import com.e_commerce.orderService.model.Order;
 import com.e_commerce.orderService.model.OrderItem;
+import com.e_commerce.orderService.model.dto.OrderListingResponseDTO;
 import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
@@ -282,14 +284,33 @@ public class OrderService implements IOrderService {
                         order.setOrderStatus(status);
                         if (status == OrderStatus.RESERVED) {
                                 order.setPaymentStatus(PaymentStatus.PENDING);
+                                if (order.getPaymentMode() == PaymentMode.COD) {
+                                        order.setOrderStatus(OrderStatus.CONFIRMED);
+                                        orderRepository.save(order);
+                                        List<CartItemDTO> cartItems = order.getOrderItems().stream()
+                                                        .map(o -> CartItemDTO.builder()
+                                                                        .productItemId(o.getProductItemId())
+                                                                        .quantity(o.getQuantity()).build())
+                                                        .toList();
+                                        OrderFulfilledEvent orderFulfilledEvent = OrderFulfilledEvent.builder()
+                                                        .orderId(order.getId())
+                                                        .orderStatus(OrderStatus.CONFIRMED.name())
+                                                        .items(cartItems)
+                                                        .userId(order.getUserId())
+                                                        .build();
+                                        orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
+                                } else {
+                                        orderRepository.save(order);
+                                        orderEventProducer.publishOrderReserved(OrderReservedEvent.builder()
+                                                        .orderId(order.getId())
+                                                        .amount(order.getTotalAmount())
+                                                        .paymentGateway(order.getPaymentGateway())
+                                                        .userId(order.getUserId())
+                                                        .build());
+                                }
+                        } else {
+                                orderRepository.save(order);
                         }
-                        orderRepository.save(order);
-                        orderEventProducer.publishOrderReserved(OrderReservedEvent.builder()
-                                        .orderId(order.getId())
-                                        .amount(order.getTotalAmount())
-                                        .paymentGateway(order.getPaymentGateway())
-                                        .userId(order.getUserId())
-                                        .build());
                 } else {
                         return; // Ignore if order is not in CREATED state (idempotency)
                 }
@@ -306,6 +327,7 @@ public class OrderService implements IOrderService {
                                 .transactionId(order.getTransactionId())
                                 .gatewayOrderId(order.getGatewayOrderId())
                                 .amount(order.getTotalAmount())
+                                .paymentMode(order.getPaymentMode().name())
                                 .build();
         }
 
@@ -330,38 +352,34 @@ public class OrderService implements IOrderService {
         }
 
         @Override
-        public void updatePaymentStatus(PaymentStatusEvent event) {
+        public void updatePaymentSuccess(PaymentStatusEvent event) {
                 Order order = orderRepository.findById(event.getOrderId())
                                 .orElseThrow(() -> new RuntimeException("Order not found: " + event.getOrderId()));
                 if (order.getPaymentStatus() == PaymentStatus.SUCCESS
                                 || order.getPaymentStatus() == PaymentStatus.FAILED) {
                         return; // Idempotency - ignore if payment status is already SUCCESS or FAILED
-                } else if (event.getPaymentStatus().equalsIgnoreCase(PaymentStatus.SUCCESS.name())) {
-                        order.setPaymentStatus(PaymentStatus.SUCCESS);
-                        order.setOrderStatus(OrderStatus.CONFIRMED);
-                        List<CartItemDTO> cartItems = order.getOrderItems().stream()
-                                        .map(o -> CartItemDTO.builder()
-                                                        .productItemId(o.getProductItemId())
-                                                        .quantity(o.getQuantity()).build())
-                                        .toList();
-                        OrderFulfilledEvent orderFulfilledEvent = OrderFulfilledEvent.builder()
-                                        .orderId(order.getId())
-                                        .orderStatus(OrderStatus.CONFIRMED.name())
-                                        .items(cartItems)
-                                        .userId(order.getUserId())
-                                        .build();
-                        orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
-                } else if (event.getPaymentStatus().equalsIgnoreCase(PaymentStatus.FAILED.name())) {
-                        order.setPaymentStatus(PaymentStatus.FAILED);
-                        order.setOrderStatus(OrderStatus.FAILED);
-                        OrderFulfilledEvent orderFulfilledEvent = OrderFulfilledEvent.builder()
-                                        .orderId(order.getId())
-                                        .orderStatus(OrderStatus.FAILED.name())
-                                        .build();
-                        orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
                 }
-
+                order.setPaymentStatus(PaymentStatus.SUCCESS);
+                order.setOrderStatus(OrderStatus.CONFIRMED);
+                List<CartItemDTO> cartItems = order.getOrderItems().stream()
+                                .map(o -> CartItemDTO.builder()
+                                                .productItemId(o.getProductItemId())
+                                                .quantity(o.getQuantity()).build())
+                                .toList();
+                OrderFulfilledEvent orderFulfilledEvent = OrderFulfilledEvent.builder()
+                                .orderId(order.getId())
+                                .orderStatus(OrderStatus.CONFIRMED.name())
+                                .items(cartItems)
+                                .userId(order.getUserId())
+                                .build();
+                orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
                 orderRepository.save(order);
+        }
+
+        @Override
+        public Page<OrderListingResponseDTO> getOrderHistory(int page, int size) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'getOrderHistory'");
         }
 
 }
