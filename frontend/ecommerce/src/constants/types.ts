@@ -344,6 +344,7 @@ export interface OrderDetailsDTO {
   canRetryPayment: boolean;
   canCancel: boolean;
   items: OrderItem[];
+  deliveryName: string;
   deliveryAddressDetails: string;
   contactNumber: string;
 }

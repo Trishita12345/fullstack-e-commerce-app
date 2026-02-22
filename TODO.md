@@ -8,6 +8,7 @@ Preparing secure payment... RESERVED | INITIATED
 3. Order Listing, My Orders
 4. Retry payment
 5. pdp page - stock quantity from sellable stock
+6. Address in order
 
 ---
 

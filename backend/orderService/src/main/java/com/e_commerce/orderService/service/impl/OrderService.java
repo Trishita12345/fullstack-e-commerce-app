@@ -2,6 +2,7 @@ package com.e_commerce.orderService.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +66,8 @@ public class OrderService implements IOrderService {
         private final IProfileClient profileClient;
 
         private final IOrderRepository orderRepository;
+
+        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd'th' MMM, yyyy");
 
         private BigDecimal extractGstFromInclusive(BigDecimal price, BigDecimal gstPercent) {
                 BigDecimal taxable = price
@@ -443,7 +446,7 @@ public class OrderService implements IOrderService {
                 return OrderDetailsResponseDTO.builder()
                                 .orderId(order.getId())
                                 .orderStatus(order.getOrderStatus())
-                                .createdAt(order.getCreatedAt().toString())
+                                .createdAt(order.getCreatedAt().format(FORMATTER))
                                 .paymentMode(order.getPaymentMode())
                                 .paymentStatus(order.getPaymentStatus())
                                 .priceSummary(priceSummary)
