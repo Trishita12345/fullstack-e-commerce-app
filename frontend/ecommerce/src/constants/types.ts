@@ -274,8 +274,9 @@ export interface PlaceOrderReqDTO {
   donation: number;
   giftWrap: boolean;
   selectedCouponCode: string | null;
-  paymentMode?: PaymentModeType;
+  paymentMode: PaymentModeType;
   paymentGateway?: string;
+  deliveryAddressId: string;
 }
 export interface PriceSummaryResponse {
   itemsTotalMrp: number;
@@ -293,7 +294,9 @@ export interface TotalPriceFromProductDTORequest {
   quantity: number;
 }
 export interface PriceSummaryRequest {
-  placeOrderReqDTO: PlaceOrderReqDTO;
+  donation: number;
+  giftWrap: boolean;
+  selectedCouponCode: string | null;
   cartItems: {
     productItemId: string;
     quantity: number;

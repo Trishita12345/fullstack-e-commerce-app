@@ -64,13 +64,13 @@ public class OrderService implements IOrderService {
                 return price.subtract(taxable);
         }
 
-        private BigDecimal fetchCouponPercent(PlaceOrderReqDTO req, BigDecimal totalPrice) {
+        private BigDecimal fetchCouponPercent(String selectedCouponCode, BigDecimal totalPrice) {
 
-                if (req.getSelectedCouponCode() == null)
+                if (selectedCouponCode == null)
                         return Constants.ZERO;
 
                 return offerClient.getCouponDiscountPercent(
-                                req.getSelectedCouponCode(),
+                                selectedCouponCode,
                                 totalPrice);
         }
 
@@ -78,15 +78,15 @@ public class OrderService implements IOrderService {
                 return total.compareTo(Constants.MIN_PURCHASE_VALUE) < 0 ? Constants.SHIPPING_CHARGE : Constants.ZERO;
         }
 
-        private BigDecimal calculateFinalCartAmount(BigDecimal total, PlaceOrderReqDTO req) {
+        private BigDecimal calculateFinalCartAmount(BigDecimal total, BigDecimal donation, Boolean giftWrap) {
                 // shipping
                 total = total.add(calculateShippingFee(total));
 
                 // donation
-                total = total.add(req.getDonation());
+                total = total.add(donation);
 
                 // gift wrap
-                if (req.getGiftWrap())
+                if (giftWrap)
                         total = total.add(Constants.GIFT_WRAP_CHARGE);
 
                 return total;
@@ -113,6 +113,7 @@ public class OrderService implements IOrderService {
                                 .shippingCharge(shippingCharge)
                                 .orderStatus(OrderStatus.CREATED)
                                 .paymentStatus(PaymentStatus.NOT_INITIATED)
+                                .deliveryAddressId(placeOrderReq.getDeliveryAddressId())
                                 .paymentMode(placeOrderReq.getPaymentMode())
                                 .paymentGateway(placeOrderReq.getPaymentMode() == PaymentMode.COD ? null
                                                 : placeOrderReq.getPaymentGateway())
@@ -207,7 +208,8 @@ public class OrderService implements IOrderService {
 
                 ProductPriceDTO productPriceDTO = productClient.getPricesForPlaceOrder(cart.getSelectedCartItems());
 
-                BigDecimal couponPercent = fetchCouponPercent(placeOrderReq, productPriceDTO.getTotalPrice());
+                BigDecimal couponPercent = fetchCouponPercent(placeOrderReq.getSelectedCouponCode(),
+                                productPriceDTO.getTotalPrice());
 
                 BigDecimal couponDiscountAmount = calculateCouponDiscountAmount(productPriceDTO.getTotalPrice(),
                                 couponPercent);
@@ -215,7 +217,8 @@ public class OrderService implements IOrderService {
                 BigDecimal totalAmountAfterCouponDiscount = productPriceDTO.getTotalPrice()
                                 .subtract(couponDiscountAmount);
 
-                BigDecimal finalAmount = calculateFinalCartAmount(totalAmountAfterCouponDiscount, placeOrderReq);
+                BigDecimal finalAmount = calculateFinalCartAmount(totalAmountAfterCouponDiscount,
+                                placeOrderReq.getDonation(), placeOrderReq.getGiftWrap());
 
                 Order order = createOrder(userId, finalAmount, placeOrderReq,
                                 calculateShippingFee(totalAmountAfterCouponDiscount));
@@ -241,24 +244,23 @@ public class OrderService implements IOrderService {
                 BigDecimal discountAllocated = totalBasePrice
                                 .subtract(totalDiscountedPriceBeforeCoupon);
 
-                PlaceOrderReqDTO placeOrderReqDTO = priceSummaryRequestDTO.getPlaceOrderReqDTO();
-
-                BigDecimal couponPercent = fetchCouponPercent(placeOrderReqDTO,
+                BigDecimal couponPercent = fetchCouponPercent(priceSummaryRequestDTO.getSelectedCouponCode(),
                                 totalDiscountedPriceBeforeCoupon);
                 BigDecimal couponDiscount = calculateCouponDiscountAmount(totalDiscountedPriceBeforeCoupon,
                                 couponPercent);
 
                 BigDecimal totalDiscountedPriceAfterCoupon = totalDiscountedPriceBeforeCoupon.subtract(couponDiscount);
 
-                BigDecimal finalAmount = calculateFinalCartAmount(totalDiscountedPriceAfterCoupon, placeOrderReqDTO);
+                BigDecimal finalAmount = calculateFinalCartAmount(totalDiscountedPriceAfterCoupon,
+                                priceSummaryRequestDTO.getDonation(), priceSummaryRequestDTO.getGiftWrap());
 
                 return PriceSummaryResponseDTO.builder()
                                 .itemsTotalMrp(totalBasePrice)
                                 .productDiscount(discountAllocated)
                                 .couponDiscount(couponDiscount)
-                                .donation(placeOrderReqDTO.getDonation())
+                                .donation(priceSummaryRequestDTO.getDonation())
                                 .giftWrapFee(
-                                                placeOrderReqDTO.getGiftWrap() ? Constants.GIFT_WRAP_CHARGE
+                                                priceSummaryRequestDTO.getGiftWrap() ? Constants.GIFT_WRAP_CHARGE
                                                                 : BigDecimal.ZERO)
                                 .shippingFee(calculateShippingFee(totalDiscountedPriceAfterCoupon))
                                 .amountToAvoidShippingFee(
@@ -359,21 +361,29 @@ public class OrderService implements IOrderService {
                                 || order.getPaymentStatus() == PaymentStatus.FAILED) {
                         return; // Idempotency - ignore if payment status is already SUCCESS or FAILED
                 }
-                order.setPaymentStatus(PaymentStatus.SUCCESS);
-                order.setOrderStatus(OrderStatus.CONFIRMED);
-                List<CartItemDTO> cartItems = order.getOrderItems().stream()
-                                .map(o -> CartItemDTO.builder()
-                                                .productItemId(o.getProductItemId())
-                                                .quantity(o.getQuantity()).build())
-                                .toList();
-                OrderFulfilledEvent orderFulfilledEvent = OrderFulfilledEvent.builder()
-                                .orderId(order.getId())
-                                .orderStatus(OrderStatus.CONFIRMED.name())
-                                .items(cartItems)
-                                .userId(order.getUserId())
-                                .build();
-                orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
-                orderRepository.save(order);
+                if (order.getOrderStatus() == OrderStatus.RESERVED) {
+                        order.setPaymentStatus(PaymentStatus.SUCCESS);
+                        order.setOrderStatus(OrderStatus.CONFIRMED);
+                        List<CartItemDTO> cartItems = order.getOrderItems().stream()
+                                        .map(o -> CartItemDTO.builder()
+                                                        .productItemId(o.getProductItemId())
+                                                        .quantity(o.getQuantity()).build())
+                                        .toList();
+                        OrderFulfilledEvent orderFulfilledEvent = OrderFulfilledEvent.builder()
+                                        .orderId(order.getId())
+                                        .orderStatus(OrderStatus.CONFIRMED.name())
+                                        .items(cartItems)
+                                        .userId(order.getUserId())
+                                        .build();
+                        orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
+                        orderRepository.save(order);
+                } else {
+                        // TODO: Handle this scenario - payment success received but order is not in
+                        // RESERVED state. This can happen due to async nature of events. Possible
+                        // solution - publish event for (like failing the order and refunding the
+                        // payment) after a certain
+                        // timeout.
+                }
         }
 
         @Override

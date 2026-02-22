@@ -16,9 +16,10 @@ import {
   useGiftWrap,
   useSelectedCouponCode,
 } from "@/utils/store/cart";
-import { PaymentModeType } from "@/constants/types";
+import { PaymentModeType, PlaceOrderReqDTO } from "@/constants/types";
 import { redirect, useRouter } from "next/navigation";
 import { set } from "better-auth";
+import { useSelectedAddressId } from "@/utils/store/address";
 interface ModeCardProps {
   mode: PaymentModeType;
   selectedMode: PaymentModeType;
@@ -104,19 +105,22 @@ const PaymentOptionsSection = ({
   const selectedCouponCode = useSelectedCouponCode();
   const [mode, setMode] = useState<PaymentModeType>(PaymentModeType.PREPAID);
   const selectedCartItems = useCartItems().filter((c) => c.isSelected);
+  const selectedAddressId = useSelectedAddressId();
 
   const router = useRouter();
   const handlePlaceOrder = async () => {
     try {
       setIsDisabled(true);
       showLoading();
-      const orderId = await placeOrder({
+      const body: PlaceOrderReqDTO = {
         donation,
         giftWrap,
         selectedCouponCode,
         paymentMode: mode,
         paymentGateway: mode === PaymentModeType.COD ? undefined : "RAZORPAY",
-      });
+        deliveryAddressId: selectedAddressId!,
+      };
+      const orderId = await placeOrder(body);
       router.push("/create-checkout-session?orderId=" + orderId);
     } catch (error) {
       console.log(error);
@@ -154,7 +158,11 @@ const PaymentOptionsSection = ({
         radius={"md"}
         color="primaryDark.8"
         onClick={handlePlaceOrder}
-        disabled={isDisabled || selectedCartItems.length === 0}
+        disabled={
+          isDisabled ||
+          selectedCartItems.length === 0 ||
+          selectedAddressId === undefined
+        }
       >
         Place Order
       </Button>

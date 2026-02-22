@@ -5,13 +5,10 @@ import {
   CartItemDbDTO,
   CartItemDTO,
   PriceSummaryRequest,
-  TotalPriceFromProductDTORequest,
   PriceSummaryResponse,
 } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { GIFT_WRAP_CHARGE } from "../constants";
 import {
   getAllCouponsAction,
   getTotalProductPrice,

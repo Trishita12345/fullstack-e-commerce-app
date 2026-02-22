@@ -95,6 +95,12 @@ databaseChangeLog:
                   constraints:
                     nullable: true
 
+              - column:
+                  name: delivery_address_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+
   - changeSet:
       id: create-order-items-table
       author: trishita

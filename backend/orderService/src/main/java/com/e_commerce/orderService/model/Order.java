@@ -64,4 +64,6 @@ public class Order extends AuditEntity {
 
     private String transactionId;
     private String gatewayOrderId;
+
+    private UUID deliveryAddressId;
 }

@@ -79,11 +79,9 @@ const PriceDetailsBox = () => {
     try {
       setIsLoading(true);
       const body: PriceSummaryRequest = {
-        placeOrderReqDTO: {
-          giftWrap,
-          donation: donationAmt,
-          selectedCouponCode,
-        },
+        giftWrap,
+        donation: donationAmt,
+        selectedCouponCode,
         cartItems: selectedCartItems.map((i) => ({
           productItemId: i.productItemId,
           quantity: i.updatedQuantity,

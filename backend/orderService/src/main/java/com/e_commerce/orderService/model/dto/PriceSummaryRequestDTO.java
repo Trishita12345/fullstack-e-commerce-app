@@ -1,10 +1,11 @@
 package com.e_commerce.orderService.model.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.e_commerce.common.model.dto.CartItemDTO;
-import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,9 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 public class PriceSummaryRequestDTO {
     List<CartItemDTO> cartItems;
-    PlaceOrderReqDTO placeOrderReqDTO;
+    private BigDecimal donation;
+    private Boolean giftWrap;
+    @Nullable
+    private String selectedCouponCode;
 
 }
