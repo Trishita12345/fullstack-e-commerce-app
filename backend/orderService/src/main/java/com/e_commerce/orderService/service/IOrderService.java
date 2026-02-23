@@ -30,4 +30,6 @@ public interface IOrderService {
     OrderDetailsResponseDTO getOrderDetailsById(UUID orderId);
 
     void cancelOrder(UUID orderId);
+
+    byte[] generateInvoicePdf(UUID orderId);
 }

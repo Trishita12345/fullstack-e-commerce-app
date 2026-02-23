@@ -17,8 +17,6 @@
     <artifactId>common</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-
-    
 	<dependencyManagement>
         <dependencies>
             <dependency>
@@ -65,6 +63,17 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+        <!-- Add to backend/common-auth/pom.xml -->
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>7.2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>7.2.5</version>
         </dependency>
     </dependencies>
     <build>

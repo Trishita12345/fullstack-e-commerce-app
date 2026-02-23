@@ -66,6 +66,7 @@ public class OrderService implements IOrderService {
         private final IProfileClient profileClient;
 
         private final IOrderRepository orderRepository;
+        private final OrderPdfService orderPdfService;
 
         private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd'th' MMM, yyyy");
 
@@ -395,6 +396,7 @@ public class OrderService implements IOrderService {
                 if (order.getOrderStatus() == OrderStatus.RESERVED) {
                         order.setPaymentStatus(PaymentStatus.SUCCESS);
                         order.setOrderStatus(OrderStatus.CONFIRMED);
+                        order.getOrderItems().forEach(item -> item.setOrderItemStatus(OrderItemStatus.CONFIRMED));
                         List<CartItemDTO> cartItems = order.getOrderItems().stream()
                                         .map(o -> CartItemDTO.builder()
                                                         .productItemId(o.getProductItemId())
@@ -488,6 +490,68 @@ public class OrderService implements IOrderService {
                 } else {
                         throw new RuntimeException("Only orders in CREATED or RESERVED state can be cancelled");
                 }
+        }
+
+        @Override
+        public byte[] generateInvoicePdf(UUID orderId) {
+                Order order = orderRepository.findById(orderId)
+                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                if (order.getOrderStatus() != OrderStatus.CONFIRMED) {
+                        throw new RuntimeException("Invoice can only be generated for CONFIRMED orders");
+                }
+                String orderDetails = buildOrderDetailsForInvoice(order);
+                return orderPdfService.generateOrderInvoice(orderId, orderDetails);
+        }
+
+        private String buildOrderDetailsForInvoice(Order order) {
+                StringBuilder invoiceDetails = new StringBuilder();
+
+                invoiceDetails.append("ORDER DETAILS\n");
+                invoiceDetails.append("===========================================\n\n");
+                invoiceDetails.append("Order ID: ").append(order.getId()).append("\n");
+                invoiceDetails.append("Order Date: ").append(order.getCreatedAt().format(FORMATTER)).append("\n");
+                invoiceDetails.append("Order Status: ").append(order.getOrderStatus()).append("\n");
+                invoiceDetails.append("Payment Status: ").append(order.getPaymentStatus()).append("\n\n");
+
+                invoiceDetails.append("DELIVERY ADDRESS\n");
+                invoiceDetails.append("-------------------------------------------\n");
+                invoiceDetails.append("Name: ").append(order.getDeliveryName()).append("\n");
+                invoiceDetails.append("Address: ").append(order.getDeliveryAddressDetails()).append("\n");
+                invoiceDetails.append("Contact: ").append(order.getContactNumber()).append("\n\n");
+
+                invoiceDetails.append("ITEMS\n");
+                invoiceDetails.append("-------------------------------------------\n");
+                order.getOrderItems().forEach(item -> {
+                        invoiceDetails.append("Product: ").append(item.getProductName()).append("\n");
+                        invoiceDetails.append("SKU: ").append(item.getSkuSnapshot()).append("\n");
+                        invoiceDetails.append("Quantity: ").append(item.getQuantity()).append("\n");
+                        invoiceDetails.append("Unit Price: Rs. ").append(item.getUnitSellingPriceIncludingGST())
+                                        .append("\n");
+                        invoiceDetails.append("Item Total: Rs. ").append(item.getFinalItemAmountPaid()).append("\n\n");
+                });
+
+                invoiceDetails.append("PRICE SUMMARY\n");
+                invoiceDetails.append("===========================================\n");
+                invoiceDetails.append("Items Total MRP: Rs. ").append(order.getItemsTotalMrp()).append("\n");
+                invoiceDetails.append("Items After Discount: Rs. ").append(order.getItemsTotalMrpAfterDiscount())
+                                .append("\n");
+                if (order.getCouponDiscount().compareTo(BigDecimal.ZERO) > 0) {
+                        invoiceDetails.append("Coupon Code: ").append(order.getCouponCode()).append("\n");
+                        invoiceDetails.append("Coupon Discount: Rs. ").append(order.getCouponDiscount()).append("\n");
+                }
+                if (order.getShippingCharge().compareTo(BigDecimal.ZERO) > 0) {
+                        invoiceDetails.append("Shipping Charge: Rs. ").append(order.getShippingCharge()).append("\n");
+                }
+                if (order.getDonation().compareTo(BigDecimal.ZERO) > 0) {
+                        invoiceDetails.append("Donation: Rs. ").append(order.getDonation()).append("\n");
+                }
+                if (order.getGiftWrapCharge().compareTo(BigDecimal.ZERO) > 0) {
+                        invoiceDetails.append("Gift Wrap: Rs. ").append(order.getGiftWrapCharge()).append("\n");
+                }
+                invoiceDetails.append("\nTotal Amount Paid: Rs. ").append(order.getTotalAmount()).append("\n");
+                invoiceDetails.append("Payment Mode: ").append(order.getPaymentMode()).append("\n");
+
+                return invoiceDetails.toString();
         }
 
 }

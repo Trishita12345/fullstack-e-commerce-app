@@ -20,6 +20,7 @@ import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
 import com.e_commerce.orderService.service.IOrderService;
 
+import org.springframework.http.MediaType;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -72,4 +73,14 @@ public class OrderController {
         orderService.cancelOrder(orderId);
         return ResponseEntity.ok(Map.of("message", "Order cancelled successfully"));
     }
+
+    @GetMapping("/invoice/download/{orderId}")
+    public ResponseEntity<byte[]> downloadInvoice(@PathVariable UUID orderId) {
+        byte[] invoicePdf = orderService.generateInvoicePdf(orderId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header("Content-Disposition", "attachment; filename=invoice_" + orderId + ".pdf")
+                .body(invoicePdf);
+    }
+
 }
