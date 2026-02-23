@@ -66,4 +66,10 @@ public class OrderController {
             @PathVariable int page, @PathVariable int size) {
         return null; // TODO: Implement pagination in order history retrieval
     }
+
+    @PostMapping("/cancel-order-status/{orderId}")
+    public ResponseEntity<Map<String, String>> cancelOrderStatus(@PathVariable UUID orderId) {
+        orderService.cancelOrder(orderId);
+        return ResponseEntity.ok(Map.of("message", "Order cancelled successfully"));
+    }
 }

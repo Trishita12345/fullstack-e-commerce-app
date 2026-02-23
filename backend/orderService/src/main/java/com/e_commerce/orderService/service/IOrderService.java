@@ -1,10 +1,6 @@
 package com.e_commerce.orderService.service;
 
-import java.math.BigDecimal;
 import java.util.UUID;
-
-import org.jspecify.annotations.Nullable;
-import org.springframework.data.domain.Page;
 
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 import com.e_commerce.common.model.event.PaymentCreatedEvent;
@@ -32,4 +28,6 @@ public interface IOrderService {
     void updatePaymentSuccess(PaymentStatusEvent event);
 
     OrderDetailsResponseDTO getOrderDetailsById(UUID orderId);
+
+    void cancelOrder(UUID orderId);
 }

@@ -464,4 +464,30 @@ public class OrderService implements IOrderService {
                 return s3PublicUrl + "/" + key;
         }
 
+        @Override
+        public void cancelOrder(UUID orderId) {
+                Order order = orderRepository.findById(orderId)
+                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                if (order.getOrderStatus() != OrderStatus.CONFIRMED) {
+                        order.setOrderStatus(OrderStatus.FAILED);
+                        order.setPaymentStatus(PaymentStatus.ABANDONED);
+                        order.getOrderItems().forEach(item -> item.setOrderItemStatus(OrderItemStatus.FAILED));
+                        orderRepository.save(order);
+                        OrderFulfilledEvent orderFulfilledEvent = OrderFulfilledEvent.builder()
+                                        .orderId(order.getId())
+                                        .orderStatus(OrderStatus.FAILED.name())
+                                        .items(order.getOrderItems().stream()
+                                                        .map(o -> CartItemDTO.builder()
+                                                                        .productItemId(o.getProductItemId())
+                                                                        .quantity(o.getQuantity()).build())
+                                                        .toList())
+                                        .userId(order.getUserId())
+                                        .build();
+                        orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
+
+                } else {
+                        throw new RuntimeException("Only orders in CREATED or RESERVED state can be cancelled");
+                }
+        }
+
 }

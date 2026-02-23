@@ -22,3 +22,9 @@ export async function getMerchantKey(orderId: string) {
   );
   return key;
 }
+
+export async function cancelOrder(orderId: string) {
+  await apiFetch<{ message: string }>(`/order-service/cancel-order-status/${orderId}`, {
+    method: "POST",
+  });
+}

@@ -3,7 +3,7 @@ import { faHourglass } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Center, Image, Stack, Text } from "@mantine/core";
 import { use, useEffect, useRef, useState } from "react";
-import { getMerchantKey, getOrderStatus } from "./checkoutSessionActions";
+import { cancelOrder, getMerchantKey, getOrderStatus } from "./checkoutSessionActions";
 import { unauthorized, useRouter, useSearchParams } from "next/navigation";
 import { OrderStatusPollingResponse } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
@@ -84,7 +84,8 @@ const CreateCheckoutSession = () => {
         ondismiss: async () => {
           razorpayOpened.current = false;
           if (!verifyingPayment.current) {
-            stopPolling();
+            await cancelOrder(orderId!);
+            setLoaderMsg("Payment cancelled. Redirecting to cart...");
             router.replace("/checkout/cart");
           }
         },
