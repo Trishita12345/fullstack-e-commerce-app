@@ -1,3 +1,4 @@
+import { PriceDetailsBoxHelper } from "@/app/(customer-checkout)/checkout/[step]/(cart)/PriceDetailsBoxHelper";
 import { OrderDetailsDTO } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { formattedPrice } from "@/utils/helperFunctions";
@@ -161,7 +162,7 @@ async function PaymentSuccess({ searchParams }: PageProps) {
               </Grid>
               <Divider color="gray.1" />
               <Grid>
-                <GridCol span={{ base: 12, md: 6 }}>
+                <GridCol span={{ base: 12, xs: 6, md: 8 }}>
                   <Stack gap={4}>
                     <Text size="sm" fw={500}>
                       Need Help?
@@ -184,15 +185,19 @@ async function PaymentSuccess({ searchParams }: PageProps) {
                     </Group>
                   </Stack>
                 </GridCol>
-                <GridCol span={{ base: 12, md: 6 }}>
-                  <Stack gap={4} flex={{ base: 12, sm: 1 }}>
-                    <Text size="sm" fw={500}>
-                      Delivery Mode
-                    </Text>
-                    <Text c="dimmed" size="sm">
-                      Express shipping(1-2 days)
-                    </Text>
-                  </Stack>
+                <GridCol span={{ base: 12, xs: 6, md: 4 }}>
+                  <PriceDetailsBoxHelper
+                    itemsTotalMrp={orderDetails.priceSummary.itemsTotalMrp}
+                    productDiscount={
+                      orderDetails.priceSummary.itemsTotalMrp -
+                      orderDetails.priceSummary.itemsTotalMrpAfterDiscount
+                    }
+                    couponDiscount={orderDetails.priceSummary.couponDiscount}
+                    donation={orderDetails.priceSummary.donation}
+                    giftWrapFee={orderDetails.priceSummary.giftWrapFee}
+                    shippingFee={orderDetails.priceSummary.shippingFee}
+                    payableAmount={orderDetails.priceSummary.totalPaidAmount}
+                  />
                 </GridCol>
               </Grid>
             </Stack>

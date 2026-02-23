@@ -4,11 +4,9 @@ Item just went out of stock. FAILED | NOT_INITIATED
 Preparing secure payment... RESERVED | INITIATED
 
 1. Payment sucess
-2. Payment Failure - on modal dismiss one api to relese inventory
-3. Order Listing, My Orders
-4. Retry payment
-5. pdp page - stock quantity from sellable stock
-6. Address in order
+
+2. Order Listing, My Orders
+3. Retry payment
 
 ---
 
@@ -18,3 +16,7 @@ Preparing secure payment... RESERVED | INITIATED
 8. Productitem add HSN from FE
 9. Email service
 10. Profile
+
+//Done- To be checked 2. Payment Failure - on modal dismiss one api to relese inventory
+2a. modal dismiss - payment service - update
+2b. order fulfilled faild - payment service - update
