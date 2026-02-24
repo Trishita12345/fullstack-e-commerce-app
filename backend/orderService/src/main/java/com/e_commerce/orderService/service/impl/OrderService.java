@@ -507,7 +507,7 @@ public class OrderService implements IOrderService {
         }
 
         @Override
-        public void cancelOrder(UUID orderId) {
+        public void abandonOrder(UUID orderId) {
                 Order order = orderRepository.findById(orderId)
                                 .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
                 if (order.getOrderStatus() != OrderStatus.CONFIRMED) {

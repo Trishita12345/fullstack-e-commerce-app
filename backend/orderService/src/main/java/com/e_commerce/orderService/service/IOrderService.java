@@ -31,7 +31,7 @@ public interface IOrderService {
 
     OrderDetailsResponseDTO getOrderDetailsById(UUID orderId);
 
-    void cancelOrder(UUID orderId);
+    void abandonOrder(UUID orderId);
 
     byte[] downloadInvoice(UUID orderId);
 }
