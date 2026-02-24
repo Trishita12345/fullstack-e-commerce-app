@@ -108,7 +108,7 @@ export const PriceDetailsBoxHelper = ({
           Total Amount
         </Text>
         <Text fw={600} size="sm">
-          {payableAmount}
+          {formattedPrice(payableAmount)}
         </Text>
       </Group>
     </>

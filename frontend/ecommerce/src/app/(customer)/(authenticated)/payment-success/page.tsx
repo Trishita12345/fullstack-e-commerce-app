@@ -5,7 +5,6 @@ import { formattedPrice } from "@/utils/helperFunctions";
 import {
   Box,
   Button,
-  Center,
   Divider,
   Grid,
   GridCol,
@@ -16,15 +15,14 @@ import {
 } from "@mantine/core";
 import {
   IconArrowNarrowRight,
-  IconCurrentLocationFilled,
-  IconDownload,
   IconMail,
-  IconMailFilled,
   IconPhone,
   IconRosetteDiscountCheckFilled,
 } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
+import DownloadInvoice from "./DownloadInvoice";
+import { en } from "@/constants/en";
 
 interface PageProps {
   searchParams: {
@@ -37,6 +35,7 @@ async function PaymentSuccess({ searchParams }: PageProps) {
   const orderDetails = await apiFetch<OrderDetailsDTO>(
     `/order-service/order-details/${orderId}`,
   );
+
   console.log("orderDetails: ", orderDetails);
   return (
     <Box bg="#FCFAF6">
@@ -70,13 +69,7 @@ async function PaymentSuccess({ searchParams }: PageProps) {
                 Order Date: {orderDetails.createdAt}
               </Text>
             </Stack>
-            <Button
-              color="#ffffff"
-              c="primaryDark.7"
-              leftSection={<IconDownload />}
-            >
-              Download Invoice
-            </Button>
+            <DownloadInvoice orderId={orderId} />
             {/* <Button
                 color="#FFEB5C"
                 c="primaryDark.9"
@@ -107,9 +100,9 @@ async function PaymentSuccess({ searchParams }: PageProps) {
                   </Group>
                   <Stack gap={4}>
                     <Group gap={4}>
-                      <Text size="sm" c="dimmed" td="line-through">
+                      {/* <Text size="sm" c="dimmed" td="line-through">
                         {formattedPrice(i.basePrice)}
-                      </Text>
+                      </Text> */}
                       <Text fw={500}>{formattedPrice(i.finalPrice)}</Text>
                     </Group>
                     <Text c="grey" size="sm" ta="end">
@@ -172,7 +165,7 @@ async function PaymentSuccess({ searchParams }: PageProps) {
                         <IconMail size={"16px"} style={{ marginTop: "8px" }} />
                       </Text>
                       <Text c="dimmed" size="sm">
-                        Loom&Lume@gmail.com
+                        {en.companyEmail}
                       </Text>
                     </Group>
                     <Group gap={6}>
@@ -180,7 +173,7 @@ async function PaymentSuccess({ searchParams }: PageProps) {
                         <IconPhone size={"18px"} style={{ marginTop: "6px" }} />
                       </Text>
                       <Text c="dimmed" size="sm">
-                        +91-8667734932
+                        {en.companyPhone}
                       </Text>
                     </Group>
                   </Stack>

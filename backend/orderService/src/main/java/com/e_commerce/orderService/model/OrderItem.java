@@ -43,49 +43,35 @@ public class OrderItem extends AuditEntity {
 
     private String productName;
 
-    /**
-     * Price shown to user (GST inclusive MRP at purchase time)
-     */
+    private BigDecimal cgst;
+
+    private BigDecimal sgst;
+
     @Column(name = "unit_base_price_incl_gst", nullable = false, precision = 12, scale = 2)
     private BigDecimal unitBasePriceIncludingGST;
 
-    /**
-     * gst BEFORE coupon allocation
-     */
     @Column(name = "unit_selling_price_incl_gst", nullable = false, precision = 12, scale = 2)
     private BigDecimal unitSellingPriceIncludingGST;
 
-    // ================= TAX BREAKUP =================
+    @Column(name = "unit_coupon_discount_allocated", nullable = false, precision = 12, scale = 2)
+    private BigDecimal unitCouponDiscountAllocated;
 
-    /**
-     * taxable price BEFORE coupon allocation
-     */
-    @Column(name = "taxable_value_before_discount", nullable = false, precision = 12, scale = 2)
-    private BigDecimal taxableValueBeforeDiscount;
+    @Column(name = "unit_taxable_value_after_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal unitTaxableValueAfterDiscount;
 
-    /**
-     * discount allocated to THIS item (very important)
-     */
-    @Column(name = "discount_allocated", nullable = false, precision = 12, scale = 2)
-    private BigDecimal discountAllocated;
+    @Column(name = "unit_cgst_after_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal unitCgstAfterDiscount;
 
-    /**
-     * taxable value AFTER discount
-     */
-    @Column(name = "taxable_value_after_discount", nullable = false, precision = 12, scale = 2)
-    private BigDecimal taxableValueAfterDiscount;
+    @Column(name = "unit_sgst_after_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal unitSgstAfterDiscount;
 
-    /**
-     * gst AFTER discount (this is what you actually owe govt)
-     */
-    @Column(name = "gst_after_discount", nullable = false, precision = 12, scale = 2)
-    private BigDecimal gstAfterDiscount;
+    @Column(name = "unit_total_gst_after_discount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal unitTotalGstAfterDiscount;
 
-    /**
-     * final amount customer paid for THIS order item * quantity
-     * (this is the refund amount)
-     */
-    @Column(name = "final_item_amount_paid", nullable = false, precision = 12, scale = 2)
-    private BigDecimal finalItemAmountPaid;
+    @Column(name = "unit_final_amount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal unitFinalAmount;
+
+    @Column(name = "total_final_amount", nullable = false, precision = 12, scale = 2)
+    private BigDecimal totalFinalAmount;
 
 }

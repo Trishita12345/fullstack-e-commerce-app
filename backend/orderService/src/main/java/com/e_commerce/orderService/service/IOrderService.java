@@ -2,6 +2,8 @@ package com.e_commerce.orderService.service;
 
 import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
+
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 import com.e_commerce.common.model.event.PaymentCreatedEvent;
 import com.e_commerce.common.model.event.PaymentStatusEvent;
@@ -31,5 +33,5 @@ public interface IOrderService {
 
     void cancelOrder(UUID orderId);
 
-    byte[] generateInvoicePdf(UUID orderId);
+    byte[] downloadInvoice(UUID orderId);
 }

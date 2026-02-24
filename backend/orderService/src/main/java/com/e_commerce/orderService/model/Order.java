@@ -49,16 +49,7 @@ public class Order extends AuditEntity {
     @Column(name = "total_amount", nullable = false, precision = 12, scale = 2)
     private BigDecimal totalAmount;
 
-    @Column(name = "gift_wrap_charge", nullable = false, precision = 12, scale = 2)
-    private BigDecimal giftWrapCharge;
-
     private String couponCode;
-
-    @Column(name = "donation", nullable = false, precision = 12, scale = 2)
-    private BigDecimal donation;
-
-    @Column(name = "shipping_charge", nullable = false, precision = 12, scale = 2)
-    private BigDecimal shippingCharge;
 
     @Column(name = "payment_mode", nullable = false)
     @Enumerated(EnumType.STRING)

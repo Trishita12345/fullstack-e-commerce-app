@@ -13,7 +13,7 @@ const CartButton = () => {
   const isLoggedIn = Boolean(session?.user?.id);
   const { setCartItems } = useCartActions();
 
-  const cartItems = useCartItems();
+  const selectedCartItems = useCartItems().filter((item) => item.isSelected);
   useEffect(() => {
     const fetchCartItems = async () => {
       if (isLoggedIn) {
@@ -28,10 +28,10 @@ const CartButton = () => {
     <Link href={"/checkout/cart"}>
       <Indicator
         inline
-        label={cartItems.filter((item) => item.isSelected).length}
+        label={selectedCartItems.length}
         size={16}
         color={"primaryDark.6"}
-        processing
+        processing={selectedCartItems.length > 0}
       >
         <Tooltip label={en.myCart}>
           <FontAwesomeIcon

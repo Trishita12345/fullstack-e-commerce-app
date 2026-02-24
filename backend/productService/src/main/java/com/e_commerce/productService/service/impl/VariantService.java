@@ -9,6 +9,7 @@ import com.e_commerce.productService.model.dto.variant.VariantAttributeDTO;
 import com.e_commerce.productService.model.dto.variant.VariantDTO;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;
 import com.e_commerce.productService.repository.ICategoryRepository;
+import com.e_commerce.productService.repository.IGstTaxSlabRepository;
 import com.e_commerce.productService.repository.IVariantRepository;
 import com.e_commerce.productService.service.ICategoryService;
 import com.e_commerce.productService.service.IVariantService;
@@ -29,6 +30,7 @@ public class VariantService implements IVariantService {
         private final IVariantRepository variantRepository;
         private final ICategoryService categoryService;
         private final ICategoryRepository categoryRepository;
+        private final IGstTaxSlabRepository gstTaxSlabRepository;
 
         @Override
         @Transactional
@@ -193,5 +195,14 @@ public class VariantService implements IVariantService {
                                                                 .build())
                                                 .toList())
                                 .build();
+        }
+
+        @Override
+        public List<SelectOptionDTO<String>> getGSTDetails() {
+                return gstTaxSlabRepository.findAll().stream()
+                                .map(slab -> new SelectOptionDTO<String>(
+                                                slab.getGstRate() + "% - " + slab.getDescription(),
+                                                slab.getHsnCode()))
+                                .toList();
         }
 }

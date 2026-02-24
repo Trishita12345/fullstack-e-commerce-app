@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 001-create-orders
+      id: 001-create-orders-table
       author: trishita
       changes:
         - createTable:
@@ -32,24 +32,6 @@ databaseChangeLog:
                     nullable: false
 
               - column:
-                  name: coupon_code
-                  type: varchar(30)
-                  constraints:
-                    nullable: true
-
-              - column:
-                  name: payment_mode
-                  type: varchar(30)
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: payment_gateway
-                  type: varchar(30)
-                  constraints:
-                    nullable: true
-
-              - column:
                   name: items_total_mrp
                   type: numeric(12,2)
                   constraints:
@@ -68,45 +50,35 @@ databaseChangeLog:
                     nullable: false
 
               - column:
-                  name: gift_wrap_charge
-                  type: numeric(12,2)
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: donation
-                  type: numeric(12,2)
-                  constraints:
-                    nullable: false
-
-              - column:
-                  name: shipping_charge
-                  type: numeric(12,2)
-                  constraints:
-                    nullable: false
-
-              - column:
                   name: total_amount
                   type: numeric(12,2)
                   constraints:
                     nullable: false
 
               - column:
-                  name: created_at
-                  type: timestamp
+                  name: coupon_code
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: payment_mode
+                  type: varchar(30)
                   constraints:
                     nullable: false
 
               - column:
-                  name: updated_at
-                  type: timestamp
+                  name: payment_gateway
+                  type: varchar(30)
                   constraints:
-                    nullable: false
+                    nullable: true
+
               - column:
                   name: transaction_id
                   type: varchar(50)
                   constraints:
                     nullable: true
+
               - column:
                   name: gateway_order_id
                   type: varchar(50)
@@ -124,38 +96,55 @@ databaseChangeLog:
                   type: varchar(1000)
                   constraints:
                     nullable: false
+
               - column:
                   name: contact_number
                   type: varchar(20)
                   constraints:
                     nullable: false
 
-  - changeSet:
-      id: create-order-items-table
-      author: trishita
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
 
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            tableName: orders
+            indexName: idx_orders_user_id
+            columns:
+              - column:
+                  name: user_id
+
+  - changeSet:
+      id: 002-create-order-items-table
+      author: trishita
       changes:
         - createTable:
             tableName: order_items
             columns:
-              # ================= PRIMARY KEY =================
               - column:
                   name: id
-                  type: UUID
+                  type: uuid
                   constraints:
                     primaryKey: true
                     nullable: false
 
-              # ================= ORDER FK =================
               - column:
                   name: order_id
-                  type: UUID
+                  type: uuid
                   constraints:
                     nullable: false
 
               - column:
                   name: product_item_id
-                  type: UUID
+                  type: uuid
                   constraints:
                     nullable: false
 
@@ -167,78 +156,106 @@ databaseChangeLog:
 
               - column:
                   name: order_item_status
-                  type: VARCHAR(50)
+                  type: varchar(30)
                   constraints:
                     nullable: false
 
               - column:
                   name: quantity
-                  type: INT
+                  type: integer
                   constraints:
                     nullable: false
 
               - column:
                   name: sku_snapshot
-                  type: VARCHAR(255)
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
 
               - column:
                   name: product_name
-                  type: VARCHAR(255)
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
 
-              # ================= PRICE SNAPSHOT =================
+              - column:
+                  name: cgst
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: sgst
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: true
+
               - column:
                   name: unit_base_price_incl_gst
-                  type: DECIMAL(12,2)
+                  type: numeric(12,2)
                   constraints:
                     nullable: false
 
               - column:
                   name: unit_selling_price_incl_gst
-                  type: DECIMAL(12,2)
-                  constraints:
-                    nullable: false
-
-              # ================= TAX BREAKUP =================
-              - column:
-                  name: taxable_value_before_discount
-                  type: DECIMAL(12,2)
+                  type: numeric(12,2)
                   constraints:
                     nullable: false
 
               - column:
-                  name: discount_allocated
-                  type: DECIMAL(12,2)
+                  name: unit_coupon_discount_allocated
+                  type: numeric(12,2)
                   constraints:
                     nullable: false
 
               - column:
-                  name: taxable_value_after_discount
-                  type: DECIMAL(12,2)
+                  name: unit_taxable_value_after_discount
+                  type: numeric(12,2)
                   constraints:
                     nullable: false
 
               - column:
-                  name: gst_after_discount
-                  type: DECIMAL(12,2)
+                  name: unit_cgst_after_discount
+                  type: numeric(12,2)
                   constraints:
                     nullable: false
 
               - column:
-                  name: final_item_amount_paid
-                  type: DECIMAL(12,2)
+                  name: unit_sgst_after_discount
+                  type: numeric(12,2)
                   constraints:
                     nullable: false
 
-              # ================= AUDIT FIELDS =================
+              - column:
+                  name: unit_total_gst_after_discount
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: unit_final_amount
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: total_final_amount
+                  type: numeric(12,2)
+                  constraints:
+                    nullable: false
+
               - column:
                   name: created_at
-                  type: TIMESTAMP
+                  type: timestamp
+                  constraints:
+                    nullable: false
 
               - column:
                   name: updated_at
-                  type: TIMESTAMP
+                  type: timestamp
+                  constraints:
+                    nullable: false
 
-        # ================= FOREIGN KEY =================
         - addForeignKeyConstraint:
             constraintName: fk_order_items_order
             baseTableName: order_items
@@ -247,27 +264,9 @@ databaseChangeLog:
             referencedColumnNames: id
             onDelete: CASCADE
 
-  - changeSet:
-      id: 003-add-indexes-for-performance
-      author: trishita
-      changes:
         - createIndex:
-            tableName: orders
-            indexName: idx_orders_user_id
-            columns:
-              - column:
-                  name: user_id
-
-        - createIndex:
-            indexName: idx_order_items_product_item
             tableName: order_items
+            indexName: idx_order_items_order_id
             columns:
               - column:
-                  name: product_item_id
-
-        - createIndex:
-            indexName: idx_order_items_status
-            tableName: order_items
-            columns:
-              - column:
-                  name: order_item_status
+                  name: order_id

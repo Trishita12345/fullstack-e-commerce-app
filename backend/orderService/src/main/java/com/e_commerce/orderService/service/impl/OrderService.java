@@ -39,10 +39,13 @@ import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryForOrderDetails;
 import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
+import com.e_commerce.orderService.model.dto.pdf.InvoiceData;
+import com.e_commerce.orderService.model.dto.pdf.InvoiceItemData;
 import com.e_commerce.orderService.model.enums.OrderItemStatus;
 import com.e_commerce.orderService.model.enums.OrderStatus;
 import com.e_commerce.orderService.model.enums.PaymentStatus;
 import com.e_commerce.orderService.repository.IOrderRepository;
+import com.e_commerce.orderService.service.IInvoicePdfGeneratorService;
 import com.e_commerce.orderService.service.IOrderService;
 
 import jakarta.transaction.Transactional;
@@ -52,7 +55,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderService implements IOrderService {
 
+        private static final String GIFT_WRAP_CHARGES = "Gift Wrap Charges";
+        private static final String DONATION = "Donation";
+        private static final String SHIPPING_CHARGES = "Shipping Charges";
+        private static final String MISC_FEE = "MISC_FEE";
         private static final String COUNTRY_CODE_INDIA = "+91-";
+        private static final BigDecimal CGST6 = BigDecimal.valueOf(6);
+        private static final BigDecimal SGST6 = BigDecimal.valueOf(6);
 
         @Value("${s3.public-url}")
         private String s3PublicUrl;
@@ -66,7 +75,7 @@ public class OrderService implements IOrderService {
         private final IProfileClient profileClient;
 
         private final IOrderRepository orderRepository;
-        private final OrderPdfService orderPdfService;
+        private final IInvoicePdfGeneratorService invoicePdfGeneratorService;
 
         private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd'th' MMM, yyyy");
 
@@ -115,10 +124,8 @@ public class OrderService implements IOrderService {
                 }
         }
 
-        private Order createOrder(String userId, BigDecimal amount, PlaceOrderReqDTO placeOrderReq,
-                        BigDecimal shippingCharge, BigDecimal itemsTotalMrp, BigDecimal itemsTotalMrpAfterDiscount,
-                        BigDecimal couponDiscount, UUID addressId) {
-                AddressDTO addressDetails = profileClient.getAddressDetailsById(addressId);
+        private Order createOrder(String userId, PlaceOrderReqDTO placeOrderReq) {
+                AddressDTO addressDetails = profileClient.getAddressDetailsById(placeOrderReq.getDeliveryAddressId());
                 String fullAddress = addressDetails.getAddressLine1() + ", " +
                                 (addressDetails.getAddressLine2() != null ? addressDetails.getAddressLine2() + ", "
                                                 : "")
@@ -128,15 +135,11 @@ public class OrderService implements IOrderService {
                                 addressDetails.getPostalCode() + ", " + addressDetails.getCountry();
                 return Order.builder()
                                 .userId(userId)
-                                .totalAmount(amount)
+                                // .totalAmount(BigDecimal.ZERO)
+                                // .itemsTotalMrp(BigDecimal.ZERO)
+                                // .itemsTotalMrpAfterDiscount(BigDecimal.ZERO)
+                                // .couponDiscount(BigDecimal.ZERO)
                                 .couponCode(placeOrderReq.getSelectedCouponCode())
-                                .itemsTotalMrp(itemsTotalMrp)
-                                .itemsTotalMrpAfterDiscount(itemsTotalMrpAfterDiscount)
-                                .couponDiscount(couponDiscount)
-                                .donation(placeOrderReq.getDonation())
-                                .giftWrapCharge(placeOrderReq.getGiftWrap() ? Constants.GIFT_WRAP_CHARGE
-                                                : BigDecimal.ZERO)
-                                .shippingCharge(shippingCharge)
                                 .orderStatus(OrderStatus.CREATED)
                                 .paymentStatus(PaymentStatus.NOT_INITIATED)
                                 .deliveryName(addressDetails.getFullName())
@@ -150,48 +153,29 @@ public class OrderService implements IOrderService {
 
         private Set<OrderItem> buildOrderItems(Order order,
                         ProductPriceDTO productPriceDTO,
-                        BigDecimal couponPercent,
-                        BigDecimal expectedTotal) {
+                        BigDecimal couponPercent) {
 
                 Set<OrderItem> items = new HashSet<>();
-                BigDecimal roundingAdjustment = BigDecimal.ZERO;
-                BigDecimal totalCalculatedAmountItemWise = BigDecimal.ZERO;
-
-                int itemCount = productPriceDTO.getPriceDetailsDTOs().size();
-                int currentIndex = 0;
 
                 for (ProductPriceDetailsDTO pp : productPriceDTO.getPriceDetailsDTOs()) {
-                        currentIndex++;
 
                         BigDecimal unitSellingPrice = pp.getInventoryDiscountedPrice();
                         BigDecimal gstPercent = pp.getGstPercentage();
+                        BigDecimal cgstPercent = gstPercent.divide(BigDecimal.valueOf(2));
+                        BigDecimal sgstPercent = gstPercent.divide(BigDecimal.valueOf(2));
 
-                        // BEFORE DISCOUNT
-                        BigDecimal gstBefore = extractGstFromInclusive(unitSellingPrice, gstPercent);
-                        BigDecimal taxableBefore = unitSellingPrice.subtract(gstBefore);
-
-                        // COUPON DISTRIBUTION
-                        BigDecimal discountAllocated = unitSellingPrice
+                        BigDecimal unitCouponDiscountAllocated = unitSellingPrice
                                         .multiply(couponPercent)
                                         .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
-                        BigDecimal priceAfterDiscount = unitSellingPrice.subtract(discountAllocated);
+                        BigDecimal unitFinalAmount = unitSellingPrice.subtract(unitCouponDiscountAllocated);
 
-                        // AFTER DISCOUNT
-                        BigDecimal gstAfter = extractGstFromInclusive(priceAfterDiscount, gstPercent);
-                        BigDecimal taxableAfter = priceAfterDiscount.subtract(gstAfter);
-                        BigDecimal finalItemAmountPaid = priceAfterDiscount
+                        BigDecimal unitCgstAfterDiscount = extractGstFromInclusive(unitFinalAmount, cgstPercent);
+                        BigDecimal unitSgstAfterDiscount = extractGstFromInclusive(unitFinalAmount, sgstPercent);
+                        BigDecimal unitTotalGstAfterDiscount = unitCgstAfterDiscount.add(unitSgstAfterDiscount);
+                        BigDecimal unitTaxableValueAfterDiscount = unitFinalAmount.subtract(unitTotalGstAfterDiscount);
+                        BigDecimal totalFinalAmount = unitFinalAmount
                                         .multiply(BigDecimal.valueOf(pp.getQuantity()));
-
-                        totalCalculatedAmountItemWise = totalCalculatedAmountItemWise
-                                        .add(priceAfterDiscount.multiply(BigDecimal.valueOf(pp.getQuantity())));
-
-                        // Apply rounding adjustment to last item
-                        if (currentIndex == itemCount) {
-                                // Get expected total (before rounding adjustment was applied)
-                                roundingAdjustment = expectedTotal.subtract(totalCalculatedAmountItemWise);
-                                finalItemAmountPaid = finalItemAmountPaid.add(roundingAdjustment);
-                        }
 
                         items.add(OrderItem.builder()
                                         .order(order)
@@ -203,11 +187,15 @@ public class OrderService implements IOrderService {
                                         .orderItemStatus(OrderItemStatus.CREATED)
                                         .unitBasePriceIncludingGST(pp.getInventoryBasePrice())
                                         .unitSellingPriceIncludingGST(unitSellingPrice)
-                                        .taxableValueBeforeDiscount(taxableBefore)
-                                        .discountAllocated(discountAllocated)
-                                        .taxableValueAfterDiscount(taxableAfter)
-                                        .gstAfterDiscount(gstAfter)
-                                        .finalItemAmountPaid(finalItemAmountPaid)
+                                        .unitCouponDiscountAllocated(unitCouponDiscountAllocated)
+                                        .unitTaxableValueAfterDiscount(unitTaxableValueAfterDiscount)
+                                        .unitCgstAfterDiscount(unitCgstAfterDiscount)
+                                        .unitSgstAfterDiscount(unitSgstAfterDiscount)
+                                        .unitTotalGstAfterDiscount(unitTotalGstAfterDiscount)
+                                        .unitFinalAmount(unitFinalAmount)
+                                        .totalFinalAmount(totalFinalAmount)
+                                        .cgst(cgstPercent)
+                                        .sgst(sgstPercent)
                                         .build());
                 }
 
@@ -229,6 +217,36 @@ public class OrderService implements IOrderService {
                 orderEventProducer.publishOrderCreated(event);
         }
 
+        private OrderItem buildOtherOrderItems(Order order,
+                        String name, BigDecimal amount) {
+
+                BigDecimal cgst = extractGstFromInclusive(amount, CGST6);
+                BigDecimal sgst = extractGstFromInclusive(amount, SGST6);
+                BigDecimal totalGst = cgst.add(sgst);
+                BigDecimal taxableValue = amount.subtract(totalGst);
+
+                return OrderItem.builder()
+                                .order(order)
+                                .productItemId(UUID.randomUUID())
+                                .skuSnapshot(MISC_FEE)
+                                .productName(name)
+                                .productItemThumbnailImage("-")
+                                .quantity(1)
+                                .orderItemStatus(OrderItemStatus.CREATED)
+                                .unitBasePriceIncludingGST(amount)
+                                .unitSellingPriceIncludingGST(amount)
+                                .unitCouponDiscountAllocated(BigDecimal.ZERO)
+                                .unitTaxableValueAfterDiscount(taxableValue)
+                                .unitCgstAfterDiscount(cgst)
+                                .unitSgstAfterDiscount(sgst)
+                                .unitTotalGstAfterDiscount(totalGst)
+                                .unitFinalAmount(amount)
+                                .totalFinalAmount(amount)
+                                .cgst(CGST6)
+                                .sgst(SGST6)
+                                .build();
+        }
+
         @Override
         @Transactional
         public UUID placeOrder(String userId, PlaceOrderReqDTO placeOrderReq) {
@@ -240,25 +258,39 @@ public class OrderService implements IOrderService {
                 BigDecimal couponPercent = fetchCouponPercent(placeOrderReq.getSelectedCouponCode(),
                                 productPriceDTO.getTotalPrice());
 
-                BigDecimal couponDiscountAmount = calculateCouponDiscountAmount(productPriceDTO.getTotalPrice(),
-                                couponPercent);
+                Order order = createOrder(userId, placeOrderReq);
 
-                BigDecimal totalAmountAfterCouponDiscount = productPriceDTO.getTotalPrice()
-                                .subtract(couponDiscountAmount);
+                Set<OrderItem> items = buildOrderItems(order, productPriceDTO, couponPercent);
 
-                BigDecimal finalAmount = calculateFinalCartAmount(totalAmountAfterCouponDiscount,
+                BigDecimal totalOrderItemsAmountBeforeMissFees = BigDecimal.ZERO;
+                BigDecimal orderTotalMrp = BigDecimal.ZERO;
+                BigDecimal orderTotalMrpAfterDiscount = BigDecimal.ZERO;
+                BigDecimal orderTotalCouponDiscount = BigDecimal.ZERO;
+                for (OrderItem item : items) {
+                        totalOrderItemsAmountBeforeMissFees = totalOrderItemsAmountBeforeMissFees
+                                        .add(item.getTotalFinalAmount());
+                        orderTotalMrp = orderTotalMrp
+                                        .add(item.getUnitBasePriceIncludingGST());
+                        orderTotalMrpAfterDiscount = orderTotalMrpAfterDiscount
+                                        .add(item.getUnitSellingPriceIncludingGST());
+                        orderTotalCouponDiscount = orderTotalCouponDiscount
+                                        .add(item.getUnitCouponDiscountAllocated());
+                }
+                BigDecimal shippingFee = calculateShippingFee(totalOrderItemsAmountBeforeMissFees);
+                BigDecimal finalAmount = calculateFinalCartAmount(totalOrderItemsAmountBeforeMissFees,
                                 placeOrderReq.getDonation(), placeOrderReq.getGiftWrap());
 
-                Order order = createOrder(userId, finalAmount, placeOrderReq,
-                                calculateShippingFee(totalAmountAfterCouponDiscount),
-                                productPriceDTO.getTotalBasePrice(),
-                                productPriceDTO.getTotalPrice(),
-                                couponDiscountAmount, placeOrderReq.getDeliveryAddressId());
-
-                Set<OrderItem> items = buildOrderItems(order, productPriceDTO, couponPercent,
-                                totalAmountAfterCouponDiscount);
+                items.add(buildOtherOrderItems(order, SHIPPING_CHARGES, shippingFee));
+                items.add(buildOtherOrderItems(order, DONATION, placeOrderReq.getDonation()));
+                if (placeOrderReq.getGiftWrap()) {
+                        items.add(buildOtherOrderItems(order, GIFT_WRAP_CHARGES, Constants.GIFT_WRAP_CHARGE));
+                }
 
                 order.setOrderItems(items);
+                order.setTotalAmount(finalAmount);
+                order.setItemsTotalMrp(orderTotalMrp);
+                order.setItemsTotalMrpAfterDiscount(orderTotalMrpAfterDiscount);
+                order.setCouponDiscount(orderTotalCouponDiscount);
                 orderRepository.save(order);
 
                 publishOrderCreatedEvent(order, userId, finalAmount, cart);
@@ -427,12 +459,13 @@ public class OrderService implements IOrderService {
                                 .itemsTotalMrp(order.getItemsTotalMrp())
                                 .itemsTotalMrpAfterDiscount(order.getItemsTotalMrpAfterDiscount())
                                 .couponDiscount(order.getCouponDiscount())
-                                .donation(order.getDonation())
-                                .giftWrapFee(order.getGiftWrapCharge())
-                                .shippingFee(order.getShippingCharge())
+                                .donation(getMiscFee(order, DONATION))
+                                .giftWrapFee(getMiscFee(order, GIFT_WRAP_CHARGES))
+                                .shippingFee(getMiscFee(order, SHIPPING_CHARGES))
                                 .totalPaidAmount(order.getTotalAmount())
                                 .build();
                 List<OrderItemSummaryForOrderDetails> itemSummaries = order.getOrderItems().stream()
+                                .filter(oi -> !oi.getSkuSnapshot().equals(MISC_FEE))
                                 .map(oi -> OrderItemSummaryForOrderDetails.builder()
                                                 .orderItemId(oi.getId())
                                                 .sku(oi.getSkuSnapshot())
@@ -440,9 +473,9 @@ public class OrderService implements IOrderService {
                                                 .productImg(buildFullUrl(oi.getProductItemThumbnailImage()))
                                                 .quantity(oi.getQuantity())
                                                 .basePrice(oi.getUnitBasePriceIncludingGST())
-                                                .discountedPrice(oi.getUnitSellingPriceIncludingGST())
-                                                .couponDiscount(oi.getDiscountAllocated())
-                                                .finalPrice(oi.getFinalItemAmountPaid())
+                                                .sellingPrice(oi.getUnitSellingPriceIncludingGST())
+                                                .couponDiscount(oi.getUnitCouponDiscountAllocated())
+                                                .finalPrice(oi.getUnitFinalAmount())
                                                 .build())
                                 .toList();
                 return OrderDetailsResponseDTO.builder()
@@ -457,6 +490,13 @@ public class OrderService implements IOrderService {
                                 .contactNumber(COUNTRY_CODE_INDIA + order.getContactNumber())
                                 .items(itemSummaries)
                                 .build();
+        }
+
+        private BigDecimal getMiscFee(Order order, String name) {
+                return order.getOrderItems().stream()
+                                .filter(i -> i.getProductName().equals(name)).findFirst()
+                                .map(OrderItem::getUnitFinalAmount)
+                                .orElse(BigDecimal.ZERO);
         }
 
         public String buildFullUrl(String key) {
@@ -493,65 +533,45 @@ public class OrderService implements IOrderService {
         }
 
         @Override
-        public byte[] generateInvoicePdf(UUID orderId) {
+        public byte[] downloadInvoice(UUID orderId) {
                 Order order = orderRepository.findById(orderId)
-                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
-                if (order.getOrderStatus() != OrderStatus.CONFIRMED) {
-                        throw new RuntimeException("Invoice can only be generated for CONFIRMED orders");
-                }
-                String orderDetails = buildOrderDetailsForInvoice(order);
-                return orderPdfService.generateOrderInvoice(orderId, orderDetails);
+                                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+                InvoiceData invoiceData = buildInvoiceData(order);
+                return invoicePdfGeneratorService.generateInvoicePdf(invoiceData);
+
         }
 
-        private String buildOrderDetailsForInvoice(Order order) {
-                StringBuilder invoiceDetails = new StringBuilder();
+        private InvoiceData buildInvoiceData(Order order) {
+                List<InvoiceItemData> items = order.getOrderItems().stream()
+                                .filter(oi -> oi.getTotalFinalAmount().compareTo(BigDecimal.ZERO) > 0)
+                                .map(item -> InvoiceItemData.builder()
+                                                .description(item.getProductName())
+                                                .unitPrice(item.getUnitTaxableValueAfterDiscount().doubleValue())
+                                                .quantity(item.getQuantity())
+                                                .netAmount(item.getUnitFinalAmount().doubleValue())
+                                                .cgstRate(item.getCgst().doubleValue())
+                                                .cgstAmount(item.getUnitCgstAfterDiscount().doubleValue())
+                                                .sgstRate(item.getSgst().doubleValue())
+                                                .sgstAmount(item.getUnitSgstAfterDiscount().doubleValue())
+                                                .totalTaxAmount(item.getUnitTotalGstAfterDiscount().doubleValue())
+                                                .totalAmount(item.getTotalFinalAmount().doubleValue())
+                                                .build())
+                                .toList();
 
-                invoiceDetails.append("ORDER DETAILS\n");
-                invoiceDetails.append("===========================================\n\n");
-                invoiceDetails.append("Order ID: ").append(order.getId()).append("\n");
-                invoiceDetails.append("Order Date: ").append(order.getCreatedAt().format(FORMATTER)).append("\n");
-                invoiceDetails.append("Order Status: ").append(order.getOrderStatus()).append("\n");
-                invoiceDetails.append("Payment Status: ").append(order.getPaymentStatus()).append("\n\n");
-
-                invoiceDetails.append("DELIVERY ADDRESS\n");
-                invoiceDetails.append("-------------------------------------------\n");
-                invoiceDetails.append("Name: ").append(order.getDeliveryName()).append("\n");
-                invoiceDetails.append("Address: ").append(order.getDeliveryAddressDetails()).append("\n");
-                invoiceDetails.append("Contact: ").append(order.getContactNumber()).append("\n\n");
-
-                invoiceDetails.append("ITEMS\n");
-                invoiceDetails.append("-------------------------------------------\n");
-                order.getOrderItems().forEach(item -> {
-                        invoiceDetails.append("Product: ").append(item.getProductName()).append("\n");
-                        invoiceDetails.append("SKU: ").append(item.getSkuSnapshot()).append("\n");
-                        invoiceDetails.append("Quantity: ").append(item.getQuantity()).append("\n");
-                        invoiceDetails.append("Unit Price: Rs. ").append(item.getUnitSellingPriceIncludingGST())
-                                        .append("\n");
-                        invoiceDetails.append("Item Total: Rs. ").append(item.getFinalItemAmountPaid()).append("\n\n");
-                });
-
-                invoiceDetails.append("PRICE SUMMARY\n");
-                invoiceDetails.append("===========================================\n");
-                invoiceDetails.append("Items Total MRP: Rs. ").append(order.getItemsTotalMrp()).append("\n");
-                invoiceDetails.append("Items After Discount: Rs. ").append(order.getItemsTotalMrpAfterDiscount())
-                                .append("\n");
-                if (order.getCouponDiscount().compareTo(BigDecimal.ZERO) > 0) {
-                        invoiceDetails.append("Coupon Code: ").append(order.getCouponCode()).append("\n");
-                        invoiceDetails.append("Coupon Discount: Rs. ").append(order.getCouponDiscount()).append("\n");
-                }
-                if (order.getShippingCharge().compareTo(BigDecimal.ZERO) > 0) {
-                        invoiceDetails.append("Shipping Charge: Rs. ").append(order.getShippingCharge()).append("\n");
-                }
-                if (order.getDonation().compareTo(BigDecimal.ZERO) > 0) {
-                        invoiceDetails.append("Donation: Rs. ").append(order.getDonation()).append("\n");
-                }
-                if (order.getGiftWrapCharge().compareTo(BigDecimal.ZERO) > 0) {
-                        invoiceDetails.append("Gift Wrap: Rs. ").append(order.getGiftWrapCharge()).append("\n");
-                }
-                invoiceDetails.append("\nTotal Amount Paid: Rs. ").append(order.getTotalAmount()).append("\n");
-                invoiceDetails.append("Payment Mode: ").append(order.getPaymentMode()).append("\n");
-
-                return invoiceDetails.toString();
+                return InvoiceData.builder()
+                                .orderId(order.getId().toString())
+                                .orderDate(order.getCreatedAt().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                                .billingName(order.getDeliveryName())
+                                .billingAddress(order.getDeliveryAddressDetails())
+                                .shippingName(order.getDeliveryName())
+                                .shippingAddress(order.getDeliveryAddressDetails())
+                                .items(items)
+                                .subtotal(order.getItemsTotalMrpAfterDiscount().doubleValue())
+                                .discount(order.getCouponDiscount().doubleValue())
+                                .totalAmount(order.getTotalAmount().doubleValue())
+                                .amountInWords(InvoicePdfGeneratorService
+                                                .convertAmountToWords(order.getTotalAmount().doubleValue()))
+                                .build();
         }
-
 }

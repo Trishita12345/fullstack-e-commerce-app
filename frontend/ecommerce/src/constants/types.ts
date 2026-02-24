@@ -128,6 +128,7 @@ export interface ProductVariant {
   attributes: {
     [key: string]: string;
   };
+  hsn: string;
 }
 
 export interface VariantAttribute {
@@ -330,7 +331,7 @@ export interface OrderItem {
   productImg: string;
   quantity: number;
   basePrice: number;
-  discountedPrice: number;
+  sellingPrice: number;
   couponDiscount: number;
   finalPrice: number;
 }

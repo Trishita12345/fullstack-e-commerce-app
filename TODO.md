@@ -3,8 +3,6 @@ Checking product availability.. RESERVED | PENDING
 Item just went out of stock. FAILED | NOT_INITIATED
 Preparing secure payment... RESERVED | INITIATED
 
-1. Payment sucess
-
 2. Order Listing, My Orders
 3. Retry payment
 

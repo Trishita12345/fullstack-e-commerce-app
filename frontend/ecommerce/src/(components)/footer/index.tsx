@@ -69,13 +69,13 @@ export const Footer = () => {
                 <Group gap={4}>
                   <IconPhone size={16} />
                   <Text size={"xs"} c={"black.6"} fw={600}>
-                    +91-1212012312
+                    {en.companyPhone}
                   </Text>
                 </Group>
                 <Group gap={4}>
                   <IconMail size={16} />
                   <Text size={"xs"} c={"black.6"} fw={600}>
-                    connect@loomandlume.com
+                    {en.companyEmail}
                   </Text>
                 </Group>
               </Flex>

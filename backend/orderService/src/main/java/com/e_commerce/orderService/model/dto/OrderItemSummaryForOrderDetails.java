@@ -19,7 +19,7 @@ public class OrderItemSummaryForOrderDetails {
     private String productImg;
     private Integer quantity;
     private BigDecimal basePrice;
-    private BigDecimal discountedPrice;
+    private BigDecimal sellingPrice;
     private BigDecimal couponDiscount;
     private BigDecimal finalPrice;
 }

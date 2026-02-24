@@ -5,6 +5,7 @@ import com.e_commerce.common.model.dto.ProductPriceDTO;
 import com.e_commerce.common.model.dto.ProductPriceDetailsDTO;
 import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
 import com.e_commerce.productService.model.Category;
+import com.e_commerce.productService.model.GstTaxSlab;
 import com.e_commerce.productService.model.Product;
 import com.e_commerce.productService.model.ProductItem;
 import com.e_commerce.productService.model.ProductItemImage;
@@ -20,6 +21,7 @@ import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
 import com.e_commerce.productService.model.dto.productItem.ProductItemListingDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemPriceDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
+import com.e_commerce.productService.repository.IGstTaxSlabRepository;
 import com.e_commerce.productService.repository.IProductItemImageRepository;
 import com.e_commerce.productService.repository.IProductItemRepository;
 import com.e_commerce.productService.repository.IVariantAttributeRepository;
@@ -58,6 +60,7 @@ public class ProductItemService implements IProductItemService {
         private final IProductItemImageRepository productItemImageRepository;
         private final IInventoryReservationService inventoryReservationService;
         private final IS3Service s3Service;
+        private final IGstTaxSlabRepository gstTaxSlabRepository;
 
         @Override
         public List<ProductVariantAttributesDTO> getVariantAttributesByCategoryId(UUID productId) {
@@ -71,6 +74,10 @@ public class ProductItemService implements IProductItemService {
         public UUID addProductItem(UUID productId, ProductItemDTO dto) {
 
                 Product product = productService.getProduct(productId);
+                GstTaxSlab gstTaxSlab = null;
+                if (dto.getHsn() != null && !dto.getHsn().isEmpty()) {
+                        gstTaxSlab = gstTaxSlabRepository.findById(dto.getHsn()).orElse(null);
+                }
 
                 ProductItem productItem = ProductItem.builder()
                                 .sku(dto.getSku())
@@ -78,6 +85,7 @@ public class ProductItemService implements IProductItemService {
                                 .basePrice(dto.getBasePrice())
                                 .discountedPrice(dto.getDiscountedPrice())
                                 .product(product)
+                                .gstTaxSlab(gstTaxSlab)
                                 .build();
                 Set<VariantAttribute> attributes = variantAttributeRepository
                                 .findByNameIn(new HashSet<>(dto.getAttributes().values()));
@@ -120,6 +128,7 @@ public class ProductItemService implements IProductItemService {
                                 .discountedPrice(productItem.getDiscountedPrice())
                                 .imgUrls(images)
                                 .attributes(attMap)
+                                .hsn(productItem.getGstTaxSlab().getHsnCode())
                                 .build();
         }
 

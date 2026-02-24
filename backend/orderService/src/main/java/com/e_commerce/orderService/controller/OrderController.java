@@ -76,7 +76,7 @@ public class OrderController {
 
     @GetMapping("/invoice/download/{orderId}")
     public ResponseEntity<byte[]> downloadInvoice(@PathVariable UUID orderId) {
-        byte[] invoicePdf = orderService.generateInvoicePdf(orderId);
+        byte[] invoicePdf = orderService.downloadInvoice(orderId);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_PDF)
                 .header("Content-Disposition", "attachment; filename=invoice_" + orderId + ".pdf")
