@@ -12,6 +12,7 @@ import {
   Stack,
   Text,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import {
   IconArrowNarrowRight,
@@ -23,6 +24,7 @@ import Image from "next/image";
 import Link from "next/link";
 import DownloadInvoice from "./DownloadInvoice";
 import { en } from "@/constants/en";
+import { InfoIcon } from "@/(components)/InfoIcon";
 
 interface PageProps {
   searchParams: {
@@ -98,14 +100,19 @@ async function PaymentSuccess({ searchParams }: PageProps) {
                     />
                     <Text>{i.productName}</Text>
                   </Group>
-                  <Stack gap={4}>
+                  <Stack gap={4} align="end">
                     <Group gap={4}>
-                      {/* <Text size="sm" c="dimmed" td="line-through">
+                      <Text size="sm" c="dimmed" td="line-through">
                         {formattedPrice(i.basePrice)}
-                      </Text> */}
+                      </Text>
                       <Text fw={500}>{formattedPrice(i.finalPrice)}</Text>
                     </Group>
-                    <Text c="grey" size="sm" ta="end">
+                    {i.couponDiscount > 0 && (
+                      <Text c="green" size="10px">
+                        {`Coupon discount of ${formattedPrice(i.couponDiscount)} added!`}
+                      </Text>
+                    )}
+                    <Text c="grey" size="sm">
                       Qty:{" "}
                       <span style={{ fontWeight: 500, color: "#000000" }}>
                         {i.quantity}

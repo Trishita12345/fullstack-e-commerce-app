@@ -270,11 +270,14 @@ public class OrderService implements IOrderService {
                         totalOrderItemsAmountBeforeMissFees = totalOrderItemsAmountBeforeMissFees
                                         .add(item.getTotalFinalAmount());
                         orderTotalMrp = orderTotalMrp
-                                        .add(item.getUnitBasePriceIncludingGST());
+                                        .add(item.getUnitBasePriceIncludingGST()
+                                                        .multiply(BigDecimal.valueOf(item.getQuantity())));
                         orderTotalMrpAfterDiscount = orderTotalMrpAfterDiscount
-                                        .add(item.getUnitSellingPriceIncludingGST());
+                                        .add(item.getUnitSellingPriceIncludingGST()
+                                                        .multiply(BigDecimal.valueOf(item.getQuantity())));
                         orderTotalCouponDiscount = orderTotalCouponDiscount
-                                        .add(item.getUnitCouponDiscountAllocated());
+                                        .add(item.getUnitCouponDiscountAllocated()
+                                                        .multiply(BigDecimal.valueOf(item.getQuantity())));
                 }
                 BigDecimal shippingFee = calculateShippingFee(totalOrderItemsAmountBeforeMissFees);
                 BigDecimal finalAmount = calculateFinalCartAmount(totalOrderItemsAmountBeforeMissFees,
