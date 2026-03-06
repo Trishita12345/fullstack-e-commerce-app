@@ -62,7 +62,7 @@ async function PaymentSuccess({ searchParams }: PageProps) {
           </Stack>
         </Stack>
         <Box bg={"primaryDark.7"} bdrs={"12px"} pt={12}>
-          <Group justify="space-between" px={28} py={20}>
+          <Group justify="space-between" px={{ base: 12, md: 28 }} py={20}>
             <Stack gap={8}>
               <Title order={4} c="white">
                 Order ID: #{orderId.replace("-", "")}
@@ -82,44 +82,51 @@ async function PaymentSuccess({ searchParams }: PageProps) {
           </Group>
           <Box
             py={20}
-            px={28}
+            px={{ base: 12, md: 28 }}
             bdrs={"12px"}
             bd={"1px solid lightgrey"}
             bg={"white"}
           >
             <Stack>
               {orderDetails.items.map((i) => (
-                <Group justify="space-between">
-                  <Group>
-                    <Image
-                      src={i.productImg}
-                      alt="G"
-                      height={60}
-                      width={60}
-                      style={{ borderRadius: "6px" }}
-                    />
-                    <Text>{i.productName}</Text>
-                  </Group>
-                  <Stack gap={4} align="end">
-                    <Group gap={4}>
-                      <Text size="sm" c="dimmed" td="line-through">
-                        {formattedPrice(i.basePrice)}
+                <Grid justify="space-between" key={i.orderItemId}>
+                  <GridCol span={{ base: 12, md: 8 }}>
+                    <Box
+                      display={"flex"}
+                      style={{ gap: 12, alignItems: "center" }}
+                    >
+                      <Image
+                        src={i.productImg}
+                        alt="G"
+                        height={60}
+                        width={60}
+                        style={{ borderRadius: "6px" }}
+                      />
+                      <Text>{i.productName}</Text>
+                    </Box>
+                  </GridCol>
+                  <GridCol span={{ base: 12, md: 4 }}>
+                    <Stack gap={4} align="end">
+                      <Group gap={4}>
+                        <Text size="sm" c="dimmed" td="line-through">
+                          {formattedPrice(i.basePrice)}
+                        </Text>
+                        <Text fw={500}>{formattedPrice(i.finalPrice)}</Text>
+                      </Group>
+                      {i.couponDiscount > 0 && (
+                        <Text c="green" size="10px">
+                          {`Coupon discount of ${formattedPrice(i.couponDiscount)} added!`}
+                        </Text>
+                      )}
+                      <Text c="grey" size="sm">
+                        Qty:{" "}
+                        <span style={{ fontWeight: 500, color: "#000000" }}>
+                          {i.quantity}
+                        </span>
                       </Text>
-                      <Text fw={500}>{formattedPrice(i.finalPrice)}</Text>
-                    </Group>
-                    {i.couponDiscount > 0 && (
-                      <Text c="green" size="10px">
-                        {`Coupon discount of ${formattedPrice(i.couponDiscount)} added!`}
-                      </Text>
-                    )}
-                    <Text c="grey" size="sm">
-                      Qty:{" "}
-                      <span style={{ fontWeight: 500, color: "#000000" }}>
-                        {i.quantity}
-                      </span>
-                    </Text>
-                  </Stack>
-                </Group>
+                    </Stack>
+                  </GridCol>
+                </Grid>
               ))}
               <Divider color="gray.1" />
               <Grid>
