@@ -339,6 +339,7 @@ export interface OrderDetailsDTO {
   orderId: string;
   orderStatus: string;
   createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
   priceSummary: PriceSummary;
   paymentMode: string;
   paymentStatus: string;
