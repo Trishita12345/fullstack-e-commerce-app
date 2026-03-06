@@ -9,6 +9,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.common.model.dto.AddressDTO;
@@ -458,6 +462,10 @@ public class OrderService implements IOrderService {
         public OrderDetailsResponseDTO getOrderDetailsById(UUID orderId) {
                 Order order = orderRepository.findById(orderId)
                                 .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                return mapOrderToOrderDetailsResponseDTO(order);
+        }
+
+        private OrderDetailsResponseDTO mapOrderToOrderDetailsResponseDTO(Order order) {
                 PriceSummaryForOrderDetails priceSummary = PriceSummaryForOrderDetails.builder()
                                 .itemsTotalMrp(order.getItemsTotalMrp())
                                 .itemsTotalMrpAfterDiscount(order.getItemsTotalMrpAfterDiscount())
@@ -576,5 +584,12 @@ public class OrderService implements IOrderService {
                                 .amountInWords(InvoicePdfGeneratorService
                                                 .convertAmountToWords(order.getTotalAmount().doubleValue()))
                                 .build();
+        }
+
+        @Override
+        public Page<OrderDetailsResponseDTO> getOrderDetailsList(int pageNum, String userId) {
+                Pageable page = PageRequest.of(pageNum, 10, Sort.by("createdAt").descending());
+                Page<Order> ordersPage = orderRepository.findByUserId(userId, page);
+                return ordersPage.map(this::mapOrderToOrderDetailsResponseDTO);
         }
 }

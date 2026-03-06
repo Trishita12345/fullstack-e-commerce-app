@@ -2,6 +2,8 @@ package com.e_commerce.orderService.service;
 
 import java.util.UUID;
 
+import org.jspecify.annotations.Nullable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
@@ -34,4 +36,6 @@ public interface IOrderService {
     void abandonOrder(UUID orderId);
 
     byte[] downloadInvoice(UUID orderId);
+
+    Page<OrderDetailsResponseDTO> getOrderDetailsList(int page, String userId);
 }

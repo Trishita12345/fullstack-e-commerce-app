@@ -3,6 +3,7 @@ package com.e_commerce.orderService.controller;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
@@ -19,6 +21,8 @@ import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
 import com.e_commerce.orderService.service.IOrderService;
+
+import jakarta.annotation.Nullable;
 
 import org.springframework.http.MediaType;
 import lombok.AllArgsConstructor;
@@ -62,10 +66,10 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getOrderDetailsById(orderId));
     }
 
-    @GetMapping("/order-history/page/{page}/size/{size}")
+    @GetMapping("/orders/page")
     public ResponseEntity<Page<OrderDetailsResponseDTO>> getOrderHistory(
-            @PathVariable int page, @PathVariable int size) {
-        return null; // TODO: Implement pagination in order history retrieval
+            @RequestParam(required = false, defaultValue = "0") int page, Authentication authentication) {
+        return ResponseEntity.ok(orderService.getOrderDetailsList(page, authentication.getName()));
     }
 
     @PostMapping("/abandon-order-status/{orderId}")
