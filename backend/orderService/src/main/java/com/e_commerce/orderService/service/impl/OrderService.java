@@ -493,6 +493,7 @@ public class OrderService implements IOrderService {
                                 .orderId(order.getId())
                                 .orderStatus(order.getOrderStatus())
                                 .createdAt(order.getCreatedAt().format(FORMATTER))
+                                .updatedAt(order.getUpdatedAt().format(FORMATTER))
                                 .paymentMode(order.getPaymentMode())
                                 .paymentStatus(order.getPaymentStatus())
                                 .priceSummary(priceSummary)

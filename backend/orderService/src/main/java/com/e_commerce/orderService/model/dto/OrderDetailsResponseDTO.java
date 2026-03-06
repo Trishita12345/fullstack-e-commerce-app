@@ -20,6 +20,7 @@ public class OrderDetailsResponseDTO {
     private UUID orderId;
     private OrderStatus orderStatus;
     private String createdAt;
+    private String updatedAt;
     private PriceSummaryForOrderDetails priceSummary;
     private PaymentMode paymentMode;
     private PaymentStatus paymentStatus;
