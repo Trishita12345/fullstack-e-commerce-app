@@ -22,7 +22,7 @@ import { useIntersection } from "@mantine/hooks";
 import { Paper, Box, Text, Loader, Stack, Divider } from "@mantine/core";
 import { apiFetch } from "@/lib/apiFetch";
 import { OrderDetailsDTO, Page } from "@/constants/types";
-import OrderDetails from "./OrderDetailComponent";
+import OrderDetailComponent from "./OrderDetailComponent";
 import { getOrders } from "./actions";
 
 export default function InfiniteOrders() {
@@ -82,7 +82,7 @@ export default function InfiniteOrders() {
             gap={24}
             key={order.orderId}
           >
-            <OrderDetails key={order.orderId} order={order} />
+            <OrderDetailComponent key={order.orderId} order={order} />
             {idx !== orders.length - 1 && (
               <Divider size="sm" variant="dashed" color="black.1" />
             )}

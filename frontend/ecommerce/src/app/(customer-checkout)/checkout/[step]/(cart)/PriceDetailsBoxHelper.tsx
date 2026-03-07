@@ -8,22 +8,28 @@ export const PriceRow = ({
   price,
   infoText,
   color,
+  labelColor,
   showInfos = false,
+  size = "xs",
+  fw = 400,
 }: {
   label: string;
   price: string;
   infoText?: string;
   color?: string;
   showInfos?: boolean;
+  size?: string;
+  labelColor?: string;
+  fw?: 400 | 500 | 600;
 }) => (
   <Group justify="space-between" id="gift wrap">
     <Group gap={4}>
-      <Text c={"black.7"} size="xs">
+      <Text c={labelColor || "black.7"} size={size} fw={fw}>
         {label}
       </Text>
       {infoText && showInfos && <InfoIcon info={infoText} />}
     </Group>
-    <Text size="xs" c={color || "black.7"}>
+    <Text size={size} c={color || "black.7"} fw={fw}>
       {price}
     </Text>
   </Group>

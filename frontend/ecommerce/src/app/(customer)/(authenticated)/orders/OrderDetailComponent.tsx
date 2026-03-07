@@ -43,7 +43,7 @@ const OrderDetailComponent = ({ order }: { order: OrderDetailsDTO }) => {
                 gap={14}
                 style={{ cursor: "pointer" }}
                 onClick={() =>
-                  router.push(`/order/${order.orderId}/${item.orderItemId}`)
+                  router.push(`/orders/${order.orderId}/${item.orderItemId}`)
                 }
               >
                 <Box

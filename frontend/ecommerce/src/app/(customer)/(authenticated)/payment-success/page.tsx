@@ -38,7 +38,6 @@ async function PaymentSuccess({ searchParams }: PageProps) {
     `/order-service/order-details/${orderId}`,
   );
 
-  console.log("orderDetails: ", orderDetails);
   return (
     <Box bg="#FCFAF6">
       <Box w={{ base: "95%", md: "90%", lg: "80%" }} mx="auto" py={48}>
