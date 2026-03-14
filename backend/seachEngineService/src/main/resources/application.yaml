@@ -1,0 +1,43 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: seachEngineService
+  elasticsearch:
+    uris: http://localhost:9200
+    connection-timeout: 5s
+    socket-timeout: 3s
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+
+    consumer:
+      group-id: search-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.e_commerce.common.model.event.InventoryReserveEvent
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway,health,info
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    config-url: /api/search-service/v3/api-docs/swagger-config
+    url: /api/search-service/v3/api-docs
+gateway:
+  base-url: http://localhost:8080/api/search-service
+  api-description: Swagger UI Documentation for Search Service

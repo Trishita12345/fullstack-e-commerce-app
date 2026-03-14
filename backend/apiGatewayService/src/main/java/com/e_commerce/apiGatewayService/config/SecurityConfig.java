@@ -60,6 +60,9 @@ public class SecurityConfig {
                                 "/api/notification-service/public/**",
                                 "/api/notification-service/swagger-ui/**",
                                 "/api/notification-service/v3/api-docs/**",
+                                "/api/search-service/public/**",
+                                "/api/search-service/swagger-ui/**",
+                                "/api/search-service/v3/api-docs/**",
                                 "/error")
                         .permitAll()
                         .anyExchange().authenticated())

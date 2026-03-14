@@ -38,6 +38,9 @@ public class GatewaySwaggerConfig {
 
                                 .addServersItem(new Server()
                                                 .url("http://localhost:8080/api/payment-service")
-                                                .description("Payment Service"));
+                                                .description("Payment Service"))
+                                .addServersItem(new Server()
+                                                .url("http://localhost:8080/api/search-service")
+                                                .description("Search Service"));
         }
 }

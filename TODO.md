@@ -14,3 +14,15 @@ Preparing secure payment... RESERVED | INITIATED
 //Done- To be checked 2. Payment Failure - on modal dismiss one api to relese inventory
 2a. modal dismiss - payment service - update
 2b. order fulfilled faild - payment service - update
+
+GET /products/search?
+q=candle
+&categoryId=cat123
+&minPrice=200
+&maxPrice=1000
+&inStock=true
+&variant=color:red
+&variant=size:large
+&page=0
+&size=20
+&sort=price_asc
