@@ -210,4 +210,10 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
             WHERE id = :productItemId
             """, nativeQuery = true)
     int decreaseAvailableStock(UUID productItemId, Integer quantity);
+
+    @Query(value = """
+            SELECT pi.id
+            FROM product_items pi
+            """, nativeQuery = true)
+    List<UUID> findAllProductItemIds();
 }
