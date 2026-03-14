@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.e_commerce.common.model.dto.CartItemDTO;
-import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
 import com.e_commerce.productService.model.dto.customer.CartProductItemInfoResponse;
 import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
 import com.e_commerce.productService.model.dto.customer.ProductItemIdDTO;
@@ -44,12 +42,6 @@ public class CustomerProductDetailsController {
     public ResponseEntity<Map<UUID, CartProductItemInfoResponse>> getCarProductItemInfos(
             @RequestBody List<UUID> productItemIds) {
         return ResponseEntity.ok(productItemService.getCarProductItemInfos(productItemIds));
-    }
-
-    @PostMapping("/get-total-price")
-    public ResponseEntity<TotalProductPriceResponseDTO> getTotalProductPrice(
-            @RequestBody List<CartItemDTO> cartItems) {
-        return ResponseEntity.ok(productItemService.getTotalProductPrice(cartItems));
     }
 
 }

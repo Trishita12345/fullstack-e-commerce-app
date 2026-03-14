@@ -9,8 +9,7 @@ import com.e_commerce.profileService.model.Address;
 import java.util.List;
 import java.util.Optional;
 
-
-public interface IAddressRepository extends JpaRepository<Address, UUID>{
+public interface IAddressRepository extends JpaRepository<Address, UUID> {
     List<Address> findByUserId(String userId);
 
     Optional<Address> findByAddressIdAndUserId(UUID addressId, String userId);
@@ -22,6 +21,5 @@ public interface IAddressRepository extends JpaRepository<Address, UUID>{
                 AND is_default = true
             """, nativeQuery = true)
     Optional<Address> getAnyDefaultAddress(String userId);
-
 
 }

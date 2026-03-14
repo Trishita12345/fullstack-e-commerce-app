@@ -3,12 +3,14 @@ package com.e_commerce.cartService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.kafka.annotation.EnableKafka;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
 		"com.e_commerce.cartService",
 		"com.e_commerce.common"
 })
+@EnableKafka
 public class CartServiceApplication {
 
 	public static void main(String[] args) {

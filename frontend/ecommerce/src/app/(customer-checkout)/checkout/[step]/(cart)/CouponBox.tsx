@@ -1,14 +1,12 @@
-import { CartItemDTO, CartProductsDTO } from "@/constants/types";
+import { CartProductsDTO } from "@/constants/types";
 import { formattedPrice } from "@/utils/helperFunctions";
 import {
   useAllCoupons,
   useCartActions,
-  useCartItems,
+  usePriceSummary,
+  useSelectedCouponCode,
   useSelectedCouponDetails,
-  useTotalBasePrice,
-  useTotalDiscountedPrice,
 } from "@/utils/store/cart";
-import { useSession } from "@/utils/store/session";
 import {
   Box,
   Button,
@@ -62,7 +60,7 @@ const CouponBoxModal = ({
   const { getAllCoupons } = useCartActions();
   const { setSelectedCouponCode } = useCartActions();
   const coupons = useAllCoupons();
-  const couponFromStore = useSelectedCouponDetails();
+  const selectedCouponFromStore = useSelectedCouponDetails();
 
   const [textValue, setTextValue] = useState<string>("");
   const [textValueErr, setTextValueErr] = useState<{
@@ -73,16 +71,15 @@ const CouponBoxModal = ({
     CouponTypeDTO | undefined
   >(undefined);
 
-  const totalDiscountedPrice = useTotalDiscountedPrice();
+  const { itemsTotalMrp, productDiscount } = usePriceSummary();
+  const totalDiscountedPrice = itemsTotalMrp - productDiscount;
   useEffect(() => {
     getAllCoupons();
   }, []);
 
   useEffect(() => {
     setSelectedCouponLocal(
-      couponFromStore
-        ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
-        : getBestCoupon(coupons, totalDiscountedPrice),
+      selectedCouponFromStore || getBestCoupon(coupons, totalDiscountedPrice),
     );
   }, [coupons, totalDiscountedPrice]);
 
@@ -120,9 +117,7 @@ const CouponBoxModal = ({
     setTextValue("");
     setTextValueErr({ error: true, msg: "" });
     setSelectedCouponLocal(
-      couponFromStore
-        ? coupons.find((c) => c.couponCode === couponFromStore.couponCode)
-        : getBestCoupon(coupons, totalDiscountedPrice),
+      selectedCouponFromStore || getBestCoupon(coupons, totalDiscountedPrice),
     );
   };
   const applyCoupon = () => {
@@ -298,34 +293,42 @@ const CouponBoxModal = ({
 
 const CouponBox = ({ cartProducts }: { cartProducts: CartProductsDTO }) => {
   const [opened, { open, close }] = useDisclosure(false);
+  const selectedCouponFromStore = useSelectedCouponDetails();
   return (
     <Stack gap={16}>
       <Text size="11px" fw={700} c="black.7" tt={"uppercase"} lts={0.5}>
         COUPONS
       </Text>
-      <Group justify="space-between">
-        <Group gap={8}>
-          <IconTag size={18} />
-          <Text size="13px" fw={600}>
-            Apply Coupons
-          </Text>
+      <Stack gap={8}>
+        <Group justify="space-between">
+          <Group gap={8}>
+            <IconTag size={18} />
+            <Text size="13px" fw={600}>
+              Apply Coupons
+            </Text>
+          </Group>
+          <CouponBoxModal
+            cartProducts={cartProducts}
+            close={close}
+            opened={opened}
+          />
+          <Button
+            variant="outline"
+            color={"primaryDark.7"}
+            size="xs"
+            onClick={open}
+          >
+            <Text size="xs" lts={0.8} fw={600}>
+              {selectedCouponFromStore ? "MODIFY" : "APPLY"}
+            </Text>
+          </Button>
         </Group>
-        <CouponBoxModal
-          cartProducts={cartProducts}
-          close={close}
-          opened={opened}
-        />
-        <Button
-          variant="outline"
-          color={"primaryDark.7"}
-          size="xs"
-          onClick={open}
-        >
-          <Text size="xs" lts={0.8} fw={600}>
-            APPLY
+        {selectedCouponFromStore && (
+          <Text size="xs" c="green">
+            {selectedCouponFromStore?.couponCode} Applied!
           </Text>
-        </Button>
-      </Group>
+        )}
+      </Stack>
       <Divider color="gray.1" mt={4} />
     </Stack>
   );

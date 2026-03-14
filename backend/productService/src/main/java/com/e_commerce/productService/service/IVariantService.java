@@ -1,5 +1,6 @@
 package com.e_commerce.productService.service;
 
+import com.e_commerce.productService.model.dto.common.SelectOptionDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
 import com.e_commerce.productService.model.dto.variant.VariantDTO;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;
@@ -22,4 +23,6 @@ public interface IVariantService {
     VariantDTO getVariantDetails(UUID variantId);
 
     Page<VariantWithCategoryDTO> getAllVariants(String query, String filter, Pageable pageable);
+
+    List<SelectOptionDTO<String>> getGSTDetails();
 }

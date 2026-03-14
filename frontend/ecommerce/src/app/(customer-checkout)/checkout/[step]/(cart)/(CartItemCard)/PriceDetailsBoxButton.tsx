@@ -1,3 +1,4 @@
+"use client";
 import { StepType } from "@/(components)/CustomerCheckoutHeader";
 import LoginComponent, { LoggedOutProps } from "@/(components)/LoginComponent";
 import { useCartItems } from "@/utils/store/cart";

@@ -76,7 +76,7 @@ const AddEditVariantForm = ({
       const modifiedValues = {
         ...values,
         attributes: values.attributes.map((a: SelectOptionTypeIDName) =>
-          a.id.startsWith("added-") ? { name: a.name } : { ...a }
+          a.id.startsWith("added-") ? { name: a.name } : { ...a },
         ),
       };
       if (variantId) {

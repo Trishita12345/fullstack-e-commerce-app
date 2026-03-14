@@ -1,3 +1,4 @@
+import { getAllAddressesAction } from "@/app/(customer-checkout)/checkout/addressActions";
 import { AddressDTO } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { Session } from "@/lib/auth";
@@ -25,14 +26,14 @@ const useAddressStore = create<AddressState>()(
           set({ selectedAddressId });
         },
         async getAllAddresses() {
-          const addresses = await apiFetch<AddressDTO[]>(
-            "/profile-service/address/all",
-          );
+          const addresses = await getAllAddressesAction();
           set((state) => ({
             addresses,
             selectedAddressId:
               state.selectedAddressId ||
-              addresses.find((a) => a.isDefault)?.addressId,
+              (addresses
+                ? addresses.find((a) => a.isDefault)?.addressId
+                : undefined),
           }));
         },
         clearAddressData() {

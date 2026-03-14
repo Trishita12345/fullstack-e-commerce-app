@@ -42,4 +42,6 @@ public class ProductItemDTO {
     private List<ImageDTO> imgUrls;
 
     private Map<String, String> attributes;
+
+    private String hsn;
 }

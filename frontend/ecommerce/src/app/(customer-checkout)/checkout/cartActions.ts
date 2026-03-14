@@ -4,11 +4,14 @@ import type {
   CartItemDbDTO,
   CartItemDTO,
   CartProductsDTO,
+  PriceSummaryRequest,
+  PriceSummaryResponse,
   TotalPriceFromProductDTO,
   TotalPriceFromProductDTORequest,
 } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 import { revalidatePath } from "next/cache";
+import { CouponTypeDTO } from "./[step]/(cart)/CouponBox";
 
 export async function updateCartAction(values: CartItemDbDTO) {
   await apiFetch<void>(`/cart-service/cart-items/update`, {
@@ -27,6 +30,11 @@ export async function removeFromCartAction(productItemId: string) {
   await apiFetch<void>(`/cart-service/cart-items/delete/${productItemId}`, {
     method: "DELETE",
   });
+}
+
+export async function getCartItemsAction() {
+  const data = await apiFetch<CartItemDTO[]>("/cart-service/cart-items");
+  return data;
 }
 
 export async function getProductDetailsAction(cartItems: CartItemDbDTO[]) {
@@ -49,15 +57,22 @@ export async function moveFromCartToWishlisted(productItemId: string) {
   );
   revalidatePath("/wishlist");
 }
-export async function getTotalProductPrice(
-  body: TotalPriceFromProductDTORequest[],
-) {
-  const data = await apiFetch<TotalPriceFromProductDTO>(
-    "/product-service/get-total-price",
+export async function getTotalProductPrice(body: PriceSummaryRequest) {
+  const data = await apiFetch<PriceSummaryResponse>(
+    "/order-service/public/price-summary",
     {
       method: "POST",
       body,
     },
   );
   return data;
+}
+
+export async function getAllCouponsAction() {
+  try {
+    const data = await apiFetch<CouponTypeDTO[]>(
+      "/offer-service/public/all-coupons",
+    );
+    return data;
+  } catch {}
 }

@@ -63,7 +63,7 @@ const Address = ({
               </GridCol>
               <GridCol span={{ base: 12, lg: 4 }} pl={{ base: 0, lg: 16 }}>
                 <Stack my={16}>
-                  <PriceDetailsBox cartProducts={cartProducts} />
+                  <PriceDetailsBox />
                 </Stack>
               </GridCol>
             </Grid>

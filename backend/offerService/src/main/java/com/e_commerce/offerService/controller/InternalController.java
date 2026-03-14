@@ -1,4 +1,5 @@
 package com.e_commerce.offerService.controller;
+
 import java.math.BigDecimal;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +18,9 @@ public class InternalController {
 
     private final ICouponService couponService;
 
-    @GetMapping("/offer/get-total-price-after-coupon")
-    public BigDecimal getTotalProductDiscountedPriceAfterCoupon(@RequestParam String couponCode, @RequestParam BigDecimal totalProductDiscountedPrice) {
-        return couponService.getTotalProductDiscountedPriceAfterCoupon(couponCode, totalProductDiscountedPrice);
+    @GetMapping("/offer/get-coupon-discount-percent")
+    public BigDecimal getTotalProductDiscountedPriceAfterCoupon(@RequestParam String couponCode,
+            @RequestParam BigDecimal totalProductDiscountedPrice) {
+        return couponService.getCouponDiscountPercent(couponCode, totalProductDiscountedPrice);
     }
 }

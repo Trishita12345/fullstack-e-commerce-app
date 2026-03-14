@@ -47,6 +47,14 @@ spring:
               filters:
                 - StripPrefix=2
                 - UserContext
+
+            - id: payment-service
+              uri: http://localhost:8086
+              predicates:
+                - Path=/api/payment-service/**
+              filters:
+                - StripPrefix=2
+                - UserContext
   security:
     oauth2:
       resourceserver:

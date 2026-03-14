@@ -2,6 +2,12 @@
   "configurations": [
     {
       "type": "java",
+      "name": "PaymentServiceApplication",
+      "request": "launch",
+      "mainClass": "com.e_commerce.paymentService.PaymentServiceApplication"
+    },
+    {
+      "type": "java",
       "name": "ProfileServiceApplication",
       "request": "launch",
       "mainClass": "com.e_commerce.profileService.ProfileServiceApplication"
@@ -67,7 +73,8 @@
       "mainClass": "com.e_commerce.orderService.OrderServiceApplication",
       "projectName": "orderService",
       "args": "",
-      "envFile": "${workspaceFolder}/.env"
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=52101 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=orderService"
     },
     {
       "type": "java",
@@ -76,6 +83,17 @@
       "cwd": "${workspaceFolder}",
       "mainClass": "com.e_commerce.offerService.OfferServiceApplication",
       "projectName": "offerService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=52100 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=offerService"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-PaymentServiceApplication<paymentService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.paymentService.PaymentServiceApplication",
+      "projectName": "paymentService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
     }

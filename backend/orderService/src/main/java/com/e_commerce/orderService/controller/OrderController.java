@@ -1,17 +1,30 @@
 package com.e_commerce.orderService.controller;
 
-import java.math.BigDecimal;
+import java.util.Map;
+import java.util.UUID;
 
+import org.springframework.boot.context.properties.bind.DefaultValue;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
+import com.e_commerce.orderService.model.dto.OrderDetailsResponseDTO;
+import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
+import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
+import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
 import com.e_commerce.orderService.service.IOrderService;
 
+import jakarta.annotation.Nullable;
+
+import org.springframework.http.MediaType;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -20,9 +33,58 @@ import lombok.AllArgsConstructor;
 public class OrderController {
 
     private final IOrderService orderService;
+
     @PostMapping("/place-order")
-    public ResponseEntity<BigDecimal> placeOrder(Authentication authentication, @RequestBody PlaceOrderReqDTO placeOrderReq) {
-        BigDecimal val = orderService.placeOrderAndReserveInventory(authentication.getName(), placeOrderReq);
+    public ResponseEntity<UUID> placeOrder(Authentication authentication,
+            @RequestBody PlaceOrderReqDTO placeOrderReq) {
+        UUID val = orderService.placeOrder(authentication.getName(), placeOrderReq);
         return ResponseEntity.ok(val);
     }
+
+    @PostMapping("/public/price-summary")
+    public ResponseEntity<PriceSummaryResponseDTO> getPriceSummary(
+            @RequestBody PriceSummaryRequestDTO priceSummaryRequestDTO) {
+        PriceSummaryResponseDTO priceSummaryResponse = orderService.getPriceSummary(priceSummaryRequestDTO);
+        return ResponseEntity.ok(priceSummaryResponse);
+    }
+
+    @GetMapping("/get-order-status/{orderId}")
+    public ResponseEntity<OrderStatusResponseDTO> getOrderStatus(@PathVariable UUID orderId) {
+        return ResponseEntity.ok(orderService.getOrderStatus(orderId));
+    }
+
+    @GetMapping("/{orderId}/merchant-key")
+    public ResponseEntity<Map<String, String>> getGatewayMerchantKey(
+            @PathVariable UUID orderId) {
+        return ResponseEntity
+                .ok(Map.of("key",
+                        orderService.getGatewayMerchantKey(orderId)));
+    }
+
+    @GetMapping("/order-details/{orderId}")
+    public ResponseEntity<OrderDetailsResponseDTO> getOrderDetails(@PathVariable UUID orderId) {
+        return ResponseEntity.ok(orderService.getOrderDetailsById(orderId));
+    }
+
+    @GetMapping("/orders/page")
+    public ResponseEntity<Page<OrderDetailsResponseDTO>> getOrderHistory(
+            @RequestParam(required = false, defaultValue = "0") int page, Authentication authentication) {
+        return ResponseEntity.ok(orderService.getOrderDetailsList(page, authentication.getName()));
+    }
+
+    @PostMapping("/abandon-order-status/{orderId}")
+    public ResponseEntity<Map<String, String>> abandonOrderStatus(@PathVariable UUID orderId) {
+        orderService.abandonOrder(orderId);
+        return ResponseEntity.ok(Map.of("message", "Order abandoned successfully"));
+    }
+
+    @GetMapping("/invoice/download/{orderId}")
+    public ResponseEntity<byte[]> downloadInvoice(@PathVariable UUID orderId) {
+        byte[] invoicePdf = orderService.downloadInvoice(orderId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header("Content-Disposition", "attachment; filename=invoice_" + orderId + ".pdf")
+                .body(invoicePdf);
+    }
+
 }

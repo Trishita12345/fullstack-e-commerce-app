@@ -32,3 +32,9 @@ export async function getAddressById(addressId: string) {
   );
   return data;
 }
+export async function getAllAddressesAction() {
+  try {
+    const data = await apiFetch<AddressDTO[]>("/profile-service/address/all");
+    return data;
+  } catch {}
+}

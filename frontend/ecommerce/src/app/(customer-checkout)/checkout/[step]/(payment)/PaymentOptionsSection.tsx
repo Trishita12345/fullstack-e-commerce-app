@@ -1,10 +1,5 @@
 import { notify } from "@/utils/helperFunctions";
 import {
-  faMoneyBill1Wave,
-  faUpRightFromSquare,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
   Button,
   Card,
   Group,
@@ -13,17 +8,21 @@ import {
   Text,
 } from "@mantine/core";
 import Image from "next/image";
-import { title } from "process";
 import { useState } from "react";
 import { placeOrder } from "../../paymentActions";
 import {
+  useCartItems,
   useDonation,
   useGiftWrap,
   useSelectedCouponCode,
 } from "@/utils/store/cart";
+import { PaymentModeType, PlaceOrderReqDTO } from "@/constants/types";
+import { redirect, useRouter } from "next/navigation";
+import { set } from "better-auth";
+import { useSelectedAddressId } from "@/utils/store/address";
 interface ModeCardProps {
-  mode: "COD" | "PAID";
-  selectedMode: "COD" | "PAID";
+  mode: PaymentModeType;
+  selectedMode: PaymentModeType;
   onClick: () => void;
   title: string;
   subtitle: string;
@@ -88,7 +87,7 @@ const modeData = {
     title: "Cash on Delivery ( COD )",
     subtitle: "Pay once the product reached to you, after delivery.",
   },
-  PAID: {
+  PREPAID: {
     title: "Paid ( Prepaid - Card / UPI )",
     subtitle: "Pay now using UPI or CARD for hassle free experience",
   },
@@ -100,22 +99,37 @@ const PaymentOptionsSection = ({
   showLoading: () => void;
   stopLoading: () => void;
 }) => {
+  const [isDisabled, setIsDisabled] = useState(false);
   const donation = useDonation();
   const giftWrap = useGiftWrap();
   const selectedCouponCode = useSelectedCouponCode();
-  const [mode, setMode] = useState<"COD" | "PAID">("COD");
+  const [mode, setMode] = useState<PaymentModeType>(PaymentModeType.PREPAID);
+  const selectedCartItems = useCartItems().filter((c) => c.isSelected);
+  const selectedAddressId = useSelectedAddressId();
+
+  const router = useRouter();
   const handlePlaceOrder = async () => {
     try {
+      setIsDisabled(true);
       showLoading();
-      const data = await placeOrder({ donation, giftWrap, selectedCouponCode });
-      alert(data);
-    } catch {
+      const body: PlaceOrderReqDTO = {
+        donation,
+        giftWrap,
+        selectedCouponCode,
+        paymentMode: mode,
+        paymentGateway: mode === PaymentModeType.COD ? undefined : "RAZORPAY",
+        deliveryAddressId: selectedAddressId!,
+      };
+      const orderId = await placeOrder(body);
+      router.push("/create-checkout-session?orderId=" + orderId);
+    } catch (error) {
+      console.log(error);
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to delete address!",
+        message: "Failed to place order!",
       });
-    } finally {
+      setIsDisabled(false);
       stopLoading();
     }
   };
@@ -126,21 +140,30 @@ const PaymentOptionsSection = ({
       </Text>
 
       <ModeCard
-        mode="COD"
+        mode={PaymentModeType.COD}
         selectedMode={mode}
-        onClick={() => setMode("COD")}
-        title={modeData["COD"].title}
-        subtitle={modeData["COD"].subtitle}
+        onClick={() => setMode(PaymentModeType.COD)}
+        title={modeData[PaymentModeType.COD].title}
+        subtitle={modeData[PaymentModeType.COD].subtitle}
       />
       <ModeCard
-        mode="PAID"
+        mode={PaymentModeType.PREPAID}
         selectedMode={mode}
-        onClick={() => setMode("PAID")}
-        title={modeData["PAID"].title}
-        subtitle={modeData["PAID"].subtitle}
+        onClick={() => setMode(PaymentModeType.PREPAID)}
+        title={modeData[PaymentModeType.PREPAID].title}
+        subtitle={modeData[PaymentModeType.PREPAID].subtitle}
       />
 
-      <Button radius={"md"} color="primaryDark.8" onClick={handlePlaceOrder}>
+      <Button
+        radius={"md"}
+        color="primaryDark.8"
+        onClick={handlePlaceOrder}
+        disabled={
+          isDisabled ||
+          selectedCartItems.length === 0 ||
+          selectedAddressId === undefined
+        }
+      >
         Place Order
       </Button>
     </Stack>

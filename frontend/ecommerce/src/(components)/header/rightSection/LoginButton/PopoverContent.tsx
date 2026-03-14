@@ -20,7 +20,7 @@ import { authClient } from "@/lib/auth-client";
 const PopoverItems: PopoverContentItemProps[] = [
   {
     label: en.orderHistory,
-    href: "/order-history",
+    href: "/orders",
     icon: faClockRotateLeft,
   },
   {

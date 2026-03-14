@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-gst-tax-slabs
+      author: trishita
+      changes:
+        - insert:
+            tableName: gst_tax_slab
+            columns:
+              - column: { name: hsn_code, value: "3406" }
+              - column: { name: gst_rate, valueNumeric: 12.00 }
+              - column:
+                  {
+                    name: description,
+                    value: "Candles (soy, beeswax, scented, decorative)",
+                  }
+
+        - insert:
+            tableName: gst_tax_slab
+            columns:
+              - column: { name: hsn_code, value: "3307" }
+              - column: { name: gst_rate, valueNumeric: 18.00 }
+              - column:
+                  {
+                    name: description,
+                    value: "Wax melts and fragrance preparations",
+                  }
+
+        - insert:
+            tableName: gst_tax_slab
+            columns:
+              - column: { name: hsn_code, value: "7013" }
+              - column: { name: gst_rate, valueNumeric: 12.00 }
+              - column:
+                  {
+                    name: description,
+                    value: "Glass decorative articles and candle holders",
+                  }
+
+        - insert:
+            tableName: gst_tax_slab
+            columns:
+              - column: { name: hsn_code, value: "6912" }
+              - column: { name: gst_rate, valueNumeric: 12.00 }
+              - column:
+                  {
+                    name: description,
+                    value: "Ceramic burners and decor articles",
+                  }
+
+        - insert:
+            tableName: gst_tax_slab
+            columns:
+              - column: { name: hsn_code, value: "8205" }
+              - column: { name: gst_rate, valueNumeric: 18.00 }
+              - column: { name: description, value: "Wick trimmers and tools" }

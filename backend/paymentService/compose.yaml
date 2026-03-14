@@ -1,0 +1,31 @@
+services:
+  payment_service:
+    image: "postgres:16"
+    container_name: payment_service_postgres_container
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d payment_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass123
+      POSTGRES_DB: payment_db
+    ports:
+      - "5437:5432"
+    volumes:
+      - payment_data:/var/lib/postgresql/data
+
+  ngrock:
+    image: "ngrok/ngrok:latest"
+    container_name: ngrock_container
+    restart: always
+    command: http host.docker.internal:8080
+    ports:
+      - "4040:4040"
+    environment:
+      - NGROK_AUTHTOKEN=39yPop8IH9azlDiVhezdUFDbBrL_56moknu8pcpqtw2b8w2xD
+
+volumes:
+  payment_data:

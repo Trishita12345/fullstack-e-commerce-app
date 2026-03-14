@@ -128,6 +128,7 @@ export interface ProductVariant {
   attributes: {
     [key: string]: string;
   };
+  hsn: string;
 }
 
 export interface VariantAttribute {
@@ -229,10 +230,6 @@ export interface TotalPriceFromProductDTO {
   totalBasePrice: number;
   totalDiscountedPrice: number;
 }
-export interface TotalPriceFromProductDTORequest {
-  productItemId: string;
-  quantity: number;
-}
 
 export interface CartProducts {
   sku: string;
@@ -269,8 +266,87 @@ export interface AddressDTO {
   isSelected: boolean;
 }
 
+export enum PaymentModeType {
+  COD = "COD",
+  PREPAID = "PREPAID",
+}
+
 export interface PlaceOrderReqDTO {
   donation: number;
   giftWrap: boolean;
-  selectedCouponCode?: string;
+  selectedCouponCode: string | null;
+  paymentMode: PaymentModeType;
+  paymentGateway?: string;
+  deliveryAddressId: string;
+}
+export interface PriceSummaryResponse {
+  itemsTotalMrp: number;
+  productDiscount: number;
+  couponDiscount: number;
+  donation: number;
+  giftWrapFee: number;
+  payableAmount: number;
+  shippingFee: number;
+  amountToAvoidShippingFee: number;
+}
+
+export interface TotalPriceFromProductDTORequest {
+  productItemId: string;
+  quantity: number;
+}
+export interface PriceSummaryRequest {
+  donation: number;
+  giftWrap: boolean;
+  selectedCouponCode: string | null;
+  cartItems: {
+    productItemId: string;
+    quantity: number;
+  }[];
+}
+
+export interface OrderStatusPollingResponse {
+  orderId: string;
+  orderStatus: string;
+  paymentStatus: string;
+  transactionId: string;
+  gatewayOrderId: string;
+  amount: number;
+  paymentMode: string;
+}
+
+export interface PriceSummary {
+  itemsTotalMrp: number;
+  itemsTotalMrpAfterDiscount: number;
+  couponDiscount: number;
+  donation: number;
+  giftWrapFee: number;
+  shippingFee: number;
+  totalPaidAmount: number;
+}
+
+export interface OrderItem {
+  orderItemId: string;
+  sku: string;
+  productName: string;
+  productImg: string;
+  quantity: number;
+  basePrice: number;
+  sellingPrice: number;
+  couponDiscount: number;
+  finalPrice: number;
+}
+export interface OrderDetailsDTO {
+  orderId: string;
+  orderStatus: string;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  priceSummary: PriceSummary;
+  paymentMode: string;
+  paymentStatus: string;
+  canRetryPayment: boolean;
+  canCancel: boolean;
+  items: OrderItem[];
+  deliveryName: string;
+  deliveryAddressDetails: string;
+  contactNumber: string;
 }

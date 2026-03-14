@@ -4,6 +4,8 @@ import { formattedPrice } from "@/utils/helperFunctions";
 export const en = {
   logoText: "Loom & Lume",
   logoName: "Loom&Lume",
+  companyEmail: "support@loomandlume.com",
+  companyPhone: "+91-8667734932",
   commonPageTitle: "Loom&Lume - Luxury Handmade Candle Store",
   logoTagline: "Where Craft Meets Light.",
   appDescription: "Luxury handcrafted candles inspired by calm.",

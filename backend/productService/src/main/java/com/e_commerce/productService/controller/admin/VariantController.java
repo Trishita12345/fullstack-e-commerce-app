@@ -1,5 +1,6 @@
 package com.e_commerce.productService.controller.admin;
 
+import com.e_commerce.productService.model.dto.common.SelectOptionDTO;
 import com.e_commerce.productService.model.dto.variant.VariantDTO;
 import com.e_commerce.productService.model.dto.variant.VariantWithCategoryDTO;
 import com.e_commerce.productService.service.IVariantService;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -70,5 +72,11 @@ public class VariantController {
     public ResponseEntity<VariantDTO> editVariant(@PathVariable UUID categoryId, @PathVariable UUID variantId,
             @Valid @RequestBody VariantDTO variantDTO) {
         return ResponseEntity.ok(variantService.editVariant(categoryId, variantId, variantDTO));
+    }
+
+    @GetMapping("/gst-details")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<List<SelectOptionDTO<String>>> getGSTDetails() {
+        return ResponseEntity.ok(variantService.getGSTDetails());
     }
 }

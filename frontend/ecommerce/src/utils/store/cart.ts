@@ -4,13 +4,15 @@ import { CouponTypeDTO } from "@/app/(customer-checkout)/checkout/[step]/(cart)/
 import {
   CartItemDbDTO,
   CartItemDTO,
-  TotalPriceFromProductDTO,
-  TotalPriceFromProductDTORequest,
+  PriceSummaryRequest,
+  PriceSummaryResponse,
 } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { GIFT_WRAP_CHARGE } from "../constants";
+import {
+  getAllCouponsAction,
+  getTotalProductPrice,
+} from "@/app/(customer-checkout)/checkout/cartActions";
 
 type CartActions = {
   setCartItems: (cartItem: CartItemDTO[]) => void;
@@ -21,21 +23,19 @@ type CartActions = {
   setDonation: (amount: number) => void;
   setGiftWrap: () => void;
   setSelectedCouponCode: (selectedCouponCode: string | undefined) => void;
-  getInitialCartData: () => Promise<void>;
   getAllCoupons: () => Promise<void>;
   clearCartData: () => void;
-  setTotalPrice: (body: TotalPriceFromProductDTORequest[]) => Promise<void>;
+  setPriceSummary: (body: PriceSummaryRequest) => Promise<void>;
 };
 
 type CartState = {
   cartItems: CartItemDTO[];
   donation: number;
   giftWrap: boolean;
-  selectedCouponCode: string | undefined;
+  selectedCouponCode: string | null;
   allCoupons: CouponTypeDTO[];
   actions: CartActions;
-  totalBasePrice: number;
-  totalDiscountedPrice: number;
+  priceSummary: PriceSummaryResponse;
 };
 const useCartStore = create<CartState>()(
   persist(
@@ -44,9 +44,17 @@ const useCartStore = create<CartState>()(
       allCoupons: [],
       donation: 0,
       giftWrap: false,
-      selectedCouponCode: undefined,
-      totalBasePrice: 0,
-      totalDiscountedPrice: 0,
+      selectedCouponCode: null,
+      priceSummary: {
+        itemsTotalMrp: 0,
+        productDiscount: 0,
+        couponDiscount: 0,
+        donation: 0,
+        giftWrapFee: 0,
+        payableAmount: 0,
+        shippingFee: 0,
+        amountToAvoidShippingFee: 0,
+      },
       actions: {
         setCartItems(cartItems) {
           set({ cartItems });
@@ -108,18 +116,8 @@ const useCartStore = create<CartState>()(
             selectedCouponCode: undefined,
           }));
         },
-        async getInitialCartData() {
-          const cartItemsFromDb = await apiFetch<CartItemDTO[]>(
-            "/cart-service/cart-items",
-          );
-          set({
-            cartItems: cartItemsFromDb,
-          });
-        },
         async getAllCoupons() {
-          const couponsFromDb = await apiFetch<CouponTypeDTO[]>(
-            "/offer-service/public/all-coupons",
-          );
+          const couponsFromDb = await getAllCouponsAction();
           set({
             allCoupons: couponsFromDb,
           });
@@ -139,19 +137,9 @@ const useCartStore = create<CartState>()(
         setSelectedCouponCode(selectedCouponCode) {
           set({ selectedCouponCode });
         },
-        async setTotalPrice(body: TotalPriceFromProductDTORequest[]) {
-          const { totalBasePrice, totalDiscountedPrice } =
-            await apiFetch<TotalPriceFromProductDTO>(
-              "/product-service/public/products/get-total-price",
-              {
-                method: "POST",
-                body,
-              },
-            );
-          set({
-            totalBasePrice,
-            totalDiscountedPrice,
-          });
+        async setPriceSummary(body: PriceSummaryRequest) {
+          const priceSummary = await getTotalProductPrice(body);
+          set({ priceSummary });
         },
       },
     }),
@@ -181,17 +169,11 @@ export const useCouponDetailsByCouponCode = (couponCode: string) =>
   );
 export const useSelectedCouponDetails = () =>
   useCartStore((state) =>
-    state.allCoupons.find((c) => c.couponCode === state.selectedCouponCode),
+    state.selectedCouponCode === null
+      ? null
+      : state.allCoupons.find((c) => c.couponCode === state.selectedCouponCode),
   );
 export const useAllCoupons = () => useCartStore((state) => state.allCoupons);
 
-// export const usePlaceOrderReqBody = () =>
-//   useCartStore((state) => ({
-//     donation: state.donation,
-//     giftWrap: state.giftWrap,
-//     selectedCouponCode: state.selectedCouponCode,
-//   }));
-export const useTotalBasePrice = () =>
-  useCartStore((state) => state.totalBasePrice);
-export const useTotalDiscountedPrice = () =>
-  useCartStore((state) => state.totalDiscountedPrice);
+export const usePriceSummary = () =>
+  useCartStore((state) => state.priceSummary);

@@ -11,6 +11,7 @@ import { authClient } from "@/lib/auth-client";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
 import { CartItemDTO, CartProductsDTO } from "@/constants/types";
 import {
+  getCartItemsAction,
   getProductDetailsAction,
   updateOverallCartAction,
 } from "../cartActions";
@@ -18,6 +19,7 @@ import Address from "./(address)";
 import { useSession } from "@/utils/store/session";
 import { useAddressActions } from "@/utils/store/address";
 import Payment from "./(payment)";
+import { apiFetch } from "@/lib/apiFetch";
 
 const Checkout = () => {
   const { step } = useParams<{ step: string }>();
@@ -25,22 +27,11 @@ const Checkout = () => {
   const [cartDataLoaded, setCartDataLoaded] = useState<boolean>(false);
   const session = useSession();
   const isLoggedIn = Boolean(session?.user?.id);
-  const { getInitialCartData, setCartItems } = useCartActions();
+  const { setCartItems } = useCartActions();
   const cartItems = useCartItems();
   const [cartProducts, setCartProducts] = useState<CartProductsDTO>({});
   const [isLoading, setIsLoading] = useState(true);
   const { getAllAddresses } = useAddressActions();
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      (async () => {
-        await getInitialCartData();
-        setCartDataLoaded(true);
-      })();
-    } else {
-      setCartDataLoaded(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -50,8 +41,13 @@ const Checkout = () => {
     }
   }, []);
 
-  const getCartProducts = async () => {
+  const getCartProducts = async (cartItems: CartItemDTO[]) => {
     try {
+      if (cartItems.length === 0) {
+        setCartItems([]);
+        setIsLoading(false);
+        return;
+      }
       const data = await getProductDetailsAction(cartItems);
       setCartProducts(data);
       const updatedCart = cartItems.map((c) => ({
@@ -74,17 +70,28 @@ const Checkout = () => {
         } else updatedCartInStock.push(i);
       });
       setCartItems([...updatedCartInStock, ...updatedCartOutOfStock]);
+      setIsLoading(false);
     } catch {
-    } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (cartDataLoaded) {
-      getCartProducts();
-    }
-  }, [cartDataLoaded]);
+    (async () => {
+      try {
+        if (isLoggedIn) {
+          setIsLoading(true);
+          const cartItemsFromDb = await getCartItemsAction();
+          getCartProducts(cartItemsFromDb);
+        } else {
+          getCartProducts(cartItems);
+        }
+      } catch (err) {
+        setIsLoading(false);
+      }
+    })();
+  }, [isLoggedIn]);
+
   return (
     <Box pos="relative">
       <LoadingOverlay

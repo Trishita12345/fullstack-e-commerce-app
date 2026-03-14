@@ -7,7 +7,7 @@ export function formattedPrice(amount: number) {
   const formatted = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
-    maximumFractionDigits: 0, // no paise
+    maximumFractionDigits: 2, // no paise
   }).format(amount);
 
   return formatted;
@@ -190,3 +190,6 @@ export const scrollToId = (id: string, offset = 0) => {
     behavior: "smooth",
   });
 };
+export function capitalizeString(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}

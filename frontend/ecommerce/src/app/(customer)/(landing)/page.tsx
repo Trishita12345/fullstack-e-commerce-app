@@ -4,6 +4,7 @@ import Banner from "./banner";
 import ExploreProducts from "./explore-products";
 import InspiringStories from "./inspiring-stories";
 import ShopByCategories from "./shop-by-categories";
+import { Footer } from "@/(components)/footer";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
         <FastShipping />
         <Testimonials />
         <InspiringStories />
+        <Footer />
       </main>
     </div>
   );

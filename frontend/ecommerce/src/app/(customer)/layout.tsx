@@ -10,7 +10,7 @@ export default function CustomerLayout({
     <>
       <Header />
       {children}
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

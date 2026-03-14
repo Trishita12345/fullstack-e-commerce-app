@@ -1,8 +1,8 @@
-package com.e_commerce.profileService.model.dto;
+package com.e_commerce.common.model.dto;
 
 import java.util.UUID;
 
-import com.e_commerce.profileService.model.enums.AddressType;
+import com.e_commerce.common.model.enums.AddressType;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +16,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class AddressDTO {
-    
+
     @Nullable
     private UUID addressId;
 
@@ -61,5 +61,5 @@ public class AddressDTO {
 
     @NotNull
     private Boolean isDefault;
-    
+
 }

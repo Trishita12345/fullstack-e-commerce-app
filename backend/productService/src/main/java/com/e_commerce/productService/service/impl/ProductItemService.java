@@ -1,8 +1,11 @@
 package com.e_commerce.productService.service.impl;
 
 import com.e_commerce.common.model.dto.CartItemDTO;
+import com.e_commerce.common.model.dto.ProductPriceDTO;
+import com.e_commerce.common.model.dto.ProductPriceDetailsDTO;
 import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
 import com.e_commerce.productService.model.Category;
+import com.e_commerce.productService.model.GstTaxSlab;
 import com.e_commerce.productService.model.Product;
 import com.e_commerce.productService.model.ProductItem;
 import com.e_commerce.productService.model.ProductItemImage;
@@ -16,10 +19,13 @@ import com.e_commerce.productService.model.dto.productItem.ImageDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
 import com.e_commerce.productService.model.dto.productItem.ProductItemListingDTO;
+import com.e_commerce.productService.model.dto.productItem.ProductItemPriceDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
+import com.e_commerce.productService.repository.IGstTaxSlabRepository;
 import com.e_commerce.productService.repository.IProductItemImageRepository;
 import com.e_commerce.productService.repository.IProductItemRepository;
 import com.e_commerce.productService.repository.IVariantAttributeRepository;
+import com.e_commerce.productService.service.IInventoryReservationService;
 import com.e_commerce.productService.service.IProductItemService;
 import com.e_commerce.productService.service.IProductService;
 import com.e_commerce.productService.service.IS3Service;
@@ -52,7 +58,9 @@ public class ProductItemService implements IProductItemService {
         private final IVariantAttributeRepository variantAttributeRepository;
         private final IProductItemRepository productItemRepository;
         private final IProductItemImageRepository productItemImageRepository;
+        private final IInventoryReservationService inventoryReservationService;
         private final IS3Service s3Service;
+        private final IGstTaxSlabRepository gstTaxSlabRepository;
 
         @Override
         public List<ProductVariantAttributesDTO> getVariantAttributesByCategoryId(UUID productId) {
@@ -66,6 +74,10 @@ public class ProductItemService implements IProductItemService {
         public UUID addProductItem(UUID productId, ProductItemDTO dto) {
 
                 Product product = productService.getProduct(productId);
+                GstTaxSlab gstTaxSlab = null;
+                if (dto.getHsn() != null && !dto.getHsn().isEmpty()) {
+                        gstTaxSlab = gstTaxSlabRepository.findById(dto.getHsn()).orElse(null);
+                }
 
                 ProductItem productItem = ProductItem.builder()
                                 .sku(dto.getSku())
@@ -73,6 +85,7 @@ public class ProductItemService implements IProductItemService {
                                 .basePrice(dto.getBasePrice())
                                 .discountedPrice(dto.getDiscountedPrice())
                                 .product(product)
+                                .gstTaxSlab(gstTaxSlab)
                                 .build();
                 Set<VariantAttribute> attributes = variantAttributeRepository
                                 .findByNameIn(new HashSet<>(dto.getAttributes().values()));
@@ -115,6 +128,7 @@ public class ProductItemService implements IProductItemService {
                                 .discountedPrice(productItem.getDiscountedPrice())
                                 .imgUrls(images)
                                 .attributes(attMap)
+                                .hsn(productItem.getGstTaxSlab().getHsnCode())
                                 .build();
         }
 
@@ -335,71 +349,83 @@ public class ProductItemService implements IProductItemService {
                                 });
                 return map;
         }
-        
+
         @Override
         public TotalProductPriceResponseDTO getTotalProductPrice(List<CartItemDTO> cartItems) {
                 Map<UUID, ProductItem> productItemMap = productItemRepository
                                 .findAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
                                 .stream()
                                 .collect(Collectors.toMap(
-                                        ProductItem::getId,
-                                        productItem -> productItem
-                                ));
+                                                ProductItem::getId,
+                                                productItem -> productItem));
                 BigDecimal totalBasePrice = BigDecimal.valueOf(0);
-                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);       
+                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);
                 for (CartItemDTO ci : cartItems) {
                         ProductItem productItem = productItemMap.get(ci.getProductItemId());
 
                         BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());
 
                         totalBasePrice = totalBasePrice.add(
-                                productItem.getBasePrice().multiply(quantity)
-                        );
+                                        productItem.getBasePrice().multiply(quantity));
 
                         totalDiscountedPrice = totalDiscountedPrice.add(
-                                productItem.getDiscountedPrice().multiply(quantity)
-                        );
+                                        productItem.getDiscountedPrice().multiply(quantity));
                 }
 
                 return TotalProductPriceResponseDTO.builder()
-                        .totalBasePrice(totalBasePrice)
-                        .totalDiscountedPrice(totalDiscountedPrice)
-                        .build();
+                                .totalBasePrice(totalBasePrice)
+                                .totalDiscountedPrice(totalDiscountedPrice)
+                                .build();
         }
 
         @Override
-        public BigDecimal getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems) {
-                Map<UUID, ProductItem> productItemMap = productItemRepository
-                                .findAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
+        public ProductPriceDTO getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems) {
+                List<ProductPriceDetailsDTO> productPriceDetailsDTOs = new ArrayList<>();
+                Map<UUID, ProductItemPriceDTO> productItemMap = productItemRepository
+                                .getAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
                                 .stream()
                                 .collect(Collectors.toMap(
-                                        ProductItem::getId,
-                                        productItem -> productItem
-                                ));
-                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);       
+                                                ProductItemPriceDTO::getId,
+                                                productItem -> productItem));
+                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);
+                BigDecimal totalBasePrice = BigDecimal.valueOf(0);
                 for (CartItemDTO ci : cartItems) {
-                        ProductItem productItem = productItemMap.get(ci.getProductItemId());
+                        ProductItemPriceDTO productItem = productItemMap.get(ci.getProductItemId());
                         if (productItem == null) {
                                 throw new RuntimeException(
-                                        "Product not found: " + ci.getProductItemId()
-                                );
+                                                "Product not found: " + ci.getProductItemId());
                         }
 
-                        if (productItem.getAvailableStock() < ci.getQuantity()) {
+                        if (inventoryReservationService.getSellableStock(productItem.getId()) < ci.getQuantity()) {
                                 throw new RuntimeException(
-                                        "Insufficient stock for product: " + productItem.getId()
-                                );
+                                                "Insufficient stock for product: " + productItem.getId());
                         }
-                        BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());    
+                        BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());
+                        ProductPriceDetailsDTO productPriceDetailsDTO = ProductPriceDetailsDTO
+                                        .builder()
+                                        .productName(productItem.getProductName())
+                                        .productItemThumbnailImage(productItem.getThumbnailImage())
+                                        .inventoryBasePrice(productItem.getBasePrice())
+                                        .inventoryDiscountedPrice(productItem.getDiscountedPrice())
+                                        .quantity(ci.getQuantity())
+                                        .productItemId(productItem.getId())
+                                        .sku(productItem.getSku())
+                                        .gstPercentage(productItem.getGstRate())
+                                        .build();
+                        productPriceDetailsDTOs.add(productPriceDetailsDTO);
+                        totalBasePrice = totalBasePrice.add(
+                                        productItem.getBasePrice().multiply(quantity));
 
                         totalDiscountedPrice = totalDiscountedPrice.add(
-                                productItem.getDiscountedPrice().multiply(quantity)
-                        );
+                                        productItem.getDiscountedPrice().multiply(quantity));
                 }
 
-                return totalDiscountedPrice;
+                return ProductPriceDTO
+                                .builder()
+                                .totalPrice(totalDiscountedPrice)
+                                .totalBasePrice(totalBasePrice)
+                                .priceDetailsDTOs(productPriceDetailsDTOs)
+                                .build();
         }
- 
-
 
 }
