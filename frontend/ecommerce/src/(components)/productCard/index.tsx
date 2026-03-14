@@ -1,64 +1,69 @@
-import { ProductsListingProps } from "@/constants/types";
-import { formattedPrice } from "@/utils/helperFunctions";
+import { ProductItem, SearchProductVariant } from "@/constants/types";
+import { formattedPrice, getRandomRating } from "@/utils/helperFunctions";
 import {
-  ActionIcon,
-  Button,
-  Grid,
-  GridCol,
   Group,
   Rating,
   Stack,
   Text,
 } from "@mantine/core";
-import { IconHeart, IconHeartFilled, IconPlus } from "@tabler/icons-react";
-import ResponsiveImage from "../responsiveImage";
-import { en } from "@/constants/en";
 import Link from "next/link";
 import "./productCard.css";
+import Image from "next/image";
 
-const ProductCard = ({ product }: { product: ProductsListingProps }) => {
+const ProductCard = ({ product, isPLP = false }: { product: ProductItem; isPLP?: boolean }) => {
+  const { productItemId, images, productName, sellingPrice, basePrice, discountPercentage, category, variants } = product;
+  const attributeValues = variants.map((variant: SearchProductVariant) => variant.value);
+  const productAddedToCart = false;
+  const productAddedToWishList = false;
+  const thumbnailUrl = images.find((img) => img.isThumbnail)?.imgUrl;
   return (
-    <Stack w={320} gap={8} className="product-card">
-      <Link href={`/products/${"8c3d56ab-640f-42fd-aebe-fc6a6d441db9"}`}>
-        <Stack w={320} gap={8} style={{ cursor: "pointer" }}>
-          <ResponsiveImage src={product.imgUrl} />
+    <Stack w={280} gap={8} className="product-card">
+      <Link href={`/products/${productItemId}`}>
+        <Stack w={280} gap={8} style={{ cursor: "pointer" }}>
+          <Image src={thumbnailUrl ?? ''} width={280} height={280} alt={productItemId} />
           <Group justify="space-between" className="product-card-1">
-            <Text size="xs">{product.subCategory}</Text>
+            <Text size="xs">{category}</Text>
             <Rating
-              value={product.rating}
+              value={getRandomRating()}
               fractions={2}
               color="primaryDark.6"
               size={"xs"}
             />
           </Group>
-          <Text fw={500} size="lg" className="product-card-1">
-            {product.name}
+          <Text fw={500} className="product-card-1" lineClamp={1} size="sm" mt={4}>
+            {productName}
           </Text>
-          {product?.discountedPrice ? (
+          <Text size="11px" className="product-card-1" tt={"uppercase"} fw={500} lts={0.5} mb={4}>
+            {attributeValues.join(" | ")}
+          </Text>
+          {basePrice !== sellingPrice ? (
             <Group gap={8} className="product-card-1">
-              <Text td="line-through" size="md" c={"black.7"}>
-                {formattedPrice(product.basePrice)}
+              <Text td="line-through" c={"black.7"}>
+                {formattedPrice(basePrice)}
               </Text>
-              <Text size="xl" fw={700} c={"primaryDark.8"}>
-                {formattedPrice(product.discountedPrice)}
+              <Text size="lg" fw={600} c={"primaryDark.8"}>
+                {formattedPrice(sellingPrice)}
+              </Text>
+              <Text size="xs" fw={500} c={"orange.6"}>
+                ({Math.floor(discountPercentage)}% OFF)
               </Text>
             </Group>
           ) : (
             <Text
-              size="xl"
-              fw={700}
+              size="lg"
+              fw={600}
               c={"primaryDark.8"}
               className="product-card-1"
             >
-              {formattedPrice(product.basePrice)}
+              {formattedPrice(basePrice)}
             </Text>
           )}
         </Stack>
       </Link>
-      <Grid gutter={8} className="product-card-1" pb={16}>
+      {/* <Grid gutter={8} className="product-card-1" pb={16}>
         <GridCol span={10}>
-          {product.addedToCart ? (
-            <Button color="black.9" size={"md"} fullWidth>
+          {productAddedToCart ? (
+            <Button color="black.9" size={"md"} fullWidth >
               {en.goToCart}
             </Button>
           ) : (
@@ -75,14 +80,14 @@ const ProductCard = ({ product }: { product: ProductsListingProps }) => {
                 },
               }}
             >
-              <Text ml={48} fw={500}>
+              <Text ml={36} fw={500}>
                 {en.addToCart}
               </Text>
             </Button>
           )}
         </GridCol>
         <GridCol span={2}>
-          {product.addedToWishList ? (
+          {productAddedToWishList ? (
             <ActionIcon variant="outline" color="black.9" h="100%" w="100%">
               <IconHeartFilled
                 style={{ width: "50%", height: "50%" }}
@@ -95,7 +100,7 @@ const ProductCard = ({ product }: { product: ProductsListingProps }) => {
             </ActionIcon>
           )}
         </GridCol>
-      </Grid>
+      </Grid> */}
     </Stack>
   );
 };

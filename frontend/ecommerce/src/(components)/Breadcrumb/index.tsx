@@ -29,7 +29,6 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
                 tt={"uppercase"}
                 fw={600}
                 style={{
-                  cursor: "pointer",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",

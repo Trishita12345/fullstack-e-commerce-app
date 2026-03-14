@@ -2,6 +2,12 @@
   "configurations": [
     {
       "type": "java",
+      "name": "SeachEngineServiceApplication",
+      "request": "launch",
+      "mainClass": "com.e_commerce.seachEngineService.SeachEngineServiceApplication"
+    },
+    {
+      "type": "java",
       "name": "PaymentServiceApplication",
       "request": "launch",
       "mainClass": "com.e_commerce.paymentService.PaymentServiceApplication"

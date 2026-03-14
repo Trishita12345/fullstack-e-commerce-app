@@ -1,8 +1,8 @@
 import ProductCard from "@/(components)/productCard";
 import { en } from "@/constants/en";
-import { ProductsListingProps } from "@/constants/types";
+import { ProductItem, ProductsListingProps } from "@/constants/types";
 import { Box, Group, Stack, Text, Title } from "@mantine/core";
-import { products } from "./products";
+import { productsResponse } from "./products";
 import SeeAllProductsBtn from "./SeeAllProductsBtn";
 
 const ExploreProducts = () => {
@@ -35,9 +35,9 @@ const ExploreProducts = () => {
           {en.exploreTrendingProductsDesc}
         </Text>
       </Stack>
-      <Group mt={72} w={"90%"} mx={"auto"} gap={48} justify="center">
-        {products.map((item: ProductsListingProps) => (
-          <ProductCard product={item} key={item.id} />
+      <Group mt={72} w={"90%"} mx={"auto"} gap={32} justify="center">
+        {productsResponse.products.content.map((item: ProductItem) => (
+          <ProductCard product={item} key={item.productItemId} />
         ))}
       </Group>
       <SeeAllProductsBtn />
