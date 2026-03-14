@@ -1,5 +1,6 @@
 package com.e_commerce.common.model.event;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,6 +52,12 @@ public class ProductSearchDocumentEvent {
     private Double discountPercentage;
 
     private Boolean inStock;
+
+    private Integer stockQuantity;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     private List<ImageDTO> images;
 

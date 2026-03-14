@@ -10,6 +10,7 @@ import com.e_commerce.seachEngineService.model.VariantDocument;
 import com.e_commerce.seachEngineService.repository.IProductSearchRepository;
 import com.e_commerce.seachEngineService.service.IProductSearchService;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,8 +21,8 @@ public class ProductSearchService implements IProductSearchService {
     private final IProductSearchRepository repository;
 
     @Override
-    public void indexProduct(ProductSearchDocumentEvent event) {
-        ProductSearchDocument document = convertToDocument(event);
+    public void indexProduct(ProductSearchDocumentEvent event, ProductSearchDocument existingDocument) {
+        ProductSearchDocument document = convertToDocument(event, existingDocument);
         repository.save(document);
     }
 
@@ -39,11 +40,12 @@ public class ProductSearchService implements IProductSearchService {
         if (document != null) {
             repository.save(document);
         } else {
-            indexProduct(event);
+            indexProduct(event, document);
         }
     }
 
-    private ProductSearchDocument convertToDocument(ProductSearchDocumentEvent event) {
+    private ProductSearchDocument convertToDocument(ProductSearchDocumentEvent event,
+            ProductSearchDocument existingDocument) {
         ProductSearchDocument document = ProductSearchDocument.builder()
                 .productId(event.getProductId())
                 .productItemId(event.getProductItemId())
@@ -52,6 +54,14 @@ public class ProductSearchService implements IProductSearchService {
                 .sellingPrice(event.getSellingPrice())
                 .discountPercentage(event.getDiscountPercentage())
                 .inStock(event.getInStock())
+                .stockQuantity(event.getStockQuantity())
+                .createdAt(event.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant())
+                .updatedAt(event.getUpdatedAt().atZone(ZoneId.systemDefault()).toInstant())
+                .purchaseCount(existingDocument != null ? existingDocument.getPurchaseCount() : 0)
+                .rankingBoost(existingDocument != null ? existingDocument.getRankingBoost() : 0.0)
+                .rating(existingDocument != null ? existingDocument.getRating() : 0.0)
+                .ratingCount(existingDocument != null ? existingDocument.getRatingCount() : 0)
+                .trendingScore(existingDocument != null ? existingDocument.getTrendingScore() : 0.0)
                 .category(event.getCategory())
                 .build();
         List<ImageDocument> imageDocuments = event.getImages().stream()

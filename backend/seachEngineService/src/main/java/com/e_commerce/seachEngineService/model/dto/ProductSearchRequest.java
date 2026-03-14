@@ -28,4 +28,9 @@ public class ProductSearchRequest {
     private int size = 20;
 
     private String sortBy;
+    private String dir;
+
+    public boolean isAsc() {
+        return "asc".equalsIgnoreCase(dir);
+    }
 }

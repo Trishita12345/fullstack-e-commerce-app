@@ -32,7 +32,9 @@ public class SerchEngineServiceController {
             @RequestParam(required = false) Boolean inStock,
             @RequestParam(required = false) List<String> variant,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String dir) {
 
         ProductSearchRequest request = ProductSearchRequest.builder()
                 .keyword(q)
@@ -43,6 +45,8 @@ public class SerchEngineServiceController {
                 .variants(parseVariants(variant))
                 .page(page)
                 .size(size)
+                .sortBy(sortBy)
+                .dir(dir)
                 .build();
 
         return ResponseEntity.ok(searchQueryService.search(request));

@@ -76,6 +76,9 @@ public class ProductDataIngestionService implements IProductDataIngestionService
                         * 100;
                 event.setDiscountPercentage(discount > 0 ? discount : 0);
                 event.setInStock(productItem.getAvailableStock() > 0);
+                event.setStockQuantity(productItem.getAvailableStock());
+                event.setCreatedAt(productItem.getCreatedAt());
+                event.setUpdatedAt(productItem.getUpdatedAt());
                 List<ProductSearchDocumentEvent.ImageDTO> imageDTOs = productItemImageRepository
                         .findByProductItem_Id(productItem.getId()).stream()
                         .map(img -> new ProductSearchDocumentEvent.ImageDTO(s3Service.buildFullUrl(img.getImgUrl()),
