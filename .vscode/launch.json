@@ -96,6 +96,16 @@
       "projectName": "paymentService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-SeachEngineServiceApplication<seachEngineService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.seachEngineService.SeachEngineServiceApplication",
+      "projectName": "seachEngineService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

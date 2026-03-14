@@ -55,6 +55,14 @@ spring:
               filters:
                 - StripPrefix=2
                 - UserContext
+
+            - id: search-service
+              uri: http://localhost:8087
+              predicates:
+                - Path=/api/search-service/**
+              filters:
+                - StripPrefix=2
+                - UserContext
   security:
     oauth2:
       resourceserver:

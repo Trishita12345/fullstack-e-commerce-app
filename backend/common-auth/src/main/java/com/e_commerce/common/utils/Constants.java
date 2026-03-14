@@ -9,6 +9,8 @@ public class Constants {
     public static final String PAYMENT_CREATED_TOPIC = "payment-created";
     public static final String PAYMENT_SUCCESS_TOPIC = "payment-success";
     public static final String ORDER_FULFILLED_TOPIC = "order-fulfilled";
+    public static final String PRODUCT_SEARCH_INDEX_UPDATED_TOPIC = "product-search-index-updated";
+    public static final String PRODUCT_SEARCH_INDEX_DELETED_TOPIC = "product-search-index-deleted";
 
     public static final BigDecimal GIFT_WRAP_CHARGE = BigDecimal.valueOf(35);
     public static final BigDecimal SHIPPING_CHARGE = BigDecimal.valueOf(99);
