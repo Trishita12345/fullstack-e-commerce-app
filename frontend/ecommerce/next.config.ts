@@ -1,5 +1,8 @@
 
 const nextConfig = {
+  allowedDevOrigins: [
+    'loomandloom.shop',
+  ],
   // logging: {
   //   fetches: {
   //     fullUrl: true,

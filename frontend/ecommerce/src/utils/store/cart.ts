@@ -81,10 +81,10 @@ const useCartStore = create<CartState>()(
               cartItems: state.cartItems.map((ci) =>
                 ci.productItemId === cartItem.productItemId
                   ? {
-                      ...ci,
-                      quantity: cartItem.quantity,
-                      updatedQuantity: cartItem.quantity,
-                    }
+                    ...ci,
+                    quantity: cartItem.quantity,
+                    updatedQuantity: cartItem.quantity,
+                  }
                   : ci,
               ),
               selectedCouponCode: undefined,

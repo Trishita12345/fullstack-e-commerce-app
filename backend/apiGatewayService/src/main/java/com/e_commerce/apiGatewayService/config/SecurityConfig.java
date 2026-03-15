@@ -95,14 +95,14 @@ public class SecurityConfig {
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
         return NimbusReactiveJwtDecoder
-                .withJwkSetUri("http://localhost:3000/api/auth/jwks")
+                .withJwkSetUri(allowedOrigin + "/api/auth/jwks")
                 .build();
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(allowedOrigin)); // Your Vite frontend URL
+        configuration.setAllowedOrigins(List.of(allowedOrigin, "api." + allowedOrigin)); // Your Vite frontend URL
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // if using cookies / auth headers
