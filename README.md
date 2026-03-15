@@ -1,5 +1,3 @@
----
-
 # Fullstack E-Commerce Platform
 
 A **microservices-based e-commerce platform** with a modern frontend and scalable backend architecture.
