@@ -58,7 +58,6 @@ export async function generateMetadata({ params }: PageProps) {
 const PDP = async ({ params }: PageProps) => {
   const { productItemId } = await params;
   const pdpData = await getPDPData(productItemId);
-  console.log("pdpData: ", pdpData);
   const reviews = reviewData;
   const breadcrumbs = [
     { title: "Home", href: "/" },
@@ -79,7 +78,7 @@ const PDP = async ({ params }: PageProps) => {
         borderTop: `1.5px solid var(--mantine-color-gray-1)`,
       }}
     >
-      <Box w={{ base: "90%", md: "85%" }} mx="auto" py={48}>
+      <Box w={{ base: "90%", md: "85%" }} mx="auto" py={32}>
         <Breadcrumb items={breadcrumbs} />
         <Grid>
           <GridCol span={{ base: 12, sm: 5.7, md: 5.5, lg: 5 }}>

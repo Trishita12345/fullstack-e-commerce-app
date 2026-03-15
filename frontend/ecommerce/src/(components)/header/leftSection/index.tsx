@@ -8,7 +8,7 @@ import Hamburger from "./Hamburger";
 const navData: NavItem[] = [
   {
     label: en.store,
-    href: "/store",
+    href: "/products",
   },
   {
     label: en.about,

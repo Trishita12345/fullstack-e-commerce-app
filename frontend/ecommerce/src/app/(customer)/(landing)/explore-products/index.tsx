@@ -1,11 +1,22 @@
 import ProductCard from "@/(components)/productCard";
 import { en } from "@/constants/en";
-import { ProductsListingProps } from "@/constants/types";
+import { PLPResponseDTO, ProductDetailsDTO, ProductItem, ProductsListingProps } from "@/constants/types";
 import { Box, Group, Stack, Text, Title } from "@mantine/core";
-import { products } from "./products";
+import { productsResponse } from "./products";
 import SeeAllProductsBtn from "./SeeAllProductsBtn";
+import { apiFetch } from "@/lib/apiFetch";
 
-const ExploreProducts = () => {
+async function getPLPData() {
+  return await apiFetch<PLPResponseDTO>(
+    `/search-service/public/search?size=8`,
+    {
+      cache: "force-cache",
+      revalidate: 3600,
+    },
+  );
+}
+const ExploreProducts = async () => {
+  const plpData = await getPLPData();
   return (
     <Box bg="gray.0" py={96} px={24}>
       <Stack w={"100%"} justify="center" gap={8}>
@@ -35,9 +46,9 @@ const ExploreProducts = () => {
           {en.exploreTrendingProductsDesc}
         </Text>
       </Stack>
-      <Group mt={72} w={"90%"} mx={"auto"} gap={48} justify="center">
-        {products.map((item: ProductsListingProps) => (
-          <ProductCard product={item} key={item.id} />
+      <Group mt={72} w={"90%"} mx={"auto"} gap={32} justify="center">
+        {plpData.products.content.map((item: ProductItem) => (
+          <ProductCard product={item} key={item.productItemId} />
         ))}
       </Group>
       <SeeAllProductsBtn />
