@@ -2,7 +2,6 @@ import ProductCard from "@/(components)/productCard";
 import { en } from "@/constants/en";
 import { PLPResponseDTO, ProductDetailsDTO, ProductItem, ProductsListingProps } from "@/constants/types";
 import { Box, Group, Stack, Text, Title } from "@mantine/core";
-import { productsResponse } from "./products";
 import SeeAllProductsBtn from "./SeeAllProductsBtn";
 import { apiFetch } from "@/lib/apiFetch";
 

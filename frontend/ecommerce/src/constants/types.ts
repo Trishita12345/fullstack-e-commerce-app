@@ -399,6 +399,14 @@ export interface ProductItem {
   inStock: boolean;
   images: SearchProductImage[];
   variants: SearchProductVariant[];
+  stockQuantity: number;
+  purchaseCount: number;
+  trendingScore: number;
+  rating: number;
+  ratingCount: number;
+  rankingBoost: number;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
 }
 
 export interface SearchProductImage {
