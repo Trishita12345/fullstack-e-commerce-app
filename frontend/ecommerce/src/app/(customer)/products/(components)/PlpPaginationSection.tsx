@@ -4,7 +4,7 @@ import { IconChevronLeft, IconChevronRight, IconChevronsLeft } from "@tabler/ico
 import { Pageable, Sort } from "@/constants/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
-interface PLPPaginationProps {
+interface PlpPaginationProps {
     paginationDetails: {
         totalElements: number;
         totalPages: number;
@@ -18,7 +18,7 @@ interface PLPPaginationProps {
         empty: boolean;
     }
 }
-const PLPPagination = ({ paginationDetails }: PLPPaginationProps) => {
+const PlpPagination = ({ paginationDetails }: PlpPaginationProps) => {
     const { totalPages, number, first, last } = paginationDetails;
     const currPage = number + 1;
     const searchParams = useSearchParams();
@@ -68,4 +68,4 @@ const PLPPagination = ({ paginationDetails }: PLPPaginationProps) => {
         </Box >);
 }
 
-export default PLPPagination;
+export default PlpPagination;
