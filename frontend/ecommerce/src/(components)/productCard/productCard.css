@@ -1,6 +1,8 @@
 
+
 .product-card {
   transition: box-shadow 200ms ease;
+  cursor: pointer;
 }
 
 .product-card-1 {
@@ -15,4 +17,196 @@
 .product-card:hover .product-card-1 {
   padding: 0px 16px;
 }
+.image-wrapper {
+  position: relative;
+  width: 280px;
+  overflow: hidden;
+}
 
+.hover-actions {
+  position: absolute;
+  bottom: -80px;
+  width: 100%;
+  padding: 8px;
+  background: white;
+  transition: bottom 0.7s ease;
+}
+
+.product-card:hover .hover-actions {
+  bottom: 0;
+}
+
+.product-card:hover .product-static-image {
+  display:  none;
+}
+.product-carousel-image{
+  display: none;
+}
+.product-card:hover .product-carousel-image {
+  display:  block;
+}
+/* 
+.css-carousel {
+  width: var(--img-width);
+  height: 280px;
+  overflow: hidden;
+  position: relative;
+}
+
+.css-carousel-track {
+  display: flex;
+  width: calc(var(--img-width) * var(--img-count));
+  animation: carousel-slide var(--duration) linear infinite;
+}
+
+.css-carousel-slide {
+  width: var(--img-width);
+  flex-shrink: 0;
+}
+
+@keyframes carousel-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-1 * var(--img-width) * (var(--img-count) - 1)));
+  }
+} */
+
+.css-carousel {
+  width: var(--img-width);
+  height: 280px;
+  overflow: hidden;
+  position: relative;
+}
+
+.css-carousel-track {
+  display: flex;
+  width: calc(var(--img-width) * var(--img-count));
+  animation: carousel-slide var(--duration)
+    steps(var(--img-count)) infinite;
+}
+
+.css-carousel-slide {
+  width: var(--img-width);
+  flex-shrink: 0;
+}
+
+@keyframes carousel-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-1 * var(--img-width) * (var(--img-count))));
+  }
+}
+
+
+
+/* .carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding-top: 8px;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d0d0d0;
+  animation: dot-active var(--duration)
+    steps(var(--img-count)) infinite;
+}
+
+.carousel-dot:nth-child(1) {
+  animation-delay: calc(var(--duration) / var(--img-count) * 0);
+}
+
+.carousel-dot:nth-child(2) {
+  animation-delay: calc(var(--duration) / var(--img-count) * -1);
+}
+
+.carousel-dot:nth-child(3) {
+  animation-delay: calc(var(--duration) / var(--img-count) * -2);
+}
+
+.carousel-dot:nth-child(4) {
+  animation-delay: calc(var(--duration) / var(--img-count) * -3);
+}
+
+.carousel-dot:nth-child(5) {
+  animation-delay: calc(var(--duration) / var(--img-count) * -4);
+}
+
+@keyframes dot-active {
+  0% {
+    background: var(--inactiveColor);
+  }
+  100% {
+    background: #d0d0d0;
+  }
+} */
+
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding-top: 8px;
+}
+
+.carousel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--inactiveColor);
+
+  animation: dot-active var(--duration) linear infinite;
+}
+
+/* stagger each dot */
+.carousel-dot:nth-child(1) {
+  animation-delay: calc(var(--duration) / var(--img-count) * 0);
+}
+
+.carousel-dot:nth-child(2) {
+  animation-delay: calc(var(--duration) / var(--img-count) * 1);
+}
+
+.carousel-dot:nth-child(3) {
+  animation-delay: calc(var(--duration) / var(--img-count) * 2);
+}
+
+.carousel-dot:nth-child(4) {
+  animation-delay: calc(var(--duration) / var(--img-count) * 3);
+}
+
+.carousel-dot:nth-child(5) {
+  animation-delay: calc(var(--duration) / var(--img-count) * 4);
+}
+
+@keyframes dot-active {
+
+  0% {
+    background: var(--activeColor);
+  }
+
+  19.9% {
+    background: var(--activeColor);
+  }
+
+  20% {
+    background: var(--inactiveColor);
+  }
+
+  100% {
+    background: var(--inactiveColor);
+  }
+
+}
+
+@keyframes dot-active {
+  0% { background: var(--activeColor); transform: scale(1.4); }
+  19% { background: var(--activeColor); transform: scale(1.4); }
+  20% { background: var(--inactiveColor); transform: scale(1); }
+}

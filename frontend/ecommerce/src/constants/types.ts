@@ -350,3 +350,76 @@ export interface OrderDetailsDTO {
   deliveryAddressDetails: string;
   contactNumber: string;
 }
+
+export interface PLPResponseDTO {
+  products: ProductsPage;
+  facets: Record<string, FacetValue[]>;
+  total: number;
+}
+
+export interface ProductsPage {
+  totalElements: number;
+  totalPages: number;
+  pageable: Pageable;
+  numberOfElements: number;
+  first: boolean;
+  last: boolean;
+  size: number;
+  content: ProductItem[];
+  number: number;
+  sort: Sort[];
+  empty: boolean;
+}
+
+export interface Pageable {
+  pageNumber: number;
+  pageSize: number;
+  paged: boolean;
+  unpaged: boolean;
+  offset: number;
+  sort: Sort[];
+}
+
+export interface Sort {
+  direction: string;
+  nullHandling: string;
+  ascending: boolean;
+  property: string;
+  ignoreCase: boolean;
+}
+
+export interface ProductItem {
+  productItemId: string;
+  productId: string;
+  productName: string;
+  category: string;
+  basePrice: number;
+  sellingPrice: number;
+  discountPercentage: number;
+  inStock: boolean;
+  images: SearchProductImage[];
+  variants: SearchProductVariant[];
+  stockQuantity: number;
+  purchaseCount: number;
+  trendingScore: number;
+  rating: number;
+  ratingCount: number;
+  rankingBoost: number;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+}
+
+export interface SearchProductImage {
+  imgUrl: string;
+  isThumbnail: boolean;
+}
+
+export interface SearchProductVariant {
+  name: string;
+  value: string;
+}
+
+export interface FacetValue {
+  value: string;
+  count: number;
+}
