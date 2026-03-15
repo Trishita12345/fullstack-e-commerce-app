@@ -1,117 +1,297 @@
-# Fullstack E-Commerce Application
+---
 
-A comprehensive microservices-based e-commerce platform with a modern frontend and scalable backend architecture.
+# Fullstack E-Commerce Platform
 
-## Prerequisites & Installation
+A **microservices-based e-commerce platform** with a modern frontend and scalable backend architecture.
 
-### 1️⃣ Update the System
+This project includes:
 
-First update system packages:
+* **Next.js frontend**
+* **Spring Boot microservices**
+* **Kafka messaging**
+* **PostgreSQL database**
+* **Docker-based infrastructure**
+* **Nginx reverse proxy**
+* **API Gateway architecture**
+
+---
+
+# Architecture Overview
+
+```
+Internet
+   ↓
+Nginx Reverse Proxy
+   ↓
+Next.js Frontend (Port 3000)
+   ↓
+Spring Cloud Gateway (Port 8080)
+   ↓
+Microservices
+   ├── product-service
+   ├── cart-service
+   ├── order-service
+   ├── payment-service
+   ├── profile-service
+   ├── offer-service
+   └── search-engine-service
+        ↓
+Kafka + Databases
+```
+
+---
+
+# Tech Stack
+
+### Frontend
+
+* Next.js 15+
+* React
+* TypeScript
+* Mantine UI
+* NextAuth
+
+### Backend
+
+* Spring Boot
+* Spring Cloud Gateway
+* Maven
+* REST APIs
+
+### Infrastructure
+
+* Docker
+* Docker Compose
+* PostgreSQL
+* Apache Kafka
+* Nginx
+
+---
+
+# Remote Development Setup
+
+This section explains how to **run the entire system on a remote development server**.
+
+---
+
+# 1. System Preparation
+
+Update system packages.
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 2️⃣ Install Git
+---
 
-For version control:
+# 2. Install Git
 
 ```bash
 sudo apt install git -y
-git --version  # Verify
+git --version
 ```
 
-### 3️⃣ Install Docker
+---
 
-Install Docker engine:
+# 3. Install Docker
 
 ```bash
 curl -fsSL https://get.docker.com -o install-docker.sh
 sudo sh install-docker.sh
 ```
 
-Add your user to docker group:
+Add your user to docker group.
 
 ```bash
 sudo usermod -aG docker $USER
 newgrp docker
-docker --version  # Verify
 ```
 
-### 4️⃣ Install Docker Compose
-
-For microservices orchestration:
+Verify installation.
 
 ```bash
-sudo apt install docker-compose-plugin -y
-docker compose version  # Verify
-```
-
-### 5️⃣ Install Java (Spring Boot)
-
-Spring Boot services require Java 17 or 21:
-
-```bash
-sudo apt install openjdk-21-jdk -y
-java -version  # Verify
-```
-
-### 6️⃣ Install Node.js (Next.js)
-
-Using NVM (Node Version Manager):
-
-```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-source ~/.bashrc
-nvm install 20
-node -v && npm -v  # Verify
+docker --version
 ```
 
 ---
 
-## Getting Started
+# 4. Install Docker Compose
 
-Follow these steps to set up and run the entire application:
+```bash
+sudo apt install docker-compose-plugin -y
+docker compose version
+```
 
-### Step 1: Setup & Run Frontend App
+---
 
-Navigate to the frontend directory and install dependencies:
+# 5. Install Java (Spring Boot)
+
+```bash
+sudo apt install openjdk-21-jdk -y
+java -version
+```
+
+---
+
+# 6. Install Node.js
+
+Using **NVM (Node Version Manager)**.
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+source ~/.bashrc
+```
+
+Install Node.
+
+```bash
+nvm install 20
+node -v
+npm -v
+```
+
+---
+
+# Project Structure
+
+```
+project-root
+│
+├── frontend/ecommerce
+│
+├── backend
+│   ├── apiGatewayService
+│   ├── cartService
+│   ├── productService
+│   ├── orderService
+│   ├── paymentService
+│   ├── profileService
+│   ├── offerService
+│   ├── searchEngineService
+│   └── common-auth
+│
+├── kafka-setup
+│
+└── db_backup.sql
+```
+
+---
+
+# Frontend Setup (Next.js)
+
+Navigate to frontend.
 
 ```bash
 cd frontend/ecommerce
+```
+
+Install dependencies.
+
+```bash
 npm install
 ```
 
-Start the Next.js development server:
+---
+
+# Create Environment File
+
+Create `.env` file.
+
+```
+BETTER_AUTH_SECRET=11Iyv9ssbui5XjV2mDItRRleRgPEw1au
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_FRONTEND=http://localhost:3000
+
+DATABASE_URL=postgresql://user:pass123@127.0.0.1:5432/testdb
+
+GOOGLE_CLIENT_SECRET=XXXXXXXXXX
+GOOGLE_CLIENT_ID=XXXXXXXXXXXX
+
+NEXT_PUBLIC_API_URL=http://localhost:8080/api
+```
+
+---
+
+# Start Database (Docker)
+
+Run database container.
+
+```bash
+docker compose up -d
+```
+
+Verify container.
+
+```bash
+docker ps
+```
+
+---
+
+# Prisma Setup
+
+Generate Prisma client.
+
+```bash
+npx prisma generate
+```
+
+Push schema to database.
+
+```bash
+npx prisma db push
+```
+
+Optional: Open Prisma Studio.
+
+```bash
+npx prisma studio
+```
+
+---
+
+# Run Frontend
 
 ```bash
 npm run dev
 ```
 
-The frontend will be available at `http://localhost:3000`
+Application will run at:
 
-### Step 2: Run Kafka Setup
+```
+http://localhost:3000
+```
 
-Initialize Kafka for messaging:
+---
+
+# Kafka Setup
+
+Navigate to Kafka directory.
 
 ```bash
 cd kafka-setup
-docker compose -f docker-compose.yml up -d
 ```
 
-Verify Kafka is running:
+Start Kafka services.
+
+```bash
+docker compose up -d
+```
+
+Verify Kafka container.
 
 ```bash
 docker ps | grep kafka
 ```
 
-### Step 3: Load Database Backup
+---
 
-Restore the database from backup using PostgreSQL:
+# Database Restore (Optional)
+
+If you have database backup.
 
 ```bash
-# Make sure your PostgreSQL container is running first
-docker exec -i <postgres-container-name> psql -U <username> -d <database-name> < db_backup.sql
+docker exec -i <postgres-container-name> psql -U <username> -d <database> < db_backup.sql
 ```
 
 Example:
@@ -120,66 +300,177 @@ Example:
 docker exec -i product_service_postgres_container psql -U user -d postgres < db_backup.sql
 ```
 
-Or via direct psql connection:
+---
+
+# Backend Microservices
+
+Each microservice can be started independently.
+
+---
+
+## API Gateway
 
 ```bash
-psql -U <username> -d <database-name> < db_backup.sql
-```
-
-### Step 4: Start Backend Services
-
-Build and run the microservices (in separate terminals):
-
-```bash
-# API Gateway
 cd backend/apiGatewayService
 mvn clean install
 mvn spring-boot:run
+```
 
-# Cart Service
-cd backend/cartService
-docker compose up -d
-mvn clean install
-mvn spring-boot:run
+Runs on
 
-# Product Service
-cd backend/productService
-docker compose up -d
-mvn clean install
-mvn spring-boot:run
-
-# And continue with other services as needed...
-# - orderService
-# - paymentService
-# - profileService
-# - offerService
-# - seachEngineService
+```
+http://localhost:8080
 ```
 
 ---
 
-## Architecture Overview
+## Product Service
 
-- **Frontend**: Next.js React application
-- **Backend**: Spring Boot microservices
-- **Message Queue**: Apache Kafka
-- **Database**: MySQL (with backup support)
-- **Orchestration**: Docker & Docker Compose
+```bash
+cd backend/productService
+docker compose up -d
+mvn clean install
+mvn spring-boot:run
+```
 
-## Project Structure
+---
+
+## Cart Service
+
+```bash
+cd backend/cartService
+docker compose up -d
+mvn clean install
+mvn spring-boot:run
+```
+
+---
+
+## Other Services
+
+Repeat same pattern.
 
 ```
-├── frontend/ecommerce/    # Next.js React app
-├── backend/               # Spring Boot microservices
-│   ├── apiGatewayService/
-│   ├── cartService/
-│   ├── productService/
-│   ├── orderService/
-│   ├── paymentService/
-│   ├── profileService/
-│   ├── offerService/
-│   ├── seachEngineService/
-│   └── common-auth/       # Shared authentication
-├── kafka-setup/           # Kafka configuration
-└── db_backup.sql          # Database backup file
+orderService
+paymentService
+profileService
+offerService
+searchEngineService
 ```
+
+Example:
+
+```bash
+cd backend/orderService
+docker compose up -d
+mvn clean install
+mvn spring-boot:run
+```
+
+---
+
+# Running the Entire System
+
+Final running services.
+
+```
+Frontend → http://localhost:3000
+API Gateway → http://localhost:8080
+Kafka → Docker
+Databases → Docker
+```
+
+Frontend calls backend using:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:8080/api
+```
+
+---
+
+# Useful Development Commands
+
+Start frontend
+
+```bash
+npm run dev
+```
+
+Build frontend
+
+```bash
+npm run build
+```
+
+Run production server
+
+```bash
+npm start
+```
+
+---
+
+# Troubleshooting
+
+## Docker Containers
+
+Check running containers.
+
+```bash
+docker ps
+```
+
+View logs.
+
+```bash
+docker logs <container_name>
+```
+
+---
+
+## Prisma Issues
+
+Clear Prisma cache.
+
+```bash
+rm -rf node_modules/.prisma
+npx prisma generate
+```
+
+---
+
+## Dependency Issues
+
+Reset dependencies.
+
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
+
+---
+
+# Development Tips
+
+* Use **Prisma Studio** for database inspection
+* Use **Swagger UI** for API testing
+* Run services in **separate terminals**
+* Use **Docker for all infrastructure**
+
+---
+
+# Future Improvements
+
+* Dockerize all microservices
+* Add Kubernetes deployment
+* Add CI/CD pipelines
+* Add Redis caching
+* Implement distributed tracing
+
+---
+
+# License
+
+This project is private and not licensed for public use.
+
+---
