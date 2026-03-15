@@ -86,5 +86,4 @@ const ProductCard = ({ product, isPLP = false }: { product: ProductItem; isPLP?:
 }
 
 
-
 export default ProductCard;

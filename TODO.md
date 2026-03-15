@@ -3,14 +3,15 @@ Checking product availability.. RESERVED | PENDING
 Item just went out of stock. FAILED | NOT_INITIATED
 Preparing secure payment... RESERVED | INITIATED
 
-1. Order Listing, My Orders
 2. Retry payment
 3. Resilience 4j
 4. retry kafka
 5. AOP
 6. Email service
 7. Profile
-   pdp issue variant selection
+8. Pdp issue variant selection
+9. Category Table Image, description
+10. Global Search
 
 //Done- To be checked 2. Payment Failure - on modal dismiss one api to relese inventory
 2a. modal dismiss - payment service - update
@@ -27,3 +28,9 @@ q=candle
 &page=0
 &size=20
 &sort=price_asc
+
+category
+variants
+price
+inStock
+discount percent
