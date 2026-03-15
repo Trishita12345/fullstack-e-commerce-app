@@ -10,6 +10,7 @@ Preparing secure payment... RESERVED | INITIATED
 5. AOP
 6. Email service
 7. Profile
+   pdp issue variant selection
 
 //Done- To be checked 2. Payment Failure - on modal dismiss one api to relese inventory
 2a. modal dismiss - payment service - update

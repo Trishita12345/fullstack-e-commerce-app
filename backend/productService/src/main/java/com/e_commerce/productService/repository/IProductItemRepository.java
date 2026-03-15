@@ -3,10 +3,8 @@ package com.e_commerce.productService.repository;
 import com.e_commerce.productService.model.ProductItem;
 import com.e_commerce.productService.model.dto.customer.CartProductItemInfoResponse;
 import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
-import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
 import com.e_commerce.productService.model.dto.productItem.ProductItemPriceDTO;
-import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
 
 import jakarta.persistence.LockModeType;
 
@@ -20,7 +18,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

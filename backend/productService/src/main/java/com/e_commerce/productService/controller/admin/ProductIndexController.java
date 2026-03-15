@@ -32,7 +32,7 @@ public class ProductIndexController {
 
     @GetMapping("/ingest-product-data/{productItemId}")
     @PreAuthorize("hasRole('SELLER')")
-    public ResponseEntity<String> getMethodName(@PathVariable UUID productItemId) {
+    public ResponseEntity<String> ingestProductDataById(@PathVariable UUID productItemId) {
         productDataIngestionService.ingestProductDataToSearchIndexById(productItemId);
         return ResponseEntity
                 .ok("Product data ingested for product item ID: " + productItemId + ". Check logs for details.");
