@@ -46,5 +46,5 @@ springdoc:
     url: /api/cart-service/v3/api-docs
 
 gateway:
-  base-url: http://localhost:8080/api/cart-service
+  base-url: https://api.loomandlume.shop/api/cart-service
   api-description: Swagger UI Documentation for Cart Service

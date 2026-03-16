@@ -205,7 +205,7 @@ DATABASE_URL=postgresql://user:pass123@127.0.0.1:5432/testdb
 GOOGLE_CLIENT_SECRET=XXXXXXXXXX
 GOOGLE_CLIENT_ID=XXXXXXXXXXXX
 
-NEXT_PUBLIC_API_URL=http://localhost:8080/api
+NEXT_PUBLIC_API_URL=https://api.loomandlume.shop/api
 ```
 
 ---
@@ -317,7 +317,7 @@ mvn spring-boot:run
 Runs on
 
 ```
-http://localhost:8080
+https://api.loomandlume.shop
 ```
 
 ---
@@ -373,7 +373,7 @@ Final running services.
 
 ```
 Frontend → http://localhost:3000
-API Gateway → http://localhost:8080
+API Gateway → https://api.loomandlume.shop
 Kafka → Docker
 Databases → Docker
 ```
@@ -381,7 +381,7 @@ Databases → Docker
 Frontend calls backend using:
 
 ```
-NEXT_PUBLIC_API_URL=http://localhost:8080/api
+NEXT_PUBLIC_API_URL=https://api.loomandlume.shop/api
 ```
 
 ---

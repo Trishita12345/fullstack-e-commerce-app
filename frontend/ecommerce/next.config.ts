@@ -1,7 +1,7 @@
 
 const nextConfig = {
   allowedDevOrigins: [
-    'loomandloom.shop',
+    'loomandlume.shop',
   ],
   // logging: {
   //   fetches: {
