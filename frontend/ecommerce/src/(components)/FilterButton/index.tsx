@@ -80,12 +80,9 @@ export const FilterButton = ({
       case "range": {
         return (
           <FilterRangeSelect
-            field={field.field}
-            onChange={
-              setFilter as Dispatch<
-                SetStateAction<{ [key: string]: RangeSliderValue }>
-              >
-            }
+            onChange={(sliderValue: RangeSliderValue) =>
+              setFilter(prev => ({ ...prev, [field.field]: [sliderValue[0], sliderValue[1]] })
+              )}
             domain={[0, 5000]}
             values={
               filter[field.field].length === 0

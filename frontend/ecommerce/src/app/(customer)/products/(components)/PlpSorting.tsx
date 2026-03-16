@@ -28,7 +28,7 @@ const PlpSorting = ({ sortBy, dir }: { sortBy?: string, dir?: string }) => {
     const updateParams = (value: string) => {
         const params = new URLSearchParams(searchParams.toString());
         const [sortBy, dir] = value.split("_");
-        params.set("page", '1');
+        params.delete("page");
         params.set("sortBy", sortBy);
         params.set("dir", dir);
         router.push(`?${params.toString()}`);
