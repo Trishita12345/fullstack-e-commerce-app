@@ -1,26 +1,27 @@
 'use client';
-import { SelectOptionType } from "@/constants/types";
 import { Box, TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "@mantine/hooks";
-
-
-const data: SelectOptionType[] = [
-    { label: "Sort By: Price: High to Low", value: "price_desc" },
-    { label: "Sort By: Price: Low to High", value: "price_asc" },
-    { label: "Sort By: Popularity", value: "popularity_desc" },
-    { label: "Sort By: Recommended", value: "trending_desc" },
-    { label: "Sort By: Rating", value: "rating_desc" }
-]
-
-
+import { useEffect, useState } from "react";
 
 const PlpSearch = ({ query }: { query?: string }) => {
+    const [value, setValue] = useState<string>(query || '');
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    useEffect(() => { setValue(query || '') }, [query])
 
     const updateParams = useDebouncedCallback((value: string) => {
-        router.push(`/products?q=${value || ''}`);
+        if (query === value) return;
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("page");
+        if (value === '') {
+            params.delete('q');
+        } else {
+            params.set('q', value);
+        }
+        router.push(`?${params.toString()}`);
     }, 500);
 
     return (
@@ -29,8 +30,11 @@ const PlpSearch = ({ query }: { query?: string }) => {
                 w={{ base: '100%', xs: 400 }}
                 rightSection={<IconSearch size={18} />}
                 placeholder="Search Product"
-                defaultValue={query}
-                onChange={e => updateParams(e.target.value)}
+                value={value}
+                onChange={e => {
+                    setValue(e.target.value)
+                    updateParams(value)
+                }}
             />
         </Box>);
 }

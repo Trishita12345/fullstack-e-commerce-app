@@ -38,7 +38,6 @@ export default function InfiniteOrders() {
   const [loading, setLoading] = useState(false);
   const [last, setLast] = useState(false);
 
-  console.log("page: ", page, entry);
 
   const fetchOrders = async () => {
     if (loading || last) return;

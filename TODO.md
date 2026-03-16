@@ -24,13 +24,27 @@ q=candle
 &maxPrice=1000
 &inStock=true
 &variant=color:red
+&variant=color:red
+&variant=color:red
 &variant=size:large
+&variant=size:small
 &page=0
 &size=20
 &sort=price_asc
 
-category
-variants
-price
-inStock
-discount percent
+few items left
+out of stock color gray
+shimmer/loader in plp
+discount percent(BE Pending)
+badge
+responsiveness
+
+--query
+--category
+--variants
+--price
+--discount percent
+--inStock
+--sortBy
+--dir
+--page
