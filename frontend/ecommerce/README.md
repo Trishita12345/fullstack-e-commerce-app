@@ -1,36 +1,226 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# E-Commerce Next.js Application
 
-## Getting Started
+A full-stack e-commerce application built with **Next.js**, **React**, **TypeScript**, **Prisma**, **PostgreSQL**, and **Mantine UI Components**.
 
-First, run the development server:
+## Tech Stack
+
+- **Frontend**: Next.js 15+ with Turbopack, React, TypeScript
+- **Database**: PostgreSQL with Prisma ORM
+- **UI Library**: Mantine UI Components
+- **Authentication**: NextAuth
+- **Styling**: Mantine CSS, PostCSS
+- **Real-time Features**: Socket.io support
+- **Admin Features**: Rich text editor, data charts, and admin dashboard
+
+## Prerequisites
+
+- **Node.js** 18+ and npm/yarn
+- **Docker** and **Docker Compose**
+- **Git**
+
+## Quick Start
+
+Follow these steps to set up and run the project locally:
+
+### 1. Start Docker Services
+
+```bash
+docker compose up -d
+```
+
+This starts the PostgreSQL database and any other required services.
+
+### 2. Install Dependencies
+
+```bash
+npm i -f
+```
+
+The `-f` flag forces installation and resolves any dependency conflicts.
+
+*** create .env file here is the sample u can use as it is
+``` bash
+
+BETTER_AUTH_SECRET=11Iyv9ssbui5XjV2mDItRRleRgPEw1au
+BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_FRONTEND=http://localhost:3000
+
+DATABASE_URL=postgresql://user:pass123@127.0.0.1:5432/testdb
+GOOGLE_CLIENT_SECRET=XXXXXXXXXX
+GOGGLE_CLIENT_ID=XXXXXXXXXXXXXXXX
+
+NEXT_PUBLIC_API_URL=https://api.loomandlume.shop/api
+# NEXT_PRIVATE_DEBUG_CACHE=1
+
+```
+
+### 3. Generate Prisma Client
+
+```bash
+npx prisma generate
+```
+
+This generates the Prisma Client based on your schema defined in `prisma/schema.prisma`.
+
+### 4. Push Database Schema
+
+```bash
+npx prisma db push
+```
+
+This command migrates your database schema. Use this for development.
+
+> **Note**: This is a quick migration tool for development. For production, consider using `prisma migrate`.
+
+### 5. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Development
+npm run dev          # Start development server with Turbopack
 
-## Learn More
+# Production
+npm run build        # Build for production
+npm start            # Start production server
 
-To learn more about Next.js, take a look at the following resources:
+# Code Quality
+npm run lint         # Run ESLint and fix issues
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+frontend/ecommerce/
+├── src/
+│   ├── app/                    # Next.js app directory
+│   │   ├── (customer)/        # Customer routes
+│   │   ├── admin/             # Admin dashboard
+│   │   ├── api/               # API routes
+│   │   ├── layout.tsx         # Root layout
+│   │   └── globals.css        # Global styles
+│   ├── components/            # Reusable React components
+│   │   ├── header/           # Header component
+│   │   ├── footer/           # Footer component
+│   │   ├── adminSidebar/     # Admin sidebar
+│   │   ├── productCard/      # Product display card
+│   │   ├── FilterButton/     # Filter controls
+│   │   └── ...
+│   ├── lib/                   # Utility libraries
+│   │   ├── auth.ts           # Authentication setup
+│   │   ├── prisma.ts         # Prisma client
+│   │   └── apiFetch.ts       # API fetch utilities
+│   ├── utils/                # Helper functions
+│   ├── constants/            # Constants and types
+│   └── prisma/               # Prisma schema and migrations
+├── package.json              # Dependencies
+└── tsconfig.json             # TypeScript configuration
+```
 
-## Deploy on Vercel
+## Database Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The application uses **Prisma** as the ORM with **PostgreSQL**.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### View/Edit Database Schema
+
+```bash
+# Open Prisma Studio to view/edit data visually
+npx prisma studio
+```
+
+### Push Schema Changes
+
+```bash
+npx prisma db push
+```
+
+### Create Migration (Production)
+
+```bash
+npx prisma migrate dev --name <migration_name>
+```
+
+## Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/ecommerce"
+NEXTAUTH_SECRET=your_secret_key_here
+NEXTAUTH_URL=http://localhost:3000
+```
+
+## Features
+
+### Customer Features
+- Product browsing and search
+- Shopping cart management
+- Order placement and tracking
+- User authentication
+
+### Admin Features
+- Product management
+- Order management
+- Admin dashboard with analytics
+- Rich text editor for product descriptions
+- Data visualization and charts
+
+## Development Tips
+
+- **Hot Reload**: Changes are automatically reflected with Turbopack
+- **Type Safety**: Full TypeScript support for better development experience
+- **Mantine UI**: Pre-built components for faster UI development
+- **Prisma Studio**: Visual database management tool
+
+## Troubleshooting
+
+### Database Connection Issues
+```bash
+# Verify database is running
+docker ps
+
+# Check database logs
+docker logs <container_name>
+```
+
+### Prisma Issues
+```bash
+# Clear Prisma cache and regenerate
+rm -rf node_modules/.prisma
+npx prisma generate
+```
+
+### Dependencies Issues
+```bash
+# Clear npm cache and reinstall
+rm -rf node_modules package-lock.json
+npm i -f
+```
+
+## Build for Production
+
+```bash
+npm run build
+npm start
+```
+
+## Contributing
+
+1. Create a feature branch: `git checkout -b feature/your-feature`
+2. Commit changes: `git commit -m "Add your feature"`
+3. Push branch: `git push origin feature/your-feature`
+4. Open a Pull Request
+
+## License
+
+This project is private and not licensed for public use.
+
+## Support
+
+For issues or questions, please create an issue in the repository.

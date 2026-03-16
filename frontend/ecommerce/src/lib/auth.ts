@@ -10,13 +10,13 @@ export const auth = betterAuth({
   }),
   socialProviders: {
     google: {
-      clientId: process.env.GOGGLE_CLIENT_ID!,
+      clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     },
   },
   cors: {
     enabled: true,
-    origin: ["http://localhost:3000", "http://localhost:8080"],
+    origin: ["https://loomandlume.shop", "https://api.loomandlume.shop"],
     credentials: true,
     methods: ["GET", "POST", "OPTIONS"],
   },
@@ -24,8 +24,8 @@ export const auth = betterAuth({
     jwt({
       jwt: {
         expirationTime: "2h",
-        issuer: "http://localhost:3000",
-        audience: "http://localhost:8080",
+        issuer: "https://loomandlume.shop",
+        audience: "https://api.loomandlume.shop",
       },
       jwks: {
         keyPairConfig: {
@@ -57,7 +57,7 @@ export const auth = betterAuth({
   trustedOrigins: [
     // "http://localhost:3001",
     "https://oauth.pstmn.io/v1/callback",
-    "http://localhost:8080",
+    "https://api.loomandlume.shop",
   ],
 });
 

@@ -39,5 +39,5 @@ springdoc:
     config-url: /api/search-service/v3/api-docs/swagger-config
     url: /api/search-service/v3/api-docs
 gateway:
-  base-url: http://localhost:8080/api/search-service
+  base-url: https://api.loomandlume.shop/api/search-service
   api-description: Swagger UI Documentation for Search Service

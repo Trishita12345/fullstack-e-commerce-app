@@ -67,7 +67,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:3000
+          issuer-uri: https://loomandlume.shop
 logging:
   level:
     org:
@@ -77,4 +77,4 @@ logging:
           gateway: debug
 
 frontend:
-  url: ${FRONTEND_URL:http://localhost:3000}
+  url: https://loomandlume.shop

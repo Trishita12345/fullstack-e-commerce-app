@@ -21,26 +21,26 @@ public class GatewaySwaggerConfig {
 
                                 // 🔥 SERVERS LIST
                                 .addServersItem(new Server()
-                                                .url("http://localhost:8080/api/product-service")
+                                                .url("https://api.loomandlume.shop/api/product-service")
                                                 .description("Product Service"))
 
                                 .addServersItem(new Server()
-                                                .url("http://localhost:8080/api/cart-service")
+                                                .url("https://api.loomandlume.shop/api/cart-service")
                                                 .description("Cart Service"))
 
                                 .addServersItem(new Server()
-                                                .url("http://localhost:8080/api/order-service")
+                                                .url("https://api.loomandlume.shop/api/order-service")
                                                 .description("Order Service"))
 
                                 .addServersItem(new Server()
-                                                .url("http://localhost:8080/api/profile-service")
+                                                .url("https://api.loomandlume.shop/api/profile-service")
                                                 .description("Profile Service"))
 
                                 .addServersItem(new Server()
-                                                .url("http://localhost:8080/api/payment-service")
+                                                .url("https://api.loomandlume.shop/api/payment-service")
                                                 .description("Payment Service"))
                                 .addServersItem(new Server()
-                                                .url("http://localhost:8080/api/search-service")
+                                                .url("https://api.loomandlume.shop/api/search-service")
                                                 .description("Search Service"));
         }
 }
