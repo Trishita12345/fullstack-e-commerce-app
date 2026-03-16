@@ -4,7 +4,7 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.1
     container_name: zookeeper
-    platform: linux/arm64
+    platform: linux/amd64
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -14,7 +14,7 @@ services:
   kafka:
     image: confluentinc/cp-kafka:7.6.1
     container_name: kafka
-    platform: linux/arm64
+    platform: linux/amd64
     depends_on:
       - zookeeper
     ports:
@@ -37,7 +37,7 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
-    platform: linux/arm64
+    platform: linux/amd64
     depends_on:
       - kafka
     ports:

@@ -48,7 +48,7 @@ springdoc:
     config-url: /api/order-service/v3/api-docs/swagger-config
     url: /api/order-service/v3/api-docs
 gateway:
-  base-url: http://localhost:8080/api/order-service
+  base-url: https://api.loomandlume.shop/api/order-service
   api-description: Swagger UI Documentation for Order Service
 
 feign:
