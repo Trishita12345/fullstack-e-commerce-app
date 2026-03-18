@@ -1,7 +1,7 @@
 import { Box, Checkbox, Text } from "@mantine/core";
 import { useSearchParams, useRouter } from "next/navigation";
 
-const AvailabilityFilter = ({ inStock }: { inStock?: boolean }) => {
+const AvailabilityFilter = ({ inStock }: { inStock?: string }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -24,7 +24,7 @@ const AvailabilityFilter = ({ inStock }: { inStock?: boolean }) => {
                 pt={8}
                 color='primaryDark.7'
                 size='xs'
-                checked={inStock || false}
+                checked={inStock === 'true'}
                 onChange={e => updateFilter(e.target.checked)}
                 label={
                     <Text size='sm' fw={500} tt='capitalize'

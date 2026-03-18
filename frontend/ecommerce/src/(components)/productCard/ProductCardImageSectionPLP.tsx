@@ -6,16 +6,16 @@ import { SearchProductImage } from "@/constants/types";
 
 interface ProductCardImageSectionProps {
     images: SearchProductImage[];
-    productItemId: string;
+    inStock: boolean;
 }
-export default function ProductCardImageSectionPLP({ images, productItemId }: ProductCardImageSectionProps) {
+export default function ProductCardImageSectionPLP({ images, inStock }: ProductCardImageSectionProps) {
     const productAddedToCart = false;
     const productAddedToWishList = false;
     const thumbnailImg = images.find((img) => img.isThumbnail);
     const otherImages = images.filter((img) => !img.isThumbnail);
     const carouselImages = [thumbnailImg, ...otherImages];
     return (
-        <div className="image-wrapper">
+        <div className="image-wrapper" style={{ filter: !inStock ? "grayscale(1)" : "" }}>
             <Image
                 src={thumbnailImg?.imgUrl ?? ''}
                 width={280}
@@ -44,27 +44,32 @@ export default function ProductCardImageSectionPLP({ images, productItemId }: Pr
                         ))}
                     </div>
                 </div>
-
                 <div className="hover-actions" style={{ backgroundColor: 'var(--mantine-color-gray-0)' }}>
                     <Grid gutter={8}>
                         <GridCol span={10}>
-                            {productAddedToCart ? (
-                                <Button color="black.9" size="sm" fullWidth>
-                                    Go to Cart
-                                </Button>
-                            ) : (
-                                <Button
-                                    fullWidth
-                                    variant="outline"
-                                    color="black.9"
-                                    rightSection={<IconPlus size={18} />}
-                                    size="sm"
-                                >
-                                    <Text ml={36} fw={500}>
-                                        Add to Cart
-                                    </Text>
-                                </Button>
-                            )}
+                            {inStock ?
+                                <>
+                                    {productAddedToCart ? (
+                                        <Button color="black.9" variant="outline" size="sm" fullWidth>
+                                            Go to Cart
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            fullWidth
+                                            variant="outline"
+                                            color="black.9"
+                                            rightSection={<IconPlus size={18} />}
+                                            size="sm"
+                                        >
+                                            <Text ml={36} fw={500}>
+                                                Add to Cart
+                                            </Text>
+                                        </Button>
+                                    )}
+                                </> :
+                                <Button disabled size="sm" fullWidth>
+                                    Out of Stock
+                                </Button>}
                         </GridCol>
 
                         <GridCol span={2}>

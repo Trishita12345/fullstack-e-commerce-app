@@ -66,3 +66,14 @@ feign:
 
 s3:
   public-url: https://loom-and-lume.s3.ap-south-1.amazonaws.com
+logging:
+  level:
+    org:
+      springframework:
+        security: debug
+  file:
+    name: app/app.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 5

@@ -17,7 +17,7 @@ interface PlpFilterType {
     category?: string;
     minPrice?: string;
     maxPrice?: string;
-    inStock?: boolean;
+    inStock?: string;
     variants?: Record<string, string[]>;
     discount?: string;
 }

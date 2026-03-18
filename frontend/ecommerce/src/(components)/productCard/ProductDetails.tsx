@@ -7,10 +7,11 @@ interface ProductDetailsProps {
     attributeValues: string[];
     basePrice: number;
     sellingPrice: number;
-    discountPercentage: number
+    discountPercentage: number;
+    stockQuantity: number;
 }
 
-const ProductDetails = ({ category, productName, attributeValues, basePrice, sellingPrice, discountPercentage }: ProductDetailsProps) => {
+const ProductDetails = ({ category, productName, attributeValues, basePrice, sellingPrice, discountPercentage, stockQuantity }: ProductDetailsProps) => {
     return (<Stack gap={8} ><Group justify="space-between" className="product-card-1">
         <Text size="xs">{category}</Text>
         <Rating
@@ -26,6 +27,9 @@ const ProductDetails = ({ category, productName, attributeValues, basePrice, sel
         <Text size="11px" className="product-card-1" tt={"uppercase"} fw={500} lts={0.5} mb={4}>
             {attributeValues.join(" | ")}
         </Text>
+        {stockQuantity < 6 && <Text size="11px" className="product-card-1" tt={"uppercase"} fw={500} lts={0.5} mb={4}>
+            {stockQuantity === 0 ? 'out of stock' : 'few items left'}
+        </Text>}
         {basePrice !== sellingPrice ? (
             <Group gap={8} className="product-card-1">
                 <Text td="line-through" c={"black.7"}>

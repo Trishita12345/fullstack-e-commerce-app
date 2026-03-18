@@ -75,6 +75,12 @@ logging:
         security: debug
         cloud:
           gateway: debug
+  file:
+    name: app/app.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 5
 
 frontend:
   url: https://loomandlume.shop

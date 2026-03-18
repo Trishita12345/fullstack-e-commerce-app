@@ -7,7 +7,7 @@ import { apiFetch } from "@/lib/apiFetch";
 
 async function getPLPData() {
   return await apiFetch<PLPResponseDTO>(
-    `/search-service/public/search?size=8`,
+    `/search-service/public/search?size=8&inStock=true`,
     {
       cache: "force-cache",
       revalidate: 3600,
@@ -47,7 +47,7 @@ const ExploreProducts = async () => {
       </Stack>
       <Group mt={72} w={"90%"} mx={"auto"} gap={32} justify="center">
         {plpData.products.content.map((item: ProductItem) => (
-          <ProductCard product={item} key={item.productItemId} />
+          <ProductCard product={item} key={item.productItemId} stockQuantity={item.stockQuantity} />
         ))}
       </Group>
       <SeeAllProductsBtn />

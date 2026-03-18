@@ -20,7 +20,7 @@ interface SearchParamsType {
   category?: string;
   minPrice?: string;
   maxPrice?: string;
-  inStock?: boolean;
+  inStock?: string;
   variants?: Record<string, string[]>;
   page?: string;
   sortBy?: string;
@@ -34,7 +34,7 @@ export function buildSearchUrl(filters: SearchParamsType) {
   if (filters.category) searchParams.append("category", filters.category);
   if (filters.minPrice) searchParams.append("minPrice", filters.minPrice);
   if (filters.maxPrice) searchParams.append("maxPrice", filters.maxPrice);
-  if (filters.inStock !== undefined) searchParams.append("inStock", filters.inStock.toString());
+  if (filters.inStock) searchParams.append("inStock", filters.inStock);
   if (filters.sortBy) searchParams.append("sortBy", filters.sortBy);
   if (filters.dir) searchParams.append("dir", filters.dir);
   if (filters.discount) searchParams.append("discount", filters.discount);
@@ -105,7 +105,7 @@ const PLP = async ({ searchParams }: PageProps) => {
             <PlpSorting sortBy={sortBy} dir={dir} />
             <Group mt={16} gap={32} justify="space-between">
               {content.map((item: ProductItem) => (
-                <ProductCard product={item} key={item.productItemId} isPLP={true} />
+                <ProductCard product={item} key={item.productItemId} isPLP={true} stockQuantity={item.stockQuantity} />
               ))}
             </Group>
             <Divider color="gray.1" py={48} />

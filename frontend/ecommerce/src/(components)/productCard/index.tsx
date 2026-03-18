@@ -16,8 +16,8 @@ import { en } from "@/constants/en";
 import { IconPlus, IconHeartFilled, IconHeart } from "@tabler/icons-react";
 import ProductCardImageSection from "./ProductCardImageSection";
 
-const ProductCard = ({ product, isPLP = false }: { product: ProductItem; isPLP?: boolean }) => {
-  const { productItemId, images, productName, sellingPrice, basePrice, discountPercentage, category, variants } = product;
+const ProductCard = ({ product, stockQuantity, isPLP = false }: { product: ProductItem; stockQuantity: number; isPLP?: boolean }) => {
+  const { productItemId, images, productName, sellingPrice, basePrice, discountPercentage, category, variants, inStock } = product;
   const attributeValues = variants.map((variant: SearchProductVariant) => variant.value);
   const productAddedToCart = false;
   const productAddedToWishList = false;
@@ -27,8 +27,8 @@ const ProductCard = ({ product, isPLP = false }: { product: ProductItem; isPLP?:
         <Stack w={280} gap={8} className="product-card" >
           <Link href={`/products/${productItemId}`}>
             <Stack w={280} gap={8} style={{ cursor: "pointer" }}>
-              <ProductCardImageSectionPLP images={images} productItemId={productItemId} />
-              <ProductDetails category={category} productName={productName} attributeValues={attributeValues} basePrice={basePrice} sellingPrice={sellingPrice} discountPercentage={discountPercentage} />
+              <ProductCardImageSectionPLP images={images} inStock={inStock} />
+              <ProductDetails category={category} productName={productName} attributeValues={attributeValues} basePrice={basePrice} sellingPrice={sellingPrice} discountPercentage={discountPercentage} stockQuantity={stockQuantity} />
             </Stack>
           </Link>
         </Stack>) : (
@@ -36,7 +36,7 @@ const ProductCard = ({ product, isPLP = false }: { product: ProductItem; isPLP?:
           <Link href={`/products/${productItemId}`}>
             <Stack w={280} gap={8} style={{ cursor: "pointer" }}>
               <ProductCardImageSection images={images} productItemId={productItemId} />
-              <ProductDetails category={category} productName={productName} attributeValues={attributeValues} basePrice={basePrice} sellingPrice={sellingPrice} discountPercentage={discountPercentage} />
+              <ProductDetails category={category} productName={productName} attributeValues={attributeValues} basePrice={basePrice} sellingPrice={sellingPrice} discountPercentage={discountPercentage} stockQuantity={stockQuantity} />
             </Stack>
           </Link>
           <Grid gutter={8} className="product-card-1" pb={16}>

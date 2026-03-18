@@ -33,11 +33,11 @@ q=candle
 &sort=price_asc
 
 few items left
-out of stock color gray
 shimmer/loader in plp
 discount percent(BE Pending)
 badge
 responsiveness
++2 more
 
 --query
 --category
