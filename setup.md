@@ -284,25 +284,26 @@ docker ps | grep kafka
 
 ---
 
-# Database Restore (Optional)
-
-If you have database backup.
-
-```bash
-docker exec -i <postgres-container-name> psql -U <username> -d <database> < db_backup.sql
-```
-
-Example:
-
-```bash
-docker exec -i product_service_postgres_container psql -U user -d postgres < db_backup.sql
-```
-
----
-
 # Backend Microservices
 
 Each microservice can be started independently.
+
+# Install Maven
+
+```bash 
+sudo apt install maven -y
+```
+
+Proceed to follow **shell.md** for each microservice run in background.
+
+## Common-Auth
+
+first build common auth library
+
+```bash 
+cd backend/common-auth/
+mvn clean install
+```
 
 ---
 
@@ -311,7 +312,11 @@ Each microservice can be started independently.
 ```bash
 cd backend/apiGatewayService
 mvn clean install
-mvn spring-boot:run
+
+mvn spring-boot:run 
+or
+nohup mvn spring-boot:run > /dev/null 2>&1 &
+sudo ss -ltnp | grep :8080
 ```
 
 Runs on
@@ -327,8 +332,29 @@ https://api.loomandlume.shop
 ```bash
 cd backend/productService
 docker compose up -d
+```
+---
+
+
+# Database Restore (Optional)
+
+If you have database backup.
+
+```bash
+docker exec -i <postgres-container-name> psql -U <username> -d <database> < db_backup.sql
+```
+
+Example:
+
+```bash
+docker exec -i product_service_postgres_container psql -U user -d postgres < db_backup.sql
+```
+```bash 
 mvn clean install
 mvn spring-boot:run
+or
+nohup mvn spring-boot:run > /dev/null 2>&1 &
+sudo ss -ltnp | grep :8081
 ```
 
 ---
@@ -340,6 +366,10 @@ cd backend/cartService
 docker compose up -d
 mvn clean install
 mvn spring-boot:run
+or
+
+nohup mvn spring-boot:run > /dev/null 2>&1 &
+sudo ss -ltnp | grep :8082
 ```
 
 ---
@@ -349,11 +379,11 @@ mvn spring-boot:run
 Repeat same pattern.
 
 ```
-orderService
-paymentService
-profileService
-offerService
-searchEngineService
+orderService - 8084
+paymentService - 8086
+profileService - 8083
+offerService - 8085
+searchEngineService - 8087
 ```
 
 Example:
@@ -372,7 +402,7 @@ mvn spring-boot:run
 Final running services.
 
 ```
-Frontend → http://localhost:3000
+Frontend → https://loomandlume.shop
 API Gateway → https://api.loomandlume.shop
 Kafka → Docker
 Databases → Docker
