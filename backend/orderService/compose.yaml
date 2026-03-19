@@ -13,7 +13,7 @@ services:
       POSTGRES_PASSWORD: pass123
       POSTGRES_DB: order_db
     ports:
-      - "5435:5432"
+      - "127.0.0.1:5435:5432"
     volumes:
       - order_data:/var/lib/postgresql/data
 

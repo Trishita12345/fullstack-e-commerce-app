@@ -347,7 +347,7 @@ docker exec -i <postgres-container-name> psql -U <username> -d <database> < db_b
 Example:
 
 ```bash
-docker exec -i product_service_postgres_container psql -U user -d postgres < db_backup.sql
+docker exec -i product_service_postgres_container psql -U user -d product_db < db_backup.sql
 ```
 ```bash 
 mvn clean install

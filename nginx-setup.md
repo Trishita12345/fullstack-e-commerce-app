@@ -1,152 +1,48 @@
-Below is a **clean Nginx setup section you can add to your project documentation**.
-It is written so someone running the project on a **remote dev server (DigitalOcean / VPS)** can configure routing correctly.
-
-You can add this to your README under **Deployment / Reverse Proxy Setup**.
+Perfect — let’s do a **clean, production-grade Nginx setup from scratch** for your case 👇
+(Frontend + API + SSL + secure architecture)
 
 ---
 
-# Nginx Reverse Proxy Setup
+# 🧱 STEP 0 — Your target architecture
 
-Nginx is used as a **reverse proxy** to route incoming traffic to the correct service.
-
-### Purpose
-
-* Serve frontend via domain
-* Route API requests to API Gateway
-* Hide internal service ports
-* Enable HTTPS later via Let's Encrypt
-
----
-
-# Architecture
-
-```
-Client
+```text
+Internet
    ↓
-Nginx (80 / 443)
+Nginx (80/443) ✅
    ↓
-Frontend → Next.js (3000)
-API → Spring Gateway (8080)
-         ↓
-    Microservices
+Frontend → localhost:3000
+API → localhost:8080
 ```
 
-Example URLs:
-
-| URL                  | Destination        |
-| -------------------- | ------------------ |
-| loomandlume.shop     | Next.js frontend   |
-| api.loomandlume.shop | Spring API Gateway |
+👉 Only Nginx is public
+👉 Everything else = localhost 🔒
 
 ---
 
-# 1. Install Nginx
+# 🚀 STEP 1 — Install Nginx
 
 ```bash
 sudo apt update
 sudo apt install nginx -y
 ```
 
-Verify installation:
+---
+
+# 🔍 Verify
 
 ```bash
-nginx -v
+sudo systemctl status nginx
 ```
 
-Start nginx:
+👉 Should show:
 
-```bash
-sudo systemctl start nginx
-sudo systemctl enable nginx
+```text
+active (running)
 ```
 
 ---
 
-# 2. Create Nginx Site Configuration
-
-Create a new configuration file.
-
-```bash
-sudo nano /etc/nginx/sites-available/loomandlume
-```
-
-Add the following configuration:
-
-```nginx
-server {
-    listen 80;
-    server_name loomandlume.shop www.loomandlume.shop;
-
-    location / {
-        proxy_pass http://localhost:3000;
-
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-
-server {
-    listen 80;
-    server_name api.loomandlume.shop;
-
-    location / {
-        proxy_pass http://localhost:8080;
-
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
-```
-
----
-
-# 3. Enable the Site
-
-Create a symbolic link to enable the configuration.
-
-```bash
-sudo ln -s /etc/nginx/sites-available/loomandlume /etc/nginx/sites-enabled/
-```
-
-If the file already exists, skip this step.
-
----
-
-# 4. Test Nginx Configuration
-
-Always test configuration before restarting.
-
-```bash
-sudo nginx -t
-```
-
-Expected output:
-
-```
-nginx: configuration file /etc/nginx/nginx.conf test is successful
-```
-
----
-
-# 5. Reload Nginx
-
-Apply the configuration.
-
-```bash
-sudo systemctl reload nginx
-```
-
----
-
-# 6. Allow Firewall Access
-
-If firewall is enabled:
+# 🌐 STEP 2 — Allow ports in firewall
 
 ```bash
 sudo ufw allow 80
@@ -155,131 +51,228 @@ sudo ufw allow 443
 
 ---
 
-# 7. Test Domain Routing
+# 🧹 STEP 3 — Remove default config
 
-Frontend:
-
+```bash
+sudo rm /etc/nginx/sites-enabled/default
 ```
+
+---
+
+# 🧱 STEP 4 — Create new config file
+
+```bash
+sudo nano /etc/nginx/sites-available/loomandlume
+```
+
+---
+
+# ✍️ STEP 5 — Add basic (HTTP) config first
+
+```nginx
+# Frontend
+server {
+    listen 80;
+    server_name loomandlume.shop www.loomandlume.shop;
+
+    location / {
+        proxy_pass http://localhost:3000;
+
+        proxy_set_header Host $host;
+    }
+}
+
+# API
+server {
+    listen 80;
+    server_name api.loomandlume.shop;
+
+    location / {
+        proxy_pass http://localhost:8080;
+
+        proxy_set_header Host $host;
+    }
+}
+```
+
+---
+
+# 🔗 STEP 6 — Enable config
+
+```bash
+sudo ln -s /etc/nginx/sites-available/loomandlume /etc/nginx/sites-enabled/
+```
+
+---
+
+# 🧪 STEP 7 — Test config
+
+```bash
+sudo nginx -t
+```
+
+👉 Must show:
+
+```text
+syntax is ok
+```
+
+---
+
+# 🔁 STEP 8 — Restart Nginx
+
+```bash
+sudo systemctl restart nginx
+```
+
+---
+
+# 🌍 STEP 9 — Check HTTP works
+
+Open:
+
+```text
 http://loomandlume.shop
-```
-
-API Gateway:
-
-```
 http://api.loomandlume.shop
 ```
 
 ---
 
-# Request Flow
-
-Example API request:
-
-```
-https://api.loomandlume.shop/api/product-service/public/hello
-```
-
-Flow:
-
-```
-Browser
-   ↓
-Nginx
-   ↓
-Spring Cloud Gateway
-   ↓
-product-service
-```
-
----
-
-# Enable HTTPS (Recommended)
-
-Install **Certbot**.
+# 🔐 STEP 10 — Install SSL (Certbot)
 
 ```bash
 sudo apt install certbot python3-certbot-nginx -y
 ```
 
-Run:
+---
+
+# 🚀 STEP 11 — Generate SSL
 
 ```bash
 sudo certbot --nginx
 ```
 
-Follow the prompts.
+👉 It will:
 
-After completion your site will be available via:
+* Detect domains
+* Add HTTPS config automatically
+* Add redirects
 
-```
+---
+
+# 🔍 STEP 12 — Verify HTTPS
+
+Open:
+
+```text
 https://loomandlume.shop
 https://api.loomandlume.shop
 ```
 
 ---
 
-# Restart Commands
+# 🔐 STEP 13 — Add security headers (IMPORTANT)
 
-Restart nginx:
+Edit config again:
 
 ```bash
-sudo systemctl restart nginx
+sudo nano /etc/nginx/sites-available/loomandlume
 ```
 
-Reload config:
+Inside each `server { listen 443 ssl; }` block add:
+
+```nginx
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-XSS-Protection "1; mode=block" always;
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+```
+
+---
+
+# 🚦 STEP 14 — Add rate limiting (API protection)
+
+Edit:
 
 ```bash
+sudo nano /etc/nginx/nginx.conf
+```
+
+Inside `http {}`:
+
+```nginx
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+```
+
+---
+
+Then in API block:
+
+```nginx
+location / {
+    proxy_pass http://localhost:8080;
+    limit_req zone=api_limit burst=20 nodelay;
+}
+```
+
+---
+
+# 🔁 STEP 15 — Reload
+
+```bash
+sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-Check status:
+---
+
+# 🔐 STEP 16 — Final security checks
+
+### Ensure API NOT public:
 
 ```bash
-sudo systemctl status nginx
+sudo ss -tulnp | grep 8080
+```
+
+👉 Should be:
+
+```text
+127.0.0.1:8080
 ```
 
 ---
 
-# Troubleshooting
+# 🎯 FINAL RESULT
 
-Check nginx logs:
-
-```bash
-sudo tail -f /var/log/nginx/error.log
-```
-
-Check access logs:
-
-```bash
-sudo tail -f /var/log/nginx/access.log
-```
-
-Test backend directly:
-
-```bash
-curl http://localhost:8080
+```text
+https://loomandlume.shop → frontend
+https://api.loomandlume.shop → API
 ```
 
 ---
 
-# Final System Overview
+# 🧠 What you achieved
 
-```
-loomandlume.shop
-        ↓
-     Nginx
-        ↓
-Next.js (3000)
+* ✅ HTTPS enabled
+* ✅ Only Nginx exposed
+* ✅ API hidden behind proxy
+* ✅ Rate limiting added
+* ✅ Security headers added
 
-api.loomandlume.shop
-        ↓
-     Nginx
-        ↓
-Spring Gateway (8080)
-        ↓
-Microservices
+---
+
+# 🚀 BONUS (recommended next)
+
+* Enable auto-renew:
+
+```bash
+sudo certbot renew --dry-run
 ```
 
 ---
 
-If you want, I can also give you a **much better Nginx config optimized for Next.js + WebSockets + API Gateway**, which avoids many production issues.
+# 🎯 Final takeaway
+
+👉 You now have **production-grade reverse proxy setup**
+
+---

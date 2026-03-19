@@ -1,10 +1,11 @@
 server:
   port: 8087
+  address: 127.0.0.1
 spring:
   application:
     name: seachEngineService
   elasticsearch:
-    uris: http://localhost:9200
+    uris: http://127.0.0.1:9200
     connection-timeout: 5s
     socket-timeout: 3s
   data:
@@ -12,7 +13,7 @@ spring:
       repositories:
         enabled: true
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: 127.0.0.1:9092
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
