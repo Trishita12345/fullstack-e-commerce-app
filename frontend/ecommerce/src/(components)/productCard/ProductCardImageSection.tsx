@@ -6,20 +6,21 @@ import { SearchProductImage } from "@/constants/types";
 
 interface ProductCardImageSectionProps {
     images: SearchProductImage[];
-    productItemId: string;
+    inStock?: boolean;
+    imgSize: number
 }
-export default function ProductCardImageSection({ images, productItemId }: ProductCardImageSectionProps) {
+export default function ProductCardImageSection({ images, inStock = true, imgSize }: ProductCardImageSectionProps) {
     const productAddedToCart = false;
     const productAddedToWishList = false;
     const thumbnailImg = images.find((img) => img.isThumbnail);
     const otherImages = images.filter((img) => !img.isThumbnail);
     const carouselImages = [thumbnailImg, ...otherImages];
     return (
-        <div className="image-wrapper">
+        <div className="image-wrapper" style={{ filter: !inStock ? "grayscale(1)" : "", width: imgSize, height: imgSize }}>
             <Image
                 src={thumbnailImg?.imgUrl ?? ''}
-                width={280}
-                height={280}
+                width={imgSize}
+                height={imgSize}
                 alt="product"
                 className="product-static-image"
             />
@@ -27,7 +28,8 @@ export default function ProductCardImageSection({ images, productItemId }: Produ
                 <div className="css-carousel" style={
                     {
                         "--img-count": carouselImages.length,
-                        "--img-width": "280px",
+                        "--img-width": `${imgSize}px`,
+                        "--img-height": `${imgSize}px`,
                         "--duration": `${carouselImages.length * 2}s`,
                     } as React.CSSProperties
                 }>
@@ -36,8 +38,8 @@ export default function ProductCardImageSection({ images, productItemId }: Produ
                             <div className="css-carousel-slide" key={img.imgUrl}>
                                 <Image
                                     src={img.imgUrl}
-                                    width={280}
-                                    height={280}
+                                    width={imgSize}
+                                    height={imgSize}
                                     alt="product"
                                 />
                             </div>

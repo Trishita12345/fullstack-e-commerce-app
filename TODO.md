@@ -32,7 +32,6 @@ q=candle
 &size=20
 &sort=price_asc
 
-few items left
 shimmer/loader in plp
 discount percent(BE Pending)
 badge

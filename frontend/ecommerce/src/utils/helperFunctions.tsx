@@ -193,4 +193,8 @@ export const scrollToId = (id: string, offset = 0) => {
 export function capitalizeString(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
-export const getRandomRating = () => [3.5, 4, 4.5, 5][Math.floor(Math.random() * 4)];
+
+export function getRandomValue(arrLength: number): number {
+  const randomIndex = Math.floor(Math.random() * arrLength);
+  return randomIndex;
+}

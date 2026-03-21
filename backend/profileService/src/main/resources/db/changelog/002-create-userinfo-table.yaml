@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-user-info-table
+      author: trishita
+      changes:
+        - createTable:
+            tableName: user_info
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: user_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: phone_number
+                  type: VARCHAR(20)
+
+              - column:
+                  name: phone_number_verified
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+
+              - column:
+                  name: email_id
+                  type: VARCHAR(255)
+
+              - column:
+                  name: email_id_verified
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+
+              - column:
+                  name: fullname
+                  type: VARCHAR(255)
+
+              - column:
+                  name: profile_img
+                  type: VARCHAR(512)
+
+              - column:
+                  name: gender
+                  type: VARCHAR(50)
+
+              - column:
+                  name: dob
+                  type: DATE
+
+        - addUniqueConstraint:
+            tableName: user_info
+            columnNames: user_id
+            constraintName: uk_user_info_user_id
