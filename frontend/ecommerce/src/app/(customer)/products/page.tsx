@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Group, Text, Title } from "@mantine/core";
+import { Box, Button, Card, Divider, Group, Text, Title } from "@mantine/core";
 import { PLPResponseDTO, ProductItem } from "@/constants/types";
 import ProductCard from "@/(components)/productCard";
 import Breadcrumb from "@/(components)/Breadcrumb";
@@ -11,6 +11,7 @@ import PlpSearch from "./(components)/PlpSearch";
 import PlpFilters from "./(components)/PlpFilters";
 import { CategoriesCardType } from "@/(components)/categoriesCard";
 import Link from "next/link";
+import { IconAdjustmentsHorizontal, IconArrowsSort } from "@tabler/icons-react";
 
 interface PageProps {
   searchParams: SearchParamsType
@@ -82,7 +83,7 @@ const PLP = async ({ searchParams }: PageProps) => {
         display: "flex",
       }}
     >
-      <Box w={260} style={{ borderRight: `1px solid var(--mantine-color-gray-1)` }} py={32}>
+      <Box w={260} style={{ borderRight: `1px solid var(--mantine-color-gray-1)` }} py={32} visibleFrom="md">
         <PlpFilters facets={facets}
           categories={categories}
           category={category}
@@ -94,7 +95,7 @@ const PLP = async ({ searchParams }: PageProps) => {
           inStock={inStock}
         />
       </Box>
-      <Box w={"calc(100% - 300px)"} mx="auto" py={32}>
+      <Box w={{ base: '95%', md: "calc(100% - 300px)" }} mx="auto" py={32} pos={'relative'} mb={{ base: 70, md: 0 }}>
         <Breadcrumb items={breadcrumbs} />
         <Title order={1} ta='center' tt={'capitalize'} style={{ fontFamily: "var(--font-jost)" }}>
           {`Explore Products`}
@@ -103,7 +104,12 @@ const PLP = async ({ searchParams }: PageProps) => {
         {total > 0 ? (
           <>
             <PlpSorting sortBy={sortBy} dir={dir} />
-            <Group mt={16} gap={32} justify="space-between">
+            <Group mt={16} gap={32} justify="space-between" visibleFrom="md">
+              {content.map((item: ProductItem) => (
+                <ProductCard product={item} key={item.productItemId} isPLP={true} stockQuantity={item.stockQuantity} />
+              ))}
+            </Group>
+            <Group mt={16} gap={32} justify="center" hiddenFrom="md">
               {content.map((item: ProductItem) => (
                 <ProductCard product={item} key={item.productItemId} isPLP={true} stockQuantity={item.stockQuantity} />
               ))}
@@ -122,8 +128,37 @@ const PLP = async ({ searchParams }: PageProps) => {
           </Box>
         }
       </Box>
-    </Box>
-    <Footer />
+      <Card pos={'fixed'} bottom={0} w="100%" display={'flex'}
+        style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}
+        shadow="sm"
+        hiddenFrom="md"
+      >
+        <Button variant="transparent" w={'max-content'}>
+          <Text tt='uppercase' size='xs' fw={600} c='black.8'>
+            Category
+          </Text>
+        </Button>
+        <Divider orientation="vertical" />
+        <Button variant="transparent" w={'max-content'} c='black.8'>
+          <Group>
+            <IconArrowsSort />
+            <Text tt='uppercase' size='xs' fw={600}>
+              Sort
+            </Text>
+          </Group>
+        </Button>
+        <Divider orientation="vertical" />
+        <Button variant="transparent" w={'max-content'} c='black.8'>
+          <Group>
+            <IconAdjustmentsHorizontal />
+            <Text tt='uppercase' size='xs' fw={600}>
+              Filter
+            </Text>
+          </Group>
+        </Button>
+      </Card >
+    </Box >
+    <Box visibleFrom="md"><Footer /></Box>
   </>;
 };
 

@@ -53,14 +53,7 @@ const ProductCard = ({ product, stockQuantity, isPLP = false }: { product: Produ
               {stockQuantity === 0 ? 'out of stock' : `only ${stockQuantity} items left!`}
             </Text>
           </Box>
-          <Stack w={200} className="product-card" >
-            <Link href={`/products/${productItemId}`}>
-              <Stack w={200} gap={6} style={{ cursor: "pointer" }}>
-                <ProductCardImageSection images={images} inStock={inStock} imgSize={200} />
-                <ProductDetailsPLP category={category} productName={productName} attributeValues={attributeValues} basePrice={basePrice} sellingPrice={sellingPrice} discountPercentage={discountPercentage} stockQuantity={stockQuantity} />
-              </Stack>
-            </Link>
-          </Stack>
+          <PlpResponsiveCard product={product} />
         </Stack>) : (
         <Stack gap={0}>
           <Box className="tag">
@@ -123,3 +116,30 @@ const ProductCard = ({ product, stockQuantity, isPLP = false }: { product: Produ
 
 
 export default ProductCard;
+
+const PlpResponsiveCard = ({ product }: { product: ProductItem }) => {
+  const { productItemId, images, productName, sellingPrice, basePrice, discountPercentage, category, variants, inStock } = product;
+  const attributeValues = variants.map((variant: SearchProductVariant) => variant.value);
+  const mdWidth = 200;
+  const xsWidth = 150;
+  return (
+    <>
+      <Stack w={mdWidth} className="product-card" visibleFrom="md">
+        <Link href={`/products/${productItemId}`}>
+          <Stack w={mdWidth} gap={6} style={{ cursor: "pointer" }}>
+            <ProductCardImageSection images={images} inStock={inStock} imgSize={mdWidth} />
+            <ProductDetailsPLP category={category} productName={productName} attributeValues={attributeValues} basePrice={basePrice} sellingPrice={sellingPrice} discountPercentage={discountPercentage} stockQuantity={discountPercentage} />
+          </Stack>
+        </Link>
+      </Stack>
+      <Stack w={xsWidth} className="product-card" hiddenFrom="md">
+        <Link href={`/products/${productItemId}`}>
+          <Stack w={xsWidth} gap={6} style={{ cursor: "pointer" }}>
+            <ProductCardImageSection images={images} inStock={inStock} imgSize={xsWidth} />
+            <ProductDetailsPLP category={category} productName={productName} attributeValues={attributeValues} basePrice={basePrice} sellingPrice={sellingPrice} discountPercentage={discountPercentage} stockQuantity={discountPercentage} />
+          </Stack>
+        </Link>
+      </Stack>
+    </>
+  )
+}

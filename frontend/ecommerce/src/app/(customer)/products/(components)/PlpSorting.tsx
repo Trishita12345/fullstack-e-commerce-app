@@ -34,7 +34,7 @@ const PlpSorting = ({ sortBy, dir }: { sortBy?: string, dir?: string }) => {
         router.push(`?${params.toString()}`);
     }
     return (
-        <Box style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Box style={{ display: 'flex', justifyContent: 'flex-end' }} visibleFrom="md">
             <Select
                 size='xs'
                 w={250}

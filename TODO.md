@@ -12,6 +12,7 @@ Preparing secure payment... RESERVED | INITIATED
 8. Pdp issue variant selection
 9. Category Table Image, description
 10. Global Search
+11. order infinite scroll
 
 //Done- To be checked 2. Payment Failure - on modal dismiss one api to relese inventory
 2a. modal dismiss - payment service - update
