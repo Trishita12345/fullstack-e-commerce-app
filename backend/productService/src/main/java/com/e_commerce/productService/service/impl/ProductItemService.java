@@ -283,22 +283,25 @@ public class ProductItemService implements IProductItemService {
                 List<Object[]> rows = productItemRepository
                                 .findVariantAttributeByProductId(productDetailsDTO.getProductId());
                 System.out.println(rows.toString());
-                Map<String, Map<String, UUID>> outerMap = new HashMap<>();
+                Map<String, Map<String, List<UUID>>> outerMap = new HashMap<>();
                 for (Object[] row : rows) {
                         String variantName = (String) row[0];
                         String attributeName = (String) row[1];
                         UUID productItem = (UUID) row[2];
                         if (outerMap.containsKey(variantName)) {
-                                if (!outerMap.get(variantName).containsKey(attributeName)) {
-                                        outerMap.get(variantName).put(attributeName, productItem);
+                                if (outerMap.get(variantName).containsKey(attributeName)) {
+                                        outerMap.get(variantName).get(attributeName).add(productItem);
+                                } else {
+                                        List<UUID> productItemIds = new ArrayList<>();
+                                        productItemIds.add(productItem);
+                                        outerMap.get(variantName).put(attributeName, productItemIds);
                                 }
                         } else {
-
-                                outerMap.put(variantName, new HashMap<>() {
-                                        {
-                                                put(attributeName, productItem);
-                                        }
-                                });
+                                List<UUID> productItemIds = new ArrayList<>();
+                                productItemIds.add(productItem);
+                                Map<String, List<UUID>> innerMap = new HashMap<>();
+                                innerMap.put(attributeName, productItemIds);
+                                outerMap.put(variantName, innerMap);
                         }
                 }
                 List<ProductVariantAttributeDTO> pva = new ArrayList<>();

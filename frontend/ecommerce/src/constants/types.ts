@@ -157,7 +157,7 @@ export interface AddEditCategoryResponseType {
 
 export type VariantAttributeType = {
   name: string;
-  productItemId: string;
+  productItemId: string[];
 };
 
 export type ProductVariantAttribute = {

@@ -12,6 +12,7 @@ import PlpFilters from "./(components)/PlpFilters";
 import { CategoriesCardType } from "@/(components)/categoriesCard";
 import Link from "next/link";
 import { IconAdjustmentsHorizontal, IconArrowsSort } from "@tabler/icons-react";
+import PlpBottomNav from "./(components)/PlpFilters/mobile/PlpBottomNav";
 
 interface PageProps {
   searchParams: SearchParamsType
@@ -103,7 +104,7 @@ const PLP = async ({ searchParams }: PageProps) => {
         <PlpSearch query={q} />
         {total > 0 ? (
           <>
-            <PlpSorting sortBy={sortBy} dir={dir} />
+            <PlpSorting />
             <Group mt={16} gap={32} justify="space-between" visibleFrom="md">
               {content.map((item: ProductItem) => (
                 <ProductCard product={item} key={item.productItemId} isPLP={true} stockQuantity={item.stockQuantity} />
@@ -128,37 +129,9 @@ const PLP = async ({ searchParams }: PageProps) => {
           </Box>
         }
       </Box>
-      <Card pos={'fixed'} bottom={0} w="100%" display={'flex'}
-        style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}
-        shadow="sm"
-        hiddenFrom="md"
-      >
-        <Button variant="transparent" w={'max-content'}>
-          <Text tt='uppercase' size='xs' fw={600} c='black.8'>
-            Category
-          </Text>
-        </Button>
-        <Divider orientation="vertical" />
-        <Button variant="transparent" w={'max-content'} c='black.8'>
-          <Group>
-            <IconArrowsSort />
-            <Text tt='uppercase' size='xs' fw={600}>
-              Sort
-            </Text>
-          </Group>
-        </Button>
-        <Divider orientation="vertical" />
-        <Button variant="transparent" w={'max-content'} c='black.8'>
-          <Group>
-            <IconAdjustmentsHorizontal />
-            <Text tt='uppercase' size='xs' fw={600}>
-              Filter
-            </Text>
-          </Group>
-        </Button>
-      </Card >
+      <PlpBottomNav categories={categories} /> {/* visible below md */}
     </Box >
-    <Box visibleFrom="md"><Footer /></Box>
+    <Box mb={65}><Footer /></Box>
   </>;
 };
 

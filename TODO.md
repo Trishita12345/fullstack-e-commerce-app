@@ -9,10 +9,10 @@ Preparing secure payment... RESERVED | INITIATED
 5. AOP
 6. Email service
 7. Profile
-8. Pdp issue variant selection
+<!-- 8. Pdp issue variant selection -->
 9. Category Table Image, description
 10. Global Search
-11. order infinite scroll
+<!-- 11. order infinite scroll -->
 
 //Done- To be checked 2. Payment Failure - on modal dismiss one api to relese inventory
 2a. modal dismiss - payment service - update
@@ -38,6 +38,7 @@ discount percent(BE Pending)
 badge
 responsiveness
 +2 more
+add to cart/ wishlist
 
 --query
 --category

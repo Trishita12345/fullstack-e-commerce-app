@@ -22,7 +22,7 @@ const VariantAttributes = ({
         {va.attributes.map((vaa) => (
           <Fragment key={vaa.name}>
             {" "}
-            {vaa.productItemId === productItemId ? ( //isSelected
+            {vaa.productItemId.includes(productItemId) ? ( //isSelected
               <Button
                 variant={"filled"}
                 color={"primaryDark.5"}
@@ -34,7 +34,7 @@ const VariantAttributes = ({
                 </Text>
               </Button>
             ) : (
-              <Link href={`/products/${vaa.productItemId}`}>
+              <Link href={`/products/${vaa.productItemId[0]}`}>
                 <Button variant={"outline"} color={"primaryDark.5"} size="xs">
                   <Text size="xs" tt="capitalize" fw={500}>
                     {vaa.name}

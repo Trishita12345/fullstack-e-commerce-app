@@ -1,27 +1,32 @@
 'use client';
-import { SelectOptionType } from "@/constants/types";
-import { Box, ComboboxData, ComboboxItem, Select } from "@mantine/core";
-import { IconArrowsSort } from "@tabler/icons-react";
-import { useState } from "react";
+import { Box, Stack, Select, Group, Text } from "@mantine/core";
+import { Icon, IconArrowsSort, IconBrandTinder, IconHeart, IconProps, IconSortAscending, IconSortDescending, IconStar } from "@tabler/icons-react";
+import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-
-const data: SelectOptionType[] = [
-    { label: "Sort By: Price: High to Low", value: "price_desc" },
-    { label: "Sort By: Price: Low to High", value: "price_asc" },
-    { label: "Sort By: Popularity", value: "popularity_desc" },
-    { label: "Sort By: Recommended", value: "trending_desc" },
-    { label: "Sort By: Rating", value: "rating_desc" }
+interface SortingDataType {
+    icon: ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>;
+    label: string;
+    value: string;
+};
+const sortingData: SortingDataType[] = [
+    { icon: IconBrandTinder, label: "Sort By: Popularity", value: "popularity_desc" },
+    { icon: IconStar, label: "Sort By: Trending", value: "trending_desc" },
+    { icon: IconSortDescending, label: "Sort By: Price: High to Low", value: "price_desc" },
+    { icon: IconSortAscending, label: "Sort By: Price: Low to High", value: "price_asc" },
+    { icon: IconHeart, label: "Sort By: Customer Rating", value: "rating_desc" }
 ]
 
 
 
-const PlpSorting = ({ sortBy, dir }: { sortBy?: string, dir?: string }) => {
+const PlpSorting = ({ isMobile = false, handleClose }: { isMobile?: boolean; handleClose?: () => void }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const currValue = sortBy && dir ? `${sortBy}_${dir}` : "trending_desc";
+    const sortBy = searchParams.get('sortBy')
+    const dir = searchParams.get('dir')
+    const currValue = sortBy && dir ? `${sortBy}_${dir}` : "tre nding_desc";
 
-    const val = data.some((d) => d.value === currValue)
+    const val = sortingData.some((d) => d.value === currValue)
         ? currValue
         : "trending_desc";
 
@@ -34,18 +39,38 @@ const PlpSorting = ({ sortBy, dir }: { sortBy?: string, dir?: string }) => {
         router.push(`?${params.toString()}`);
     }
     return (
-        <Box style={{ display: 'flex', justifyContent: 'flex-end' }} visibleFrom="md">
-            <Select
-                size='xs'
-                w={250}
-                leftSection={<IconArrowsSort size={14} />}
-                allowDeselect={false}
-                clearable={false}
-                data={data}
-                defaultValue={val}
-                onChange={(_value, option) => updateParams(option.value)}
-            />
-        </Box>);
+        <>
+            {isMobile ?
+                <Stack>
+                    {sortingData.map(s => {
+                        const Icon = s.icon;
+                        return (
+                            <Group onClick={() => {
+                                updateParams(s.value);
+                                handleClose && handleClose();
+                            }
+                            }>
+                                <Icon size='18px' />
+                                <Text size='xs' style={{ fontFamily: "var(--font-poppins)" }}>{s.label}</Text>
+                            </Group>
+                        )
+                    }
+                    )}
+                </Stack > :
+                <Box style={{ display: 'flex', justifyContent: 'flex-end' }} visibleFrom="md">
+                    <Select
+                        size='xs'
+                        w={250}
+                        leftSection={<IconArrowsSort size={14} />}
+                        allowDeselect={false}
+                        clearable={false}
+                        data={sortingData}
+                        defaultValue={val}
+                        onChange={(_value, option) => updateParams(option.value)}
+                    />
+                </Box>
+            }
+        </>);
 }
 
 export default PlpSorting;

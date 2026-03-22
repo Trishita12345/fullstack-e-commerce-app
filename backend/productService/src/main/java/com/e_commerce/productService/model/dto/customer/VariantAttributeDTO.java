@@ -1,5 +1,6 @@
 package com.e_commerce.productService.model.dto.customer;
 
+import java.util.List;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -14,5 +15,5 @@ import lombok.NoArgsConstructor;
 public class VariantAttributeDTO {
 
     private String name;
-    private UUID productItemId;
+    private List<UUID> productItemId;
 }
