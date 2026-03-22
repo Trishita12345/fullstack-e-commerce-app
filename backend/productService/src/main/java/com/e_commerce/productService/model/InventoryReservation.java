@@ -3,7 +3,6 @@ package com.e_commerce.productService.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.e_commerce.common.model.AuditEntity;

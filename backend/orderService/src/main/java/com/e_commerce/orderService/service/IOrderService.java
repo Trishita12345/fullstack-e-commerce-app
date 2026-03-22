@@ -2,10 +2,7 @@ package com.e_commerce.orderService.service;
 
 import java.util.UUID;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-
 import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 import com.e_commerce.common.model.event.PaymentCreatedEvent;
 import com.e_commerce.common.model.event.PaymentStatusEvent;

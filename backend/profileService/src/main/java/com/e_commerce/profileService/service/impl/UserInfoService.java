@@ -1,7 +1,5 @@
 package com.e_commerce.profileService.service.impl;
 
-import java.util.Date;
-
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.profileService.model.UserInfo;

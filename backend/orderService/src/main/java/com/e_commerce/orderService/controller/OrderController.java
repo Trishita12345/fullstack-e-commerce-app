@@ -3,7 +3,6 @@ package com.e_commerce.orderService.controller;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,8 +20,6 @@ import com.e_commerce.orderService.model.dto.OrderStatusResponseDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryRequestDTO;
 import com.e_commerce.orderService.model.dto.PriceSummaryResponseDTO;
 import com.e_commerce.orderService.service.IOrderService;
-
-import jakarta.annotation.Nullable;
 
 import org.springframework.http.MediaType;
 import lombok.AllArgsConstructor;
