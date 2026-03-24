@@ -423,3 +423,28 @@ export interface FacetValue {
   value: string;
   count: number;
 }
+
+export interface saveUserDTO {
+    id: String;
+    name: String;
+    email: String;
+    emailVerified: boolean ;
+    image :String;
+}
+
+export interface FullUser {
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  id: string;
+  userId: string;
+  phoneNumber: string;
+  phoneNumberVerified: boolean;
+  emailId: string;
+  emailIdVerified: boolean;
+  fullname: string;
+  profileImg: string;
+  gender: Gender;
+  dob: string; // ISO date string
+}
+
+export type Gender = "MALE" | "FEMALE" | "OTHER";

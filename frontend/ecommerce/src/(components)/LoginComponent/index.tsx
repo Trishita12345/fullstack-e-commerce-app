@@ -1,6 +1,6 @@
 "use client";
 
-import { Session } from "@/lib/auth";
+import { Session, User } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
 import { useAddressActions } from "@/utils/store/address";
 import { useSession, useAuthActions } from "@/utils/store/session";
@@ -9,6 +9,10 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useEffect } from "react";
 import Image from "next/image";
+import { notify } from "@/utils/helperFunctions";
+import { saveUserDTO } from "@/constants/types";
+import { saveUser } from "./actions";
+import { apiFetch } from "@/lib/apiFetch";
 
 export interface LoggedInProps {
   session: Session;
@@ -46,10 +50,30 @@ const LoginComponent = ({
     }
   };
 
+  const saveUserData = async (user: User) => {
+    try {
+      const body: saveUserDTO = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        emailVerified: user.emailVerified,
+        image: user.image || '',
+      }
+      await saveUser(body);
+    } catch {
+      notify({
+        variant: 'error',
+        title: 'Error!',
+        message: 'Failed to save user1.'
+      })
+    }
+  }
+
   useEffect(() => {
     if (data?.user) {
       setSession(data);
       getAllAddresses();
+      saveUserData(data.user)
     }
   }, [data]);
   return (

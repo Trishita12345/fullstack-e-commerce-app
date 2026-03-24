@@ -53,6 +53,18 @@ databaseChangeLog:
                   name: dob
                   type: DATE
 
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
         - addUniqueConstraint:
             tableName: user_info
             columnNames: user_id

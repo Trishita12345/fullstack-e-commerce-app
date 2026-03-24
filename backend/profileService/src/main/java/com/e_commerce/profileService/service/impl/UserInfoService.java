@@ -1,5 +1,7 @@
 package com.e_commerce.profileService.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.profileService.model.UserInfo;
@@ -24,7 +26,11 @@ public class UserInfoService implements IUserInfoService {
     @Override
     @Transactional
     public void saveUserDetails(String userId, BetterAuthUser user) {
-        UserInfo userInfo = UserInfo.builder()
+        Optional<UserInfo> userInfo = userInfoRepository.getByUserId(userId);
+        if (userInfo.isPresent()) {
+            return;
+        }
+        UserInfo newUserInfo = UserInfo.builder()
                 .userId(user.getId())
                 .fullname(user.getName())
                 .emailId(user.getEmail())
@@ -32,7 +38,7 @@ public class UserInfoService implements IUserInfoService {
                 .profileImg(user.getImage())
                 .build();
 
-        userInfoRepository.save(userInfo);
+        userInfoRepository.save(newUserInfo);
     }
 
     @Override

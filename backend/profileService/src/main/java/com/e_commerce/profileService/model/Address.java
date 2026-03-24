@@ -2,6 +2,7 @@ package com.e_commerce.profileService.model;
 
 import java.util.UUID;
 
+import com.e_commerce.common.model.AuditEntity;
 import com.e_commerce.common.model.enums.AddressType;
 
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import lombok.*;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Address {
+public class Address extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

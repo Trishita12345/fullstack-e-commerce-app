@@ -21,6 +21,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         separator={"\\"}
         mb={28}
         style={{ fontSize: 12, textTransform: "uppercase" }}
+        visibleFrom="md"
       >
         {items.map((item) => (
           <Fragment key={item.title}>

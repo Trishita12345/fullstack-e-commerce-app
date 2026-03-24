@@ -17,15 +17,15 @@ export default function ImageCarousel({
     <Carousel
       classNames={classes}
       withIndicators
-      height={350}
+      height={400}
       emblaOptions={{ dragFree: true, align: "start", loop: true }}
       slideGap="0"
       withControls={false}
     >
       {images.map((src) => (
         <Carousel.Slide key={src}>
-          <Box maw={350} mx={"auto"} style={{ position: "relative" }}>
-            <ResponsiveImage src={src} height={350} width={350} />
+          <Box maw={{ base: '100vw', xs: 350 }} mx={"auto"} style={{ position: "relative" }}>
+            <ResponsiveImage src={src} height={400} width={350} />
             <ActionIcon
               aria-label="share"
               onClick={() => shareProduct(product)}

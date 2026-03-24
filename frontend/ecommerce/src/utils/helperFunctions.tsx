@@ -59,6 +59,7 @@ export function notify({
 }
 
 async function getPresignedUrl(file: File) {
+  console.log("file: ", file.type)
   const { url } = await apiFetch<{ url: string }>(
     "/product-service/s3/presign",
     {
@@ -70,6 +71,7 @@ async function getPresignedUrl(file: File) {
       headers: { "Content-Type": "application/json" },
     },
   );
+  console.log("url", url)
   return url;
 }
 
@@ -197,4 +199,8 @@ export function capitalizeString(str: string) {
 export function getRandomValue(arrLength: number): number {
   const randomIndex = Math.floor(Math.random() * arrLength);
   return randomIndex;
+}
+
+export function copyText(text: string) {
+  navigator.clipboard.writeText(text)
 }
