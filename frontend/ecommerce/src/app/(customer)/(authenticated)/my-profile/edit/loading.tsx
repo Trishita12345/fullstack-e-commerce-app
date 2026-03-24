@@ -1,12 +1,15 @@
 
-import { Skeleton, Stack, Group, Box } from "@mantine/core";
+import { Skeleton, Stack, Group, Box, Divider } from "@mantine/core";
 
 export default function ProfileFormSkeleton() {
   return (
-    <Stack spacing="md" maw={500} mx='auto' my={32} px={24}>
-      
+    <Stack gap="md" maw={500} mx='auto' my={32} px={24}>
+
       {/* Back Button */}
       <Skeleton height={20} width={180} radius="sm" />
+
+      <Skeleton height={28} width={200} />
+      <Divider />
 
       {/* Full Name */}
       <Box>

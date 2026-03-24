@@ -51,7 +51,7 @@ const MyProfilePage = async () => {
         <Text fw={600} style={{ fontFamily: "var(--font-poppins)" }}>Profile Details</Text>
         {session?.user.role === 'SELLER' && <ViewToken token={token} />}
       </Group>
-      <Divider></Divider>
+      <Divider />
       <Center mx={"auto"} mb={16}>
         <Avatar src={profileImg || ''} alt="it's me" h={120} w={120} radius={"lg"} />
         {/* <IconPencil className="editIcon" color="white" cursor={'pointer'} /> */}
