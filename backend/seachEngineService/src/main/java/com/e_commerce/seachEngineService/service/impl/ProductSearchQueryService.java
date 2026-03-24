@@ -83,17 +83,28 @@ public class ProductSearchQueryService implements IProductSearchQueryService {
 
                 /* ---------- VARIANT FILTERS ---------- */
 
-                request.getVariants().forEach((name, value) -> {
+                request.getVariants().forEach((name, values) -> {
 
                         boolQuery.filter(f -> f.nested(n -> n
                                         .path("variants")
-                                        .query(q -> q.bool(b -> b
-                                                        .must(m -> m.term(t -> t
-                                                                        .field("variants.name")
-                                                                        .value(name)))
-                                                        .must(m -> m.term(t -> t
+                                        .query(q -> q.bool(b -> {
+
+                                                // must match variant name
+                                                b.must(m -> m.term(t -> t
+                                                                .field("variants.name")
+                                                                .value(name)));
+
+                                                // OR condition for multiple values
+                                                b.must(m -> m.bool(inner -> {
+                                                        values.forEach(val -> inner.should(s -> s.term(t -> t
                                                                         .field("variants.value")
-                                                                        .value(value)))))));
+                                                                        .value(val))));
+                                                        inner.minimumShouldMatch("1");
+                                                        return inner;
+                                                }));
+
+                                                return b;
+                                        }))));
                 });
 
                 /* ---------- DYNAMIC AGGREGATION ---------- */

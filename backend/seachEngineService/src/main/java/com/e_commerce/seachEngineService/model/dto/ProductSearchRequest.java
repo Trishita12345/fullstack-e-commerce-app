@@ -1,5 +1,6 @@
 package com.e_commerce.seachEngineService.model.dto;
 
+import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class ProductSearchRequest {
     private Boolean inStock;
 
     // example: color=red, size=9
-    private Map<String, String> variants;
+    private Map<String, List<String>> variants;
 
     @Builder.Default
     private int page = 0;

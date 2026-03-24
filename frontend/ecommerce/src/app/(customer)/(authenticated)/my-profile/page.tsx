@@ -2,7 +2,7 @@ import { getServerSession, getServerToken } from "@/lib/get-server-auth";
 import { Avatar, Box, Button, Center, Divider, Grid, GridCol, Group, Stack, Text } from "@mantine/core";
 import "./profile.css"
 import { ViewToken } from "./ViewToken";
-import { getUser } from "./actions";
+import { getUser, getUserCached } from "./actions";
 import Link from "next/link";
 
 const Row = ({ label, value }: { label: string; value: string }) => (
@@ -33,7 +33,7 @@ const Row = ({ label, value }: { label: string; value: string }) => (
 
 const MyProfilePage = async () => {
   const session = await getServerSession();
-  const user = await getUser();
+  const user = await getUserCached();
   const { phoneNumber, emailId, fullname, profileImg, gender, dob } = user;
   const { token } = await getServerToken();
 

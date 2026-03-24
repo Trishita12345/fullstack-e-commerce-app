@@ -2,7 +2,7 @@ import { SelectOptionType } from "@/constants/types";
 import { Box, Radio, Stack, Text } from "@mantine/core";
 import { useSearchParams, useRouter } from "next/navigation";
 
-const discountOptions: SelectOptionType[] = [
+export const discountOptions: SelectOptionType[] = [
     { value: 'gte10', label: '10% and above' },
     { value: 'gte20', label: '20% and above' },
     { value: 'gte30', label: '30% and above' },

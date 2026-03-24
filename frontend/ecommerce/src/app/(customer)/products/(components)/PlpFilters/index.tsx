@@ -35,7 +35,7 @@ const PlpFilters = ({ category, facets, categories, minPrice, maxPrice, inStock,
                     </Button>)}
             </Group>
             <Divider my={8} color="gray.1" />
-            <CategoriesFilter selectedCategory={category} categories={categories} />
+            <CategoriesFilter categories={categories} />
             <Divider my={8} color="gray.1" />
             <PriceSlider minPrice={minPrice} maxPrice={maxPrice} />
             <Divider my={8} color="gray.1" />

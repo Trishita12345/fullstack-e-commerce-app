@@ -41,7 +41,7 @@ const PlpSorting = ({ isMobile = false, handleClose }: { isMobile?: boolean; han
     return (
         <>
             {isMobile ?
-                <Stack>
+                <Stack p={16}>
                     {sortingData.map(s => {
                         const Icon = s.icon;
                         return (
@@ -51,7 +51,7 @@ const PlpSorting = ({ isMobile = false, handleClose }: { isMobile?: boolean; han
                             }
                             }>
                                 <Icon size='18px' />
-                                <Text size='xs' style={{ fontFamily: "var(--font-poppins)" }}>{s.label}</Text>
+                                <Text size='sm' style={{ fontFamily: "var(--font-poppins)" }}>{s.label}</Text>
                             </Group>
                         )
                     }

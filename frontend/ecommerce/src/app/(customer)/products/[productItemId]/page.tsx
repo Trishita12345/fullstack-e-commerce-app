@@ -78,7 +78,7 @@ const PDP = async ({ params }: PageProps) => {
         borderTop: `1.5px solid var(--mantine-color-gray-1)`,
       }}
     >
-      <Box w={{ base: "90%", md: "85%" }} mx="auto" py={32}>
+      <Box w={{ base: "100%", xs: '90%', md: "85%" }} mx="auto" pb={32} pt={{ base: 0, xs: 32 }}>
         <Breadcrumb items={breadcrumbs} />
         <Grid>
           <GridCol span={{ base: 12, sm: 5.7, md: 5.5, lg: 5 }}>
@@ -87,7 +87,7 @@ const PDP = async ({ params }: PageProps) => {
               product={{ name: pdpData.productName, id: productItemId }}
             />
           </GridCol>
-          <GridCol span={{ base: 12, sm: 6, md: 6.5, lg: 7 }}>
+          <GridCol span={{ base: 12, sm: 6, md: 6.5, lg: 7 }} px={{ base: 24, xs: 0 }}>
             <Stack gap={24}>
               <TitleSection pdpData={pdpData} />
               <PriceSection pdpData={pdpData} />
@@ -113,7 +113,9 @@ const PDP = async ({ params }: PageProps) => {
             </Stack>
           </GridCol>
         </Grid>
-        <ReviewSection reviews={reviews} />
+        <Box px={{ base: 24, xs: 0 }}>
+          <ReviewSection reviews={reviews} />
+        </Box>
       </Box>
     </Box>
   );

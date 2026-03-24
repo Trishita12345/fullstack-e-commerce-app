@@ -6,9 +6,11 @@ import { useState } from "react";
 import PlpSorting from "../../PlpSorting";
 import { CategoriesCardType } from "@/(components)/categoriesCard";
 import CategoriesFilter from "../CategoriesFilter";
+import { PlpMobileFilterTab } from "./PlpMobileFilterTabs";
+import { FacetValue } from "@/constants/types";
 
 
-const PlpBottomNav = ({ categories }: { categories: CategoriesCardType[] }) => {
+const PlpBottomNav = ({ categories, facets }: { categories: CategoriesCardType[], facets: Record<string, FacetValue[]> }) => {
     const [opened, { open, close }] = useDisclosure(false);
     const [drawerState, setDrawerState] = useState<'c' | 's' | 'f'>('c')
 
@@ -29,7 +31,7 @@ const PlpBottomNav = ({ categories }: { categories: CategoriesCardType[] }) => {
                 return <PlpSorting isMobile handleClose={close} />
             }
             case 'f': {
-                return <>Filter</>
+                return <PlpMobileFilterTab facets={facets} />
             }
             default: {
                 return null;
@@ -39,23 +41,25 @@ const PlpBottomNav = ({ categories }: { categories: CategoriesCardType[] }) => {
 
     return (
         <>
-            <Drawer offset={8} radius="md" opened={opened} onClose={close} title={drawerTitle} position="bottom"
+            <Drawer offset={0} radius="md" opened={opened} onClose={close} title={drawerTitle} position="bottom"
                 styles={{
                     content: {
-                        borderRadius: 0
+                        overflow: "clip",
+                        borderEndEndRadius: 0,
+                        borderEndStartRadius: 0,
                     },
                     body: {
-                        padding: 0
+                        padding: 0,
+                        overflowY: "hidden"
                     }
                 }}
             >
-                <>
-                    <Divider color="gray.1" />
-                    <Box p={16}><DrawerContent /></Box>
-                </>
+
+                <Divider color="gray.1" />
+                <DrawerContent />
             </Drawer>
             <Card pos={'fixed'} bottom={0} w="100%" display={'flex'}
-                style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}
+                style={{ flexDirection: 'row', justifyContent: 'space-evenly', zIndex: 100 }}
                 shadow="sm"
                 hiddenFrom="md"
             >

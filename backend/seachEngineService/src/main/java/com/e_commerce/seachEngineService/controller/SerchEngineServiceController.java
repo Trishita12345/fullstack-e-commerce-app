@@ -1,5 +1,6 @@
 package com.e_commerce.seachEngineService.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class SerchEngineServiceController {
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) Boolean inStock,
-            @RequestParam(required = false) List<String> variant,
+            @RequestParam(required = false) List<String> variants,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String sortBy,
@@ -42,7 +43,7 @@ public class SerchEngineServiceController {
                 .minPrice(minPrice)
                 .maxPrice(maxPrice)
                 .inStock(inStock)
-                .variants(parseVariants(variant))
+                .variants(parseVariants(variants))
                 .page(page)
                 .size(size)
                 .sortBy(sortBy)
@@ -52,16 +53,22 @@ public class SerchEngineServiceController {
         return ResponseEntity.ok(searchQueryService.search(request));
     }
 
-    private Map<String, String> parseVariants(List<String> variants) {
+    private Map<String, List<String>> parseVariants(List<String> variants) {
 
-        Map<String, String> map = new HashMap<>();
+        Map<String, List<String>> map = new HashMap<>();
 
         if (variants == null)
             return map;
 
         for (String v : variants) {
             String[] parts = v.split(":");
-            map.put(parts[0], parts[1]);
+            // map.put(parts[0], parts[1]);
+            List<String> values = new ArrayList<>();
+            values.add(parts[1]);
+            if (map.containsKey(parts[0]))
+                map.get(parts[0]).add(parts[1]);
+            else
+                map.put(parts[0], values);
         }
 
         return map;

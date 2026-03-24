@@ -11,7 +11,6 @@ import PlpSearch from "./(components)/PlpSearch";
 import PlpFilters from "./(components)/PlpFilters";
 import { CategoriesCardType } from "@/(components)/categoriesCard";
 import Link from "next/link";
-import { IconAdjustmentsHorizontal, IconArrowsSort } from "@tabler/icons-react";
 import PlpBottomNav from "./(components)/PlpFilters/mobile/PlpBottomNav";
 
 interface PageProps {
@@ -42,7 +41,7 @@ export function buildSearchUrl(filters: SearchParamsType) {
   if (filters.discount) searchParams.append("discount", filters.discount);
   if (filters.variants) {
     const variants = Array.isArray(filters.variants) ? filters.variants : [filters.variants];
-    variants?.forEach(value => searchParams.append("variant", value));
+    variants?.forEach(value => searchParams.append("variants", value));
   }
   if (filters.page) searchParams.append("page", (parseInt(filters.page) - 1).toString());
   return searchParams.toString();
@@ -129,7 +128,7 @@ const PLP = async ({ searchParams }: PageProps) => {
           </Box>
         }
       </Box>
-      <PlpBottomNav categories={categories} /> {/* visible below md */}
+      <PlpBottomNav categories={categories} facets={facets} /> {/* visible below md */}
     </Box >
     <Box mb={65}><Footer /></Box>
   </>;

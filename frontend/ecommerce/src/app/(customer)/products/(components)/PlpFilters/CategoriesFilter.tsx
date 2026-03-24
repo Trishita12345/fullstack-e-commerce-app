@@ -18,19 +18,28 @@ const CategoriesFilter = ({ categories, isMobile = false, handleClose }: { categ
     return (
         <>
             {isMobile ?
-                <Stack>
+                <Stack p={16}>
                     {
                         categories.map(s => {
                             return (
-                                <Text
-                                    size='xs' style={{ fontFamily: "var(--font-poppins)" }}
+                                <Radio
+                                    color='primaryDark.7'
+                                    size="xs"
+                                    key={s.id}
+                                    value={s.name}
+                                    checked={selectedCategory == s.name}
                                     onClick={() => {
                                         updateFilter(s.name);
                                         handleClose && handleClose();
                                     }}
-                                >
-                                    {`${s.name} (${s.quantity})`}
-                                </Text>
+                                    label={
+                                        <Text key={s.id} size='sm' fw={500} tt='capitalize'
+                                            style={{ fontFamily: "var(--font-poppins)" }}
+                                        >
+                                            {`${s.name} (${s.quantity})`}
+                                        </Text >
+                                    }
+                                />
                             )
                         }
                         )
@@ -52,7 +61,7 @@ const CategoriesFilter = ({ categories, isMobile = false, handleClose }: { categ
                                         <Text key={category.id} size='sm' fw={500} tt='capitalize'
                                             style={{ fontFamily: "var(--font-poppins)" }}
                                         >
-                                            {category.name}
+                                            {`${category.name} (${category.quantity})`}
                                         </Text >
                                     }
                                 />
