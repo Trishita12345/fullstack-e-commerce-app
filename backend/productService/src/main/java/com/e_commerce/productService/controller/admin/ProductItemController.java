@@ -3,6 +3,7 @@ package com.e_commerce.productService.controller.admin;
 import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemListingDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
+import com.e_commerce.productService.service.IProductDataIngestionService;
 import com.e_commerce.productService.service.IProductItemService;
 import com.e_commerce.productService.service.ISkuUtilService;
 
@@ -35,6 +36,7 @@ public class ProductItemController {
 
     private final IProductItemService productItemService;
     private final ISkuUtilService skuUtilService;
+    private final IProductDataIngestionService productDataIngestionService;
 
     @GetMapping("/{productId}/variant-attributes")
     @PreAuthorize("hasRole('SELLER')")
@@ -48,6 +50,7 @@ public class ProductItemController {
     public ResponseEntity<UUID> addProductItem(@PathVariable UUID productId,
             @RequestBody ProductItemDTO productItemDTO) {
         UUID id = productItemService.addProductItem(productId, productItemDTO);
+        productDataIngestionService.ingestProductDataToSearchIndexById(id);
         return ResponseEntity.ok(id);
     }
 
@@ -77,13 +80,16 @@ public class ProductItemController {
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<ProductItemDTO> editProductItem(@PathVariable UUID productItemId,
             @RequestBody ProductItemDTO productItemDTO) {
-        return ResponseEntity.ok(productItemService.editProductById(productItemId, productItemDTO));
+        ProductItemDTO productItemDtoUpdated = productItemService.editProductById(productItemId, productItemDTO);
+        productDataIngestionService.ingestProductDataToSearchIndexById(productItemId);
+        return ResponseEntity.ok(productItemDtoUpdated);
     }
 
     @DeleteMapping("/{productItemId}")
     @PreAuthorize("hasRole('SELLER')")
     public ResponseEntity<Void> deleteProductItemById(@PathVariable UUID productItemId) {
         productItemService.deleteProductItemById(productItemId);
+        productDataIngestionService.deleteProductDataToSearchIndexById(productItemId);
         return ResponseEntity.noContent().build();
     }
 

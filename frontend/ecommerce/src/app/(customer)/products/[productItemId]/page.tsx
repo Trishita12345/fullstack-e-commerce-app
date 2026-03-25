@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: PageProps) {
     description: pdp.description,
     openGraph: {
       title: pdp.productName,
-      images: pdp.imgUrls,
+      images: pdp.imgUrls[0],
     },
   };
 }

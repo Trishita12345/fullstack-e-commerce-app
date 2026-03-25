@@ -184,6 +184,11 @@ const AddressListingForCart = ({
               </Text>
             </Button>
           </Group>
+          {addresses?.length === 0 &&
+            <Card>
+              <Text ta='center'>No Address Found</Text>
+            </Card>
+          }
           {defaultAddress && (
             <AddressCard
               address={defaultAddress}

@@ -200,7 +200,6 @@ export const PlpMobileFilterTab = ({ facets }: { facets: Record<string, FacetVal
                 <Divider orientation="vertical" />
                 <Button variant="transparent" w={'max-content'} c='primaryDark.7'
                     onClick={() => {
-                        console.log("filter: " + filter)
                         const searchParams = new URLSearchParams();
                         filter.minPrice && searchParams.append("minPrice", filter.minPrice)
                         filter.maxPrice && searchParams.append("maxPrice", filter.maxPrice)

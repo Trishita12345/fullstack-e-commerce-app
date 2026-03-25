@@ -106,6 +106,16 @@ public class ProductSearchQueryService implements IProductSearchQueryService {
                                                 return b;
                                         }))));
                 });
+                /* ---------- DISCOUNT FILTER ---------- */
+
+                if (request.getDiscount() != null) {
+
+                        boolQuery.filter(f -> f
+                                        .range(r -> r
+                                                        .number(n -> n
+                                                                        .field("discountPercentage")
+                                                                        .gte(request.getDiscount()))));
+                }
 
                 /* ---------- DYNAMIC AGGREGATION ---------- */
 

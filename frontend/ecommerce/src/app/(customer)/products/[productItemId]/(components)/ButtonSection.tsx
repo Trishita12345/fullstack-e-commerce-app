@@ -24,7 +24,7 @@ import {
   getPdpCartData,
   removeFromWishListed,
 } from "./actions";
-import { useCartActions } from "@/utils/store/cart";
+import { useCartActions, useCartItemById } from "@/utils/store/cart";
 import { useSession } from "@/utils/store/session";
 
 const ButtonSection = ({
@@ -34,10 +34,11 @@ const ButtonSection = ({
   pdpData: ProductDetailsDTO;
   productItemId: string;
 }) => {
+  const cartDetailsForProduct = useCartItemById(productItemId);
   const router = useRouter();
   const session = useSession();
   const isLoggedIn = Boolean(session?.user?.id);
-  const [cartButtonLoader, setCartButtonLoader] = useState<boolean>(true);
+  const [cartButtonLoader, setCartButtonLoader] = useState<boolean>(false);
   const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
   const [wishlistButtonLoader, setWishlistButtonLoader] =
     useState<boolean>(true);
@@ -45,17 +46,11 @@ const ButtonSection = ({
   const [noOfItemsInCartLocal, setNoOfItemsInCartLocal] = useState<number>(1);
   const { addToCart, updateCart } = useCartActions();
   const outOfStock = pdpData.availableStock === 0;
-  const getInitialCartData = async () => {
-    try {
-      setCartButtonLoader(true);
-      const noOfItemsInCartTemp = await getPdpCartData(productItemId);
-      setNoOfItemsInCart(noOfItemsInCartTemp);
-      setNoOfItemsInCartLocal(noOfItemsInCartTemp || 1);
-    } catch {
-    } finally {
-      setCartButtonLoader(false);
-    }
-  };
+
+  useEffect(() => {
+    setNoOfItemsInCart(cartDetailsForProduct?.quantity || 0)
+    setNoOfItemsInCartLocal(cartDetailsForProduct?.quantity || 1)
+  }, [cartDetailsForProduct?.quantity])
 
   const getInitialWishlistData = async () => {
     try {
@@ -70,7 +65,6 @@ const ButtonSection = ({
 
   useEffect(() => {
     if (isLoggedIn) {
-      getInitialCartData();
       getInitialWishlistData();
     } else {
       setCartButtonLoader(false);
@@ -95,7 +89,6 @@ const ButtonSection = ({
       } else {
         setCartButtonLoader(true);
         await addOrUpdateCartAction(payload, type);
-        getInitialCartData();
       }
       if (type === "update") updateCart(payload);
       else addToCart(payload);
@@ -142,20 +135,15 @@ const ButtonSection = ({
       setWishlistButtonLoader(true);
       await addToWishListed(productItemId);
       getInitialWishlistData();
-      notify({
-        variant: "success",
-        title: "Success!",
-        message: "Item added to wishlist successfully!",
-      });
     } catch (err) {
       console.error(err);
-    } finally {
-      setWishlistButtonLoader(false);
       notify({
         variant: "error",
         title: "Error!",
         message: "Failed to add item in wishlist!",
       });
+    } finally {
+      setWishlistButtonLoader(false);
     }
   };
 
@@ -173,22 +161,29 @@ const ButtonSection = ({
       setWishlistButtonLoader(true);
       await removeFromWishListed(productItemId);
       getInitialWishlistData();
-      notify({
-        variant: "success",
-        title: "Success!",
-        message: "Item removed from wishlist successfully!",
-      });
     } catch (err) {
       console.error(err);
-    } finally {
-      setWishlistButtonLoader(false);
       notify({
         variant: "error",
         title: "Error!",
         message: "Failed to remove item from wishlist!",
       });
+    } finally {
+      setWishlistButtonLoader(false);
     }
   };
+
+  const ctaButtonlabel = () => {
+    if (outOfStock)
+      return "Out of stock"
+    else if (noOfItemsInCart === 0)
+      return "Add to Cart"
+    else if (noOfItemsInCart !== noOfItemsInCartLocal) {
+      return "Update Cart"
+    } else return "Go to Cart"
+  }
+
+
   return (
     <Grid my={12}>
       <GridCol
@@ -209,13 +204,7 @@ const ButtonSection = ({
             !outOfStock && <IconArrowRight />
           }
         >
-          {pdpData.availableStock > 0
-            ? noOfItemsInCart === 0
-              ? "Add to Cart"
-              : noOfItemsInCart !== noOfItemsInCartLocal
-                ? "Update Cart"
-                : "Go to Cart"
-            : "Out of stock"}
+          {ctaButtonlabel()}
         </Button>
       </GridCol>
       {!outOfStock && (

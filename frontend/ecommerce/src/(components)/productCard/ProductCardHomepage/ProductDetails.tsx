@@ -16,7 +16,7 @@ const ProductDetails = ({ category, productName, attributeValues, basePrice, sel
     const rating = ratings[getRandomValue(ratings.length)]
     return (
         <Stack gap={8} >
-            <Group justify="space-between" className="product-card-1">
+            <Group justify="space-between">
                 <Text size="xs">{category}</Text>
                 <Rating
                     value={rating}
@@ -25,17 +25,17 @@ const ProductDetails = ({ category, productName, attributeValues, basePrice, sel
                     size={"xs"}
                 />
             </Group>
-            <Text fw={500} className="product-card-1" lineClamp={1} size="sm" mt={4}>
+            <Text fw={500} lineClamp={1} size="sm" mt={4}>
                 {productName}
             </Text>
-            <Text size="11px" className="product-card-1" tt={"uppercase"} fw={500} lts={0.5} mb={4}>
+            <Text size="11px" tt={"uppercase"} fw={500} lts={0.5} mb={4}>
                 {attributeValues.join(" | ")}
             </Text>
-            {stockQuantity < 6 && <Text size="11px" className="product-card-1" tt={"capitalize"} fw={500} lts={0.5} mb={4} c={"orange.6"}>
+            {stockQuantity < 6 && <Text size="11px" tt={"capitalize"} fw={500} lts={0.5} mb={4} c={"orange.6"}>
                 {stockQuantity === 0 ? 'out of stock' : `only ${stockQuantity} items left!`}
             </Text>}
             {basePrice !== sellingPrice ? (
-                <Group gap={8} className="product-card-1">
+                <Group gap={8}>
                     <Text td="line-through" c={"black.7"}>
                         {formattedPrice(basePrice)}
                     </Text>
@@ -51,11 +51,11 @@ const ProductDetails = ({ category, productName, attributeValues, basePrice, sel
                     size="lg"
                     fw={600}
                     c={"primaryDark.8"}
-                    className="product-card-1"
+
                 >
                     {formattedPrice(basePrice)}
                 </Text>
-                )}
+            )}
         </Stack>);
 }
 

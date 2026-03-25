@@ -103,4 +103,9 @@ public class ProductDataIngestionService implements IProductDataIngestionService
             System.err.println("Error indexing product item ID: " + productItemId + " - " + e.getMessage());
         }
     }
+
+    @Override
+    public void deleteProductDataToSearchIndexById(UUID productItemId) {
+        productSearchDocumentIngestEventProducer.publishProductSearchDocumentDeleted(productItemId);
+    }
 }

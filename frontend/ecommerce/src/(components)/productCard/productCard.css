@@ -13,21 +13,6 @@
   cursor: pointer;
 }
 
-.product-card-1 {
-  transition: padding 200ms ease;
-}
-
-.product-card:hover .product-card-1 {
-  padding: 0px 16px;
-}
-
-
-/* .product-card-1-plp {
-  display: flex;
-  height: 30px;
-  flex-direction: column;
-} */
-
 
 .product-card:hover .product-card-1-plp {
   display: none !important;

@@ -31,6 +31,8 @@ public class ProductSearchRequest {
     private String sortBy;
     private String dir;
 
+    private Double discount;
+
     public boolean isAsc() {
         return "asc".equalsIgnoreCase(dir);
     }

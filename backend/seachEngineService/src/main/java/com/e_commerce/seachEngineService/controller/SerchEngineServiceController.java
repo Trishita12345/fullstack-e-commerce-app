@@ -35,7 +35,8 @@ public class SerchEngineServiceController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String dir) {
+            @RequestParam(required = false) String dir,
+            @RequestParam(required = false) String discount) {
 
         ProductSearchRequest request = ProductSearchRequest.builder()
                 .keyword(q)
@@ -48,9 +49,18 @@ public class SerchEngineServiceController {
                 .size(size)
                 .sortBy(sortBy)
                 .dir(dir)
+                .discount(parseDiscount(discount))
                 .build();
 
         return ResponseEntity.ok(searchQueryService.search(request));
+    }
+
+    private Double parseDiscount(String discount) {
+        if (discount == null) {
+            return null;
+        } else {
+            return Double.parseDouble(discount.split("gte")[1]);
+        }
     }
 
     private Map<String, List<String>> parseVariants(List<String> variants) {

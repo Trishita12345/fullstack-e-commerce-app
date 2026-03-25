@@ -2,8 +2,10 @@ import { en } from "@/constants/en";
 import { getRandomValue, formattedPrice } from "@/utils/helperFunctions";
 import { Stack, Group, Rating, Text, Box, ActionIcon, Button } from "@mantine/core";
 import { IconPlus, IconHeartFilled, IconHeart } from "@tabler/icons-react";
+import ProductCardPlpButtonSection from "./ProductCardPlpButtonSection";
 
 interface ProductDetailsProps {
+    productItemId: string;
     category: string;
     productName: string;
     attributeValues: string[];
@@ -13,10 +15,9 @@ interface ProductDetailsProps {
     stockQuantity: number;
 }
 
-const ProductDetailsPLP = ({ category, productName, attributeValues, basePrice, sellingPrice, discountPercentage, stockQuantity }: ProductDetailsProps) => {
+const ProductDetailsPLP = ({ category, productName, basePrice, sellingPrice, discountPercentage, stockQuantity, productItemId }: ProductDetailsProps) => {
     const ratings = [3.5, 4, 4.5, 5]
     const rating = ratings[getRandomValue(ratings.length)]
-    const productAddedToCart = false;
     return (
         <>
             <Stack gap={8} className="product-card-1-plp">
@@ -40,31 +41,7 @@ const ProductDetailsPLP = ({ category, productName, attributeValues, basePrice, 
                             Out Of Stock
                         </Button>
                     </> :
-                    <>
-                        {
-                            productAddedToCart ? (
-                                <Button color="black.9" size={"md"} fullWidth >
-                                    {en.goToCart}
-                                </Button>
-                            ) : (
-                                <Button
-                                    fullWidth
-                                    variant="outline"
-                                    color="black.9"
-                                    rightSection={<IconPlus size={18} />}
-                                    size={"md"}
-                                    styles={{
-                                        inner: {
-                                            width: "100%",
-                                            justifyContent: "space-between",
-                                        },
-                                    }}
-                                >
-                                    <Text ml={36} fw={500}>
-                                        {en.addToCart}
-                                    </Text>
-                                </Button>
-                            )}</>
+                    <ProductCardPlpButtonSection productItemId={productItemId} sellingPrice={sellingPrice} />
                 }
             </Box >
             <Box>

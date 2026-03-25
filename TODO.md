@@ -30,18 +30,6 @@ q=candle
 &sort=price_asc
 
 shimmer/loader in plp
-discount percent(BE Pending)
 badge
-responsiveness
 +2 more
-add to cart/ wishlist
 
---query
---category
---variants
---price
---discount percent
---inStock
---sortBy
---dir
---page

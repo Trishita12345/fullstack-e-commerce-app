@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -36,6 +37,14 @@ public class ProductIndexController {
         productDataIngestionService.ingestProductDataToSearchIndexById(productItemId);
         return ResponseEntity
                 .ok("Product data ingested for product item ID: " + productItemId + ". Check logs for details.");
+    }
+
+    @DeleteMapping("/delete-product-data/{productItemId}")
+    @PreAuthorize("hasRole('SELLER')")
+    public ResponseEntity<String> deleteProductDataById(@PathVariable UUID productItemId) {
+        productDataIngestionService.deleteProductDataToSearchIndexById(productItemId);
+        return ResponseEntity
+                .ok("Product data deleted for product item ID: " + productItemId + ". Check logs for details.");
     }
 
 }
