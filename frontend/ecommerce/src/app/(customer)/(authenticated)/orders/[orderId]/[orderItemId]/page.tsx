@@ -109,6 +109,7 @@ export default async function OrderDetails({ params }: PageProps) {
                 </Link>
                 <Stack gap={4}>
                   <Text size="sm">{selectedOrderItemDetails?.productName}</Text>
+                  <Text size="xs" c="black.8">Qty: {selectedOrderItemDetails?.quantity}</Text>
                   <Text size="xs" c="black.8">
                     {variants.join(" | ")}
                   </Text>
@@ -129,20 +130,22 @@ export default async function OrderDetails({ params }: PageProps) {
               <Text size="sm" fw={500} lts={0.3} c="black.7">
                 Other products in this shipment
               </Text>
-              {otherOrderItemDetails.map((i) => (
-                <Link
-                  href={`/orders/${orderId}/${i.orderItemId}`}
-                  key={i.orderItemId}
-                >
-                  <Image
-                    src={i.productImg || ""}
-                    alt="G"
-                    height={55}
-                    width={55}
-                    style={{ borderRadius: "6px", cursor: "pointer" }}
-                  />
-                </Link>
-              ))}
+              <Group>
+                {otherOrderItemDetails.map((i) => (
+                  <Link
+                    href={`/orders/${orderId}/${i.orderItemId}`}
+                    key={i.orderItemId}
+                  >
+                    <Image
+                      src={i.productImg || ""}
+                      alt="G"
+                      height={55}
+                      width={55}
+                      style={{ borderRadius: "6px", cursor: "pointer" }}
+                    />
+                  </Link>
+                ))}
+              </Group>
             </Stack>
           </Box>
         </Stack>

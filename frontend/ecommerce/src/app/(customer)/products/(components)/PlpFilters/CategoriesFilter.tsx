@@ -1,5 +1,5 @@
 import { CategoriesCardType } from "@/(components)/categoriesCard";
-import { Radio, Stack, Text } from "@mantine/core";
+import { Group, Radio, Stack, Text } from "@mantine/core";
 import { useSearchParams, useRouter } from "next/navigation";
 
 const CategoriesFilter = ({ categories, isMobile = false, handleClose }: { categories: CategoriesCardType[], isMobile?: boolean; handleClose?: () => void }) => {
@@ -23,6 +23,7 @@ const CategoriesFilter = ({ categories, isMobile = false, handleClose }: { categ
                         categories.map(s => {
                             return (
                                 <Radio
+                                    styles={{ labelWrapper: { width: '100%' } }}
                                     color='primaryDark.7'
                                     size="xs"
                                     key={s.id}
@@ -33,11 +34,18 @@ const CategoriesFilter = ({ categories, isMobile = false, handleClose }: { categ
                                         handleClose && handleClose();
                                     }}
                                     label={
-                                        <Text key={s.id} size='sm' fw={500} tt='capitalize'
-                                            style={{ fontFamily: "var(--font-poppins)" }}
-                                        >
-                                            {`${s.name} (${s.quantity})`}
-                                        </Text >
+                                        <Group justify="space-between">
+                                            <Text size='sm' fw={500} tt='capitalize'
+                                                style={{ fontFamily: "var(--font-poppins)" }}
+                                            >
+                                                {s.name}
+                                            </Text>
+                                            <Text size='sm' c={'gray.5'}
+                                                style={{ fontFamily: "var(--font-poppins)" }}
+                                            >
+                                                {`${s.quantity}`}
+                                            </Text>
+                                        </Group>
                                     }
                                 />
                             )
@@ -58,11 +66,18 @@ const CategoriesFilter = ({ categories, isMobile = false, handleClose }: { categ
                                     key={category.id}
                                     value={category.name}
                                     label={
-                                        <Text key={category.id} size='sm' fw={500} tt='capitalize'
-                                            style={{ fontFamily: "var(--font-poppins)" }}
-                                        >
-                                            {`${category.name} (${category.quantity})`}
-                                        </Text >
+                                        <Group gap={4}>
+                                            <Text size='sm' fw={500} tt='capitalize'
+                                                style={{ fontFamily: "var(--font-poppins)" }}
+                                            >
+                                                {category.name}
+                                            </Text>
+                                            <Text size='sm' c={'gray.5'}
+                                                style={{ fontFamily: "var(--font-poppins)" }}
+                                            >
+                                                ({`${category.quantity}`})
+                                            </Text>
+                                        </Group>
                                     }
                                 />
                             )

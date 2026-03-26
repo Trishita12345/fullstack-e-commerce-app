@@ -69,6 +69,7 @@ const OrderDetailComponent = ({ order }: { order: OrderDetailsDTO }) => {
                     />
                     <Stack gap={4}>
                       <Text size="sm">{item.productName}</Text>
+                      <Text size="xs" c="black.8">Qty: {item.quantity}</Text>
                       <Text size="xs" c="black.8">
                         {variants.join(" | ")}
                       </Text>
