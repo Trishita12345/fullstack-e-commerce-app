@@ -49,6 +49,9 @@ public class ProductSearchDocument {
     @Field(type = FieldType.Integer)
     private Integer purchaseCount;
 
+    @Field
+    private long lastUpdatedAt;
+
     // trending score (calculated periodically)
     @Field(type = FieldType.Double)
     private Double trendingScore;
@@ -61,7 +64,7 @@ public class ProductSearchDocument {
     @Field(type = FieldType.Integer)
     private Integer ratingCount;
 
-    // boost for ranking algorithm
+    // boost for ranking algorithm (featured)
     @Field(type = FieldType.Double)
     private Double rankingBoost;
 

@@ -38,6 +38,7 @@ public class ReservationCleanupJob {
                     .userId(order.getUserId())
                     .build();
             List<CartItemDTO> items = order.getOrderItems().stream()
+                    .filter(o -> !o.getSkuSnapshot().equalsIgnoreCase("MISC_FEE"))
                     .map(item -> CartItemDTO.builder()
                             .productItemId(item.getProductItemId())
                             .quantity(item.getQuantity())

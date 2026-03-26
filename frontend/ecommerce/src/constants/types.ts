@@ -326,6 +326,7 @@ export interface PriceSummary {
 
 export interface OrderItem {
   orderItemId: string;
+  productItemId: string
   sku: string;
   productName: string;
   productImg: string;

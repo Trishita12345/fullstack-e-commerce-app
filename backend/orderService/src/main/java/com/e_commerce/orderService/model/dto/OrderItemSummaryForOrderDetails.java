@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class OrderItemSummaryForOrderDetails {
     private UUID orderItemId;
     private String sku;
+    private UUID productItemId;
     private String productName;
     private String productImg;
     private Integer quantity;

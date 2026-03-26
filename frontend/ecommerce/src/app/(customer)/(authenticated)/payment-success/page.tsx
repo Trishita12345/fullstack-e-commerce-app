@@ -94,13 +94,15 @@ async function PaymentSuccess({ searchParams }: PageProps) {
                       display={"flex"}
                       style={{ gap: 12, alignItems: "center" }}
                     >
-                      <Image
-                        src={i.productImg}
-                        alt="G"
-                        height={60}
-                        width={60}
-                        style={{ borderRadius: "6px" }}
-                      />
+                      <Link href={`/products/${i.productItemId}`}>
+                        <Image
+                          src={i.productImg}
+                          alt="G"
+                          height={60}
+                          width={60}
+                          style={{ borderRadius: "6px", cursor: 'pointer' }}
+                        />
+                      </Link>
                       <Text>{i.productName}</Text>
                     </Box>
                   </GridCol>
@@ -210,7 +212,7 @@ async function PaymentSuccess({ searchParams }: PageProps) {
           </Box>
         </Box>
       </Box>
-    </Box>
+    </Box >
   );
 }
 

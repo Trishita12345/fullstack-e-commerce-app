@@ -361,6 +361,7 @@ public class OrderService implements IOrderService {
                                         order.setOrderStatus(OrderStatus.CONFIRMED);
                                         orderRepository.save(order);
                                         List<CartItemDTO> cartItems = order.getOrderItems().stream()
+                                                        .filter(o -> !o.getSkuSnapshot().equalsIgnoreCase(MISC_FEE))
                                                         .map(o -> CartItemDTO.builder()
                                                                         .productItemId(o.getProductItemId())
                                                                         .quantity(o.getQuantity()).build())
@@ -437,6 +438,7 @@ public class OrderService implements IOrderService {
                         order.setOrderStatus(OrderStatus.CONFIRMED);
                         order.getOrderItems().forEach(item -> item.setOrderItemStatus(OrderItemStatus.CONFIRMED));
                         List<CartItemDTO> cartItems = order.getOrderItems().stream()
+                                        .filter(o -> !o.getSkuSnapshot().equalsIgnoreCase(MISC_FEE))
                                         .map(o -> CartItemDTO.builder()
                                                         .productItemId(o.getProductItemId())
                                                         .quantity(o.getQuantity()).build())
@@ -480,6 +482,7 @@ public class OrderService implements IOrderService {
                                 .map(oi -> OrderItemSummaryForOrderDetails.builder()
                                                 .orderItemId(oi.getId())
                                                 .sku(oi.getSkuSnapshot())
+                                                .productItemId(oi.getProductItemId())
                                                 .productName(oi.getProductName())
                                                 .productImg(buildFullUrl(oi.getProductItemThumbnailImage()))
                                                 .quantity(oi.getQuantity())
@@ -531,6 +534,7 @@ public class OrderService implements IOrderService {
                                         .orderId(order.getId())
                                         .orderStatus(OrderStatus.FAILED.name())
                                         .items(order.getOrderItems().stream()
+                                                        .filter(o -> !o.getSkuSnapshot().equalsIgnoreCase(MISC_FEE))
                                                         .map(o -> CartItemDTO.builder()
                                                                         .productItemId(o.getProductItemId())
                                                                         .quantity(o.getQuantity()).build())

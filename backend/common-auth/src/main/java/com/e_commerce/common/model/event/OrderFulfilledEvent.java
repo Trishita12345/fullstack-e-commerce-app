@@ -12,7 +12,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-
 public class OrderFulfilledEvent {
     private UUID orderId;
     private String orderStatus;

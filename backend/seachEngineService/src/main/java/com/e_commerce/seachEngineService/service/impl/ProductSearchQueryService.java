@@ -141,7 +141,9 @@ public class ProductSearchQueryService implements IProductSearchQueryService {
                                 case "price" -> "sellingPrice";
                                 case "popularity" -> "purchaseCount";
                                 case "trending" -> "trendingScore";
-                                case "rating" -> "rating";
+                                // case "rating" -> "rating";
+                                // case "featured" -> "rankingBoost";
+                                case "createdAt" -> "createdAt";
                                 default -> null;
                         };
                         if (field != null) {

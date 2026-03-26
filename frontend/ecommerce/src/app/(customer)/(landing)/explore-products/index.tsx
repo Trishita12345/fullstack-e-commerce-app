@@ -7,7 +7,7 @@ import { apiFetch } from "@/lib/apiFetch";
 
 async function getPLPData() {
   return await apiFetch<PLPResponseDTO>(
-    `/search-service/public/search?size=8&inStock=true`,
+    `/search-service/public/search?size=8&inStock=true&sortBy=trending&dir=desc`,
     {
       cache: "force-cache",
       revalidate: 3600,

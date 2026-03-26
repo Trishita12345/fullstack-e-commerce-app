@@ -98,13 +98,15 @@ export default async function OrderDetails({ params }: PageProps) {
                   alignItems: "center",
                 }}
               >
-                <Image
-                  src={selectedOrderItemDetails?.productImg || ""}
-                  alt="G"
-                  height={70}
-                  width={70}
-                  style={{ borderRadius: "6px" }}
-                />
+                <Link href={`/products/${selectedOrderItemDetails?.productItemId}`}>
+                  <Image
+                    src={selectedOrderItemDetails?.productImg || ""}
+                    alt="G"
+                    height={70}
+                    width={70}
+                    style={{ borderRadius: "6px", cursor: 'pointer' }}
+                  />
+                </Link>
                 <Stack gap={4}>
                   <Text size="sm">{selectedOrderItemDetails?.productName}</Text>
                   <Text size="xs" c="black.8">

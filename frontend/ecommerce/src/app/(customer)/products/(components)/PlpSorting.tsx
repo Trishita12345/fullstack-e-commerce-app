@@ -10,11 +10,13 @@ interface SortingDataType {
     value: string;
 };
 const sortingData: SortingDataType[] = [
-    { icon: IconBrandTinder, label: "Sort By: Popularity", value: "popularity_desc" },
-    { icon: IconStar, label: "Sort By: Trending", value: "trending_desc" },
+    { icon: IconBrandTinder, label: "Sort By: Popularity", value: "popularity_desc" }, //purchase count
+    { icon: IconStar, label: "Sort By: Trending", value: "trending_desc" }, //not working
     { icon: IconSortDescending, label: "Sort By: Price: High to Low", value: "price_desc" },
     { icon: IconSortAscending, label: "Sort By: Price: Low to High", value: "price_asc" },
-    { icon: IconHeart, label: "Sort By: Customer Rating", value: "rating_desc" }
+    { icon: IconHeart, label: "Sort By: Newly Added", value: "createdAt_desc" }
+    //{ icon: IconBrandTinder, label: "Sort By: Featured", value: "featured_desc" }, //not working
+    //{ icon: IconHeart, label: "Sort By: Customer Rating", value: "rating_desc" }, //not working
 ]
 
 
@@ -24,7 +26,7 @@ const PlpSorting = ({ isMobile = false, handleClose }: { isMobile?: boolean; han
     const searchParams = useSearchParams();
     const sortBy = searchParams.get('sortBy')
     const dir = searchParams.get('dir')
-    const currValue = sortBy && dir ? `${sortBy}_${dir}` : "tre nding_desc";
+    const currValue = sortBy && dir ? `${sortBy}_${dir}` : "trending_desc";
 
     const val = sortingData.some((d) => d.value === currValue)
         ? currValue

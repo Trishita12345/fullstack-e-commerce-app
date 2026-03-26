@@ -62,6 +62,7 @@ public class ProductSearchService implements IProductSearchService {
                 .rating(existingDocument != null ? existingDocument.getRating() : 0.0)
                 .ratingCount(existingDocument != null ? existingDocument.getRatingCount() : 0)
                 .trendingScore(existingDocument != null ? existingDocument.getTrendingScore() : 0.0)
+                .lastUpdatedAt(existingDocument != null ? existingDocument.getLastUpdatedAt() : 0)
                 .category(event.getCategory())
                 .build();
         List<ImageDocument> imageDocuments = event.getImages().stream()
