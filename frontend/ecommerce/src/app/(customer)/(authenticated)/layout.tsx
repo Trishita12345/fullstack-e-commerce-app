@@ -8,7 +8,7 @@ export default function AuthenticatetdLayout({
     children: React.ReactNode;
 }) {
     const session = useSession();
-    if (!session) return forbidden();
+    // if (!session) return forbidden();
     if (!session?.user?.id) return unauthorized();
     return (
         <>

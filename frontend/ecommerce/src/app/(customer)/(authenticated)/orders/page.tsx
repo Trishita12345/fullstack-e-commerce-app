@@ -24,10 +24,12 @@ import { apiFetch } from "@/lib/apiFetch";
 import { OrderDetailsDTO, Page } from "@/constants/types";
 import OrderDetailComponent from "./OrderDetailComponent";
 import { getOrders } from "./actions";
+import { useSession } from "@/utils/store/session";
 
 export default function InfiniteOrders() {
   const containerRef = useRef<HTMLDivElement>(null);
-
+  const session = useSession();
+  const isLoggedIn = Boolean(session?.user);
   const { ref, entry } = useIntersection({
     root: containerRef.current,
     threshold: 1,
@@ -41,7 +43,6 @@ export default function InfiniteOrders() {
 
   const fetchOrders = async () => {
     if (loading || last) return;
-
     setLoading(true);
     const data = await apiFetch<Page<OrderDetailsDTO>>(
       `/order-service/orders/page?page=${page}`,
@@ -53,11 +54,12 @@ export default function InfiniteOrders() {
 
     setLoading(false);
   };
-
+  console.log("isLoggedIn: ", isLoggedIn);
   // initial load
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (isLoggedIn)
+      fetchOrders();
+  }, [isLoggedIn]);
 
   // trigger next page when sentinel visible
   useEffect(() => {

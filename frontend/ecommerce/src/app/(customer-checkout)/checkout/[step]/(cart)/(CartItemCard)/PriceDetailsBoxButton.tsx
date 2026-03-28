@@ -41,12 +41,12 @@ const PriceDetailsBoxButton = ({ step }: { step: StepType }) => {
               </Text>
             </Button>
           )}
-          NotLoggedInComponent={({ openLoginPopUp }: LoggedOutProps) => (
+          NotLoggedInComponent={({ redirectToLogin }: LoggedOutProps) => (
             <Button
               color="primaryDark.7"
               size="md"
               fullWidth
-              onClick={openLoginPopUp}
+              onClick={redirectToLogin}
             >
               <Text tt="uppercase" size="13px" fw={600} lts={1.2}>
                 Login to Proceed

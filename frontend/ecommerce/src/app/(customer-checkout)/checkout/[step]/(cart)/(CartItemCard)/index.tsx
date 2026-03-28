@@ -49,7 +49,7 @@ const CartItemCard = ({
 }: CartItemCardProps) => {
   const session = useSession();
   const { updateCartSelected } = useCartActions();
-  const isLoggedIn = Boolean(session?.user?.id);
+  const isLoggedIn = Boolean(session?.user);
   const {
     sku,
     productName = "",

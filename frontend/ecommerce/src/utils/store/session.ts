@@ -1,6 +1,6 @@
 import { Session } from "@/lib/auth";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, devtools } from "zustand/middleware";
 
 type AuthAction = {
   setSession: (session: Session | null) => void;
@@ -11,7 +11,7 @@ type AuthState = {
   actions: AuthAction;
 };
 const useAuthStore = create<AuthState>()(
-  persist(
+  devtools(persist(
     (set) => ({
       session: null,
       actions: {
@@ -27,6 +27,6 @@ const useAuthStore = create<AuthState>()(
       }),
     },
   ),
-);
+));
 export const useAuthActions = () => useAuthStore((state) => state.actions);
 export const useSession = () => useAuthStore((state) => state.session);

@@ -15,7 +15,7 @@ const ProductCardPlpButtonSection = ({ productItemId, sellingPrice }: { productI
     const cartItems = useCartItems();
     const [cartButtonLoader, setCartButtonLoader] = useState<boolean>(false);
     const session = useSession();
-    const isLoggedIn = Boolean(session?.user?.id);
+    const isLoggedIn = Boolean(session?.user);
     const productAddedToCart = cartItems.findIndex(ci => ci.productItemId === productItemId) !== -1;
     const { addToCart } = useCartActions();
 

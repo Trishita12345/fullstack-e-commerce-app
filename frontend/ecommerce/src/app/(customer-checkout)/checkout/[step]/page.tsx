@@ -26,7 +26,7 @@ const Checkout = () => {
   const [visible, { open, close }] = useDisclosure(false);
   const [cartDataLoaded, setCartDataLoaded] = useState<boolean>(false);
   const session = useSession();
-  const isLoggedIn = Boolean(session?.user?.id);
+  const isLoggedIn = Boolean(session?.user);
   const { setCartItems } = useCartActions();
   const cartItems = useCartItems();
   const [cartProducts, setCartProducts] = useState<CartProductsDTO>({});

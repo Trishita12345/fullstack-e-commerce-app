@@ -10,7 +10,7 @@ import { useSession } from "@/utils/store/session";
 import { getCartItemsAction } from "@/app/(customer-checkout)/checkout/cartActions";
 const CartButton = () => {
   const session = useSession();
-  const isLoggedIn = Boolean(session?.user?.id);
+  const isLoggedIn = Boolean(session?.user);
   const { setCartItems } = useCartActions();
 
   const selectedCartItems = useCartItems().filter((item) => item.isSelected);

@@ -18,7 +18,7 @@ const ProductCardHomepageButtonSection = ({ product }: { product: ProductItem })
         useState<boolean>(false);
     const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
     const session = useSession();
-    const isLoggedIn = Boolean(session?.user?.id);
+    const isLoggedIn = Boolean(session?.user);
     const productAddedToCart = cartItems.findIndex(ci => ci.productItemId === product.productItemId) !== -1;
     const { addToCart } = useCartActions();
 

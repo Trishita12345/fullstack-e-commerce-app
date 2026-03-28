@@ -38,7 +38,7 @@ const LoggedIn = ({ session }: LoggedInProps) => (
   </Popover>
 );
 
-const LoggedOut = ({ openLoginPopUp }: LoggedOutProps) => (
+const LoggedOut = ({ redirectToLogin }: LoggedOutProps) => (
   <Button
     c="black.9"
     py={2}
@@ -50,7 +50,7 @@ const LoggedOut = ({ openLoginPopUp }: LoggedOutProps) => (
     radius="xs"
     variant="subtle"
     leftSection={<FontAwesomeIcon icon={faUser} />}
-    onClick={openLoginPopUp}
+    onClick={redirectToLogin}
   >
     <Text size="xs" fw={600} visibleFrom="xs">
       {en.login}

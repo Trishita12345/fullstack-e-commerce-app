@@ -10,7 +10,7 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession();
-  if (!session) return unauthorized();
+  if (!session?.user) return unauthorized();
   if (session.user.role !== "SELLER") return forbidden();
   return (
     <>

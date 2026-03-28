@@ -7,7 +7,6 @@ import { AddressDTO } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
 import { useState } from "react";
 import AddressListingForCart from "./AddressListingForCart";
-import { useSession } from "@/utils/store/session";
 import LoginComponent, { LoggedOutProps } from "@/(components)/LoginComponent";
 
 const AddressBox = ({
@@ -126,8 +125,8 @@ const AddressBox = ({
               {selectedAddress.addressLine1}
               {selectedAddress.addressLine2 &&
                 ", " +
-                  selectedAddress.addressLine2 +
-                  selectedAddress.landmark &&
+                selectedAddress.addressLine2 +
+                selectedAddress.landmark &&
                 ", " + selectedAddress.landmark}
               <br /> {selectedAddress.city + ", " + selectedAddress.state} -{" "}
               {selectedAddress.postalCode}, {selectedAddress.country}
@@ -153,14 +152,14 @@ const AddressBox = ({
       )}
     </>
   );
-  const LoggedOut = ({ openLoginPopUp }: LoggedOutProps) => (
+  const LoggedOut = ({ redirectToLogin }: LoggedOutProps) => (
     <Box bd={"1px solid gray.1"} p={16} bdrs={4} bg={"primary.0"}>
       <Group gap={4}>
         <Button
           variant="transparent"
           color="primaryDark.9"
           px={0}
-          onClick={openLoginPopUp}
+          onClick={redirectToLogin}
         >
           <Text fw={700} size="14px">
             Login
