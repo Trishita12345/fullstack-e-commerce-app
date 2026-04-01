@@ -63,7 +63,7 @@ const PopoverContent = ({ user }: { user: User }) => {
           key={item.label}
         />
       ))}
-      {user.role === "SELLER" && (
+      {user.role === "ADMIN" && (
         <>
           {pathname.includes("/admin") ? (
             <PopoverContentItems

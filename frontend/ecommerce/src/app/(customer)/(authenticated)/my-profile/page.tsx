@@ -49,7 +49,7 @@ const MyProfilePage = async () => {
     <Stack maw={640} mx={"auto"} mt={16} gap={16} lts={1} px={16}>
       <Group>
         <Text fw={600} style={{ fontFamily: "var(--font-poppins)" }}>Profile Details</Text>
-        {session?.user.role === 'SELLER' && <ViewToken token={token} />}
+        {session?.user.role === 'ADMIN' && <ViewToken token={token} />}
       </Group>
       <Divider />
       <Center mx={"auto"} mb={16}>

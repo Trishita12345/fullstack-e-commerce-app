@@ -39,14 +39,14 @@ public class ProductItemController {
     private final IProductDataIngestionService productDataIngestionService;
 
     @GetMapping("/{productId}/variant-attributes")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProductVariantAttributesDTO>> getVariantAttributesByCategoryId(
             @PathVariable UUID productId) {
         return ResponseEntity.ok(productItemService.getVariantAttributesByCategoryId(productId));
     }
 
     @PostMapping("/add/{productId}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UUID> addProductItem(@PathVariable UUID productId,
             @RequestBody ProductItemDTO productItemDTO) {
         UUID id = productItemService.addProductItem(productId, productItemDTO);
@@ -55,13 +55,13 @@ public class ProductItemController {
     }
 
     @GetMapping("/{productItemId}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductItemDTO> getProductItemById(@PathVariable UUID productItemId) {
         return ResponseEntity.ok(productItemService.getProductItemById(productItemId));
     }
 
     @GetMapping("/{productId}/page")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<ProductItemListingDTO>> getProductItemListing(
             @PathVariable UUID productId,
             @RequestParam(required = false, defaultValue = "0") int page,
@@ -77,7 +77,7 @@ public class ProductItemController {
     }
 
     @PatchMapping("/{productItemId}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProductItemDTO> editProductItem(@PathVariable UUID productItemId,
             @RequestBody ProductItemDTO productItemDTO) {
         ProductItemDTO productItemDtoUpdated = productItemService.editProductById(productItemId, productItemDTO);
@@ -86,7 +86,7 @@ public class ProductItemController {
     }
 
     @DeleteMapping("/{productItemId}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteProductItemById(@PathVariable UUID productItemId) {
         productItemService.deleteProductItemById(productItemId);
         productDataIngestionService.deleteProductDataToSearchIndexById(productItemId);

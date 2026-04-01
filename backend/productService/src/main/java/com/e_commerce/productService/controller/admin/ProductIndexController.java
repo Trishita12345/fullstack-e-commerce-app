@@ -23,7 +23,7 @@ public class ProductIndexController {
     private final IProductDataIngestionService productDataIngestionService;
 
     @GetMapping("/ingest-product-data")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> IngestProductData() {
 
         productDataIngestionService.ingestProductDataToSearchIndex();
@@ -32,7 +32,7 @@ public class ProductIndexController {
     }
 
     @GetMapping("/ingest-product-data/{productItemId}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> ingestProductDataById(@PathVariable UUID productItemId) {
         productDataIngestionService.ingestProductDataToSearchIndexById(productItemId);
         return ResponseEntity
@@ -40,7 +40,7 @@ public class ProductIndexController {
     }
 
     @DeleteMapping("/delete-product-data/{productItemId}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteProductDataById(@PathVariable UUID productItemId) {
         productDataIngestionService.deleteProductDataToSearchIndexById(productItemId);
         return ResponseEntity

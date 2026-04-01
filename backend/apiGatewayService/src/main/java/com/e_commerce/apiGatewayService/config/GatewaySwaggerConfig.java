@@ -41,6 +41,9 @@ public class GatewaySwaggerConfig {
                                                 .description("Payment Service"))
                                 .addServersItem(new Server()
                                                 .url("https://api.loomandlume.shop/api/search-service")
-                                                .description("Search Service"));
+                                                .description("Search Service"))
+                                .addServersItem(new Server()
+                                                .url("https://api.loomandlume.shop/api/auth-service")
+                                                .description("Auth Service"));
         }
 }

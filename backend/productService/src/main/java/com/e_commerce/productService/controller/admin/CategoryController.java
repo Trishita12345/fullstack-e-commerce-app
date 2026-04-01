@@ -26,32 +26,32 @@ public class CategoryController {
 
     // @AuthenticationPrincipal Jwt jwt,
     @PostMapping("/add")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryResponseDTO> addCategory(@Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
         return ResponseEntity.ok(categoryService.addCategory(categoryRequestDTO));
     }
 
     @PutMapping("/edit/{id}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryResponseDTO> editCategory(@PathVariable UUID id,
             @Valid @RequestBody CategoryRequestDTO categoryRequestDTO) {
         return ResponseEntity.ok(categoryService.editCategory(id, categoryRequestDTO));
     }
 
     @GetMapping("/get-parent-categories")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SelectOptionDTO<UUID>>> getParentCategories() {
         return ResponseEntity.ok(categoryService.getParentCategories());
     }
 
     @GetMapping("/get-leaf-categories")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SelectOptionDTO<UUID>>> getLeafCategories() {
         return ResponseEntity.ok(categoryService.getLeafCategories());
     }
 
     @GetMapping("/get-all-categories")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SelectOptionDTO<UUID>>> getAllCategoriesSelectOption() {
         return ResponseEntity.ok(categoryService.getAllCategoriesSelectOption());
     }
@@ -64,7 +64,7 @@ public class CategoryController {
     }
 
     @GetMapping("/page")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<CategoryListingResponseDTO>> getAllCategories(
             @RequestParam(required = false, defaultValue = "") String query,
             @RequestParam(required = false, defaultValue = "0") int page,
@@ -78,7 +78,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CategoryResponseDTO> getCategoryById(@PathVariable UUID id) {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }

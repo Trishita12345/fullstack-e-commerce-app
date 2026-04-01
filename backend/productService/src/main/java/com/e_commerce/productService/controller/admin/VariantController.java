@@ -25,14 +25,14 @@ public class VariantController {
     private final IVariantService variantService;
 
     @PostMapping("/add/{categoryId}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VariantDTO> addVariant(@PathVariable UUID categoryId,
             @Valid @RequestBody VariantDTO variantDTO) {
         return ResponseEntity.ok(variantService.addVariant(categoryId, variantDTO));
     }
 
     @GetMapping("/{categoryId}/page")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<VariantWithCategoryDTO>> getVariantsByCategoryId(
             @PathVariable UUID categoryId,
             @RequestParam(required = false, defaultValue = "") String query,
@@ -47,7 +47,7 @@ public class VariantController {
     }
 
     @GetMapping("/page")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<VariantWithCategoryDTO>> getAllVariantsPage(
             @RequestParam(required = false, defaultValue = "") String query,
             @RequestParam(required = false, defaultValue = "0") int page,
@@ -62,20 +62,20 @@ public class VariantController {
     }
 
     @GetMapping("/{variantId}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VariantDTO> getVariantDetails(@PathVariable UUID variantId) {
         return ResponseEntity.ok(variantService.getVariantDetails(variantId));
     }
 
     @PutMapping("/{categoryId}/{variantId}")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VariantDTO> editVariant(@PathVariable UUID categoryId, @PathVariable UUID variantId,
             @Valid @RequestBody VariantDTO variantDTO) {
         return ResponseEntity.ok(variantService.editVariant(categoryId, variantId, variantDTO));
     }
 
     @GetMapping("/gst-details")
-    @PreAuthorize("hasRole('SELLER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SelectOptionDTO<String>>> getGSTDetails() {
         return ResponseEntity.ok(variantService.getGSTDetails());
     }

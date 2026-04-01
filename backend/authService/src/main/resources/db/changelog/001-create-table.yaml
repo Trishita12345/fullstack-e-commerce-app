@@ -1,0 +1,336 @@
+databaseChangeLog:
+
+  # =========================
+  # ROLE TABLE
+  # =========================
+  - changeSet:
+      id: 001-create-role
+      author: trishita
+      changes:
+        - createTable:
+            tableName: roles
+            columns:
+              - column:
+                  name: role_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: role_name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+
+        - createIndex:
+            tableName: roles
+            indexName: idx_role_name
+            columns:
+              - column:
+                  name: role_name
+
+
+  # =========================
+  # PERMISSION TABLE
+  # =========================
+  - changeSet:
+      id: 002-create-permission
+      author: trishita
+      changes:
+        - createTable:
+            tableName: permissions
+            columns:
+              - column:
+                  name: permission_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: permission_name
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+
+        - createIndex:
+            tableName: permissions
+            indexName: idx_permission_name
+            columns:
+              - column:
+                  name: permission_name
+
+
+  # =========================
+  # ROLE_PERMISSION MAPPING
+  # =========================
+  - changeSet:
+      id: 003-create-role-permission
+      author: trishita
+      changes:
+        - createTable:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: permission_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: role_permissions
+            columnNames: role_id, permission_id
+
+        - addForeignKeyConstraint:
+            baseTableName: role_permissions
+            baseColumnNames: role_id
+            referencedTableName: roles
+            referencedColumnNames: role_id
+            constraintName: fk_role_perm_role
+
+        - addForeignKeyConstraint:
+            baseTableName: role_permissions
+            baseColumnNames: permission_id
+            referencedTableName: permissions
+            referencedColumnNames: permission_id
+            constraintName: fk_role_perm_permission
+
+
+  # =========================
+  # USER TABLE
+  # =========================
+  - changeSet:
+      id: 004-create-user
+      author: trishita
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: phone_no
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: role_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+
+        - addForeignKeyConstraint:
+            baseTableName: users
+            baseColumnNames: role_id
+            referencedTableName: roles
+            referencedColumnNames: role_id
+            constraintName: fk_user_role
+
+        - createIndex:
+            tableName: users
+            indexName: idx_user_phone
+            columns:
+              - column:
+                  name: phone_no
+
+
+  # =========================
+  # REFRESH TOKEN TABLE
+  # =========================
+  - changeSet:
+      id: 005-create-refresh-token
+      author: trishita
+      changes:
+        - createTable:
+            tableName: refresh_tokens
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: token
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiry
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: revoked
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: device_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+
+        - createIndex:
+            tableName: refresh_tokens
+            indexName: idx_refresh_token_user
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: refresh_tokens
+            indexName: idx_refresh_token_token
+            columns:
+              - column:
+                  name: token
+
+
+  # =========================
+  # SEED DATA (ROLES)
+  # =========================
+  - changeSet:
+      id: 006-seed-roles
+      author: trishita
+      changes:
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role_id
+                  value: "49b61606-d520-4ddd-a66c-7768e82157af"
+              - column:
+                  name: role_name
+                  value: "USER"
+              - column:
+                  name: created_at
+                  valueDate: NOW()
+
+        - insert:
+            tableName: roles
+            columns:
+              - column:
+                  name: role_id
+                  value: "ff4e8df8-f8f7-4c9a-b3e2-4170ade9e681"
+              - column:
+                  name: role_name
+                  value: "ADMIN"
+              - column:
+                  name: created_at
+                  valueDate: NOW()
+
+
+  # =========================
+  # SEED DATA (PERMISSIONS)
+  # =========================
+  - changeSet:
+      id: 007-seed-permissions
+      author: trishita
+      changes:
+        - insert:
+            tableName: permissions
+            columns:
+              - column:
+                  name: permission_id
+                  value: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+              - column:
+                  name: permission_name
+                  value: "READ_ORDER"
+              - column:
+                  name: created_at
+                  valueDate: NOW()
+
+        - insert:
+            tableName: permissions
+            columns:
+              - column:
+                  name: permission_id
+                  value: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+              - column:
+                  name: permission_name
+                  value: "WRITE_ORDER"
+              - column:
+                  name: created_at
+                  valueDate: NOW()
+
+
+  # =========================
+  # ROLE-PERMISSION MAPPING
+  # =========================
+  - changeSet:
+      id: 008-map-role-permissions
+      author: trishita
+      changes:
+        - insert:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  value: "49b61606-d520-4ddd-a66c-7768e82157af"
+              - column:
+                  name: permission_id
+                  value: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+
+        - insert:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  value: "ff4e8df8-f8f7-4c9a-b3e2-4170ade9e681"
+              - column:
+                  name: permission_id
+                  value: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+
+        - insert:
+            tableName: role_permissions
+            columns:
+              - column:
+                  name: role_id
+                  value: "ff4e8df8-f8f7-4c9a-b3e2-4170ade9e681"
+              - column:
+                  name: permission_id
+                  value: "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"

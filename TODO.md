@@ -3,20 +3,31 @@ Checking product availability.. RESERVED | PENDING
 Item just went out of stock. FAILED | NOT_INITIATED
 Preparing secure payment... RESERVED | INITIATED
 
-2. Retry payment
+2. Retry payment - 
 3. Resilience 4j
 5. AOP
 6. Email service
-7. Global Search
-8. Static pages
-9. Order listing quantity, 
-shimmer/loader in plp
-badge
-+2 more
-
-//Done- To be checked 2. Payment Failure - on modal dismiss one api to relese inventory
-2a. modal dismiss - payment service - update
-2b. order fulfilled faild - payment service - update
+7. Global Search - subhajit
+8. Static pages - subhajit
+9. shimmer/loader in plp
+10. Admin Dashboard page ui - coming soon
+-----------------------------------------
+1. UI Integration
+2. Profile Service update
+3. email verify
+-----------------------------------------
+1. Project documentation - readme.md
+2. Map with system design concepts
+3. GIF - project demo
+4. CV
+-----------------------------------------
+1. Java
+2. HLD Sreyansh
+3. HLD Gaurav
+4. LLD Sreyansh
+5. LLD Gaurav
+6. SQL
+7. DSA
 
 GET /products/search?
 q=candle
@@ -33,9 +44,17 @@ q=candle
 &size=20
 &sortBy=price_asc
 
-
-
-
-
 // ss -luntp | grep :3000
 // kill -9 <pid>
+
+8:00-8:30 wake up
+8:30-10:30 cooking, household
+10:30-11:00 
+11:00 - 6:00 office
+6:30-7:30 walk
+7:30-8:30 dinner
+9:00 - 11:00 study
+11:30- bed
+
+
+8080 - api gateway 

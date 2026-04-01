@@ -11,7 +11,7 @@ export default async function AdminLayout({
 }) {
   const session = await getServerSession();
   if (!session?.user) return unauthorized();
-  if (session.user.role !== "SELLER") return forbidden();
+  if (session.user.role !== "ADMIN") return forbidden();
   return (
     <>
       <AdminHeader />

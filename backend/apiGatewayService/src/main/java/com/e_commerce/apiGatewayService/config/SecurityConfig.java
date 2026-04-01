@@ -62,6 +62,7 @@ public class SecurityConfig {
                                 "/api/search-service/public/**",
                                 "/api/search-service/swagger-ui/**",
                                 "/api/search-service/v3/api-docs/**",
+                                "/api/auth-service/**",
                                 "/error")
                         .permitAll()
                         .anyExchange().authenticated())
@@ -94,7 +95,7 @@ public class SecurityConfig {
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
         return NimbusReactiveJwtDecoder
-                .withJwkSetUri(allowedOrigin + "/api/auth/jwks")
+                .withJwkSetUri("https://api.loomandlume.shop" + "/api/auth-service/public/.well-known/jwks.json")
                 .build();
     }
 
