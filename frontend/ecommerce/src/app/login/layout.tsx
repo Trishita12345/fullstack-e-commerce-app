@@ -8,12 +8,12 @@ function LoginLayout({
 }) {
     return (
         <Grid >
-            <GridCol span={6} style={{ backgroundColor: 'var(--mantine-color-primary-1)' }} h={'100vh'} visibleFrom="sm">
+            <GridCol span={6} style={{ backgroundColor: 'var(--mantine-color-primary-1)' }} h={'101vh'} visibleFrom="md">
                 <Center h={'100vh'} style={{ flexDirection: 'column' }}>
                     <LogoText fontSize="1.6rem" />
                 </Center>
             </GridCol>
-            <GridCol span={{ base: 12, sm: 6 }} h={'100vh'}>
+            <GridCol span={{ base: 12, md: 6 }} h={'100vh'}>
                 {children}
             </GridCol>
         </Grid>

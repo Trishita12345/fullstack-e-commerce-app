@@ -85,7 +85,7 @@ const Login = () => {
             notify({
                 variant: 'error',
                 title: 'Error!',
-                message: 'Failed to verify OTP. Please try again.'
+                message: 'Invalid OTP. Please try again.'
             })
         }
     }

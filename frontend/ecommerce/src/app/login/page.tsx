@@ -1,5 +1,4 @@
 'use client';
-import LogoText from "@/(components)/logo/LogoText";
 import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 
 import { Stack, Title, Button, Text, Box, Grid, GridCol, Center, PinInput, TextInput, Checkbox, Group } from "@mantine/core";
@@ -8,7 +7,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { requestOtp } from "./actions";
 import { notify } from "@/utils/helperFunctions";
-import { apiFetch } from "@/lib/apiFetch";
 
 const TnC = () => {
     return (
