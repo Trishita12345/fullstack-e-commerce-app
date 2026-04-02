@@ -4,12 +4,12 @@ import {
     Divider,
     Text
 } from "@mantine/core";
-import { getUser, getUserCached } from "../actions";
 import UpdateProfileForm from "./UpdateProfileForm";
 import Link from "next/link";
 import { IconArrowNarrowLeft } from "@tabler/icons-react";
 import { Suspense } from "react";
 import ProfileFormSkeleton from "./loading";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 
 function UpdateProfile() {
     return (
@@ -19,7 +19,7 @@ function UpdateProfile() {
     );
 }
 async function EditContent() {
-    const userInfoData = await getUserCached();
+    const userInfoData = await getCurrentUser();
 
     return (
         <Box maw={500} mx='auto' mb={12} px={24}>

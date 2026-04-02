@@ -10,12 +10,12 @@ import {
   Text,
   Title,
 } from "@mantine/core";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { CategoryImageCard } from "@/(components)/categoriesCard/CategoryImageCard";
 import { IconArrowRight } from "@tabler/icons-react";
 
 const ShopByCategories = async () => {
-  const Categories = await apiFetch<CategoriesCardType[]>(
+  const Categories = await serverApiFetch<CategoriesCardType[]>(
     "/product-service/public/categories/leaf",
     {
       cache: "force-cache",

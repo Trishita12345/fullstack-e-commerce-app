@@ -1,6 +1,6 @@
 import { ActionButton } from "@/(components)/ActionButton";
 import { Product, SelectOptionType } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "@mantine/core";
 import { IconArrowNarrowLeft } from "@tabler/icons-react";
 import Link from "next/link";
@@ -23,12 +23,12 @@ export async function AddEditProductTabs({
   searchParams,
 }: PageProps) {
   const { tab = "1" } = await searchParams;
-  const categories = await apiFetch<SelectOptionType[]>(
+  const categories = await serverApiFetch<SelectOptionType[]>(
     "/product-service/category/get-leaf-categories"
   );
   let productData;
   if (productId)
-    productData = await apiFetch<Product>(
+    productData = await serverApiFetch<Product>(
       `/product-service/product/${productId}`
     );
   return (

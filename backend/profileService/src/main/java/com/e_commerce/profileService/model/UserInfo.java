@@ -34,14 +34,13 @@ public class UserInfo extends AuditEntity {
     @Column(nullable = false)
     private String userId;
 
+    @Column(nullable = false)
     private String phoneNumber;
-    private boolean phoneNumberVerified;
 
     private String emailId;
-    private boolean emailIdVerified;
 
-    private String fullname;
-    private String profileImg;
+    @Column(nullable = false)
+    private String fullName;
 
     private Gender gender;
     private Date dob;

@@ -4,8 +4,6 @@ import {
   CartItemDTO,
   ProductDetailsDTO,
 } from "@/constants/types";
-import { getToken } from "@/lib/apiFetch";
-import { authClient } from "@/lib/auth-client";
 import { notify } from "@/utils/helperFunctions";
 import { Button, Grid, GridCol, Text } from "@mantine/core";
 import {
@@ -25,7 +23,8 @@ import {
   removeFromWishListed,
 } from "./actions";
 import { useCartActions, useCartItemById } from "@/utils/store/cart";
-import { useSession } from "@/utils/store/session";
+import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+
 
 const ButtonSection = ({
   pdpData,
@@ -36,8 +35,7 @@ const ButtonSection = ({
 }) => {
   const cartDetailsForProduct = useCartItemById(productItemId);
   const router = useRouter();
-  const session = useSession();
-  const isLoggedIn = Boolean(session?.user);
+  const { isLoggedIn } = useCurrentUser();
   const [cartButtonLoader, setCartButtonLoader] = useState<boolean>(false);
   const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
   const [wishlistButtonLoader, setWishlistButtonLoader] =
@@ -149,8 +147,7 @@ const ButtonSection = ({
 
   const removeFromWishlistHandler = async () => {
     try {
-      const token = await getToken();
-      if (!token) {
+      if (!isLoggedIn) {
         notify({
           variant: "error",
           title: "Error!",

@@ -1,7 +1,5 @@
 import { getAllAddressesAction } from "@/app/(customer-checkout)/checkout/addressActions";
 import { AddressDTO } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
-import { Session } from "@/lib/auth";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

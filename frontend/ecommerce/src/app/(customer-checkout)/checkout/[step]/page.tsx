@@ -7,7 +7,6 @@ import { Box, Loader, LoadingOverlay } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { authClient } from "@/lib/auth-client";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
 import { CartItemDTO, CartProductsDTO } from "@/constants/types";
 import {
@@ -16,17 +15,16 @@ import {
   updateOverallCartAction,
 } from "../cartActions";
 import Address from "./(address)";
-import { useSession } from "@/utils/store/session";
+
 import { useAddressActions } from "@/utils/store/address";
 import Payment from "./(payment)";
-import { apiFetch } from "@/lib/apiFetch";
+import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 
 const Checkout = () => {
   const { step } = useParams<{ step: string }>();
   const [visible, { open, close }] = useDisclosure(false);
   const [cartDataLoaded, setCartDataLoaded] = useState<boolean>(false);
-  const session = useSession();
-  const isLoggedIn = Boolean(session?.user);
+  const { isLoggedIn } = useCurrentUser();
   const { setCartItems } = useCartActions();
   const cartItems = useCartItems();
   const [cartProducts, setCartProducts] = useState<CartProductsDTO>({});

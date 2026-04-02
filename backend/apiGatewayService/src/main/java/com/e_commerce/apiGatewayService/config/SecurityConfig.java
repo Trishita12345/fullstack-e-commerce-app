@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
@@ -16,6 +17,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+
+import com.e_commerce.apiGatewayService.filter.CookieToHeaderFilter;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -29,6 +32,7 @@ public class SecurityConfig {
         return http
                 .cors(cors -> Customizer.withDefaults()) // ✅ ENABLE CORS
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .addFilterBefore(new CookieToHeaderFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(
                                 "/.well-known/**",
@@ -65,9 +69,11 @@ public class SecurityConfig {
                                 "/api/auth-service/**",
                                 "/error")
                         .permitAll()
-                        .anyExchange().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(
-                        reactiveJwtAuthenticationConverter())))
+                        .anyExchange()
+                        .authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(
+                                reactiveJwtAuthenticationConverter())))
                 .build();
     }
 
@@ -107,9 +113,10 @@ public class SecurityConfig {
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // if using cookies / auth headers
-
+        configuration.setExposedHeaders(List.of("Set-Cookie"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }

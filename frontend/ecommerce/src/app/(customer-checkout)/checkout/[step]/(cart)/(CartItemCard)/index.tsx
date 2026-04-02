@@ -1,9 +1,6 @@
-import { en } from "@/constants/en";
 import { CartItemDTO, CartProducts } from "@/constants/types";
-import { authClient } from "@/lib/auth-client";
 import {
   notify,
-  formattedPrice,
   decodeSkuToken,
 } from "@/utils/helperFunctions";
 import { useCartActions } from "@/utils/store/cart";
@@ -13,26 +10,19 @@ import {
   Group,
   Stack,
   Text,
-  Badge,
-  Popover,
   Checkbox,
 } from "@mantine/core";
 import {
-  IconArrowNarrowDown,
-  IconArrowNarrowUp,
-  IconCaretDownFilled,
-  IconCheck,
   IconTruckDelivery,
 } from "@tabler/icons-react";
 import { updateCartAction } from "../../../cartActions";
 import Image from "next/image";
-import { InfoIcon } from "@/(components)/InfoIcon";
-import { useState } from "react";
 import Link from "next/link";
 import DeleteCartItem from "../DeleteCartItem";
-import { useSession } from "@/utils/store/session";
+
 import Price from "./PriceSection";
 import Quantity from "./Quantity";
+import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 
 interface CartItemCardProps {
   cartItem: CartItemDTO;
@@ -47,9 +37,8 @@ const CartItemCard = ({
   showLoading,
   stopLoading,
 }: CartItemCardProps) => {
-  const session = useSession();
+  const { isLoggedIn } = useCurrentUser();
   const { updateCartSelected } = useCartActions();
-  const isLoggedIn = Boolean(session?.user);
   const {
     sku,
     productName = "",

@@ -1,6 +1,6 @@
 import { SelectOptionType } from "@/constants/types";
 import AddEditVariantForm from "../AddEditVariantForm";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 
 interface PageProps {
   params: {
@@ -9,7 +9,7 @@ interface PageProps {
 }
 const AddVariant = async ({ params }: PageProps) => {
   const { categoryId } = await params;
-  const categoryOptions = await apiFetch<SelectOptionType[]>(
+  const categoryOptions = await serverApiFetch<SelectOptionType[]>(
     "/product-service/category/get-all-categories"
   );
   return (

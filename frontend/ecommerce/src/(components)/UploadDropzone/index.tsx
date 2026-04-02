@@ -1,6 +1,6 @@
 "use client";
 
-import { uploadToS3, notify } from "@/utils/helperFunctions";
+import { notify } from "@/utils/helperFunctions";
 import {
   Box,
   SimpleGrid,
@@ -17,6 +17,7 @@ import { IconPhoto, IconTrash } from "@tabler/icons-react";
 import { useUncontrolled } from "@mantine/hooks";
 import { CustomInputProps } from "../CustomRichTextEditor";
 import { useEffect, useState } from "react";
+import { uploadToS3 } from "@/utils/s3Actions";
 
 type UploadDropzone = {
   visible: boolean;

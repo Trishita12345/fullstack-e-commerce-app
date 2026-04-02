@@ -1,11 +1,10 @@
 "use server";
 
-import { FullUser } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
-import { cache } from "react";
+import { User } from "@/constants/types";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 
-export async function updateUser(body: FullUser) {
-  await apiFetch<FullUser>(
+export async function updateUser(body: User) {
+  await serverApiFetch<User>(
       '/profile-service/userinfo',
       {
           method: 'PUT',
@@ -13,12 +12,3 @@ export async function updateUser(body: FullUser) {
       }
   );
 }
-export async function getUser() {
-    const res = await apiFetch<FullUser>('/profile-service/userinfo');
-    return res;
-}
-
-
-export const getUserCached = cache(async () => {
-  return await getUser();
-});

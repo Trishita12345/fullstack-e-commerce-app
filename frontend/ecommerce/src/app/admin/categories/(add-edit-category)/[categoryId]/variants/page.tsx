@@ -5,7 +5,7 @@ import type {
   Page,
   VariantListType,
 } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { Badge, Group } from "@mantine/core";
 import { IconArrowNarrowLeft, IconEdit, IconPlus } from "@tabler/icons-react";
 import { ActionButton } from "@/(components)/ActionButton";
@@ -35,14 +35,14 @@ export default async function Variants({ params, searchParams }: PageProps) {
   const page = Number(pageParam ?? 1) - 1;
   const { categoryId } = await params;
 
-  const variants = await apiFetch<Page<VariantListType>>(
+  const variants = await serverApiFetch<Page<VariantListType>>(
     `/product-service/variant/${categoryId}/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}`,
     {
       cache: "force-cache",
       revalidate: 60,
     }
   );
-  const categoryDetails = await apiFetch<AddEditCategoryResponseType>(
+  const categoryDetails = await serverApiFetch<AddEditCategoryResponseType>(
     `/product-service/category/${categoryId}`,
     {
       cache: "force-cache",

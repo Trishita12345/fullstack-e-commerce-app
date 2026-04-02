@@ -4,6 +4,7 @@ import com.e_commerce.common.model.dto.CartItemDTO;
 import com.e_commerce.common.model.dto.ProductPriceDTO;
 import com.e_commerce.common.model.dto.ProductPriceDetailsDTO;
 import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
+import com.e_commerce.productService.service.IS3Service;
 import com.e_commerce.productService.model.Category;
 import com.e_commerce.productService.model.GstTaxSlab;
 import com.e_commerce.productService.model.Product;
@@ -28,7 +29,6 @@ import com.e_commerce.productService.repository.IVariantAttributeRepository;
 import com.e_commerce.productService.service.IInventoryReservationService;
 import com.e_commerce.productService.service.IProductItemService;
 import com.e_commerce.productService.service.IProductService;
-import com.e_commerce.productService.service.IS3Service;
 import com.e_commerce.productService.service.IVariantService;
 import lombok.AllArgsConstructor;
 

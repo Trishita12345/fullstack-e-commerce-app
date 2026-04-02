@@ -7,7 +7,7 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>4.0.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+	</parent> 
 	<groupId>com.e_commerce</groupId>
 	<artifactId>authService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>

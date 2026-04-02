@@ -2,7 +2,7 @@ import { Box, Button, Card, Divider, Group, Text, Title } from "@mantine/core";
 import { PLPResponseDTO, ProductItem } from "@/constants/types";
 import ProductCard from "@/(components)/productCard";
 import Breadcrumb from "@/(components)/Breadcrumb";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import './PlpStyles.css'
 import { Footer } from "@/(components)/footer";
 import PlpPagination from "./(components)/PlpPaginationSection";
@@ -47,8 +47,7 @@ export function buildSearchUrl(filters: SearchParamsType) {
   return searchParams.toString();
 }
 async function getPLPData(queryString: string) {
-  console.log('Fetching PLP data with query:', `/search-service/public/search?${queryString}`);
-  return await apiFetch<PLPResponseDTO>(
+  return await serverApiFetch<PLPResponseDTO>(
     `/search-service/public/search?${queryString}`,
   );
 }
@@ -57,7 +56,7 @@ const PLP = async ({ searchParams }: PageProps) => {
   const { q, category, minPrice, maxPrice, inStock, variants, page, sortBy, dir, discount } = await searchParams;
   const queryString = buildSearchUrl({ q, category, minPrice, maxPrice, inStock, variants, page, sortBy, dir, discount });
   const plpData = await getPLPData(queryString);
-  const categories = await apiFetch<CategoriesCardType[]>(
+  const categories = await serverApiFetch<CategoriesCardType[]>(
     "/product-service/public/categories/leaf",
     {
       cache: "force-cache",

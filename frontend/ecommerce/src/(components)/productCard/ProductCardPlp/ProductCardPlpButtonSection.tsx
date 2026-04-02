@@ -4,8 +4,9 @@ import { addOrUpdateCartAction } from "@/app/(customer)/products/[productItemId]
 import { en } from "@/constants/en";
 import { CartItemDbDTO, ProductItem } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
+import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
-import { useSession } from "@/utils/store/session";
+
 import { Button, Text } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import Link from "next/link";
@@ -14,8 +15,7 @@ import { MouseEvent, useState } from "react";
 const ProductCardPlpButtonSection = ({ productItemId, sellingPrice }: { productItemId: string, sellingPrice: number }) => {
     const cartItems = useCartItems();
     const [cartButtonLoader, setCartButtonLoader] = useState<boolean>(false);
-    const session = useSession();
-    const isLoggedIn = Boolean(session?.user);
+    const { isLoggedIn } = useCurrentUser();
     const productAddedToCart = cartItems.findIndex(ci => ci.productItemId === productItemId) !== -1;
     const { addToCart } = useCartActions();
 

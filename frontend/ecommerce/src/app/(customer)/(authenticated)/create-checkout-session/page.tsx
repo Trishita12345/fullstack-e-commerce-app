@@ -9,7 +9,8 @@ import { OrderStatusPollingResponse } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
 import loadRazorpay from "@/utils/loadRazorpay";
 import { en } from "@/constants/en";
-import { useSession } from "@/utils/store/session";
+import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+
 
 const enum OrderStatuses {
   CREATED = "CREATED",
@@ -36,7 +37,7 @@ const CreateCheckoutSession = () => {
   const [loaderMsg, setLoaderMsg] = useState<string>(
     "Checking product availability...  ",
   );
-  const session = useSession();
+  const { user } = useCurrentUser();
 
   const startPolling = (orderId: string) => {
     if (intervalRef.current) return;
@@ -72,8 +73,8 @@ const CreateCheckoutSession = () => {
       description: "Order Payment",
       order_id: orderData.gatewayOrderId,
       prefill: {
-        name: session?.user.name,
-        email: session?.user.email,
+        name: user !== null ? user.fullName : "",
+        email: user !== null ? user.emailId : "",
       },
       handler: function (response: any) {
         verifyingPayment.current = true;

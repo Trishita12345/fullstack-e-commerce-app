@@ -2,6 +2,7 @@ package com.e_commerce.authService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
@@ -9,6 +10,8 @@ import org.springframework.context.annotation.ComponentScan;
 		"com.e_commerce.authService",
 		"com.e_commerce.common"
 })
+
+@EnableFeignClients
 public class AuthServiceApplication {
 
 	public static void main(String[] args) {

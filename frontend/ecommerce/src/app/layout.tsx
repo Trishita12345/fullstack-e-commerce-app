@@ -15,7 +15,7 @@ import { en } from "@/constants/en";
 import { Allura, Inter, Jost, Poppins } from "next/font/google";
 import "./globals.css";
 import { Notifications } from "@mantine/notifications";
-import { InitialDataLoader } from "@/(components)/InitialDataLoader";
+// import { InitialDataLoader } from "@/(components)/InitialDataLoader";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -114,7 +114,7 @@ export default function RootLayout({
       >
         <MantineProvider theme={theme}>
           <Notifications />
-          <InitialDataLoader />
+          {/* <InitialDataLoader /> */}
           {children}
         </MantineProvider>
       </body>

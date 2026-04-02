@@ -22,28 +22,18 @@ databaseChangeLog:
               - column:
                   name: phone_number
                   type: VARCHAR(20)
-
-              - column:
-                  name: phone_number_verified
-                  type: BOOLEAN
-                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
 
               - column:
                   name: email_id
                   type: VARCHAR(255)
 
               - column:
-                  name: email_id_verified
-                  type: BOOLEAN
-                  defaultValueBoolean: false
-
-              - column:
-                  name: fullname
+                  name: full_name
                   type: VARCHAR(255)
-
-              - column:
-                  name: profile_img
-                  type: VARCHAR(512)
+                  constraints:
+                    nullable: false
 
               - column:
                   name: gender

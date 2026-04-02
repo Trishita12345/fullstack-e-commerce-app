@@ -1,51 +1,40 @@
 package com.e_commerce.common.config;
 
-import feign.Logger;
 import feign.RequestInterceptor;
-import feign.RequestTemplate;
-
-import java.util.stream.Collectors;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.e_commerce.common.security.UserHeaders;
 
 @Configuration
 public class FeignConfig {
-
-    /**
-     * Forward Authorization header to downstream services
-     */
     @Bean
     public RequestInterceptor requestInterceptor() {
-        return new RequestInterceptor() {
-            @Override
-            public void apply(RequestTemplate template) {
+        return requestTemplate -> {
 
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            // Get current request headers
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder
+                    .getRequestAttributes();
 
-                if (authentication != null) {
+            if (attributes != null) {
+                HttpServletRequest request = attributes.getRequest();
 
-                    String userId = authentication.getName();
-                    String roles = authentication.getAuthorities()
-                        .stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.joining(","));
+                // 🔥 Forward custom headers
+                String userId = request.getHeader(UserHeaders.USER_ID);
+                String roles = request.getHeader(UserHeaders.USER_ROLES);
 
-                    template.header("X-User-Id", userId);
-                    template.header("X-User-Roles", roles);
+                if (userId != null) {
+                    requestTemplate.header(UserHeaders.USER_ID, userId);
+                }
+
+                if (roles != null) {
+                    requestTemplate.header(UserHeaders.USER_ROLES, roles);
                 }
             }
         };
-    }
-
-    /**
-     * Enable Feign logs (VERY helpful while learning)
-     */
-    @Bean
-    Logger.Level feignLoggerLevel() {
-        return Logger.Level.BASIC;
     }
 }

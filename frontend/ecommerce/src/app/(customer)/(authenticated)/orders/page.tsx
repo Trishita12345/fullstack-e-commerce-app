@@ -1,21 +1,3 @@
-// import { apiFetch } from "@/lib/apiFetch";
-// import { orderListingResponse } from "./data";
-// import { OrderDetailsDTO, Page } from "@/constants/types";
-
-// interface PageProps {
-//   searchParams: {
-//     page?: string;
-//   };
-// }
-// export default async function Orders({ searchParams }: PageProps) {
-//   const { page: pageParam } = await searchParams;
-
-//   const page = Number(pageParam ?? 1) - 1;
-//   //   const orderListingResponse = await apiFetch<Page<OrderDetailsDTO>>(
-//   //     `/order-service/orders/page?page=${page}`,
-//   //   );
-//   return <>Orders</>;
-// }
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useIntersection } from "@mantine/hooks";
@@ -24,12 +6,12 @@ import { apiFetch } from "@/lib/apiFetch";
 import { OrderDetailsDTO, Page } from "@/constants/types";
 import OrderDetailComponent from "./OrderDetailComponent";
 import { getOrders } from "./actions";
-import { useSession } from "@/utils/store/session";
+import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+
 
 export default function InfiniteOrders() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const session = useSession();
-  const isLoggedIn = Boolean(session?.user);
+  const { isLoggedIn } = useCurrentUser();
   const { ref, entry } = useIntersection({
     root: containerRef.current,
     threshold: 1,

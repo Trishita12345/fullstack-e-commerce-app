@@ -15,6 +15,7 @@ import ReviewSection from "./(components)/(review)/ReviewSection";
 import { reviewData } from "./(components)/(dummyData)/productReviewData";
 import { en } from "@/constants/en";
 import { ProductDetailsDTO } from "@/constants/types";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { apiFetch } from "@/lib/apiFetch";
 
 interface PageProps {

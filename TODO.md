@@ -11,6 +11,8 @@ Preparing secure payment... RESERVED | INITIATED
 8. Static pages - subhajit
 9. shimmer/loader in plp
 10. Admin Dashboard page ui - coming soon
+11. Download invoice
+12. payment 
 -----------------------------------------
 1. UI Integration
 2. Profile Service update
@@ -28,6 +30,9 @@ Preparing secure payment... RESERVED | INITIATED
 5. LLD Gaurav
 6. SQL
 7. DSA
+
+
+ROLE____
 
 GET /products/search?
 q=candle
@@ -58,3 +63,11 @@ q=candle
 
 
 8080 - api gateway 
+8081 - product - 5431
+8082 - cart - 5433
+8083 - profile - 5434 --
+8084 - order - 5435
+8085 - offer - 5436
+8086 - payment - 5437
+8087 - search - 9200
+8088 - auth - 5438

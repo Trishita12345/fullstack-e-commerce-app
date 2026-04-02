@@ -3,10 +3,10 @@ import { en } from "@/constants/en";
 import { PLPResponseDTO, ProductDetailsDTO, ProductItem, ProductsListingProps } from "@/constants/types";
 import { Box, Group, Stack, Text, Title } from "@mantine/core";
 import SeeAllProductsBtn from "./SeeAllProductsBtn";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 
 async function getPLPData() {
-  return await apiFetch<PLPResponseDTO>(
+  return await serverApiFetch<PLPResponseDTO>(
     `/search-service/public/search?size=8&inStock=true&sortBy=trending&dir=desc`,
     {
       cache: "force-cache",

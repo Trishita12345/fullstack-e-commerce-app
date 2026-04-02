@@ -13,5 +13,5 @@ import lombok.Setter;
 @Builder
 public class UserResponse {
     private User user;
-    private boolean firstTimeLogin;
+    private Boolean firstTimeLogin;
 }

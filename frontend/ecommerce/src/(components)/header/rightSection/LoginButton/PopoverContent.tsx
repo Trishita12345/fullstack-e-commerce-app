@@ -1,21 +1,19 @@
 "use client";
 import { en } from "@/constants/en";
-import { PopoverContentItemProps } from "@/constants/types";
+import { PopoverContentItemProps, User } from "@/constants/types";
 import {
   faGear,
   faClockRotateLeft,
   faHouse,
-  faArrowLeft,
-  faWarehouse,
 } from "@fortawesome/free-solid-svg-icons";
 import { Box, Button, Text } from "@mantine/core";
 import PopoverContentItems from "./PopoverContentItems";
 import { redirect, usePathname } from "next/navigation";
-import { User } from "@/lib/auth";
 import { useCartActions } from "@/utils/store/cart";
-import { useAuthActions } from "@/utils/store/session";
 import { useAddressActions } from "@/utils/store/address";
-import { authClient } from "@/lib/auth-client";
+import { logout } from "@/app/login/actions";
+import { apiFetch } from "@/lib/apiFetch";
+import { useRouter } from "next/navigation";
 
 const PopoverItems: PopoverContentItemProps[] = [
   {
@@ -35,17 +33,22 @@ const PopoverItems: PopoverContentItemProps[] = [
   },
 ];
 const PopoverContent = ({ user }: { user: User }) => {
-  const pathname = usePathname();
+  const router = useRouter();
   const { clearCartData } = useCartActions();
-  const { setSession } = useAuthActions();
   const { clearAddressData } = useAddressActions();
+
   const handleLogout = async () => {
-    await authClient.signOut();
-    setSession(null);
-    clearCartData();
-    clearAddressData();
-    redirect("/");
+    console.log("Logging out...");
+    try {
+      await apiFetch(`/auth-service/public/logout`);
+      clearCartData();
+      clearAddressData();
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
+
   return (
     <Box>
       <Text
@@ -54,7 +57,7 @@ const PopoverContent = ({ user }: { user: User }) => {
         fw={600}
         mb={12}
         mt={4}
-      >{`${en.hi}, ${user.name}!`}</Text>
+      >{`${en.hi}, ${user.fullName || 'User'}!`}</Text>
       {PopoverItems.map((item: PopoverContentItemProps) => (
         <PopoverContentItems
           href={item.href}
@@ -63,7 +66,7 @@ const PopoverContent = ({ user }: { user: User }) => {
           key={item.label}
         />
       ))}
-      {user.role === "ADMIN" && (
+      {/* {user.role === "ADMIN" && (
         <>
           {pathname.includes("/admin") ? (
             <PopoverContentItems
@@ -79,7 +82,7 @@ const PopoverContent = ({ user }: { user: User }) => {
             />
           )}
         </>
-      )}
+      )} */}
       <Button
         c={"white"}
         tt={"uppercase"}

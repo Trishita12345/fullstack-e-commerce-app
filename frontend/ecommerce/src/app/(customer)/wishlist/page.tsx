@@ -1,6 +1,6 @@
 import ResponsiveImage from "@/(components)/responsiveImage";
 import { CartProducts, CartProductsDTO } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { formattedPrice } from "@/utils/helperFunctions";
 import { Box, Button, Card, CardSection, Grid, GridCol, Group, Stack, Text } from "@mantine/core";
 import Link from "next/link";
@@ -10,10 +10,10 @@ import Image from "next/image";
 import { IconPointer } from "@tabler/icons-react";
 
 const WishlistPage = async () => {
-    const wishlistedItems = await apiFetch<string[]>(
+    const wishlistedItems = await serverApiFetch<string[]>(
         "/cart-service/wishlisted"
     )
-    const wishlistedItemDetails = await apiFetch<CartProductsDTO>(
+    const wishlistedItemDetails = await serverApiFetch<CartProductsDTO>(
         "/product-service/public/products/cart-item-details",
         {
             method: "POST",

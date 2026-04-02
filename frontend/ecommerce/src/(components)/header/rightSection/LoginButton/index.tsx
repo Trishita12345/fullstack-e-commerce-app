@@ -11,7 +11,7 @@ import LoginComponent, {
   LoggedOutProps,
 } from "@/(components)/LoginComponent";
 
-const LoggedIn = ({ session }: LoggedInProps) => (
+const LoggedIn = ({ user }: LoggedInProps) => (
   <Popover width={200} position="bottom" withArrow shadow="md">
     <Popover.Target>
       <Button
@@ -28,12 +28,12 @@ const LoggedIn = ({ session }: LoggedInProps) => (
         rightSection={<FontAwesomeIcon icon={faChevronDown} size="sm" />}
       >
         <Text size="xs" fw={600} visibleFrom="xs">
-          {`${en.hi}, ${session.user.name}!`}
+          {`${en.hi}, ${user.fullName || 'User'}!`}
         </Text>
       </Button>
     </Popover.Target>
     <Popover.Dropdown>
-      <PopoverContent user={session.user} />
+      <PopoverContent user={user} />
     </Popover.Dropdown>
   </Popover>
 );

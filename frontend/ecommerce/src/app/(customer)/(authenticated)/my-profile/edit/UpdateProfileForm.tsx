@@ -8,23 +8,20 @@ import {
     Select,
     Grid,
     GridCol,
-    Box,
-    useDrawerStackContext,
     Text,
 } from "@mantine/core";
-import type { FullUser, Gender } from "@/constants/types";
-import { useForm, isNotEmpty } from "@mantine/form";
+import type { User, Gender } from "@/constants/types";
+import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { notify } from "@/utils/helperFunctions";
-import { getUser, updateUser } from "../actions";
+import { updateUser } from "../actions";
 import { useDisclosure } from "@mantine/hooks";
 import UploadDropzone from "@/(components)/UploadDropzone";
 import { DateInput } from "@mantine/dates";
-import { apiFetch } from "@/lib/apiFetch";
 
 
-const UpdateProfileForm = ({ userInfodata }: { userInfodata: FullUser }) => {
+const UpdateProfileForm = ({ userInfodata }: { userInfodata: User }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
     const [visible, { open, close }] = useDisclosure(false);
@@ -38,7 +35,7 @@ const UpdateProfileForm = ({ userInfodata }: { userInfodata: FullUser }) => {
             phoneNumberVerified: false,
             emailId: '',
             emailIdVerified: false,
-            fullname: 'a',
+            fullName: 'a',
             profileImg: '',
             gender: 'MALE' as Gender,
             dob: '',
@@ -47,7 +44,7 @@ const UpdateProfileForm = ({ userInfodata }: { userInfodata: FullUser }) => {
         },
     });
 
-    const handleSubmit = async (values: FullUser) => {
+    const handleSubmit = async (values: User) => {
         try {
             console.log('values: ', values)
             setLoading(true);
@@ -58,7 +55,7 @@ const UpdateProfileForm = ({ userInfodata }: { userInfodata: FullUser }) => {
                 message: "Profile details updated successfully."
             });
             router.push(`/my-profile`);
-        } catch(e) {
+        } catch (e) {
             console.log(e);
             notify({
                 variant: "error",
@@ -75,9 +72,9 @@ const UpdateProfileForm = ({ userInfodata }: { userInfodata: FullUser }) => {
                 <Grid>
                     <GridCol span={12}>
                         <TextInput
-                            {...form.getInputProps("fullname")}
+                            {...form.getInputProps("fullName")}
                             label="Full Name"
-                            key={form.key("fullname")}
+                            key={form.key("fullName")}
                             disabled
                         />
                     </GridCol>

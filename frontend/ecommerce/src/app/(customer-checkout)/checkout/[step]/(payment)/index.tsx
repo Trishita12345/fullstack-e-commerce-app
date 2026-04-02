@@ -1,11 +1,12 @@
 import { Box, Grid, GridCol, Stack, Text } from "@mantine/core";
 import PriceDetailsBox from "../(cart)/PriceDetailsBox";
-import { useSession } from "@/utils/store/session";
+
 import { unauthorized } from "next/navigation";
 import { CartProductsDTO } from "@/constants/types";
 import { useViewportSize } from "@mantine/hooks";
 import PaymentOptionsSection from "./PaymentOptionsSection";
 import LoadingPayment from "./LoadingPayment";
+import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 
 const Payment = ({
   showLoading,
@@ -16,8 +17,7 @@ const Payment = ({
   stopLoading: () => void;
   cartProducts: CartProductsDTO;
 }) => {
-  const session = useSession();
-  const isLoggedIn = Boolean(session?.session?.userId);
+  const { isLoggedIn } = useCurrentUser();
   if (!isLoggedIn) unauthorized();
   const { width } = useViewportSize();
   return (
@@ -28,9 +28,8 @@ const Payment = ({
             pr={{ base: 0, lg: 24 }}
             span={{ base: 12, lg: 8 }}
             style={{
-              borderRight: `${
-                width < 1200 ? 0 : 1
-              }px solid var(--mantine-color-gray-1)`,
+              borderRight: `${width < 1200 ? 0 : 1
+                }px solid var(--mantine-color-gray-1)`,
             }}
           >
             <PaymentOptionsSection

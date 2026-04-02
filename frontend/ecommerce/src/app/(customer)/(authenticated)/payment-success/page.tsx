@@ -1,6 +1,6 @@
 import { PriceDetailsBoxHelper } from "@/app/(customer-checkout)/checkout/[step]/(cart)/PriceDetailsBoxHelper";
 import { OrderDetailsDTO } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { formattedPrice } from "@/utils/helperFunctions";
 import {
   Box,
@@ -34,7 +34,7 @@ interface PageProps {
 
 async function PaymentSuccess({ searchParams }: PageProps) {
   const { orderId } = await searchParams;
-  const orderDetails = await apiFetch<OrderDetailsDTO>(
+  const orderDetails = await serverApiFetch<OrderDetailsDTO>(
     `/order-service/order-details/${orderId}`,
   );
 

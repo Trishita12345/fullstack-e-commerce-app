@@ -1,15 +1,16 @@
 'use client'
-import { useSession } from "@/utils/store/session";
+
+import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Unauthorized() {
     const router = useRouter();
-    const session = useSession();
+    const { isLoggedIn } = useCurrentUser();
 
     useEffect(() => {
-        if (!session?.user) router.push(`/login?redirectUrl=${encodeURIComponent(window.location.href)}`);
-    }, [session?.user])
+        if (!isLoggedIn) router.push(`/login?redirectUrl=${encodeURIComponent(window.location.href)}`);
+    }, [isLoggedIn])
     return (
         <></>
     )

@@ -1,6 +1,3 @@
-import { cache } from "react";
-import { authClient } from "./auth-client";
-import { getServerToken } from "./get-server-auth";
 import { forbidden, unauthorized } from "next/navigation";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -11,22 +8,34 @@ interface ApiFetchOptions {
   headers?: HeadersInit;
   cache?: RequestCache;
   revalidate?: number;
-  tags?: string[]
+  tags?: string[];
+  _retry?: boolean;
+
+  // ✅ NEW: allow injecting cookies (SSR only)
+  cookie?: string;
 }
 
-export const getToken = cache(async () => {
+async function refreshToken(cookie?: string): Promise<boolean> {
   try {
-    if (typeof window === "undefined") {
-      const res = await getServerToken();
-      return res?.token;
-    } else {
-      const { data } = await authClient.token();
-      return data?.token;
-    }
-  } catch {
-      return undefined;
-    } 
-});
+    const headers: HeadersInit = cookie
+      ? { Cookie: cookie }
+      : {};
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth-service/public/refresh`,
+      {
+        method: "POST",
+        headers,
+        credentials: "include",
+      }
+    );
+
+    return res.ok;
+  } catch (error) {
+    console.error("Refresh token failed:", error);
+    return false;
+  }
+}
 
 export async function apiFetch<T>(
   endpoint: string,
@@ -38,33 +47,95 @@ export async function apiFetch<T>(
     headers,
     cache = "no-store",
     revalidate,
-    tags = []
+    tags = [],
+    _retry = false,
+    cookie,
   } = options;
 
-  const token = await getToken();
-  const header = {
+  const isServer = typeof window === "undefined";
+
+  let finalHeaders: HeadersInit = {
     "Content-Type": "application/json",
     ...headers,
   };
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
-    method,
-    headers: token ? { ...header, Authorization: `Bearer ${token}` } : header,
-    body: body ? JSON.stringify(body) : undefined,
-    cache,
-    ...(revalidate !== undefined && { next: { revalidate, tags } }),
-  });
+  // ✅ Attach cookie only if provided (SSR)
+  if (cookie) {
+    finalHeaders = {
+      ...finalHeaders,
+      Cookie: cookie,
+    };
+  }
+
+  let res: Response;
+
+  try {
+    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+      method,
+      headers: finalHeaders,
+      body: body ? JSON.stringify(body) : undefined,
+      cache,
+      credentials: "include",
+      ...(revalidate !== undefined && { next: { revalidate, tags } }),
+    });
+  } catch (error) {
+    console.error("API Fetch Error:", error);
+
+    if (isServer) {
+      throw new Error("Server failed to reach API");
+    } else {
+      throw error;
+    }
+  }
+
+  // 🔐 HANDLE 401
+  if (res.status === 401 && !_retry) {
+    try {
+      const refreshed = await refreshToken(cookie);
+
+      if (refreshed) {
+        if (isServer) {
+          unauthorized();
+        } else {
+          return apiFetch(endpoint, { ...options, _retry: true });
+        }
+      } else {
+        unauthorized();
+      }
+    } catch (error) {
+      console.error("Retry after refresh failed:", error);
+      unauthorized();
+    }
+  }
+  if (res.status === 403) {
+    forbidden();
+  }
 
   if (!res.ok) {
-    if(res.status === 401) unauthorized()
-    if(res.status === 403) forbidden()
-    const message = await res.text();
-    throw new Error(message || "API request failed");
+    let message = "API request failed";
+
+    try {
+      message = await res.text();
+    } catch (e) {
+      console.error("Failed to read error response:", e);
+    }
+
+    throw new Error(message);
   }
 
   if (res.status === 204) {
     return null as T;
   }
+  const contentType = res.headers.get("content-type");
 
+  try {
+    if (contentType && contentType.includes("application/json")) {
   return res.json();
+} else {
+  return res.text() as T; 
+}
+  } catch (error) {
+    console.error("JSON parsing failed:", error);
+    throw new Error("Invalid JSON response");
+  }
 }

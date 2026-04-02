@@ -17,8 +17,7 @@ import {
   useSelectedCouponCode,
 } from "@/utils/store/cart";
 import { PaymentModeType, PlaceOrderReqDTO } from "@/constants/types";
-import { redirect, useRouter } from "next/navigation";
-import { set } from "better-auth";
+import { useRouter } from "next/navigation";
 import { useSelectedAddressId } from "@/utils/store/address";
 interface ModeCardProps {
   mode: PaymentModeType;

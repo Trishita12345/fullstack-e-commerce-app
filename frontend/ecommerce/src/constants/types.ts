@@ -433,19 +433,35 @@ export interface saveUserDTO {
     image :String;
 }
 
-export interface FullUser {
+export interface User {
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   id: string;
   userId: string;
   phoneNumber: string;
-  phoneNumberVerified: boolean;
-  emailId: string;
-  emailIdVerified: boolean;
-  fullname: string;
-  profileImg: string;
-  gender: Gender;
-  dob: string; // ISO date string
+  emailId?: string;
+  fullName: string;
+  gender?: Gender;
+  dob?: string; // ISO date string
 }
 
+export interface generateOTPRequest {
+    phone: string;
+}
+export interface OtpVerifyRequest {
+    phone: string;
+    otp: string;
+    deviceId: string;
+}
+export interface VerifyOtpResponse {
+  firstTimeLogin: boolean;
+  role: string; 
+  permissions: string[];
+}
+ 
+export interface rolePermissionResponse {
+  role: string; 
+  permissions: string[];
+}
+ 
 export type Gender = "MALE" | "FEMALE" | "OTHER";

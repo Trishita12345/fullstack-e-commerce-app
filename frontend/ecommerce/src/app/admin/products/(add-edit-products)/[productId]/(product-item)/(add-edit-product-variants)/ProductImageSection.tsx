@@ -1,7 +1,8 @@
 "use client";
 
 import { CustomInputProps } from "@/(components)/CustomRichTextEditor";
-import { notify, uploadToS3 } from "@/utils/helperFunctions";
+import { notify } from "@/utils/helperFunctions";
+import { uploadToS3 } from "@/utils/s3Actions";
 import {
   Box,
   Text,

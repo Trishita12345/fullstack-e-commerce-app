@@ -5,7 +5,7 @@ import type {
   ProductsListingPageProps,
   SelectOptionType,
 } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { IconArrowNarrowLeft, IconEdit, IconPlus } from "@tabler/icons-react";
 import { ActionButton } from "@/(components)/ActionButton";
 
@@ -33,14 +33,14 @@ export default async function Products({ searchParams }: PageProps) {
 
   const page = Number(pageParam ?? 1) - 1;
 
-  const products = await apiFetch<Page<ProductsListingPageProps>>(
+  const products = await serverApiFetch<Page<ProductsListingPageProps>>(
     `/product-service/product/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
     {
       cache: "force-cache",
       revalidate: 60,
     }
   );
-  const categoriesForFilter = await apiFetch<SelectOptionType[]>(
+  const categoriesForFilter = await serverApiFetch<SelectOptionType[]>(
     "/product-service/category/get-leaf-categories"
   );
   const sortableFields: SortableField[] = [

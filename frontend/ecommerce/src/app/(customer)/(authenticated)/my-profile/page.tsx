@@ -1,9 +1,7 @@
-import { getServerSession, getServerToken } from "@/lib/get-server-auth";
 import { Avatar, Box, Button, Center, Divider, Grid, GridCol, Group, Stack, Text } from "@mantine/core";
-import "./profile.css"
-import { ViewToken } from "./ViewToken";
-import { getUser, getUserCached } from "./actions";
+import "./profile.css";
 import Link from "next/link";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 
 const Row = ({ label, value }: { label: string; value: string }) => (
   <Box>
@@ -32,10 +30,8 @@ const Row = ({ label, value }: { label: string; value: string }) => (
 
 
 const MyProfilePage = async () => {
-  const session = await getServerSession();
-  const user = await getUserCached();
-  const { phoneNumber, emailId, fullname, profileImg, gender, dob } = user;
-  const { token } = await getServerToken();
+  const user = await getCurrentUser();
+  const { phoneNumber, emailId, fullName, gender, dob } = user;
 
   const formattedDate = (input: string) => {
     return input === '' ? '' : new Date(input).toLocaleDateString("en-US", {
@@ -47,17 +43,10 @@ const MyProfilePage = async () => {
 
   return (
     <Stack maw={640} mx={"auto"} mt={16} gap={16} lts={1} px={16}>
-      <Group>
-        <Text fw={600} style={{ fontFamily: "var(--font-poppins)" }}>Profile Details</Text>
-        {session?.user.role === 'ADMIN' && <ViewToken token={token} />}
-      </Group>
+      <Text fw={600} style={{ fontFamily: "var(--font-poppins)" }}>Profile Details</Text>
       <Divider />
-      <Center mx={"auto"} mb={16}>
-        <Avatar src={profileImg || ''} alt="it's me" h={120} w={120} radius={"lg"} />
-        {/* <IconPencil className="editIcon" color="white" cursor={'pointer'} /> */}
-      </Center>
-      <Row label="Full Name" value={fullname} />
-      <Row label="Email Id" value={emailId} />
+      <Row label="Full Name" value={fullName} />
+      <Row label="Email Id" value={emailId || '-not added-'} />
       <Row label="PhoneNumber" value={phoneNumber || '-not added-'} />
       <Row label="Gender" value={gender || '-not added-'} />
       <Row label="Date of Birth" value={dob ? formattedDate(dob) : '-not added-'} />

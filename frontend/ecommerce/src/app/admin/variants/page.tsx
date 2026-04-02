@@ -5,7 +5,7 @@ import type {
   SelectOptionType,
   VariantListType,
 } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { Group } from "@mantine/core";
 import { IconEdit, IconPlus } from "@tabler/icons-react";
 import { ActionButton } from "@/(components)/ActionButton";
@@ -34,7 +34,7 @@ export default async function Variants({ searchParams }: PageProps) {
 
   const page = Number(pageParam ?? 1) - 1;
 
-  const variants = await apiFetch<Page<VariantListType>>(
+  const variants = await serverApiFetch<Page<VariantListType>>(
     `/product-service/variant/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
     {
       cache: "force-cache",
@@ -42,7 +42,7 @@ export default async function Variants({ searchParams }: PageProps) {
     }
   );
 
-  const categoriesForFilter = await apiFetch<SelectOptionType[]>(
+  const categoriesForFilter = await serverApiFetch<SelectOptionType[]>(
     "/product-service/category/get-all-categories"
   );
   const sortableFields: SortableField[] = [

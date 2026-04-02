@@ -6,6 +6,7 @@ import com.e_commerce.authService.model.RefreshToken;
 import com.e_commerce.authService.model.User;
 import com.e_commerce.authService.model.dto.TokenResponse;
 import com.e_commerce.authService.model.dto.UserResponse;
+import com.e_commerce.authService.model.dto.VerifyOtpResponseWithToken;
 import com.e_commerce.authService.service.IAuthApplicationService;
 import com.e_commerce.authService.service.IJwtService;
 import com.e_commerce.authService.service.IOtpService;
@@ -28,7 +29,7 @@ public class AuthApplicationService implements IAuthApplicationService {
         System.out.println("OTP for " + phone + ": " + otp);
     }
 
-    public TokenResponse verifyOtp(String phone, String otp, String deviceId) {
+    public VerifyOtpResponseWithToken verifyOtp(String phone, String otp, String deviceId) {
         if (otp == null) {
             throw new RuntimeException("OTP must be provided");
         }
@@ -41,7 +42,9 @@ public class AuthApplicationService implements IAuthApplicationService {
         String accessToken = jwtService.generateAccessToken(user.getUser());
         String refreshToken = jwtService.generateRefreshToken(user.getUser().getUserId(), deviceId);
 
-        return new TokenResponse(accessToken, refreshToken, user.isFirstTimeLogin());
+        return new VerifyOtpResponseWithToken(accessToken, refreshToken, user.getFirstTimeLogin(),
+                user.getUser().getRole().getRoleName(),
+                user.getUser().getRole().getPermissions().stream().map(p -> p.getPermissionName()).toList());
     }
 
     @Override
@@ -54,7 +57,7 @@ public class AuthApplicationService implements IAuthApplicationService {
         String newAccessToken = jwtService.generateAccessToken(user);
         String newRefreshToken = jwtService.generateRefreshToken(user.getUserId(), token.getDeviceId());
 
-        return new TokenResponse(newAccessToken, newRefreshToken, false);
+        return new TokenResponse(newAccessToken, newRefreshToken);
     }
 
     @Override

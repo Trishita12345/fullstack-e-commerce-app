@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>cartService</name>
 	<description>Cart Service project for Spring Boot</description>
-	<url/>
+	<url/> 
 	<licenses>
 		<license/>
 	</licenses>

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.e_commerce</groupId>
 	<artifactId>profileService</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version> 
 	<name>profileService</name>
 	<description>Profile Service Project for Spring Boot</description>
 	<url/>

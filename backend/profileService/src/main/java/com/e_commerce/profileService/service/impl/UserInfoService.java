@@ -1,11 +1,11 @@
 package com.e_commerce.profileService.service.impl;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.profileService.model.UserInfo;
-import com.e_commerce.profileService.model.dto.BetterAuthUser;
 import com.e_commerce.profileService.repository.IUserInfoRepository;
 import com.e_commerce.profileService.service.IUserInfoService;
 
@@ -25,17 +25,15 @@ public class UserInfoService implements IUserInfoService {
 
     @Override
     @Transactional
-    public void saveUserDetails(String userId, BetterAuthUser user) {
+    public void saveUserDetails(String userId, String phoneNumber) {
         Optional<UserInfo> userInfo = userInfoRepository.getByUserId(userId);
         if (userInfo.isPresent()) {
             return;
         }
         UserInfo newUserInfo = UserInfo.builder()
-                .userId(user.getId())
-                .fullname(user.getName())
-                .emailId(user.getEmail())
-                .emailIdVerified(user.isEmailVerified())
-                .profileImg(user.getImage())
+                .userId(userId)
+                .fullName("")
+                .phoneNumber(phoneNumber)
                 .build();
 
         userInfoRepository.save(newUserInfo);

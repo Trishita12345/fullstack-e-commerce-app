@@ -8,11 +8,6 @@ function ProfileViewSkeleton() {
       <Skeleton height={28} width={200} />
       <Divider />
 
-      {/* Profile Image */}
-      <Group justify="center">
-        <Skeleton height={140} width={140} radius="xl" />
-      </Group>
-
       {/* Details Section */}
       <Stack gap="md" mt="md">
 

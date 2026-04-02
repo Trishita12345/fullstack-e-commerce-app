@@ -60,3 +60,7 @@ gateway:
   base-url: https://api.loomandlume.shop/api/auth-service
   api-description: Swagger UI Documentation for auth Service
 
+feign:
+  client:
+    profile-service:
+      url: http://localhost:8083

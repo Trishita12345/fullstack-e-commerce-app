@@ -9,7 +9,7 @@ import {
   SelectOptionType,
   VariantAttribute,
 } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { formattedPrice } from "@/utils/helperFunctions";
 import { Badge, Group, Text } from "@mantine/core";
 import { IconPlus, IconEdit } from "@tabler/icons-react";
@@ -56,14 +56,14 @@ const ProductVariantsListing = async ({
       type: "date",
     },
   ] as SortableField[];
-  const products = await apiFetch<Page<ProductItemListing>>(
+  const products = await serverApiFetch<Page<ProductItemListing>>(
     `/product-service/productItem/${productId}/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
     {
       cache: "force-cache",
       revalidate: 60,
     }
   );
-  const variantAttributes = await apiFetch<VariantAttribute[]>(
+  const variantAttributes = await serverApiFetch<VariantAttribute[]>(
     `/product-service/productItem/${productId}/variant-attributes`
   );
 
@@ -130,18 +130,18 @@ const ProductVariantsListing = async ({
           <Group gap={4} key={item.attributes.join("-")}>
             {item.attributes.length > 0
               ? item.attributes.map((i: string) => (
-                  <Badge
-                    key={i + item.productItemId}
-                    variant="gradient"
-                    gradient={{
-                      from: "primaryDark.6",
-                      to: "primary.3",
-                      deg: 150,
-                    }}
-                  >
-                    {i}
-                  </Badge>
-                ))
+                <Badge
+                  key={i + item.productItemId}
+                  variant="gradient"
+                  gradient={{
+                    from: "primaryDark.6",
+                    to: "primary.3",
+                    deg: 150,
+                  }}
+                >
+                  {i}
+                </Badge>
+              ))
               : "-"}
           </Group>,
           <Group key={item.productItemId} gap={4}>

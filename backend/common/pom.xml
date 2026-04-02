@@ -19,7 +19,7 @@
     <packaging>jar</packaging>
 	<dependencyManagement>
         <dependencies>
-            <dependency>
+        <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>2025.1.0</version>

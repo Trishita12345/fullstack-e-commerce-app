@@ -1,10 +1,10 @@
 "use server";
 
 import { PlaceOrderReqDTO } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 
 export async function placeOrder(body: PlaceOrderReqDTO) {
-  const orderId = await apiFetch<string>(`/order-service/place-order`, {
+  const orderId = await serverApiFetch<string>(`/order-service/place-order`, {
     method: "POST",
     body,
   });

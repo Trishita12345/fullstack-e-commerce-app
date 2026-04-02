@@ -1,7 +1,6 @@
 import { PriceRow } from "@/app/(customer-checkout)/checkout/[step]/(cart)/PriceDetailsBoxHelper";
 import { OrderDetailsDTO } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
-import { SHIPPING_CHARGE } from "@/utils/constants";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import {
   capitalizeString,
   decodeSkuToken,
@@ -39,7 +38,7 @@ interface PageProps {
 
 export default async function OrderDetails({ params }: PageProps) {
   const { orderId, orderItemId } = await params;
-  const orderDetails = await apiFetch<OrderDetailsDTO>(
+  const orderDetails = await serverApiFetch<OrderDetailsDTO>(
     `/order-service/order-details/${orderId}`,
   );
   const selectedOrderItemDetails = orderDetails.items.find(

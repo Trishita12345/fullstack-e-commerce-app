@@ -7,11 +7,11 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>4.0.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
+	</parent> 
 	<groupId>com.e_commerce</groupId>
-	<artifactId>orderService</artifactId>
+	<artifactId>orderService</artifactId> 
 	<version>0.0.1-SNAPSHOT</version>
-	<name>orderService</name>
+	<name>orderService</name> 
 	<description>Order Service project for e_commerce app</description>
 	<url/>
 	<licenses>

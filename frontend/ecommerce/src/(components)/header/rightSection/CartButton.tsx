@@ -6,11 +6,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
 import Link from "next/link";
 import { useEffect } from "react";
-import { useSession } from "@/utils/store/session";
 import { getCartItemsAction } from "@/app/(customer-checkout)/checkout/cartActions";
+import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 const CartButton = () => {
-  const session = useSession();
-  const isLoggedIn = Boolean(session?.user);
+  const { isLoggedIn } = useCurrentUser();
   const { setCartItems } = useCartActions();
 
   const selectedCartItems = useCartItems().filter((item) => item.isSelected);
