@@ -27,10 +27,9 @@ const TnC = () => {
 
 const Login = () => {
     const redirecturl = useSearchParams().get("redirectUrl") || "/";
+    const phone = useSearchParams().get("phone") || "";
     const router = useRouter();
-    const { isLoggedIn } = useCurrentUser();
-    const [otp, setOtp] = useState<string>('');
-    const [mobileNo, setMobileNo] = useState<string>('');
+    const { isLoggedIn } = useCurrentUser(); const [mobileNo, setMobileNo] = useState<string>(phone);
     const [mobileError, setMobileError] = useState(false);
     const [termsChecked, setTermsChecked] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -84,13 +83,11 @@ const Login = () => {
                         placeholder="&nbsp;Enter mobile number"
                         value={mobileNo}
                         onChange={(event) => {
-                            if (/^\d*$/.test(event.currentTarget.value) || event.currentTarget.value === "") {
+                            if (/^\d{0,10}$/.test(event.currentTarget.value) || event.currentTarget.value === "") {
                                 setMobileNo(event.currentTarget.value)
                             }
                             if (/^\d{10}$/.test(event.currentTarget.value) || event.currentTarget.value === "") {
                                 setMobileError(false);
-                            } else {
-                                setMobileError(true);
                             }
                         }}
                         withAsterisk
@@ -98,7 +95,6 @@ const Login = () => {
                         max={9999999999}
                         error={mobileError && "Please enter a valid 10-digit mobile number"}
                     />
-                    {/* <PinInput value={otp} onChange={setOtp} type={/^[0-9]*$/} inputType="tel" inputMode="numeric" length={6} /> */}
                     <Box display={'flex'} style={{ alignItems: 'center', gap: 16 }} w={'80%'}>
                         <Checkbox
                             styles={{ input: { cursor: 'pointer' } }}

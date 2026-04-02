@@ -105,7 +105,7 @@ const Login = () => {
                             color="var(--mantine-color-primaryDark-7)"
                             size={18}
                             style={{ cursor: 'pointer', position: 'absolute', bottom: 5 }}
-                            onClick={() => router.push(`/login?redirectUrl=${encodeURIComponent(redirecturl)}`)} />
+                            onClick={() => router.push(`/login?phone=${mobileNo}&redirectUrl=${encodeURIComponent(redirecturl)}`)} />
                     </Box>
                 </Stack>
                 <Stack align="center" gap={24}>
