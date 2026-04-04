@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.model.dto.UserInfoDTO;
 import com.e_commerce.profileService.model.UserInfo;
 import com.e_commerce.profileService.repository.IUserInfoRepository;
 import com.e_commerce.profileService.service.IUserInfoService;
@@ -25,10 +26,10 @@ public class UserInfoService implements IUserInfoService {
 
     @Override
     @Transactional
-    public void saveUserDetails(String userId, String phoneNumber) {
+    public UserInfoDTO saveUserDetails(String userId, String phoneNumber) {
         Optional<UserInfo> userInfo = userInfoRepository.getByUserId(userId);
         if (userInfo.isPresent()) {
-            return;
+            return userToUserInfoMapper(userInfo.get());
         }
         UserInfo newUserInfo = UserInfo.builder()
                 .userId(userId)
@@ -36,7 +37,21 @@ public class UserInfoService implements IUserInfoService {
                 .phoneNumber(phoneNumber)
                 .build();
 
-        userInfoRepository.save(newUserInfo);
+        UserInfo savedUserInfo = userInfoRepository.save(newUserInfo);
+        return userToUserInfoMapper(savedUserInfo);
+    }
+
+    private UserInfoDTO userToUserInfoMapper(UserInfo existUserInfo) {
+        return UserInfoDTO.builder()
+                .id(existUserInfo.getId())
+                .createdAt(existUserInfo.getCreatedAt())
+                .updatedAt(existUserInfo.getUpdatedAt())
+                .fullName(existUserInfo.getFullName())
+                .phoneNumber(existUserInfo.getPhoneNumber())
+                .emailId(existUserInfo.getEmailId())
+                .dob(existUserInfo.getDob())
+                .gender(existUserInfo.getGender())
+                .build();
     }
 
     @Override

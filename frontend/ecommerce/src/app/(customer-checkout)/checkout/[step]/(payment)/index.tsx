@@ -7,6 +7,8 @@ import { useViewportSize } from "@mantine/hooks";
 import PaymentOptionsSection from "./PaymentOptionsSection";
 import LoadingPayment from "./LoadingPayment";
 import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const Payment = ({
   showLoading,
@@ -17,9 +19,12 @@ const Payment = ({
   stopLoading: () => void;
   cartProducts: CartProductsDTO;
 }) => {
-  const { isLoggedIn } = useCurrentUser();
-  if (!isLoggedIn) unauthorized();
+  const { isLoggedIn, loading } = useCurrentUser();
   const { width } = useViewportSize();
+  const router = useRouter();
+  useEffect(() => {
+    if (!isLoggedIn && !loading) router.push(`/login?redirectUrl=${encodeURIComponent(window.location.href)}`);
+  }, [isLoggedIn, loading])
   return (
     <Box w={{ base: "90%", md: "85%", lg: "70%" }} mx="auto">
       {Object.keys(cartProducts).length > 0 ? (

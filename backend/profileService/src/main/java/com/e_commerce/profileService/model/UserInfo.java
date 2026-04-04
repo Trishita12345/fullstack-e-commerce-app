@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.e_commerce.common.model.AuditEntity;
-import com.e_commerce.profileService.model.enums.Gender;
+import com.e_commerce.common.model.enums.Gender;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;

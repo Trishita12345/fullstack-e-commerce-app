@@ -1,4 +1,5 @@
 import { forbidden, unauthorized } from "next/navigation";
+import { refreshToken } from "./refreshToken";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -13,28 +14,6 @@ interface ApiFetchOptions {
 
   // ✅ NEW: allow injecting cookies (SSR only)
   cookie?: string;
-}
-
-async function refreshToken(cookie?: string): Promise<boolean> {
-  try {
-    const headers: HeadersInit = cookie
-      ? { Cookie: cookie }
-      : {};
-
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth-service/public/refresh`,
-      {
-        method: "POST",
-        headers,
-        credentials: "include",
-      }
-    );
-
-    return res.ok;
-  } catch (error) {
-    console.error("Refresh token failed:", error);
-    return false;
-  }
 }
 
 export async function apiFetch<T>(
@@ -91,14 +70,10 @@ export async function apiFetch<T>(
   // 🔐 HANDLE 401
   if (res.status === 401 && !_retry) {
     try {
-      const refreshed = await refreshToken(cookie);
+      const refreshedCookie = await refreshToken(cookie);
 
-      if (refreshed) {
-        if (isServer) {
-          unauthorized();
-        } else {
-          return apiFetch(endpoint, { ...options, _retry: true });
-        }
+      if (refreshedCookie) {
+          return await apiFetch(endpoint, { ...options,cookie: refreshedCookie, _retry: true });
       } else {
         unauthorized();
       }

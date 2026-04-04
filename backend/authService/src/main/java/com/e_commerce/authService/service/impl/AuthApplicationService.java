@@ -13,9 +13,11 @@ import com.e_commerce.authService.service.IOtpService;
 import com.e_commerce.authService.service.IUserService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthApplicationService implements IAuthApplicationService {
 
     private final IOtpService otpService;
@@ -26,7 +28,7 @@ public class AuthApplicationService implements IAuthApplicationService {
         String otp = otpService.generateAndSaveOtp(phone);
 
         // TODO: integrate SMS later
-        System.out.println("OTP for " + phone + ": " + otp);
+        log.info("OTP for {}: {}", phone, otp);
     }
 
     public VerifyOtpResponseWithToken verifyOtp(String phone, String otp, String deviceId) {

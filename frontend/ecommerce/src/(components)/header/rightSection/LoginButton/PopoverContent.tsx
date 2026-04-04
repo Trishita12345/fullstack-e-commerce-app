@@ -5,15 +5,16 @@ import {
   faGear,
   faClockRotateLeft,
   faHouse,
+  faArrowLeft,
+  faWarehouse,
 } from "@fortawesome/free-solid-svg-icons";
 import { Box, Button, Text } from "@mantine/core";
 import PopoverContentItems from "./PopoverContentItems";
-import { redirect, usePathname } from "next/navigation";
 import { useCartActions } from "@/utils/store/cart";
 import { useAddressActions } from "@/utils/store/address";
-import { logout } from "@/app/login/actions";
 import { apiFetch } from "@/lib/apiFetch";
-import { useRouter } from "next/navigation";
+import { useAccess } from "@/utils/store/auth";
+import { usePathname } from "next/navigation";
 
 const PopoverItems: PopoverContentItemProps[] = [
   {
@@ -33,12 +34,11 @@ const PopoverItems: PopoverContentItemProps[] = [
   },
 ];
 const PopoverContent = ({ user }: { user: User }) => {
-  const router = useRouter();
   const { clearCartData } = useCartActions();
   const { clearAddressData } = useAddressActions();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
-    console.log("Logging out...");
     try {
       await apiFetch(`/auth-service/public/logout`);
       clearCartData();
@@ -48,7 +48,7 @@ const PopoverContent = ({ user }: { user: User }) => {
       console.error("Logout failed:", error);
     }
   };
-
+  const access = useAccess();
   return (
     <Box>
       <Text
@@ -66,7 +66,7 @@ const PopoverContent = ({ user }: { user: User }) => {
           key={item.label}
         />
       ))}
-      {/* {user.role === "ADMIN" && (
+      {access?.role === "ADMIN" && (
         <>
           {pathname.includes("/admin") ? (
             <PopoverContentItems
@@ -82,7 +82,7 @@ const PopoverContent = ({ user }: { user: User }) => {
             />
           )}
         </>
-      )} */}
+      )}
       <Button
         c={"white"}
         tt={"uppercase"}

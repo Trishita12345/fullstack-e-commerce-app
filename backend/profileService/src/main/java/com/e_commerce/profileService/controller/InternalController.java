@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.e_commerce.common.model.dto.AddressDTO;
+import com.e_commerce.common.model.dto.UserInfoDTO;
 import com.e_commerce.profileService.service.IAddressService;
 import com.e_commerce.profileService.service.IUserInfoService;
 
@@ -31,10 +32,10 @@ public class InternalController {
     }
 
     @PostMapping("/save-user")
-    public ResponseEntity<Void> saveUser(@RequestHeader("X-User-Id") String userId,
+    public ResponseEntity<UserInfoDTO> saveUser(@RequestHeader("X-User-Id") String userId,
             @RequestParam String phoneNumber,
             @RequestHeader("X-User-Roles") String role) {
-        userInfoService.saveUserDetails(userId, phoneNumber);
-        return ResponseEntity.ok().build();
+        UserInfoDTO userInfoDTO = userInfoService.saveUserDetails(userId, phoneNumber);
+        return ResponseEntity.ok(userInfoDTO);
     }
 }

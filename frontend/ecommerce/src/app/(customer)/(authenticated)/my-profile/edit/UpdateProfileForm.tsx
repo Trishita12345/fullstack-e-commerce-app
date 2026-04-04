@@ -16,15 +16,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { notify } from "@/utils/helperFunctions";
 import { updateUser } from "../actions";
-import { useDisclosure } from "@mantine/hooks";
-import UploadDropzone from "@/(components)/UploadDropzone";
 import { DateInput } from "@mantine/dates";
 
 
 const UpdateProfileForm = ({ userInfodata }: { userInfodata: User }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
-    const [visible, { open, close }] = useDisclosure(false);
 
     const form = useForm({
         mode: "uncontrolled",
@@ -75,7 +72,6 @@ const UpdateProfileForm = ({ userInfodata }: { userInfodata: User }) => {
                             {...form.getInputProps("fullName")}
                             label="Full Name"
                             key={form.key("fullName")}
-                            disabled
                         />
                     </GridCol>
                     <GridCol span={12}>
@@ -83,7 +79,6 @@ const UpdateProfileForm = ({ userInfodata }: { userInfodata: User }) => {
                             {...form.getInputProps("emailId")}
                             label="Email Id"
                             key={form.key("emailId")}
-                            disabled
                         />
                     </GridCol>
                     <GridCol span={12}>
@@ -97,7 +92,8 @@ const UpdateProfileForm = ({ userInfodata }: { userInfodata: User }) => {
                             label={"Phone Number"}
                             key={form.key("phoneNumber")}
                             type="number"
-                            max={9999999999}
+                            disabled
+
                         />
                     </GridCol>
                     <GridCol span={12}>
@@ -117,18 +113,6 @@ const UpdateProfileForm = ({ userInfodata }: { userInfodata: User }) => {
                             {...form.getInputProps("dob")}
                             key={form.key("dob")}
                             maxDate={new Date()}
-                        />
-                    </GridCol>
-                    <GridCol span={{ base: 12 }}>
-                        <UploadDropzone
-                            label="Profile Image"
-                            {...form.getInputProps("profileImg")}
-                            key={form.key("profileImg")}
-                            errors={form.errors}
-                            field="profileImg"
-                            visible={visible}
-                            open={open}
-                            close={close}
                         />
                     </GridCol>
                 </Grid>

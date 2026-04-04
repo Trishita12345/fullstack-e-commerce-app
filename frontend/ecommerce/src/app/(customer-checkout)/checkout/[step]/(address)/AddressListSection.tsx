@@ -111,7 +111,7 @@ export const AddressListSection = ({
           </Button>
         </Group>
 
-        {defaultAddress && otherAddress.length ? (
+        {defaultAddress || otherAddress.length ? (
           <>
             <Text size="10px" c={"dimmed"} fw={600} tt={"uppercase"} lts={0.7}>
               Default address

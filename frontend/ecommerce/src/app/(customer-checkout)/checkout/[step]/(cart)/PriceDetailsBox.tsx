@@ -1,8 +1,6 @@
 "use client";
-import { InfoIcon } from "@/(components)/InfoIcon";
 import { PriceSummaryRequest } from "@/constants/types";
-import { SHIPPING_CHARGE } from "@/utils/constants";
-import { formattedPrice, notify } from "@/utils/helperFunctions";
+import { notify } from "@/utils/helperFunctions";
 import {
   useCartActions,
   useCartItems,
@@ -12,13 +10,14 @@ import {
   useSelectedCouponCode,
   // useTotalPrice,
 } from "@/utils/store/cart";
-import { Box, Divider, Group, Stack, Text } from "@mantine/core";
+import { Box, Stack, Text } from "@mantine/core";
 import { useParams } from "next/navigation";
-import PriceDetailsBoxButton from "./(CartItemCard)/PriceDetailsBoxButton";
 import { StepType } from "@/(components)/CustomerCheckoutHeader";
 import { useEffect, useState } from "react";
 import { LoadingPrice } from "./LoadingCart";
 import { PriceDetailsBoxHelper } from "./PriceDetailsBoxHelper";
+import PriceDetailsBoxButton from "./(CartItemCard)/PriceDetailsBoxButton";
+import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 
 const PriceDetailsBox = () => {
   const cartItems = useCartItems();
@@ -39,7 +38,7 @@ const PriceDetailsBox = () => {
     amountToAvoidShippingFee,
     payableAmount,
   } = priceSummary;
-
+  const { isLoggedIn } = useCurrentUser();
   const getTotalPrice = async () => {
     try {
       setIsLoading(true);
@@ -65,8 +64,9 @@ const PriceDetailsBox = () => {
   };
 
   useEffect(() => {
-    getTotalPrice();
-  }, [cartItems, selectedCouponCode, giftWrap, donationAmt]);
+    if (isLoggedIn)
+      getTotalPrice();
+  }, [cartItems, selectedCouponCode, giftWrap, donationAmt, isLoggedIn]);
 
   const { step } = useParams();
   return (
@@ -76,9 +76,8 @@ const PriceDetailsBox = () => {
       ) : (
         <Stack gap={16} pos={"sticky"} top={16}>
           <Text size="11px" c="black.7" fw={600} lts={0.5}>
-            {`PRICE DETAILS (${selectedCartItems.length} Item${
-              selectedCartItems.length > 1 ? "s" : ""
-            })`}
+            {`PRICE DETAILS (${selectedCartItems.length} Item${selectedCartItems.length > 1 ? "s" : ""
+              })`}
           </Text>
           <PriceDetailsBoxHelper
             itemsTotalMrp={itemsTotalMrp}

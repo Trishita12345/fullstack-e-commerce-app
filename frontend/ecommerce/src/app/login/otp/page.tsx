@@ -1,15 +1,15 @@
 'use client';
-import LogoText from "@/(components)/logo/LogoText";
 import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 
-import { Stack, Title, Button, Text, Box, Grid, GridCol, Center, PinInput, TextInput, Checkbox, Group } from "@mantine/core";
-import Link from "next/link";
+import { Stack, Title, Button, Text, Box, PinInput } from "@mantine/core";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { requestOtp } from "../actions";
 import { notify } from "@/utils/helperFunctions";
 import { apiFetch } from "@/lib/apiFetch";
-import { IconDeviceMobileMessage, IconEdit, IconPencil } from "@tabler/icons-react";
+import { IconDeviceMobileMessage, IconEdit } from "@tabler/icons-react";
+import { VerifyOtpResponse } from "@/constants/types";
+import { useAuthActions } from "@/utils/store/auth";
 
 const Login = () => {
     const redirecturl = useSearchParams().get("redirectUrl") || "/"
@@ -17,11 +17,11 @@ const Login = () => {
     const router = useRouter();
     const { isLoggedIn } = useCurrentUser();
     const [otp, setOtp] = useState<string>('');
-    const [otpError, setOtpError] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const [timer, setTimer] = useState(30);
     const [canResend, setCanResend] = useState(false);
+    const { setAccess } = useAuthActions();
 
     useEffect(() => {
         if (timer > 0) {
@@ -70,10 +70,11 @@ const Login = () => {
                 localStorage.setItem("deviceId", crypto.randomUUID());
                 deviceId = localStorage.getItem("deviceId")!;
             }
-            await apiFetch(`/auth-service/public/verify-otp`, {
+            const { firstTimeLogin, ...access } = await apiFetch<VerifyOtpResponse>(`/auth-service/public/verify-otp`, {
                 method: "POST",
                 body: { phone: mobileNo, otp, deviceId },
             });
+            setAccess(access);
             notify({
                 variant: 'success',
                 title: 'Success!',

@@ -11,7 +11,6 @@ import {
 } from "@mantine/core";
 import { LoadingPrice } from "../(cart)/LoadingCart";
 import { useViewportSize } from "@mantine/hooks";
-import { title } from "process";
 
 const LoadingPayment = () => {
   const { width } = useViewportSize();
@@ -21,9 +20,8 @@ const LoadingPayment = () => {
         pr={{ base: 0, lg: 24 }}
         span={{ base: 12, lg: 8 }}
         style={{
-          borderRight: `${
-            width < 1200 ? 0 : 1
-          }px solid var(--mantine-color-gray-1)`,
+          borderRight: `${width < 1200 ? 0 : 1
+            }px solid var(--mantine-color-gray-1)`,
         }}
       >
         <Stack my={24}>

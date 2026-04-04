@@ -1,7 +1,11 @@
 "use client";
 import { en } from "@/constants/en";
+import { faAddressBook, faIdCard } from "@fortawesome/free-regular-svg-icons";
 import {
   faArrowTrendUp,
+  faCartArrowDown,
+  faCartShopping,
+  faFire,
   faHeart,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
@@ -19,7 +23,7 @@ const defaultActions = (handleClick: (link: string) => void): SpotlightActionDat
       label: 'Explore Trending Items',
       description: 'Check the trending items in our store',
       onClick: () => handleClick("/products?sortBy=trending&dir=desc"),
-      leftSection: <FontAwesomeIcon icon={faArrowTrendUp} size="lg" />,
+      leftSection: <FontAwesomeIcon icon={faFire} size="lg" />,
     },
     {
       id: "newlyAdded",
@@ -39,22 +43,22 @@ const defaultActions = (handleClick: (link: string) => void): SpotlightActionDat
       id: "address",
       label: 'My Address',
       description: 'View my address',
-      onClick: () => handleClick("/address"),
-      leftSection: <FontAwesomeIcon icon={faArrowTrendUp} size="lg" />,
+      onClick: () => handleClick("/saved-addresses"),
+      leftSection: <FontAwesomeIcon icon={faAddressBook} size="lg" />,
     },
     {
       id: "orders",
       label: 'My Orders',
       description: 'View my orders',
       onClick: () => handleClick("/orders"),
-      leftSection: <FontAwesomeIcon icon={faArrowTrendUp} size="lg" />,
+      leftSection: <FontAwesomeIcon icon={faCartArrowDown} size="lg" />,
     },
     {
       id: "profile",
       label: 'My Profile',
       description: 'View and edit your profile',
       onClick: () => handleClick("/my-profile"),
-      leftSection: <FontAwesomeIcon icon={faArrowTrendUp} size="lg" />,
+      leftSection: <FontAwesomeIcon icon={faIdCard} size="lg" />,
     },
     {
       id: "wishlist",
@@ -67,8 +71,8 @@ const defaultActions = (handleClick: (link: string) => void): SpotlightActionDat
       id: "cart",
       label: 'My Cart',
       description: 'View my cart',
-      onClick: () => handleClick("/cart"),
-      leftSection: <FontAwesomeIcon icon={faHeart} size="lg" />,
+      onClick: () => handleClick("/checkout/cart"),
+      leftSection: <FontAwesomeIcon icon={faCartShopping} size="lg" />,
     },
   ])
 };

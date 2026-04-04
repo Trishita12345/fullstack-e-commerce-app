@@ -9,7 +9,6 @@ export async function serverApiFetch<T>(
   options: ApiFetchOptions = {}
 ): Promise<T> {
   const cookieStore = await cookies();
-  console.log("Cookies sent with request:", cookieStore.getAll());
   return apiFetch<T>(endpoint, {
     ...options,
     cookie: cookieStore.toString(),

@@ -42,7 +42,7 @@ const MyProfilePage = async () => {
   };
 
   return (
-    <Stack maw={640} mx={"auto"} mt={16} gap={16} lts={1} px={16}>
+    <Stack maw={640} mx={"auto"} mt={'5vh'} gap={16} lts={1} px={16} >
       <Text fw={600} style={{ fontFamily: "var(--font-poppins)" }}>Profile Details</Text>
       <Divider />
       <Row label="Full Name" value={fullName} />
@@ -55,7 +55,7 @@ const MyProfilePage = async () => {
           Edit Profile
         </Button>
       </Link>
-    </Stack>
+    </Stack >
   );
 };
 

@@ -19,12 +19,12 @@ const LoginComponent = ({
   LoggedInComponent: any;
   NotLoggedInComponent: any;
 }) => {
-  const { user } = useCurrentUser();
+  const { user, isLoggedIn } = useCurrentUser();
   const router = useRouter();
 
   return (
     <>
-      {user ? (
+      {isLoggedIn ? (
         <LoggedInComponent user={user} />
       ) : (
         <NotLoggedInComponent redirectToLogin={() => router.push(`/login?redirectUrl=${encodeURIComponent(window.location.href)}`)} />

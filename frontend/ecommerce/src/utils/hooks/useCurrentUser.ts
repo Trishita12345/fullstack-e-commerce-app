@@ -6,18 +6,19 @@ import { useEffect, useState } from "react";
 
 export function useCurrentUser() {
   const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
-    
-    const fetchUser = async () => {
-        try {
-            const data = await getCurrentUser();
-            setUser(data);
-        } catch (error) {
-            setUser(null);
-        } finally {
-            setLoading(false);
-        }
+  const [loading, setLoading] = useState(true);
+
+  const fetchUser = async () => {
+    try {
+      console.log("Fetching current user from client...");
+      const data = await getCurrentUser();
+      setUser(data);
+    } catch (error) {
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
+  }
 
   useEffect(() => {
     fetchUser();

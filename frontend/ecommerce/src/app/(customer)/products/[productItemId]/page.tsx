@@ -1,5 +1,3 @@
-export const dynamic = "force-static";
-
 export const revalidate = 3600;
 
 import Breadcrumb from "@/(components)/Breadcrumb";
@@ -15,7 +13,6 @@ import ReviewSection from "./(components)/(review)/ReviewSection";
 import { reviewData } from "./(components)/(dummyData)/productReviewData";
 import { en } from "@/constants/en";
 import { ProductDetailsDTO } from "@/constants/types";
-import { serverApiFetch } from "@/lib/serverApiFetch";
 import { apiFetch } from "@/lib/apiFetch";
 
 interface PageProps {
@@ -26,10 +23,10 @@ interface PageProps {
 export async function generateStaticParams() {
   const productItemIds = await apiFetch<{ productItemId: string }[]>(
     "/product-service/public/products/list-productItemId",
-    {
-      cache: "force-cache",
-      revalidate: 3600,
-    },
+    // {
+    //   cache: "force-cache",
+    //   revalidate: 3600,
+    // },
   );
   return productItemIds;
 }

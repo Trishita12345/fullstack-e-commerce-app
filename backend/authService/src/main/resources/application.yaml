@@ -64,3 +64,9 @@ feign:
   client:
     profile-service:
       url: http://localhost:8083
+
+app:
+  otp:
+    whitelist-enabled: ${WHITELIST_ENABLED:false}
+    whitelist-phones: ${WHITELIST_PHONES:}
+    whitelist-otp: ${WHITELIST_OTP:}

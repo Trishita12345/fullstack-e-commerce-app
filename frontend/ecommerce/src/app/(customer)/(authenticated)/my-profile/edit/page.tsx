@@ -11,7 +11,7 @@ import { Suspense } from "react";
 import ProfileFormSkeleton from "./loading";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 
-function UpdateProfile() {
+const UpdateProfile = () => {
     return (
         <Suspense fallback={<ProfileFormSkeleton />}>
             <EditContent />

@@ -27,14 +27,17 @@ const Login = () => {
     const redirecturl = useSearchParams().get("redirectUrl") || "/";
     const phone = useSearchParams().get("phone") || "";
     const router = useRouter();
-    const { isLoggedIn } = useCurrentUser(); const [mobileNo, setMobileNo] = useState<string>(phone);
+    const { isLoggedIn, loading: loadingUser } = useCurrentUser();
+    const [mobileNo, setMobileNo] = useState<string>(phone);
     const [mobileError, setMobileError] = useState(false);
     const [termsChecked, setTermsChecked] = useState(false);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (isLoggedIn) router.push(redirecturl.split(window.location.hostname)[1])
-    }, [isLoggedIn])
+        if (isLoggedIn && !loadingUser) router.push(redirecturl.split(window.location.hostname)[1])
+    }, [isLoggedIn, loadingUser])
+
+    console.log("isLoggedIn", isLoggedIn)
 
     const handleMobileScreenClick = async () => {
         if (mobileNo.length < 10) {
@@ -58,7 +61,7 @@ const Login = () => {
     }
 
     return (
-        <Box maw={500} mx={"auto"} mt={'30vh'} px={16}>
+        <Box maw={500} mx={"auto"} mt={'20vh'} px={16}>
             <Stack gap={32}  >
                 <Stack w={"100%"} ta="center" gap={12}>
                     <Title order={2}>Hello there!</Title>

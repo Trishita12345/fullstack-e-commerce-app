@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import com.e_commerce.authService.client.IProfileClient;
 import com.e_commerce.authService.model.User;
@@ -40,7 +39,8 @@ public class UserService implements IUserService {
                                                 .orElseThrow(() -> new RuntimeException("Default role not found")))
                                 .build();
                 User savedUser = userRepository.save(user);
-                profileClient.saveUser(savedUser.getUserId().toString(), phone, savedUser.getRole().getRoleName());
+                profileClient.saveUser(savedUser.getUserId().toString(), phone,
+                                savedUser.getRole().getRoleName());
                 return UserResponse.builder()
                                 .user(savedUser)
                                 .firstTimeLogin(true)

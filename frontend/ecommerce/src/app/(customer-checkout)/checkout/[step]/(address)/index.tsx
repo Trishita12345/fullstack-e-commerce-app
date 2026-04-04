@@ -23,20 +23,20 @@ const Address = ({
   isLoading: boolean;
 }) => {
   const { isLoggedIn } = useCurrentUser();
-  if (!isLoggedIn) unauthorized();
   const [addressLoading, setAddressLoading] = useState<boolean>(false);
   const addresses = useAllAddresses();
   const { getAllAddresses } = useAddressActions();
 
   const { width } = useViewportSize();
-
+  const fetchAddress = async () => {
+    setAddressLoading(true);
+    await getAllAddresses();
+    setAddressLoading(false);
+  }
   useEffect(() => {
-    (async () => {
-      setAddressLoading(true);
-      await getAllAddresses();
-      setAddressLoading(false);
-    })();
-  }, []);
+    if (isLoggedIn)
+      fetchAddress();
+  }, [isLoggedIn]);
 
   return (
     <Box w={{ base: "90%", md: "85%", lg: "70%" }} mx="auto">

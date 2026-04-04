@@ -1,4 +1,4 @@
-package com.e_commerce.profileService.model.enums;
+package com.e_commerce.common.model.enums;
 
 public enum Gender {
     MALE,

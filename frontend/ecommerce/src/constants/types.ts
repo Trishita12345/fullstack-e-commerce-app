@@ -453,10 +453,8 @@ export interface OtpVerifyRequest {
     otp: string;
     deviceId: string;
 }
-export interface VerifyOtpResponse {
+export interface VerifyOtpResponse extends rolePermissionResponse {
   firstTimeLogin: boolean;
-  role: string; 
-  permissions: string[];
 }
  
 export interface rolePermissionResponse {

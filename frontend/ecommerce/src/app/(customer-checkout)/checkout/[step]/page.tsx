@@ -23,7 +23,6 @@ import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 const Checkout = () => {
   const { step } = useParams<{ step: string }>();
   const [visible, { open, close }] = useDisclosure(false);
-  const [cartDataLoaded, setCartDataLoaded] = useState<boolean>(false);
   const { isLoggedIn } = useCurrentUser();
   const { setCartItems } = useCartActions();
   const cartItems = useCartItems();
