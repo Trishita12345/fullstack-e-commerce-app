@@ -4,6 +4,7 @@ import { notify } from "@/utils/helperFunctions";
 import { Text } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { deleteProductVariant } from "./(add-edit-product-variants)/actions";
+import { ErrorResponse } from "@/constants/types";
 
 const DeleteProductItem = ({
   productItemId,
@@ -19,11 +20,11 @@ const DeleteProductItem = ({
         title: "Success!",
         message: "Product Variant has been deleted successfully.",
       });
-    } catch {
+    } catch (err) {
       notify({
         variant: "error",
         title: "Opps!",
-        message: "Failed to delete product variant.",
+        message: (err as Error)?.message || "Failed to delete product variant.",
       });
     }
   };

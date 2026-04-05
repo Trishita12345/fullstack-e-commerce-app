@@ -27,12 +27,18 @@ public class SecurityConfig {
     // @Value("${frontend.url}") // fallback if not set
     private String allowedOrigin = "https://loomandlume.shop";
 
+    private final CookieToHeaderFilter cookieToHeaderFilter;
+
+    public SecurityConfig(CookieToHeaderFilter cookieToHeaderFilter) {
+        this.cookieToHeaderFilter = cookieToHeaderFilter;
+    }
+
     @Bean(name = "security")
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
                 .cors(cors -> Customizer.withDefaults()) // ✅ ENABLE CORS
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .addFilterBefore(new CookieToHeaderFilter(), SecurityWebFiltersOrder.AUTHENTICATION)
+                .addFilterBefore(cookieToHeaderFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(
                                 "/.well-known/**",

@@ -1,4 +1,4 @@
-import { AddressDTO } from "@/constants/types";
+import { AddressDTO, ErrorResponse } from "@/constants/types";
 import { Stack, Group, Button, Text, Modal } from "@mantine/core";
 import AddressCard from "./AddressCard";
 import { IconMapOff } from "@tabler/icons-react";
@@ -41,11 +41,11 @@ export const AddressListSection = ({
         message: "Address added succesfully!",
       });
       handleModalClose();
-    } catch {
+    } catch (err) {
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to add address!",
+        message: (err as Error).message || "Failed to add address!",
       });
     } finally {
       stopLoading();
@@ -64,11 +64,11 @@ export const AddressListSection = ({
         message: "Address updated succesfully!",
       });
       handleModalClose();
-    } catch {
+    } catch (err) {
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to update address!",
+        message: (err as Error)?.message || "Failed to update address!",
       });
     } finally {
       stopLoading();

@@ -4,8 +4,10 @@ import java.util.Optional;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.common.model.event.PaymentStatusEvent;
 import com.e_commerce.paymentService.kafka.PaymentEventProducer;
 import com.e_commerce.paymentService.model.Payment;
@@ -81,7 +83,7 @@ public class RazorpayWebhookService implements IWebhookService {
         try {
             Utils.verifyWebhookSignature(payload, signature, webhookSecret);
         } catch (Exception e) {
-            throw new RuntimeException("Invalid webhook signature", e);
+            throw new BaseException("Invalid webhook signature", HttpStatus.BAD_REQUEST, "INVALID_WEBHOOK_SIGNATURE");
         }
     }
 

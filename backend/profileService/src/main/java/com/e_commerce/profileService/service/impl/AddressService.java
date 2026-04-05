@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.common.model.dto.AddressDTO;
 import com.e_commerce.profileService.model.Address;
 import com.e_commerce.profileService.repository.IAddressRepository;
@@ -51,7 +53,8 @@ public class AddressService implements IAddressService {
         Boolean isDefault = addressDTO.getIsDefault();
         if (existingAddress.getIsDefault()) {
             if (!addressDTO.getIsDefault()) {
-                throw new RuntimeException("First mark any other existing Address as default");
+                throw new BaseException("First mark any other existing Address as default", HttpStatus.BAD_REQUEST,
+                        "ADDRESS_DEFAULT_REQUIRED");
             }
         } else {
             if (addressDTO.getIsDefault()) {
@@ -84,7 +87,8 @@ public class AddressService implements IAddressService {
     public void deleteAddress(UUID addressId, String userId) {
         Address address = getAddressByIdInternal(addressId, userId);
         if (address.getIsDefault())
-            throw new RuntimeException("Default address cannot be deleted");
+            throw new BaseException("Default address cannot be deleted", HttpStatus.BAD_REQUEST,
+                    "ADDRESS_DEFAULT_CANNOT_BE_DELETED");
         addressRepository.delete(address);
     }
 

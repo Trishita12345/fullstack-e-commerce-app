@@ -2,8 +2,10 @@ package com.e_commerce.profileService.service.impl;
 
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.common.model.dto.UserInfoDTO;
 import com.e_commerce.common.model.enums.Gender;
 import com.e_commerce.profileService.model.UserInfo;
@@ -21,7 +23,9 @@ public class UserInfoService implements IUserInfoService {
 
     @Override
     public UserInfo getUserDetailsByUserId(String userId) {
-        return userInfoRepository.getByUserId(userId).orElseThrow();
+        return userInfoRepository.getByUserId(userId).orElseThrow(
+                () -> new BaseException("User info not found for userId: " + userId, HttpStatus.NOT_FOUND,
+                        "USER_INFO_NOT_FOUND"));
     }
 
     @Override

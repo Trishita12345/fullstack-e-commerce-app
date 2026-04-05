@@ -1,5 +1,6 @@
 package com.e_commerce.orderService.service.impl;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.orderService.model.dto.pdf.InvoiceData;
 import com.e_commerce.orderService.model.dto.pdf.InvoiceItemData;
 import com.e_commerce.orderService.service.IInvoicePdfGeneratorService;
@@ -16,6 +17,7 @@ import com.itextpdf.layout.properties.UnitValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -122,7 +124,7 @@ public class InvoicePdfGeneratorService implements IInvoicePdfGeneratorService {
 
             document.close();
         } catch (Exception e) {
-            throw new RuntimeException("Error generating PDF", e);
+            throw new BaseException("Error generating PDF", HttpStatus.INTERNAL_SERVER_ERROR, "PDF_GENERATION_ERROR");
         }
 
         return baos.toByteArray();

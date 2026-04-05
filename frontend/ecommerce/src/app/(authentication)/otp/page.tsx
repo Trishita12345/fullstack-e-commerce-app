@@ -8,7 +8,7 @@ import { requestOtp } from "../actions";
 import { notify } from "@/utils/helperFunctions";
 import { apiFetch } from "@/lib/apiFetch";
 import { IconDeviceMobileMessage, IconEdit } from "@tabler/icons-react";
-import { VerifyOtpResponse } from "@/constants/types";
+import { ErrorResponse, VerifyOtpResponse } from "@/constants/types";
 import { useAuthActions } from "@/utils/store/auth";
 
 const Login = () => {
@@ -53,11 +53,11 @@ const Login = () => {
 
             setTimer(30);
             setCanResend(false);
-        } catch {
+        } catch (err) {
             notify({
                 variant: 'error',
                 title: 'Error!',
-                message: 'Failed to resend OTP.',
+                message: (err as Error)?.message || 'Failed to resend OTP.',
             });
         } finally {
             setLoading(false);
@@ -88,11 +88,11 @@ const Login = () => {
             else
                 router.push(redirecturl.split(window.location.hostname)[1])
         }
-        catch {
+        catch (err) {
             notify({
                 variant: 'error',
                 title: 'Error!',
-                message: 'Invalid OTP. Please try again.'
+                message: (err as Error)?.message || 'Invalid OTP. Please try again.'
             })
         }
     }

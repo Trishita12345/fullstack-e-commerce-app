@@ -1,7 +1,7 @@
 "use client"
 import { Button, Text } from "@mantine/core";
 import { addOrUpdateCartAction, removeFromWishListed } from "../products/[productItemId]/(components)/actions";
-import { CartProducts } from "@/constants/types";
+import { CartProducts, ErrorResponse } from "@/constants/types";
 import { useRouter } from "next/navigation";
 import { notify } from "@/utils/helperFunctions";
 import { useState } from "react";
@@ -35,11 +35,11 @@ const MoveToBagButton = ({ isOutOfStock, wishlistedDetails }: { isOutOfStock: bo
                 variant: "success",
                 title: "Success"
             })
-        } catch {
+        } catch (err) {
             notify({
                 message: "Failed to move from wishlisted to Cart",
                 variant: "error",
-                title: "Error"
+                title: (err as Error)?.message || "Error"
             })
         } finally {
             setLoading(false)

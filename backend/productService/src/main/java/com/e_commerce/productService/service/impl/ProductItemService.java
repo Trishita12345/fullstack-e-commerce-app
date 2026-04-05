@@ -1,5 +1,6 @@
 package com.e_commerce.productService.service.impl;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.common.model.dto.CartItemDTO;
 import com.e_commerce.common.model.dto.ProductPriceDTO;
 import com.e_commerce.common.model.dto.ProductPriceDetailsDTO;
@@ -34,6 +35,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -135,8 +137,10 @@ public class ProductItemService implements IProductItemService {
         private ProductItem getProductItem(UUID productItemId) {
                 Optional<ProductItem> existing = productItemRepository.findWithDetails(productItemId);
                 return existing
-                                .orElseThrow(() -> new RuntimeException(
-                                                "Product Item with ID: " + productItemId + " not exist"));
+                                .orElseThrow(() -> new BaseException(
+                                                "Product Item with ID: " + productItemId + " not exist",
+                                                HttpStatus.NOT_FOUND,
+                                                "PRODUCT_ITEM_NOT_FOUND"));
         }
 
         @Override
@@ -395,13 +399,17 @@ public class ProductItemService implements IProductItemService {
                 for (CartItemDTO ci : cartItems) {
                         ProductItemPriceDTO productItem = productItemMap.get(ci.getProductItemId());
                         if (productItem == null) {
-                                throw new RuntimeException(
-                                                "Product not found: " + ci.getProductItemId());
+                                throw new BaseException(
+                                                "Product not found: " + ci.getProductItemId(),
+                                                HttpStatus.NOT_FOUND,
+                                                "PRODUCT_NOT_FOUND");
                         }
 
                         if (inventoryReservationService.getSellableStock(productItem.getId()) < ci.getQuantity()) {
-                                throw new RuntimeException(
-                                                "Insufficient stock for product: " + productItem.getId());
+                                throw new BaseException(
+                                                "Insufficient stock for product: " + productItem.getId(),
+                                                HttpStatus.BAD_REQUEST,
+                                                "INSUFFICIENT_STOCK");
                         }
                         BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());
                         ProductPriceDetailsDTO productPriceDetailsDTO = ProductPriceDetailsDTO

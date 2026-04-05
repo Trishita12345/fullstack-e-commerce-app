@@ -1,6 +1,7 @@
 package com.e_commerce.productService.service.impl;
 
 import com.e_commerce.productService.service.IS3Service;
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.productService.model.Category;
 import com.e_commerce.productService.model.dto.category.CategoryListingResponseDTO;
 import com.e_commerce.productService.model.dto.category.CategoryRequestDTO;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -49,7 +51,7 @@ public class CategoryService implements ICategoryService {
     public CategoryResponseDTO editCategory(UUID id, CategoryRequestDTO categoryRequestDTO) {
         Optional<Category> existingCategory = categoryRepository.findById(id);
         if (existingCategory.isEmpty()) {
-            throw new RuntimeException("category of ID: " + id + " not found");
+            throw new BaseException("category of ID: " + id + " not found", HttpStatus.NOT_FOUND, "CATEGORY_NOT_FOUND");
         }
         Category category = existingCategory.get();
         category.setName(categoryRequestDTO.getName());
@@ -120,7 +122,7 @@ public class CategoryService implements ICategoryService {
 
     public List<SelectOptionDTO<UUID>> getAncestors(UUID categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new BaseException("Category not found", HttpStatus.NOT_FOUND, "CATEGORY_NOT_FOUND"));
 
         List<Category> ancestors = new ArrayList<>();
         ancestors.add(category);
@@ -178,7 +180,8 @@ public class CategoryService implements ICategoryService {
     public Category getCategory(UUID categoryId) {
         Optional<Category> existingCategory = categoryRepository.findById(categoryId);
         return existingCategory
-                .orElseThrow(() -> new RuntimeException("Category with ID: " + categoryId + " not exist"));
+                .orElseThrow(() -> new BaseException("Category with ID: " + categoryId + " not exist",
+                        HttpStatus.NOT_FOUND, "CATEGORY_NOT_FOUND"));
     }
 
     @Override

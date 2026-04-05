@@ -1,4 +1,4 @@
-import { CartItemDbDTO, CartItemDTO } from "@/constants/types";
+import { CartItemDbDTO, CartItemDTO, ErrorResponse } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
 import { useCartActions } from "@/utils/store/cart";
 import { Popover, Group, Text, Badge } from "@mantine/core";
@@ -81,7 +81,7 @@ const Quantity = ({
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to update your cart!",
+        message: (err as Error)?.message || "Failed to update your cart!",
       });
     } finally {
       stopLoading();

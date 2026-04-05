@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.offerService.model.Coupon;
 import com.e_commerce.offerService.model.dto.CouponTypeDTO;
 import com.e_commerce.offerService.repository.ICouponRepository;
@@ -45,7 +47,8 @@ public class CouponService implements ICouponService {
 
                 Coupon coupon = couponRepository
                                 .getActiveCouponByCouponCode(couponCode)
-                                .orElseThrow(() -> new RuntimeException("Coupon does not exist"));
+                                .orElseThrow(() -> new BaseException("Coupon does not exist", HttpStatus.NOT_FOUND,
+                                                "COUPON_NOT_FOUND"));
 
                 if (coupon.getMinPurchaseAmount()
                                 .compareTo(totalProductDiscountedPrice) > 0) {
@@ -53,8 +56,10 @@ public class CouponService implements ICouponService {
                         BigDecimal remainingAmount = coupon.getMinPurchaseAmount()
                                         .subtract(totalProductDiscountedPrice);
 
-                        throw new RuntimeException(
-                                        "Please shop " + remainingAmount + " more to apply the coupon.");
+                        throw new BaseException(
+                                        "Please shop " + remainingAmount + " more to apply the coupon.",
+                                        HttpStatus.BAD_REQUEST,
+                                        "COUPON_MIN_PURCHASE_AMOUNT_NOT_MET");
                 }
 
                 return BigDecimal.valueOf(coupon.getDiscountPercent());

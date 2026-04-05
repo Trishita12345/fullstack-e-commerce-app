@@ -13,8 +13,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.common.model.dto.AddressDTO;
 import com.e_commerce.common.model.dto.CartDTO;
 import com.e_commerce.common.model.dto.CartItemDTO;
@@ -344,7 +346,8 @@ public class OrderService implements IOrderService {
         @Override
         public void updateOrderStatusAndPublish(UUID orderId, OrderStatus status) {
                 Order order = orderRepository.findById(orderId)
-                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                                .orElseThrow(() -> new BaseException("Order not found: " + orderId,
+                                                HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND"));
                 if (order.getOrderStatus() == OrderStatus.CREATED) {
                         order.getOrderItems().forEach(item -> {
                                 if (status == OrderStatus.RESERVED) {
@@ -393,7 +396,8 @@ public class OrderService implements IOrderService {
         @Override
         public OrderStatusResponseDTO getOrderStatus(UUID orderId) {
                 Order order = orderRepository.findById(orderId)
-                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                                .orElseThrow(() -> new BaseException("Order not found: " + orderId,
+                                                HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND"));
                 return OrderStatusResponseDTO.builder()
                                 .orderId(orderId)
                                 .orderStatus(order.getOrderStatus().name())
@@ -408,17 +412,20 @@ public class OrderService implements IOrderService {
         @Override
         public String getGatewayMerchantKey(UUID orderId) {
                 Order order = orderRepository.findById(orderId)
-                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                                .orElseThrow(() -> new BaseException("Order not found: " + orderId,
+                                                HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND"));
                 if (order.getPaymentGateway() != null)
                         return paymentClient.getGatewayMerchantKey(order.getPaymentGateway().name());
                 else
-                        throw new RuntimeException("Payment gateway not set for order: " + orderId);
+                        throw new BaseException("Payment gateway not set for order: " + orderId, HttpStatus.BAD_REQUEST,
+                                        "PAYMENT_GATEWAY_NOT_SET");
         }
 
         @Override
         public void updatePaymentInitiated(PaymentCreatedEvent event) {
                 Order order = orderRepository.findById(event.getOrderId())
-                                .orElseThrow(() -> new RuntimeException("Order not found: " + event.getOrderId()));
+                                .orElseThrow(() -> new BaseException("Order not found: " + event.getOrderId(),
+                                                HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND"));
                 order.setPaymentStatus(PaymentStatus.INITIATED);
                 order.setTransactionId(event.getTransactionId());
                 order.setGatewayOrderId(event.getGatewayOrderId());
@@ -428,7 +435,8 @@ public class OrderService implements IOrderService {
         @Override
         public void updatePaymentSuccess(PaymentStatusEvent event) {
                 Order order = orderRepository.findById(event.getOrderId())
-                                .orElseThrow(() -> new RuntimeException("Order not found: " + event.getOrderId()));
+                                .orElseThrow(() -> new BaseException("Order not found: " + event.getOrderId(),
+                                                HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND"));
                 if (order.getPaymentStatus() == PaymentStatus.SUCCESS
                                 || order.getPaymentStatus() == PaymentStatus.FAILED) {
                         return; // Idempotency - ignore if payment status is already SUCCESS or FAILED
@@ -463,7 +471,8 @@ public class OrderService implements IOrderService {
         @Override
         public OrderDetailsResponseDTO getOrderDetailsById(UUID orderId) {
                 Order order = orderRepository.findById(orderId)
-                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                                .orElseThrow(() -> new BaseException("Order not found: " + orderId,
+                                                HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND"));
                 return mapOrderToOrderDetailsResponseDTO(order);
         }
 
@@ -524,7 +533,8 @@ public class OrderService implements IOrderService {
         @Override
         public void abandonOrder(UUID orderId) {
                 Order order = orderRepository.findById(orderId)
-                                .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
+                                .orElseThrow(() -> new BaseException("Order not found: " + orderId,
+                                                HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND"));
                 if (order.getOrderStatus() != OrderStatus.CONFIRMED) {
                         order.setOrderStatus(OrderStatus.FAILED);
                         order.setPaymentStatus(PaymentStatus.ABANDONED);
@@ -544,14 +554,16 @@ public class OrderService implements IOrderService {
                         orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
 
                 } else {
-                        throw new RuntimeException("Only orders in CREATED or RESERVED state can be cancelled");
+                        throw new BaseException("Only orders in CREATED or RESERVED state can be cancelled",
+                                        HttpStatus.BAD_REQUEST, "ORDER_CANNOT_BE_CANCELLED");
                 }
         }
 
         @Override
         public byte[] downloadInvoice(UUID orderId) {
                 Order order = orderRepository.findById(orderId)
-                                .orElseThrow(() -> new RuntimeException("Order not found"));
+                                .orElseThrow(() -> new BaseException("Order not found: " + orderId,
+                                                HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND"));
 
                 InvoiceData invoiceData = buildInvoiceData(order);
                 return invoicePdfGeneratorService.generateInvoicePdf(invoiceData);

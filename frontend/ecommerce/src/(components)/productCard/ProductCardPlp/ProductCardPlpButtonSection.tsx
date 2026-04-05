@@ -2,7 +2,7 @@
 
 import { addOrUpdateCartAction } from "@/app/(customer)/products/[productItemId]/(components)/actions";
 import { en } from "@/constants/en";
-import { CartItemDbDTO, ProductItem } from "@/constants/types";
+import { CartItemDbDTO, ErrorResponse, ProductItem } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
 import { useIsLoggedIn } from "@/utils/store/auth";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
@@ -49,7 +49,7 @@ const ProductCardPlpButtonSection = ({ productItemId, sellingPrice }: { productI
             notify({
                 variant: "error",
                 title: "Error!",
-                message: "Failed to add item in cart!"
+                message: (err as Error)?.message || "Failed to add item in cart!"
             });
         } finally {
             setCartButtonLoader(false);

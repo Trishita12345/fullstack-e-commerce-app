@@ -1,5 +1,6 @@
 import { forbidden, unauthorized } from "next/navigation";
 import { refreshToken } from "./refreshToken";
+import { ErrorResponse } from "@/constants/types";
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -31,7 +32,7 @@ export async function apiFetch<T>(
     cookie,
   } = options;
 
-  const isServer = typeof window === "undefined";
+  // const isServer = typeof window === "undefined";
 
   let finalHeaders: HeadersInit = {
     "Content-Type": "application/json",
@@ -48,39 +49,24 @@ export async function apiFetch<T>(
 
   let res: Response;
 
-  console.log(`API Fetch: `, finalHeaders);
+  // console.log(`API Fetch: `, finalHeaders);
 
-  try {
-    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
-      method,
-      headers: finalHeaders,
-      body: body ? JSON.stringify(body) : undefined,
-      cache,
-      credentials: "include",
-      ...(revalidate !== undefined && { next: { revalidate, tags } }),
-    });
-  } catch (error) {
-    console.error("API Fetch Error:", error);
-
-    if (isServer) {
-      throw new Error("Server failed to reach API");
-    } else {
-      throw error;
-    }
-  }
+  res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+    method,
+    headers: finalHeaders,
+    body: body ? JSON.stringify(body) : undefined,
+    cache,
+    credentials: "include",
+    ...(revalidate !== undefined && { next: { revalidate, tags } }),
+  });
+  // console.log(`API Response: `, res);
 
   // 🔐 HANDLE 401
   if (res.status === 401 && !_retry) {
-    try {
-      const refreshedCookie = await refreshToken(cookie);
-
-      if (refreshedCookie) {
-        return await apiFetch(endpoint, { ...options, cookie: refreshedCookie, _retry: true });
-      } else {
-        unauthorized();
-      }
-    } catch (error) {
-      console.error("Retry after refresh failed:", error);
+    const refreshedCookie = await refreshToken(cookie);
+    if (refreshedCookie) {
+      return await apiFetch(endpoint, { ...options, cookie: refreshedCookie, _retry: true });
+    } else {
       unauthorized();
     }
   }
@@ -89,15 +75,18 @@ export async function apiFetch<T>(
   }
 
   if (!res.ok) {
-    let message = "API request failed";
-
+    let error: ErrorResponse = {
+      error: "",
+      message: "No message",
+      status: 500,
+      traceId: '4564564564650-rrr6r6r67567-5675675675657'
+    };
     try {
-      message = await res.text();
+      error = await res.json();
     } catch (e) {
       console.error("Failed to read error response:", e);
     }
-
-    throw new Error(message);
+    throw new Error(error?.traceId || '4564564564650-rrr6r6r67567-5675675675657');
   }
 
   if (res.status === 204) {

@@ -7,8 +7,10 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.common.model.dto.CartItemDTO;
 import com.e_commerce.common.model.event.OrderFulfilledEvent;
 import com.e_commerce.seachEngineService.model.CartItemDocument;
@@ -25,69 +27,71 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderSearchService implements IOrderSearchService {
 
-    private final IProductSearchRepository productSearchRepository;
-    private final IOrderSearchRepository orderSearchRepository;
+        private final IProductSearchRepository productSearchRepository;
+        private final IOrderSearchRepository orderSearchRepository;
 
-    @Override
-    @Transactional
-    public void updateProductAndOrderIndexForConfirmedOrder(OrderFulfilledEvent event) {
-        List<CartItemDocument> cartItemDocumentList = new ArrayList<>();
-        List<UUID> productIds = event.getItems()
-                .stream()
-                .map(CartItemDTO::getProductItemId)
-                .toList();
+        @Override
+        @Transactional
+        public void updateProductAndOrderIndexForConfirmedOrder(OrderFulfilledEvent event) {
+                List<CartItemDocument> cartItemDocumentList = new ArrayList<>();
+                List<UUID> productIds = event.getItems()
+                                .stream()
+                                .map(CartItemDTO::getProductItemId)
+                                .toList();
 
-        List<ProductSearchDocument> products = new ArrayList<>();
-        productSearchRepository.findAllById(productIds).forEach(products::add);
+                List<ProductSearchDocument> products = new ArrayList<>();
+                productSearchRepository.findAllById(productIds).forEach(products::add);
 
-        Map<UUID, ProductSearchDocument> productMap = products
-                .stream()
-                .collect(Collectors.toMap(
-                        ProductSearchDocument::getProductItemId,
-                        Function.identity()));
+                Map<UUID, ProductSearchDocument> productMap = products
+                                .stream()
+                                .collect(Collectors.toMap(
+                                                ProductSearchDocument::getProductItemId,
+                                                Function.identity()));
 
-        event.getItems().forEach(item -> {
-            ProductSearchDocument product = productMap.get(item.getProductItemId());
-            if (product == null) {
-                throw new RuntimeException("Product item not indexed: " + item.getProductItemId());
-            }
-            // ✅ updated purchase count
-            int purchaseCount = product.getPurchaseCount() + item.getQuantity();
+                event.getItems().forEach(item -> {
+                        ProductSearchDocument product = productMap.get(item.getProductItemId());
+                        if (product == null) {
+                                throw new BaseException("Product item not indexed: " + item.getProductItemId(),
+                                                HttpStatus.NOT_FOUND,
+                                                "PRODUCT_NOT_INDEXED");
+                        }
+                        // ✅ updated purchase count
+                        int purchaseCount = product.getPurchaseCount() + item.getQuantity();
 
-            long lastPurchaseTime = product.getLastUpdatedAt();
-            long now = System.currentTimeMillis();
+                        long lastPurchaseTime = product.getLastUpdatedAt();
+                        long now = System.currentTimeMillis();
 
-            long hoursSinceLastPurchase = lastPurchaseTime == 0
-                    ? 0
-                    : (now - lastPurchaseTime) / (1000 * 60 * 60);
+                        long hoursSinceLastPurchase = lastPurchaseTime == 0
+                                        ? 0
+                                        : (now - lastPurchaseTime) / (1000 * 60 * 60);
 
-            // ✅ use double for proper division
-            double freshnessBoost = 10.0 / (hoursSinceLastPurchase + 1.0);
+                        // ✅ use double for proper division
+                        double freshnessBoost = 10.0 / (hoursSinceLastPurchase + 1.0);
 
-            double timeDecay = hoursSinceLastPurchase * 0.1;
+                        double timeDecay = hoursSinceLastPurchase * 0.1;
 
-            // ✅ use Math.log
-            double score = Math.log(purchaseCount + 1) + freshnessBoost - timeDecay;
+                        // ✅ use Math.log
+                        double score = Math.log(purchaseCount + 1) + freshnessBoost - timeDecay;
 
-            product.setPurchaseCount(purchaseCount);
-            product.setTrendingScore(Math.max(score, 0));
-            product.setLastUpdatedAt(now);
-            CartItemDocument cartItemDocument = CartItemDocument.builder()
-                    .productItemId(item.getProductItemId())
-                    .quantity(item.getQuantity())
-                    .build();
-            cartItemDocumentList.add(cartItemDocument);
-        });
+                        product.setPurchaseCount(purchaseCount);
+                        product.setTrendingScore(Math.max(score, 0));
+                        product.setLastUpdatedAt(now);
+                        CartItemDocument cartItemDocument = CartItemDocument.builder()
+                                        .productItemId(item.getProductItemId())
+                                        .quantity(item.getQuantity())
+                                        .build();
+                        cartItemDocumentList.add(cartItemDocument);
+                });
 
-        productSearchRepository.saveAll(productMap.values());
+                productSearchRepository.saveAll(productMap.values());
 
-        OrderSearchDocument orderSearchDocument = OrderSearchDocument.builder()
-                .orderId(event.getOrderId())
-                .orderStatus(event.getOrderStatus())
-                .userId(event.getUserId())
-                .items(cartItemDocumentList)
-                .build();
-        orderSearchRepository.save(orderSearchDocument);
-    }
+                OrderSearchDocument orderSearchDocument = OrderSearchDocument.builder()
+                                .orderId(event.getOrderId())
+                                .orderStatus(event.getOrderStatus())
+                                .userId(event.getUserId())
+                                .items(cartItemDocumentList)
+                                .build();
+                orderSearchRepository.save(orderSearchDocument);
+        }
 
 }

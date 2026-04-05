@@ -1,4 +1,4 @@
-import { AddressDTO, AddressType } from "@/constants/types";
+import { AddressDTO, AddressType, ErrorResponse } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
 import {
   Badge,
@@ -64,11 +64,11 @@ const AddressCard = ({
           message: "Address deleted succesfully!",
         });
       }
-    } catch {
+    } catch (err) {
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to delete address!",
+        message: (err as Error)?.message || "Failed to delete address!",
       });
     } finally {
       stopLoading();

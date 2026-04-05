@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { requestOtp } from "../actions";
 import { notify } from "@/utils/helperFunctions";
+import { ErrorResponse } from "@/constants/types";
 
 const TnC = () => {
     return (
@@ -47,11 +48,11 @@ const Login = () => {
             setLoading(true);
             await requestOtp(mobileNo);
             router.push(`/otp?phone=${mobileNo}&redirectUrl=${encodeURIComponent(redirecturl)}`);
-        } catch (error) {
+        } catch (err) {
             notify({
                 variant: 'error',
                 title: 'Error!',
-                message: 'Failed to send OTP. Please try again.'
+                message: (err as Error)?.message || 'Failed to send OTP. Please try again.'
             })
         } finally {
             setLoading(false);

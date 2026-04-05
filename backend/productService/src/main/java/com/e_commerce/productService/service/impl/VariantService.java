@@ -1,5 +1,6 @@
 package com.e_commerce.productService.service.impl;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.productService.model.Category;
 import com.e_commerce.productService.model.Variant;
 import com.e_commerce.productService.model.VariantAttribute;
@@ -17,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -57,7 +59,8 @@ public class VariantService implements IVariantService {
         public VariantDTO editVariant(UUID categoryId, UUID variantId, VariantDTO variantDTO) {
 
                 Variant variant = variantRepository.findById(variantId)
-                                .orElseThrow(() -> new RuntimeException("Variant not found"));
+                                .orElseThrow(() -> new BaseException("Variant not found", HttpStatus.NOT_FOUND,
+                                                "VARIANT_NOT_FOUND"));
                 Category category = categoryService.getCategory(categoryId);
                 variant.setCategory(category);
                 variant.setName(variantDTO.getName());
@@ -178,7 +181,8 @@ public class VariantService implements IVariantService {
         public Variant getVariant(UUID id) {
                 Optional<Variant> existing = variantRepository.findById(id);
                 return existing
-                                .orElseThrow(() -> new RuntimeException("Variant with ID: " + id + " not exist"));
+                                .orElseThrow(() -> new BaseException("Variant with ID: " + id + " not exist",
+                                                HttpStatus.NOT_FOUND, "VARIANT_NOT_FOUND"));
         }
 
         private static VariantDTO variantEntityToDTOMapper(Variant savedVariant) {

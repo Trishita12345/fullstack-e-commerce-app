@@ -1,4 +1,5 @@
 export const revalidate = 3600;
+export const dynamic = "force-static"
 
 import Breadcrumb from "@/(components)/Breadcrumb";
 import { Accordion, Box, Divider, Grid, GridCol, Stack } from "@mantine/core";
@@ -23,10 +24,10 @@ interface PageProps {
 export async function generateStaticParams() {
   const productItemIds = await apiFetch<{ productItemId: string }[]>(
     "/product-service/public/products/list-productItemId",
-    // {
-    //   cache: "force-cache",
-    //   revalidate: 3600,
-    // },
+    {
+      cache: "force-cache",
+      revalidate: 3600,
+    },
   );
   return productItemIds;
 }

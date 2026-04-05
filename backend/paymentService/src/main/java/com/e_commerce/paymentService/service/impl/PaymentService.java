@@ -1,5 +1,6 @@
 package com.e_commerce.paymentService.service.impl;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.common.model.event.OrderReservedEvent;
 import com.e_commerce.common.model.event.PaymentCreatedEvent;
 import com.e_commerce.paymentService.kafka.PaymentEventProducer;
@@ -15,6 +16,7 @@ import lombok.AllArgsConstructor;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -77,7 +79,8 @@ public class PaymentService implements IPaymentService {
     @Override
     public PaymentResponse getPaymentByOrderId(UUID orderId) {
         Payment payment = paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new RuntimeException("Payment not found for orderId: " + orderId));
+                .orElseThrow(() -> new BaseException("Payment not found for orderId: " + orderId, HttpStatus.NOT_FOUND,
+                        "PAYMENT_NOT_FOUND"));
         return mapToResponse(payment);
     }
 
@@ -85,7 +88,8 @@ public class PaymentService implements IPaymentService {
     @Transactional
     public PaymentResponse updatePaymentStatus(UUID paymentId, String status) {
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Payment not found for paymentId: " + paymentId));
+                .orElseThrow(() -> new BaseException("Payment not found for paymentId: " + paymentId,
+                        HttpStatus.NOT_FOUND, "PAYMENT_NOT_FOUND"));
         payment.setPaymentStatus(PaymentStatus.valueOf(status.toUpperCase()));
         Payment updatedPayment = paymentRepository.save(payment);
         return mapToResponse(updatedPayment);

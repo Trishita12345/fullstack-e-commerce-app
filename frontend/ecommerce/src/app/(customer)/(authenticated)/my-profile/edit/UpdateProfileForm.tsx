@@ -10,7 +10,7 @@ import {
     GridCol,
     Text,
 } from "@mantine/core";
-import type { User, Gender } from "@/constants/types";
+import type { User, ErrorResponse } from "@/constants/types";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -18,6 +18,7 @@ import { notify } from "@/utils/helperFunctions";
 import { updateUser } from "../actions";
 import { DateInput } from "@mantine/dates";
 import { useAuthActions } from "@/utils/store/auth";
+import { apiFetch } from "@/lib/apiFetch";
 
 
 const UpdateProfileForm = ({ userInfodata, redirecturl }: { userInfodata?: User; redirecturl?: string }) => {
@@ -50,11 +51,10 @@ const UpdateProfileForm = ({ userInfodata, redirecturl }: { userInfodata?: User;
             });
             redirecturl ? router.push(redirecturl.split(process.env.NEXT_PUBLIC_FRONTEND!)[1]) : router.push(`/my-profile`);
         } catch (e) {
-            console.log(e);
             notify({
                 variant: "error",
                 title: "Opps!",
-                message: "Failed to update profile details ."
+                message: (e as ErrorResponse)?.message || "Failed to update profile details ."
             });
         } finally {
             setLoading(false);

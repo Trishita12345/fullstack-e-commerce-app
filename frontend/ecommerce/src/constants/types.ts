@@ -463,4 +463,13 @@ export interface rolePermissionResponse {
   permissions: string[];
 }
 
+export interface ErrorResponse {
+  timestamp?: string;
+  status?: number;
+  error?: string;
+  message: string;
+  path?: string;
+  traceId?: string;
+}
+
 export type Gender = "MALE" | "FEMALE" | "PREFER_NOT_TO_SAY";

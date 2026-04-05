@@ -1,4 +1,4 @@
-import { CartItemDTO, CartProducts } from "@/constants/types";
+import { CartItemDTO, CartProducts, ErrorResponse } from "@/constants/types";
 import {
   notify,
   decodeSkuToken,
@@ -64,7 +64,7 @@ const CartItemCard = ({
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to update your cart!",
+        message: (err as Error)?.message || "Failed to update your cart!",
       });
     } finally {
       stopLoading();

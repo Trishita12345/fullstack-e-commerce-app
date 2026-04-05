@@ -2,6 +2,7 @@
 import {
   CartItemDbDTO,
   CartItemDTO,
+  ErrorResponse,
   ProductDetailsDTO,
 } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
@@ -138,7 +139,7 @@ const ButtonSection = ({
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to add item in wishlist!",
+        message: (err as Error)?.message || "Failed to add item in wishlist!",
       });
     } finally {
       setWishlistButtonLoader(false);
@@ -163,7 +164,7 @@ const ButtonSection = ({
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to remove item from wishlist!",
+        message: (err as Error)?.message || "Failed to remove item from wishlist!",
       });
     } finally {
       setWishlistButtonLoader(false);

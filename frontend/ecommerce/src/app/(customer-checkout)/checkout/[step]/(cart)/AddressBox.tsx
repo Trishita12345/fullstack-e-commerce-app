@@ -3,7 +3,7 @@ import { Box, Button, Group, Modal, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import AddEditAddressForm from "../(address)/AddEditAddressForm";
 import { addAddress, updateAddress } from "../../addressActions";
-import { AddressDTO } from "@/constants/types";
+import { AddressDTO, ErrorResponse } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
 import { useState } from "react";
 import AddressListingForCart from "./AddressListingForCart";
@@ -35,11 +35,11 @@ const AddressBox = ({
         message: "Address added succesfully!",
       });
       handleModalClose();
-    } catch {
+    } catch (err) {
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to add address!",
+        message: (err as Error)?.message || "Failed to add address!",
       });
     } finally {
       stopLoading();
@@ -57,11 +57,11 @@ const AddressBox = ({
         message: "Address updated succesfully!",
       });
       handleModalClose();
-    } catch {
+    } catch (err) {
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to update address!",
+        message: (err as Error)?.message || "Failed to update address!",
       });
     } finally {
       stopLoading();

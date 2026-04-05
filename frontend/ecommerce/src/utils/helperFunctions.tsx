@@ -81,37 +81,6 @@ export const saveToStorage = (
   }
 };
 
-export const fetchFromStorage = (key: string, session?: boolean) => {
-  if (session) {
-    return sessionStorage.getItem(key);
-  } else {
-    return localStorage.getItem(key);
-  }
-};
-
-export const removeFromStorage = (key: string, session?: boolean) => {
-  if (session) {
-    sessionStorage.removeItem(key);
-  } else {
-    localStorage.removeItem(key);
-  }
-};
-
-export const clearStorage = (level: "session" | "local" | "all" = "local") => {
-  switch (level) {
-    case "session":
-      sessionStorage.clear();
-      break;
-    case "local":
-      localStorage.clear();
-      break;
-    case "all":
-      sessionStorage.clear();
-      localStorage.clear();
-      break;
-  }
-};
-
 export const dummyDelay = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 

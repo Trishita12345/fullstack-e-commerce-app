@@ -16,7 +16,7 @@ import {
   useGiftWrap,
   useSelectedCouponCode,
 } from "@/utils/store/cart";
-import { PaymentModeType, PlaceOrderReqDTO } from "@/constants/types";
+import { ErrorResponse, PaymentModeType, PlaceOrderReqDTO } from "@/constants/types";
 import { useRouter } from "next/navigation";
 import { useSelectedAddressId } from "@/utils/store/address";
 interface ModeCardProps {
@@ -121,12 +121,12 @@ const PaymentOptionsSection = ({
       };
       const orderId = await placeOrder(body);
       router.push("/create-checkout-session?orderId=" + orderId);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
       notify({
         variant: "error",
         title: "Error!",
-        message: "Failed to place order!",
+        message: (err as Error)?.message || "Failed to place order!",
       });
       setIsDisabled(false);
       stopLoading();

@@ -12,6 +12,8 @@ import PlpFilters from "./(components)/PlpFilters";
 import { CategoriesCardType } from "@/(components)/categoriesCard";
 import Link from "next/link";
 import PlpBottomNav from "./(components)/PlpFilters/mobile/PlpBottomNav";
+import { notify } from "@/utils/helperFunctions";
+import { redirect } from "next/navigation";
 
 interface PageProps {
   searchParams: SearchParamsType
@@ -50,6 +52,7 @@ async function getPLPData(queryString: string) {
   return await serverApiFetch<PLPResponseDTO>(
     `/search-service/public/search?${queryString}`,
   );
+
 }
 
 const PLP = async ({ searchParams }: PageProps) => {

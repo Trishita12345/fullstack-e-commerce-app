@@ -12,7 +12,7 @@ const CartButton = () => {
   const isLoggedIn = useIsLoggedIn();
   const { setCartItems } = useCartActions();
 
-  const selectedCartItems = useCartItems().filter((item) => item.isSelected);
+  const selectedCartItems = (useCartItems()?.filter((item) => item.isSelected)) || [];
   useEffect(() => {
     const fetchCartItems = async () => {
       if (isLoggedIn) {

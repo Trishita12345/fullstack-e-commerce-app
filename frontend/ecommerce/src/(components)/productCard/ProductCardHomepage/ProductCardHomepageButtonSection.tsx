@@ -2,7 +2,7 @@
 
 import { addOrUpdateCartAction, addToWishListed, getIsWishListed, removeFromWishListed } from "@/app/(customer)/products/[productItemId]/(components)/actions";
 import { en } from "@/constants/en";
-import { CartItemDbDTO, ProductItem } from "@/constants/types";
+import { CartItemDbDTO, ErrorResponse, ProductItem } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
 import { useIsLoggedIn } from "@/utils/store/auth";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
@@ -66,7 +66,7 @@ const ProductCardHomepageButtonSection = ({ product }: { product: ProductItem })
             notify({
                 variant: "error",
                 title: "Error!",
-                message: "Failed to add item in cart!"
+                message: (err as Error)?.message || "Failed to add item in cart!"
             });
         } finally {
             setCartButtonLoader(false);
@@ -91,7 +91,7 @@ const ProductCardHomepageButtonSection = ({ product }: { product: ProductItem })
             notify({
                 variant: "error",
                 title: "Error!",
-                message: "Failed to add item in wishlist!",
+                message: (err as Error)?.message || "Failed to add item in wishlist!",
             });
         } finally {
             setWishlistButtonLoader(false);
@@ -115,7 +115,7 @@ const ProductCardHomepageButtonSection = ({ product }: { product: ProductItem })
             notify({
                 variant: "error",
                 title: "Error!",
-                message: "Failed to remove item from wishlist!",
+                message: (err as Error)?.message || "Failed to remove item from wishlist!",
             });
         } finally {
             setWishlistButtonLoader(false);

@@ -3,8 +3,10 @@ package com.e_commerce.productService.service.impl;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.common.model.dto.CartItemDTO;
 import com.e_commerce.common.model.event.InventoryReserveEvent;
 import com.e_commerce.common.model.event.OrderCreatedEvent;
@@ -54,7 +56,7 @@ public class InventoryReservationService implements IInventoryReservationService
         // 1️⃣ LOCK product row
         ProductItem productItem = productItemRepository
                 .findByIdForUpdate(productItemId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new BaseException("Product not found", HttpStatus.NOT_FOUND, "PRODUCT_NOT_FOUND"));
 
         int totalStock = productItem.getAvailableStock();
 

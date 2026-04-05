@@ -8,6 +8,7 @@ import { dummyDelay, notify } from "@/utils/helperFunctions";
 import { useDisclosure } from "@mantine/hooks";
 import { Box, Button, Divider, Group, Modal, Stack, Text } from "@mantine/core";
 import Image from "next/image";
+import { ErrorResponse } from "@/constants/types";
 
 const DeleteCartItem = ({
   productItemId,
@@ -36,7 +37,8 @@ const DeleteCartItem = ({
         title: "Success!",
         message: "Item removed from cart successfully!",
       });
-    } catch {
+    } catch (err) {
+      (err as Error)?.message || "Failed to remove item from cart!"
     } finally {
       stopLoading();
       close();
@@ -62,6 +64,11 @@ const DeleteCartItem = ({
       });
     } catch (err) {
       console.log(err);
+      notify({
+        variant: "error",
+        title: "Error!",
+        message: (err as Error)?.message || "Failed to move item to wishlist!",
+      });
     } finally {
       stopLoading();
       close();

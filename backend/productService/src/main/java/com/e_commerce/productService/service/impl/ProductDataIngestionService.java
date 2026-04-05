@@ -5,9 +5,11 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.common.model.event.ProductSearchDocumentEvent;
 import com.e_commerce.productService.kafka.ProductSearchDocumentIngestEventProducer;
 import com.e_commerce.productService.model.ProductItem;
@@ -96,7 +98,9 @@ public class ProductDataIngestionService implements IProductDataIngestionService
                 System.out.println("Event details: " + event);
                 productSearchDocumentIngestEventProducer.publishProductSearchDocumentUpdated(event);
             } else {
-                throw new RuntimeException("Product item not found for ID: " + productItemId);
+                throw new BaseException("Product item not found for ID: " + productItemId,
+                        HttpStatus.NOT_FOUND,
+                        "PRODUCT_ITEM_NOT_FOUND");
             }
             System.out.println("Indexed product item ID: " + productItemId);
         } catch (Exception e) {

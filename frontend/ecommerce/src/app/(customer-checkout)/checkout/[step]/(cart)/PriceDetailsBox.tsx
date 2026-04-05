@@ -1,5 +1,5 @@
 "use client";
-import { PriceSummaryRequest } from "@/constants/types";
+import { ErrorResponse, PriceSummaryRequest } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
 import {
   useCartActions,
@@ -52,11 +52,11 @@ const PriceDetailsBox = () => {
         })),
       };
       await setPriceSummary(body);
-    } catch {
+    } catch (err) {
       notify({
         variant: "error",
         title: "Error",
-        message: "Failed to fetch prices!",
+        message: (err as Error)?.message || "Failed to fetch prices!",
       });
     } finally {
       setIsLoading(false);

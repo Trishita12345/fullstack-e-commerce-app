@@ -3,8 +3,10 @@ package com.e_commerce.paymentService.service.impl;
 import java.math.BigDecimal;
 
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.paymentService.model.dto.GatewayOrderResponse;
 import com.e_commerce.paymentService.service.IPaymentGateway;
 import com.razorpay.Order;
@@ -32,7 +34,8 @@ public class RazorpayPaymentGateway implements IPaymentGateway {
                     .gatewayName("Razorpay")
                     .build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BaseException("Error occurred while creating Razorpay order", HttpStatus.INTERNAL_SERVER_ERROR,
+                    "RAZORPAY_ORDER_CREATION_FAILED");
         }
     }
 
