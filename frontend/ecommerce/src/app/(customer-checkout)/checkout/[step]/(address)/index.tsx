@@ -9,7 +9,7 @@ import { unauthorized } from "next/navigation";
 import LoadingAddresses from "./LoadingAddresses";
 import { useAddressActions, useAllAddresses } from "@/utils/store/address";
 import { AddressListSection } from "./AddressListSection";
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useIsLoggedIn } from "@/utils/store/auth";
 
 const Address = ({
   showLoading,
@@ -22,7 +22,7 @@ const Address = ({
   cartProducts: CartProductsDTO;
   isLoading: boolean;
 }) => {
-  const { isLoggedIn } = useCurrentUser();
+  const isLoggedIn = useIsLoggedIn();
   const [addressLoading, setAddressLoading] = useState<boolean>(false);
   const addresses = useAllAddresses();
   const { getAllAddresses } = useAddressActions();

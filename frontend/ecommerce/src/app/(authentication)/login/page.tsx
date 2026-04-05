@@ -1,11 +1,11 @@
 'use client';
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useIsLoggedIn } from "@/utils/store/auth";
 
 import { Stack, Title, Button, Text, Box, Grid, GridCol, Center, PinInput, TextInput, Checkbox, Group } from "@mantine/core";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { requestOtp } from "./actions";
+import { requestOtp } from "../actions";
 import { notify } from "@/utils/helperFunctions";
 
 const TnC = () => {
@@ -24,20 +24,18 @@ const TnC = () => {
 }
 
 const Login = () => {
-    const redirecturl = useSearchParams().get("redirectUrl") || "/";
+    const redirecturl = useSearchParams().get("redirectUrl") || `${process.env.NEXT_PUBLIC_FRONTEND || ""}/`;
     const phone = useSearchParams().get("phone") || "";
     const router = useRouter();
-    const { isLoggedIn, loading: loadingUser } = useCurrentUser();
     const [mobileNo, setMobileNo] = useState<string>(phone);
     const [mobileError, setMobileError] = useState(false);
     const [termsChecked, setTermsChecked] = useState(false);
     const [loading, setLoading] = useState(false);
+    const isLoggedIn = useIsLoggedIn();
 
     useEffect(() => {
-        if (isLoggedIn && !loadingUser) router.push(redirecturl.split(window.location.hostname)[1])
-    }, [isLoggedIn, loadingUser])
-
-    console.log("isLoggedIn", isLoggedIn)
+        if (isLoggedIn) router.push(redirecturl.split(window.location.hostname)[1])
+    }, [isLoggedIn])
 
     const handleMobileScreenClick = async () => {
         if (mobileNo.length < 10) {
@@ -48,7 +46,7 @@ const Login = () => {
         try {
             setLoading(true);
             await requestOtp(mobileNo);
-            router.push(`/login/otp?phone=${mobileNo}&redirectUrl=${encodeURIComponent(redirecturl)}`);
+            router.push(`/otp?phone=${mobileNo}&redirectUrl=${encodeURIComponent(redirecturl)}`);
         } catch (error) {
             notify({
                 variant: 'error',

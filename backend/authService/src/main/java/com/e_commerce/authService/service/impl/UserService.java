@@ -11,6 +11,7 @@ import com.e_commerce.authService.model.dto.UserResponse;
 import com.e_commerce.authService.repository.RoleRepository;
 import com.e_commerce.authService.repository.UserRepository;
 import com.e_commerce.authService.service.IUserService;
+import com.e_commerce.common.model.dto.UserInfoDTO;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,23 +28,27 @@ public class UserService implements IUserService {
         @Transactional
         public UserResponse getOrCreateUser(String phone) {
                 Optional<User> userOptional = userRepository.findByPhoneNo(phone);
+                User savedUser = new User();
+                Boolean firstTimeLogin;
                 if (userOptional.isPresent()) {
-                        return UserResponse.builder()
-                                        .user(userOptional.get())
-                                        .firstTimeLogin(false)
+                        savedUser = userOptional.get();
+                        firstTimeLogin = false;
+                } else {
+                        firstTimeLogin = true;
+                        User user = User.builder()
+                                        .phoneNo(phone)
+                                        .role(roleRepository.findByRoleName("USER")
+                                                        .orElseThrow(() -> new RuntimeException(
+                                                                        "Default role not found")))
                                         .build();
+                        savedUser = userRepository.save(user);
                 }
-                User user = User.builder()
-                                .phoneNo(phone)
-                                .role(roleRepository.findByRoleName("USER")
-                                                .orElseThrow(() -> new RuntimeException("Default role not found")))
-                                .build();
-                User savedUser = userRepository.save(user);
-                profileClient.saveUser(savedUser.getUserId().toString(), phone,
+                UserInfoDTO userInfoDTO = profileClient.saveUser(savedUser.getUserId().toString(), phone,
                                 savedUser.getRole().getRoleName());
                 return UserResponse.builder()
                                 .user(savedUser)
-                                .firstTimeLogin(true)
+                                .userInfo(userInfoDTO)
+                                .firstTimeLogin(firstTimeLogin)
                                 .build();
         }
 

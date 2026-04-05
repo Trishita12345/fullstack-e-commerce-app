@@ -45,7 +45,7 @@ const MyProfilePage = async () => {
     <Stack maw={640} mx={"auto"} mt={'5vh'} gap={16} lts={1} px={16} >
       <Text fw={600} style={{ fontFamily: "var(--font-poppins)" }}>Profile Details</Text>
       <Divider />
-      <Row label="Full Name" value={fullName} />
+      <Row label="Full Name" value={fullName || '-not added-'} />
       <Row label="Email Id" value={emailId || '-not added-'} />
       <Row label="PhoneNumber" value={phoneNumber || '-not added-'} />
       <Row label="Gender" value={gender || '-not added-'} />

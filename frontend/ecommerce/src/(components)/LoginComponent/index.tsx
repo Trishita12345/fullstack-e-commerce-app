@@ -1,7 +1,7 @@
 "use client";
 
 import { User } from "@/constants/types";
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useUserInfo } from "@/utils/store/auth";
 
 import { useRouter } from "next/navigation";
 
@@ -19,12 +19,12 @@ const LoginComponent = ({
   LoggedInComponent: any;
   NotLoggedInComponent: any;
 }) => {
-  const { user, isLoggedIn } = useCurrentUser();
+  const user = useUserInfo();
   const router = useRouter();
 
   return (
     <>
-      {isLoggedIn ? (
+      {user ? (
         <LoggedInComponent user={user} />
       ) : (
         <NotLoggedInComponent redirectToLogin={() => router.push(`/login?redirectUrl=${encodeURIComponent(window.location.href)}`)} />

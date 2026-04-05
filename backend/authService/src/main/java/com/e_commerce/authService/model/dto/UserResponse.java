@@ -1,6 +1,7 @@
 package com.e_commerce.authService.model.dto;
 
 import com.e_commerce.authService.model.User;
+import com.e_commerce.common.model.dto.UserInfoDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,4 +15,5 @@ import lombok.Setter;
 public class UserResponse {
     private User user;
     private Boolean firstTimeLogin;
+    private UserInfoDTO userInfo;
 }

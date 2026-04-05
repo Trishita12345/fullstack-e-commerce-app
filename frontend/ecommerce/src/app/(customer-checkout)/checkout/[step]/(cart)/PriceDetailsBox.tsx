@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { LoadingPrice } from "./LoadingCart";
 import { PriceDetailsBoxHelper } from "./PriceDetailsBoxHelper";
 import PriceDetailsBoxButton from "./(CartItemCard)/PriceDetailsBoxButton";
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useIsLoggedIn } from "@/utils/store/auth";
 
 const PriceDetailsBox = () => {
   const cartItems = useCartItems();
@@ -38,7 +38,7 @@ const PriceDetailsBox = () => {
     amountToAvoidShippingFee,
     payableAmount,
   } = priceSummary;
-  const { isLoggedIn } = useCurrentUser();
+  const isLoggedIn = useIsLoggedIn();
   const getTotalPrice = async () => {
     try {
       setIsLoading(true);

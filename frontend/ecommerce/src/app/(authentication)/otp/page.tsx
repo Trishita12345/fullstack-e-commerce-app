@@ -1,5 +1,5 @@
 'use client';
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useIsLoggedIn } from "@/utils/store/auth";
 
 import { Stack, Title, Button, Text, Box, PinInput } from "@mantine/core";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,16 +12,21 @@ import { VerifyOtpResponse } from "@/constants/types";
 import { useAuthActions } from "@/utils/store/auth";
 
 const Login = () => {
-    const redirecturl = useSearchParams().get("redirectUrl") || "/"
+    const isLoggedIn = useIsLoggedIn();
+    const redirecturl = useSearchParams().get("redirectUrl") || `${process.env.NEXT_PUBLIC_FRONTEND || ""}/`
     const mobileNo = useSearchParams().get("phone") || "";
     const router = useRouter();
-    const { isLoggedIn } = useCurrentUser();
     const [otp, setOtp] = useState<string>('');
     const [loading, setLoading] = useState(false);
 
     const [timer, setTimer] = useState(30);
     const [canResend, setCanResend] = useState(false);
-    const { setAccess } = useAuthActions();
+    const { setAccess, setUserInfo } = useAuthActions();
+    const [firstTimeLogin, setFirstTimeLogin] = useState(false);
+
+    useEffect(() => {
+        if (isLoggedIn && !firstTimeLogin) router.push(redirecturl.split(window.location.hostname)[1])
+    }, [isLoggedIn, firstTimeLogin])
 
     useEffect(() => {
         if (timer > 0) {
@@ -34,10 +39,6 @@ const Login = () => {
             setCanResend(true);
         }
     }, [timer]);
-
-    useEffect(() => {
-        if (isLoggedIn) router.push(redirecturl.split(window.location.hostname)[1])
-    }, [isLoggedIn])
 
     const handleResend = async () => {
         try {
@@ -70,17 +71,22 @@ const Login = () => {
                 localStorage.setItem("deviceId", crypto.randomUUID());
                 deviceId = localStorage.getItem("deviceId")!;
             }
-            const { firstTimeLogin, ...access } = await apiFetch<VerifyOtpResponse>(`/auth-service/public/verify-otp`, {
+            const { firstTimeLogin, userInfo, ...access } = await apiFetch<VerifyOtpResponse>(`/auth-service/public/verify-otp`, {
                 method: "POST",
                 body: { phone: mobileNo, otp, deviceId },
             });
+            setFirstTimeLogin(firstTimeLogin);
             setAccess(access);
+            setUserInfo(userInfo);
             notify({
                 variant: 'success',
                 title: 'Success!',
                 message: 'OTP verified successfully.'
             })
-            router.push(redirecturl.split(window.location.hostname)[1])
+            if (firstTimeLogin)
+                router.push(`/setup-account?redirectUrl=${encodeURIComponent(redirecturl)}`);
+            else
+                router.push(redirecturl.split(window.location.hostname)[1])
         }
         catch {
             notify({

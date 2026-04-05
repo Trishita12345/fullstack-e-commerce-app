@@ -7,9 +7,9 @@ import { useCartActions, useCartItems } from "@/utils/store/cart";
 import Link from "next/link";
 import { useEffect } from "react";
 import { getCartItemsAction } from "@/app/(customer-checkout)/checkout/cartActions";
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useIsLoggedIn } from "@/utils/store/auth";
 const CartButton = () => {
-  const { isLoggedIn } = useCurrentUser();
+  const isLoggedIn = useIsLoggedIn();
   const { setCartItems } = useCartActions();
 
   const selectedCartItems = useCartItems().filter((item) => item.isSelected);

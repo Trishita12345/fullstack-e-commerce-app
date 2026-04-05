@@ -22,7 +22,7 @@ import DeleteCartItem from "../DeleteCartItem";
 
 import Price from "./PriceSection";
 import Quantity from "./Quantity";
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useIsLoggedIn } from "@/utils/store/auth";
 
 interface CartItemCardProps {
   cartItem: CartItemDTO;
@@ -37,7 +37,7 @@ const CartItemCard = ({
   showLoading,
   stopLoading,
 }: CartItemCardProps) => {
-  const { isLoggedIn } = useCurrentUser();
+  const isLoggedIn = useIsLoggedIn();
   const { updateCartSelected } = useCartActions();
   const {
     sku,

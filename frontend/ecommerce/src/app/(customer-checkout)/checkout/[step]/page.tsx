@@ -18,12 +18,12 @@ import Address from "./(address)";
 
 import { useAddressActions } from "@/utils/store/address";
 import Payment from "./(payment)";
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useIsLoggedIn } from "@/utils/store/auth";
 
 const Checkout = () => {
   const { step } = useParams<{ step: string }>();
   const [visible, { open, close }] = useDisclosure(false);
-  const { isLoggedIn } = useCurrentUser();
+  const isLoggedIn = useIsLoggedIn();
   const { setCartItems } = useCartActions();
   const cartItems = useCartItems();
   const [cartProducts, setCartProducts] = useState<CartProductsDTO>({});

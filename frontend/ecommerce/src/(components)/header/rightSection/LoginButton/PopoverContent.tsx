@@ -13,7 +13,7 @@ import PopoverContentItems from "./PopoverContentItems";
 import { useCartActions } from "@/utils/store/cart";
 import { useAddressActions } from "@/utils/store/address";
 import { apiFetch } from "@/lib/apiFetch";
-import { useAccess } from "@/utils/store/auth";
+import { useAccess, useAuthActions } from "@/utils/store/auth";
 import { usePathname } from "next/navigation";
 
 const PopoverItems: PopoverContentItemProps[] = [
@@ -36,6 +36,7 @@ const PopoverItems: PopoverContentItemProps[] = [
 const PopoverContent = ({ user }: { user: User }) => {
   const { clearCartData } = useCartActions();
   const { clearAddressData } = useAddressActions();
+  const { setUserInfo, setAccess } = useAuthActions();
   const pathname = usePathname();
 
   const handleLogout = async () => {
@@ -43,6 +44,8 @@ const PopoverContent = ({ user }: { user: User }) => {
       await apiFetch(`/auth-service/public/logout`);
       clearCartData();
       clearAddressData();
+      setUserInfo(undefined);
+      setAccess(undefined);
       window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);

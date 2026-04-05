@@ -44,9 +44,11 @@ public class AuthApplicationService implements IAuthApplicationService {
         String accessToken = jwtService.generateAccessToken(user.getUser());
         String refreshToken = jwtService.generateRefreshToken(user.getUser().getUserId(), deviceId);
 
-        return new VerifyOtpResponseWithToken(accessToken, refreshToken, user.getFirstTimeLogin(),
+        return new VerifyOtpResponseWithToken(
+                accessToken, refreshToken, user.getFirstTimeLogin(),
                 user.getUser().getRole().getRoleName(),
-                user.getUser().getRole().getPermissions().stream().map(p -> p.getPermissionName()).toList());
+                user.getUser().getRole().getPermissions().stream().map(p -> p.getPermissionName()).toList(),
+                user.getUserInfo());
     }
 
     @Override

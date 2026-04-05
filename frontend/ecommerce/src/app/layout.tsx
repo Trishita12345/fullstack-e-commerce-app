@@ -47,6 +47,8 @@ export const metadata: Metadata = {
 };
 
 const theme = createTheme({
+  primaryColor: "primaryDark",
+  primaryShade: 6,
   colors: {
     primary: [
       "#fbebe3", //light-peach primary.0

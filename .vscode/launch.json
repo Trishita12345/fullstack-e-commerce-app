@@ -2,6 +2,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "AuthServiceApplication",
+      "request": "launch",
+      "mainClass": "com.e_commerce.authService.AuthServiceApplication",
+      "projectName": "authService"
+    },
+    {
+      "type": "java",
       "name": "SeachEngineServiceApplication",
       "request": "launch",
       "mainClass": "com.e_commerce.seachEngineService.SeachEngineServiceApplication"

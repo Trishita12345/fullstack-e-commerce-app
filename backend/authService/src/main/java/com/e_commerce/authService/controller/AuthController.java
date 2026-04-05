@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,10 +52,12 @@ public class AuthController {
 
                 setTokenInCookie(response, verifyOtpResponse.getAccessToken(), verifyOtpResponse.getRefreshToken());
 
-                return ResponseEntity.ok(new VerifyOtpResponse(
-                                verifyOtpResponse.getFirstTimeLogin(),
-                                verifyOtpResponse.getRole(),
-                                verifyOtpResponse.getPermissions()));
+                return ResponseEntity.ok(
+                                new VerifyOtpResponse(
+                                                verifyOtpResponse.getFirstTimeLogin(),
+                                                verifyOtpResponse.getRole(),
+                                                verifyOtpResponse.getPermissions(),
+                                                verifyOtpResponse.getUserInfo()));
         }
 
         private void setTokenInCookie(HttpServletResponse response, String accessToken, String refreshToken) {

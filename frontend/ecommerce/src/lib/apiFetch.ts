@@ -48,6 +48,8 @@ export async function apiFetch<T>(
 
   let res: Response;
 
+  console.log(`API Fetch: `, finalHeaders);
+
   try {
     res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
       method,
@@ -73,7 +75,7 @@ export async function apiFetch<T>(
       const refreshedCookie = await refreshToken(cookie);
 
       if (refreshedCookie) {
-          return await apiFetch(endpoint, { ...options,cookie: refreshedCookie, _retry: true });
+        return await apiFetch(endpoint, { ...options, cookie: refreshedCookie, _retry: true });
       } else {
         unauthorized();
       }
@@ -105,10 +107,10 @@ export async function apiFetch<T>(
 
   try {
     if (contentType && contentType.includes("application/json")) {
-  return res.json();
-} else {
-  return res.text() as T; 
-}
+      return res.json();
+    } else {
+      return res.text() as T;
+    }
   } catch (error) {
     console.error("JSON parsing failed:", error);
     throw new Error("Invalid JSON response");

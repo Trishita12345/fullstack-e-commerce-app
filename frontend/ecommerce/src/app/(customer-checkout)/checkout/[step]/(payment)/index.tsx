@@ -1,14 +1,13 @@
 import { Box, Grid, GridCol, Stack, Text } from "@mantine/core";
 import PriceDetailsBox from "../(cart)/PriceDetailsBox";
 
-import { unauthorized } from "next/navigation";
 import { CartProductsDTO } from "@/constants/types";
 import { useViewportSize } from "@mantine/hooks";
 import PaymentOptionsSection from "./PaymentOptionsSection";
 import LoadingPayment from "./LoadingPayment";
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useIsLoggedIn, useUserInfo } from "@/utils/store/auth";
 
 const Payment = ({
   showLoading,
@@ -19,12 +18,12 @@ const Payment = ({
   stopLoading: () => void;
   cartProducts: CartProductsDTO;
 }) => {
-  const { isLoggedIn, loading } = useCurrentUser();
+  const isLoggedIn = useIsLoggedIn();
   const { width } = useViewportSize();
   const router = useRouter();
   useEffect(() => {
-    if (!isLoggedIn && !loading) router.push(`/login?redirectUrl=${encodeURIComponent(window.location.href)}`);
-  }, [isLoggedIn, loading])
+    if (!isLoggedIn) router.push(`/login?redirectUrl=${encodeURIComponent(window.location.href)}`);
+  }, [isLoggedIn])
   return (
     <Box w={{ base: "90%", md: "85%", lg: "70%" }} mx="auto">
       {Object.keys(cartProducts).length > 0 ? (

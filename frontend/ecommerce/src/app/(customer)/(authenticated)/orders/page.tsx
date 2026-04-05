@@ -6,12 +6,12 @@ import { apiFetch } from "@/lib/apiFetch";
 import { OrderDetailsDTO, Page } from "@/constants/types";
 import OrderDetailComponent from "./OrderDetailComponent";
 import { getOrders } from "./actions";
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useIsLoggedIn } from "@/utils/store/auth";
 
 
 export default function InfiniteOrders() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { isLoggedIn } = useCurrentUser();
+  const isLoggedIn = useIsLoggedIn();
   const { ref, entry } = useIntersection({
     root: containerRef.current,
     threshold: 1,

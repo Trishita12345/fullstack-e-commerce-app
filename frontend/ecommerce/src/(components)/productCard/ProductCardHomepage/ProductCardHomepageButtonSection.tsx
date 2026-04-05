@@ -4,7 +4,7 @@ import { addOrUpdateCartAction, addToWishListed, getIsWishListed, removeFromWish
 import { en } from "@/constants/en";
 import { CartItemDbDTO, ProductItem } from "@/constants/types";
 import { notify } from "@/utils/helperFunctions";
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useIsLoggedIn } from "@/utils/store/auth";
 import { useCartActions, useCartItems } from "@/utils/store/cart";
 
 import { Grid, GridCol, Button, ActionIcon, Text } from "@mantine/core";
@@ -18,7 +18,7 @@ const ProductCardHomepageButtonSection = ({ product }: { product: ProductItem })
     const [wishlistButtonLoader, setWishlistButtonLoader] =
         useState<boolean>(false);
     const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
-    const { isLoggedIn } = useCurrentUser();
+    const isLoggedIn = useIsLoggedIn();
     const productAddedToCart = cartItems.findIndex(ci => ci.productItemId === product.productItemId) !== -1;
     const { addToCart } = useCartActions();
 

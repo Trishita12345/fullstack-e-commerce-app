@@ -1,11 +1,11 @@
 package com.e_commerce.profileService.service.impl;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.common.model.dto.UserInfoDTO;
+import com.e_commerce.common.model.enums.Gender;
 import com.e_commerce.profileService.model.UserInfo;
 import com.e_commerce.profileService.repository.IUserInfoRepository;
 import com.e_commerce.profileService.service.IUserInfoService;
@@ -35,6 +35,7 @@ public class UserInfoService implements IUserInfoService {
                 .userId(userId)
                 .fullName("")
                 .phoneNumber(phoneNumber)
+                .gender(Gender.MALE)
                 .build();
 
         UserInfo savedUserInfo = userInfoRepository.save(newUserInfo);
@@ -44,6 +45,7 @@ public class UserInfoService implements IUserInfoService {
     private UserInfoDTO userToUserInfoMapper(UserInfo existUserInfo) {
         return UserInfoDTO.builder()
                 .id(existUserInfo.getId())
+                .userId(existUserInfo.getUserId())
                 .createdAt(existUserInfo.getCreatedAt())
                 .updatedAt(existUserInfo.getUpdatedAt())
                 .fullName(existUserInfo.getFullName())

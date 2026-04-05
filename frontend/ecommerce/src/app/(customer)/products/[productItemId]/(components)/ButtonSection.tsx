@@ -23,7 +23,7 @@ import {
   removeFromWishListed,
 } from "./actions";
 import { useCartActions, useCartItemById } from "@/utils/store/cart";
-import { useCurrentUser } from "@/utils/hooks/useCurrentUser";
+import { useIsLoggedIn } from "@/utils/store/auth";
 
 
 const ButtonSection = ({
@@ -35,7 +35,7 @@ const ButtonSection = ({
 }) => {
   const cartDetailsForProduct = useCartItemById(productItemId);
   const router = useRouter();
-  const { isLoggedIn } = useCurrentUser();
+  const isLoggedIn = useIsLoggedIn();
   const [cartButtonLoader, setCartButtonLoader] = useState<boolean>(false);
   const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
   const [wishlistButtonLoader, setWishlistButtonLoader] =

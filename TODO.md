@@ -11,11 +11,9 @@ Preparing secure payment... RESERVED | INITIATED
 8. Static pages - subhajit
 9. shimmer/loader in plp
 10. Admin Dashboard page ui - coming soon
-11. Download invoice
 12. payment 
 -----------------------------------------
-1. UI Integration
-2. Profile Service update
+2. otp send
 3. email verify
 -----------------------------------------
 1. Project documentation - readme.md

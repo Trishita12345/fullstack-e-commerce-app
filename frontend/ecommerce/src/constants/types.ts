@@ -426,11 +426,11 @@ export interface FacetValue {
 }
 
 export interface saveUserDTO {
-    id: String;
-    name: String;
-    email: String;
-    emailVerified: boolean ;
-    image :String;
+  id: String;
+  name: String;
+  email: String;
+  emailVerified: boolean;
+  image: String;
 }
 
 export interface User {
@@ -446,20 +446,21 @@ export interface User {
 }
 
 export interface generateOTPRequest {
-    phone: string;
+  phone: string;
 }
 export interface OtpVerifyRequest {
-    phone: string;
-    otp: string;
-    deviceId: string;
+  phone: string;
+  otp: string;
+  deviceId: string;
 }
 export interface VerifyOtpResponse extends rolePermissionResponse {
   firstTimeLogin: boolean;
+  userInfo: User;
 }
- 
+
 export interface rolePermissionResponse {
-  role: string; 
+  role: string;
   permissions: string[];
 }
- 
-export type Gender = "MALE" | "FEMALE" | "OTHER";
+
+export type Gender = "MALE" | "FEMALE" | "PREFER_NOT_TO_SAY";

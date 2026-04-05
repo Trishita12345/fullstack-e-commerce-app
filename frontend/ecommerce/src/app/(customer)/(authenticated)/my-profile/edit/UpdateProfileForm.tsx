@@ -13,45 +13,42 @@ import {
 import type { User, Gender } from "@/constants/types";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { notify } from "@/utils/helperFunctions";
 import { updateUser } from "../actions";
 import { DateInput } from "@mantine/dates";
+import { useAuthActions } from "@/utils/store/auth";
 
 
-const UpdateProfileForm = ({ userInfodata }: { userInfodata: User }) => {
+const UpdateProfileForm = ({ userInfodata, redirecturl }: { userInfodata?: User; redirecturl?: string }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
+    const { setUserInfo } = useAuthActions();
 
     const form = useForm({
         mode: "uncontrolled",
-        initialValues: userInfodata || {
-            id: '',
-            userId: '',
-            phoneNumber: '',
-            phoneNumberVerified: false,
-            emailId: '',
-            emailIdVerified: false,
-            fullName: 'a',
-            profileImg: '',
-            gender: 'MALE' as Gender,
-            dob: '',
-            createdAt: '',
-            updatedAt: ''
-        },
+        initialValues: userInfodata
     });
+
+    useEffect(() => {
+        if (userInfodata) {
+            form.setValues(userInfodata);
+        }
+    }, [userInfodata]);
 
     const handleSubmit = async (values: User) => {
         try {
             console.log('values: ', values)
             setLoading(true);
-            updateUser(values);
+            const updatedUser = await updateUser(values);
+            setUserInfo(updatedUser);
+            debugger;
             notify({
                 variant: "success",
                 title: "Success!",
                 message: "Profile details updated successfully."
             });
-            router.push(`/my-profile`);
+            redirecturl ? router.push(redirecturl.split(process.env.NEXT_PUBLIC_FRONTEND!)[1]) : router.push(`/my-profile`);
         } catch (e) {
             console.log(e);
             notify({
@@ -84,7 +81,7 @@ const UpdateProfileForm = ({ userInfodata }: { userInfodata: User }) => {
                     <GridCol span={12}>
                         <TextInput
                             leftSection={
-                                <Text size="13px" c="black">
+                                <Text size="13px" c={"gray.3"}>
                                     +91
                                 </Text>
                             }
@@ -102,7 +99,7 @@ const UpdateProfileForm = ({ userInfodata }: { userInfodata: User }) => {
                             label="Gender"
                             placeholder="Select Gender..."
                             key={form.key("gender")}
-                            data={['MALE', 'FEMALE', 'OTHERS']}
+                            data={['MALE', 'FEMALE', 'PREFER NOT TO SAY']}
                             allowDeselect={false}
                         />
                     </GridCol>
