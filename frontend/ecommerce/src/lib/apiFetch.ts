@@ -79,14 +79,16 @@ export async function apiFetch<T>(
       error: "",
       message: "No message",
       status: 500,
-      traceId: '4564564564650-rrr6r6r67567-5675675675657'
+      traceId: 'dummy-trace-id',
+      timestamp: Date.now().toString(),
+      path: endpoint
     };
     try {
       error = await res.json();
     } catch (e) {
       console.error("Failed to read error response:", e);
     }
-    throw new Error(error?.traceId || '4564564564650-rrr6r6r67567-5675675675657');
+    throw new Error(error.message, { cause: error.traceId as string });
   }
 
   if (res.status === 204) {

@@ -26,6 +26,8 @@ public class UserInfoDTO {
 
     private String emailId;
 
+    private Boolean emailIdVerified;
+
     private String fullName;
 
     private Gender gender;

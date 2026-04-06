@@ -39,6 +39,9 @@ public class UserInfo extends AuditEntity {
 
     private String emailId;
 
+    @Builder.Default
+    private Boolean emailVerified = false;
+
     @Column(nullable = false)
     private String fullName;
 

@@ -1,5 +1,6 @@
 package com.e_commerce.authService.service.impl;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.authService.model.RefreshToken;
@@ -11,6 +12,7 @@ import com.e_commerce.authService.service.IAuthApplicationService;
 import com.e_commerce.authService.service.IJwtService;
 import com.e_commerce.authService.service.IOtpService;
 import com.e_commerce.authService.service.IUserService;
+import com.e_commerce.common.exception.BaseException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +35,11 @@ public class AuthApplicationService implements IAuthApplicationService {
 
     public VerifyOtpResponseWithToken verifyOtp(String phone, String otp, String deviceId) {
         if (otp == null) {
-            throw new RuntimeException("OTP must be provided");
+            throw new BaseException("OTP must be provided", HttpStatus.BAD_REQUEST, "OTP_NOT_FOUND");
+
         }
         if (!otpService.verifyOtp(phone, otp)) {
-            throw new RuntimeException("Invalid OTP");
+            throw new BaseException("Invalid OTP", HttpStatus.BAD_REQUEST, "INVALID_OTP");
         }
 
         UserResponse user = userService.getOrCreateUser(phone);

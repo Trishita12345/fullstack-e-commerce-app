@@ -18,6 +18,22 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db-changelog-master.yaml
 
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+
+    consumer:
+      group-id: profile-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.e_commerce.common.model.event.OrderCreatedEvent
+
 logging:
   level:
     org:
@@ -40,3 +56,4 @@ springdoc:
 gateway:
   base-url: https://api.loomandlume.shop/api/profile-service
   api-description: Swagger UI Documentation for profile Service
+

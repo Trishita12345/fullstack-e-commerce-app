@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.authService.model.Permission;
@@ -15,6 +16,7 @@ import com.e_commerce.authService.model.RefreshToken;
 import com.e_commerce.authService.model.User;
 import com.e_commerce.authService.repository.RefreshTokenRepository;
 import com.e_commerce.authService.service.IJwtService;
+import com.e_commerce.common.exception.BaseException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSSigner;
@@ -70,7 +72,7 @@ public class JwtService implements IJwtService {
             return signedJWT.serialize();
 
         } catch (Exception e) {
-            throw new RuntimeException("Error generating JWT", e);
+            throw new BaseException("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR, "AUTH_JWT_ERROR");
         }
     }
 
@@ -95,10 +97,12 @@ public class JwtService implements IJwtService {
     @Override
     public RefreshToken validate(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+                .orElseThrow(() -> new BaseException("Invalid refresh token", HttpStatus.BAD_REQUEST,
+                        "AUTH_INVALID_REFRESH_TOKEN"));
 
         if (!refreshToken.isValid()) {
-            throw new RuntimeException("Expired or revoked refresh token");
+            throw new BaseException("Expired or revoked refresh token", HttpStatus.BAD_REQUEST,
+                    "AUTH_EXPIRED_REVOKED_REFRESH_TOKEN");
         }
 
         return refreshToken;
@@ -107,7 +111,8 @@ public class JwtService implements IJwtService {
     @Override
     public void revoke(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Token not found"));
+                .orElseThrow(
+                        () -> new BaseException("Token not found", HttpStatus.BAD_REQUEST, "AUTH_TOKEN_NOT_FOUND"));
 
         refreshToken.setRevoked(true);
         refreshTokenRepository.save(refreshToken);

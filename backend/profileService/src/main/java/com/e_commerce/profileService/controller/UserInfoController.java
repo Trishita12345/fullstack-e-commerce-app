@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.e_commerce.common.model.dto.UserInfoDTO;
 import com.e_commerce.profileService.model.UserInfo;
 import com.e_commerce.profileService.service.IUserInfoService;
 
@@ -21,7 +22,7 @@ public class UserInfoController {
     private final IUserInfoService userInfoService;
 
     @GetMapping
-    public ResponseEntity<UserInfo> getUserInfo(Authentication authentication) {
+    public ResponseEntity<UserInfoDTO> getUserInfo(Authentication authentication) {
         return ResponseEntity.ok(
                 userInfoService.getUserDetailsByUserId(authentication.getName()));
     }

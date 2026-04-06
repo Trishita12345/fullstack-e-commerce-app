@@ -26,6 +26,7 @@ public class FeignConfig {
                 // 🔥 Forward custom headers
                 String userId = request.getHeader(UserHeaders.USER_ID);
                 String roles = request.getHeader(UserHeaders.USER_ROLES);
+                String traceId = request.getHeader(UserHeaders.TRACE_ID);
 
                 if (userId != null) {
                     requestTemplate.header(UserHeaders.USER_ID, userId);
@@ -33,6 +34,9 @@ public class FeignConfig {
 
                 if (roles != null) {
                     requestTemplate.header(UserHeaders.USER_ROLES, roles);
+                }
+                if (traceId != null) {
+                    requestTemplate.header(UserHeaders.TRACE_ID, traceId);
                 }
             }
         };

@@ -3,13 +3,14 @@ package com.e_commerce.common.exception;
 import java.time.Instant;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BaseException.class)
@@ -33,7 +34,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGeneric(
             Exception ex,
             HttpServletRequest request) {
-
+        log.error("Internal Server Error: " + ex.getMessage() + " at " + request.getRequestURI(), ex);
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(Instant.now().toString())
                 .status(500)

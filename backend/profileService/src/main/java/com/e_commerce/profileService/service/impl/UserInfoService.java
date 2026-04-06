@@ -22,8 +22,8 @@ public class UserInfoService implements IUserInfoService {
     private final IUserInfoRepository userInfoRepository;
 
     @Override
-    public UserInfo getUserDetailsByUserId(String userId) {
-        return userInfoRepository.getByUserId(userId).orElseThrow(
+    public UserInfoDTO getUserDetailsByUserId(String userId) {
+        return userInfoRepository.getByUserId(userId).map(this::userToUserInfoMapper).orElseThrow(
                 () -> new BaseException("User info not found for userId: " + userId, HttpStatus.NOT_FOUND,
                         "USER_INFO_NOT_FOUND"));
     }
@@ -55,6 +55,7 @@ public class UserInfoService implements IUserInfoService {
                 .fullName(existUserInfo.getFullName())
                 .phoneNumber(existUserInfo.getPhoneNumber())
                 .emailId(existUserInfo.getEmailId())
+                .emailIdVerified(existUserInfo.getEmailVerified())
                 .dob(existUserInfo.getDob())
                 .gender(existUserInfo.getGender())
                 .build();
@@ -69,6 +70,11 @@ public class UserInfoService implements IUserInfoService {
                         .id(existingUserInfo.getId())
                         .build());
 
+    }
+
+    @Override
+    public UserInfoDTO getUserInfo(String name) {
+        return getUserDetailsByUserId(name);
     }
 
 }

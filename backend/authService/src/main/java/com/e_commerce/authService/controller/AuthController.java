@@ -20,6 +20,7 @@ import com.e_commerce.authService.model.dto.VerifyOtpResponse;
 import com.e_commerce.authService.model.dto.VerifyOtpResponseWithToken;
 import com.e_commerce.authService.service.IAuthApplicationService;
 import com.e_commerce.authService.utils.Constants;
+import com.e_commerce.common.exception.BaseException;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -103,7 +104,8 @@ public class AuthController {
                                 .filter(c -> c.getName().equals(Constants.REFRESH_TOKEN))
                                 .findFirst()
                                 .map(Cookie::getValue)
-                                .orElseThrow(() -> new RuntimeException("No refresh token"));
+                                .orElseThrow(() -> new BaseException("No refresh token", HttpStatus.BAD_REQUEST,
+                                                "AUTH_NO_REFRESH_TOKEN"));
                 return refreshToken;
         }
 

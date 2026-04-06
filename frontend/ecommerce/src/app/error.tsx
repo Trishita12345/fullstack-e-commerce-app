@@ -22,8 +22,8 @@ export default function ErrorPage({
         window.location.reload();
     };
 
-    const traceId = error?.message; // 👈 treating message as traceId
-
+    const traceId = error?.cause as string; // 👈 treating message as traceId
+    console.error("Error Page Rendered with error:", error, "Trace ID:", traceId);
     return (
         <Container size="sm" py="xl">
             <Paper shadow="md" p="xl" radius="lg" withBorder>

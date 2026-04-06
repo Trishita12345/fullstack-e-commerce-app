@@ -5,8 +5,6 @@ Preparing secure payment... RESERVED | INITIATED
 
 2. Retry payment - 
 3. Resilience 4j
-5. AOP
-6. Email service
 7. Global Search - subhajit
 8. Static pages - subhajit
 9. shimmer/loader in plp
@@ -15,6 +13,8 @@ Preparing secure payment... RESERVED | INITIATED
 -----------------------------------------
 2. otp send
 3. email verify
+4. Zipkin
+5. Order confirm mail failed
 -----------------------------------------
 1. Project documentation - readme.md
 2. Map with system design concepts
@@ -70,3 +70,4 @@ q=candle
 8086 - payment - 5437
 8087 - search - 9200
 8088 - auth - 5438
+8089 - notification

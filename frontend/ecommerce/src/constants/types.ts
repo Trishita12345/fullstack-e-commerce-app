@@ -440,6 +440,7 @@ export interface User {
   userId: string;
   phoneNumber: string;
   emailId?: string;
+  emailIdVerified?: boolean;
   fullName: string;
   gender?: Gender;
   dob?: string; // ISO date string
@@ -464,12 +465,12 @@ export interface rolePermissionResponse {
 }
 
 export interface ErrorResponse {
-  timestamp?: string;
-  status?: number;
-  error?: string;
+  timestamp: string;
+  status: number;
+  error: string;
   message: string;
-  path?: string;
-  traceId?: string;
+  path: string;
+  traceId: string;
 }
 
 export type Gender = "MALE" | "FEMALE" | "PREFER_NOT_TO_SAY";

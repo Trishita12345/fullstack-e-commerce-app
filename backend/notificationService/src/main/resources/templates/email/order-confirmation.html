@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h4>Dear [[${firstName}]],</h4>
+
+<p>We are pleased to inform that your order is confirmed.</p>
+<p>Order ID: [[${orderId}]]</p>
+<p>You can expect shipping in 1-2 days.</p>
+
+<h4>Items:</h4>
+
+<table border="0" cellpadding="5" cellspacing="0">
+  <tr th:each="item : ${orderItems}">
+    <td>
+      <img th:src="${item.productImg}" width="100" height="100"/>
+    </td>
+    <td>
+      <p>[[${item.productName}]]</p>
+      <p>Qty: [[${item.quantity}]]</p>
+    </td>
+  </tr>
+</table>
+
+<p>
+  You can view detailed order info here:
+  <a href="https://loomandlume.shop/orders">View Orders</a>
+</p>
+
+<p>Thank you for shopping with us.</p>
+
+<p><strong>Loom&Lume.shop</strong></p>
+
+</body>
+</html>

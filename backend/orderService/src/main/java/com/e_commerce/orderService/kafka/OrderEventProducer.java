@@ -3,6 +3,7 @@ package com.e_commerce.orderService.kafka;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import com.e_commerce.common.model.event.OrderConfimedNotificationEvent;
 import com.e_commerce.common.model.event.OrderCreatedEvent;
 import com.e_commerce.common.model.event.OrderFulfilledEvent;
 import com.e_commerce.common.model.event.OrderReservedEvent;
@@ -29,5 +30,9 @@ public class OrderEventProducer {
     public void publishOrderFulfilled(OrderFulfilledEvent event) {
 
         kafkaTemplate.send(Constants.ORDER_FULFILLED_TOPIC, event.getOrderId().toString(), event);
+    }
+
+    public void publishOrderSuccessNotification(OrderConfimedNotificationEvent event) {
+        kafkaTemplate.send(Constants.ORDER_CONFIRMED_FOR_NOTIFY_TOPIC, event.getOrderId().toString(), event);
     }
 }

@@ -3,6 +3,7 @@ package com.e_commerce.authService.service.impl;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.e_commerce.authService.client.IProfileClient;
@@ -11,6 +12,7 @@ import com.e_commerce.authService.model.dto.UserResponse;
 import com.e_commerce.authService.repository.RoleRepository;
 import com.e_commerce.authService.repository.UserRepository;
 import com.e_commerce.authService.service.IUserService;
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.common.model.dto.UserInfoDTO;
 
 import jakarta.transaction.Transactional;
@@ -38,8 +40,10 @@ public class UserService implements IUserService {
                         User user = User.builder()
                                         .phoneNo(phone)
                                         .role(roleRepository.findByRoleName("USER")
-                                                        .orElseThrow(() -> new RuntimeException(
-                                                                        "Default role not found")))
+                                                        .orElseThrow(() -> new BaseException(
+                                                                        "Default role not found",
+                                                                        HttpStatus.NOT_FOUND,
+                                                                        "AUTH_DEFAULT_ROLE_NOT_FOUND")))
                                         .build();
                         savedUser = userRepository.save(user);
                 }
@@ -55,6 +59,7 @@ public class UserService implements IUserService {
         @Override
         public User getById(UUID userId) {
                 return userRepository.findById(userId)
-                                .orElseThrow(() -> new RuntimeException("User not found"));
+                                .orElseThrow(() -> new BaseException("User not found", HttpStatus.NOT_FOUND,
+                                                "AUTH_USER_NOT_FOUND"));
         }
 }

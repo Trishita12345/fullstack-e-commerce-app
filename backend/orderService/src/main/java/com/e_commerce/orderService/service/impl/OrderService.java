@@ -24,7 +24,12 @@ import com.e_commerce.common.model.dto.PlaceOrderReqDTO;
 import com.e_commerce.common.model.dto.ProductPriceDTO;
 import com.e_commerce.common.model.dto.ProductPriceDetailsDTO;
 import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
+import com.e_commerce.common.model.dto.UserInfoDTO;
+import com.e_commerce.common.model.dto.notificationDtos.NotificationDTO;
+import com.e_commerce.common.model.dto.notificationDtos.OrderItemEmailDTO;
+import com.e_commerce.common.model.enums.NotificationType;
 import com.e_commerce.common.model.enums.PaymentMode;
+import com.e_commerce.common.model.event.OrderConfimedNotificationEvent;
 import com.e_commerce.common.model.event.OrderCreatedEvent;
 import com.e_commerce.common.model.event.OrderFulfilledEvent;
 import com.e_commerce.common.model.event.OrderReservedEvent;
@@ -376,6 +381,36 @@ public class OrderService implements IOrderService {
                                                         .userId(order.getUserId())
                                                         .build();
                                         orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
+                                        UserInfoDTO userInfoDTO = profileClient.getUserInfo();
+                                        var userName = userInfoDTO.getFullName();
+                                        var userEmail = userInfoDTO.getEmailId();
+                                        var userEmailVerified = userInfoDTO.getEmailIdVerified();
+                                        if (userEmail != null && userEmailVerified) {
+                                                OrderConfimedNotificationEvent orderConfimedNotificationEvent = OrderConfimedNotificationEvent
+                                                                .builder()
+                                                                .config(NotificationDTO.builder()
+                                                                                .type(NotificationType.EMAIL)
+                                                                                .recipient(userEmail)
+                                                                                .userName(userName)
+                                                                                .build())
+                                                                .orderId(order.getId())
+                                                                .orderItems(order.getOrderItems().stream()
+                                                                                .filter(o -> !o.getSkuSnapshot()
+                                                                                                .equalsIgnoreCase(
+                                                                                                                MISC_FEE))
+                                                                                .map(o -> OrderItemEmailDTO.builder()
+                                                                                                .productItemId(o.getProductItemId())
+                                                                                                .productImg(o.getProductItemThumbnailImage())
+                                                                                                .productName(o.getProductName())
+                                                                                                .sku(o.getSkuSnapshot())
+                                                                                                .quantity(o.getQuantity())
+                                                                                                .build())
+                                                                                .toList())
+                                                                .build();
+                                                orderEventProducer.publishOrderSuccessNotification(
+                                                                orderConfimedNotificationEvent);
+                                        }
+
                                 } else {
                                         orderRepository.save(order);
                                         orderEventProducer.publishOrderReserved(OrderReservedEvent.builder()
