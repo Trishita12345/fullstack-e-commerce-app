@@ -12,6 +12,7 @@ public class Constants {
     public static final String ORDER_FULFILLED_TOPIC = "order-fulfilled";
     public static final String PRODUCT_SEARCH_INDEX_UPDATED_TOPIC = "product-search-index-updated";
     public static final String PRODUCT_SEARCH_INDEX_DELETED_TOPIC = "product-search-index-deleted";
+    public static final String EMAIL_VERIFICATION_NOTIFY_TOPIC = "email-verification-notify";
 
     public static final BigDecimal GIFT_WRAP_CHARGE = BigDecimal.valueOf(35);
     public static final BigDecimal SHIPPING_CHARGE = BigDecimal.valueOf(99);

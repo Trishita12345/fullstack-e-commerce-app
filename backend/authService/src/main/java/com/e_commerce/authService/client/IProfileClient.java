@@ -10,7 +10,7 @@ import com.e_commerce.common.model.dto.UserInfoDTO;
 @FeignClient(name = "profile-service", url = "${feign.client.profile-service.url}")
 public interface IProfileClient {
 
-    @PostMapping(path = "/internal/save-user")
+    @PostMapping(path = "/public/internal/save-user")
     UserInfoDTO saveUser(
             @RequestHeader("X-User-Id") String userId,
             @RequestParam String phoneNumber,

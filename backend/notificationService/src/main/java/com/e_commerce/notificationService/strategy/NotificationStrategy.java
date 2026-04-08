@@ -8,4 +8,6 @@ public interface NotificationStrategy {
     NotificationType getType();
 
     void orderConfirmSend(OrderConfimedNotificationEvent request);
+
+    void sendVerification(String identity, String verificationCode);
 }

@@ -15,4 +15,10 @@ public class WhatsappStrategy implements NotificationStrategy {
     public NotificationType getType() {
         return NotificationType.WHATSAPP;
     }
+
+    @Override
+    public void sendVerification(String identity, String verificationCode) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'sendVerification'");
+    }
 }

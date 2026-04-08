@@ -20,7 +20,7 @@ import com.e_commerce.profileService.service.IUserInfoService;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping(path = "/internal")
+@RequestMapping(path = "/public/internal")
 @AllArgsConstructor
 public class InternalController {
 
@@ -32,9 +32,9 @@ public class InternalController {
         return ResponseEntity.ok(addressService.getAddressbyId(addressId));
     }
 
-    @GetMapping("/get-user-info")
-    public ResponseEntity<UserInfoDTO> getUserInfo(Authentication authentication) {
-        return ResponseEntity.ok(userInfoService.getUserInfo(authentication.getName()));
+    @GetMapping("/get-user-info/{userId}")
+    public ResponseEntity<UserInfoDTO> getUserInfo(@PathVariable String userId) {
+        return ResponseEntity.ok(userInfoService.getUserInfo(userId));
     }
 
     @PostMapping("/save-user")

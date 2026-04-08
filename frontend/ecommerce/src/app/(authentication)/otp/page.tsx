@@ -10,6 +10,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import { IconDeviceMobileMessage, IconEdit } from "@tabler/icons-react";
 import { ErrorResponse, VerifyOtpResponse } from "@/constants/types";
 import { useAuthActions } from "@/utils/store/auth";
+import { useResendTimer } from "@/utils/hooks/useResendTimer";
 
 const Login = () => {
     const isLoggedIn = useIsLoggedIn();
@@ -19,8 +20,7 @@ const Login = () => {
     const [otp, setOtp] = useState<string>('');
     const [loading, setLoading] = useState(false);
 
-    const [timer, setTimer] = useState(30);
-    const [canResend, setCanResend] = useState(false);
+    const { timer, canResend, resetTimer } = useResendTimer(30);
     const { setAccess, setUserInfo } = useAuthActions();
     const [firstTimeLogin, setFirstTimeLogin] = useState(false);
 
@@ -28,17 +28,6 @@ const Login = () => {
         if (isLoggedIn && !firstTimeLogin) router.push(redirecturl.split(window.location.hostname)[1])
     }, [isLoggedIn, firstTimeLogin])
 
-    useEffect(() => {
-        if (timer > 0) {
-            const interval = setInterval(() => {
-                setTimer((prev) => prev - 1);
-            }, 1000);
-
-            return () => clearInterval(interval);
-        } else {
-            setCanResend(true);
-        }
-    }, [timer]);
 
     const handleResend = async () => {
         try {
@@ -51,8 +40,7 @@ const Login = () => {
                 message: 'OTP has been resent successfully.',
             });
 
-            setTimer(30);
-            setCanResend(false);
+            resetTimer();
         } catch (err) {
             notify({
                 variant: 'error',

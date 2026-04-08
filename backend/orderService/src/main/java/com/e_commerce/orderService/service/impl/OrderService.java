@@ -381,7 +381,7 @@ public class OrderService implements IOrderService {
                                                         .userId(order.getUserId())
                                                         .build();
                                         orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
-                                        UserInfoDTO userInfoDTO = profileClient.getUserInfo();
+                                        UserInfoDTO userInfoDTO = profileClient.getUserInfo(order.getUserId());
                                         var userName = userInfoDTO.getFullName();
                                         var userEmail = userInfoDTO.getEmailId();
                                         var userEmailVerified = userInfoDTO.getEmailIdVerified();
@@ -400,7 +400,8 @@ public class OrderService implements IOrderService {
                                                                                                                 MISC_FEE))
                                                                                 .map(o -> OrderItemEmailDTO.builder()
                                                                                                 .productItemId(o.getProductItemId())
-                                                                                                .productImg(o.getProductItemThumbnailImage())
+                                                                                                .productImg(buildFullUrl(
+                                                                                                                o.getProductItemThumbnailImage()))
                                                                                                 .productName(o.getProductName())
                                                                                                 .sku(o.getSkuSnapshot())
                                                                                                 .quantity(o.getQuantity())

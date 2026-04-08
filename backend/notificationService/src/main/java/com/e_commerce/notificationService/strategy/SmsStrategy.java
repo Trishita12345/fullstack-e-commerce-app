@@ -15,4 +15,10 @@ public class SmsStrategy implements NotificationStrategy {
     public NotificationType getType() {
         return NotificationType.SMS;
     }
+
+    @Override
+    public void sendVerification(String identity, String verificationCode) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'sendVerification'");
+    }
 }

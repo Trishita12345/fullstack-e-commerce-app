@@ -13,9 +13,9 @@ import com.e_commerce.common.model.dto.UserInfoDTO;
 @FeignClient(name = "profile-service", url = "${feign.client.profile-service.url}")
 public interface IProfileClient {
 
-    @GetMapping(path = "/internal/address/{addressId}")
+    @GetMapping(path = "/public/internal/address/{addressId}")
     AddressDTO getAddressDetailsById(@PathVariable UUID addressId);
 
-    @PostMapping(path = "/internal/get-user-info")
-    UserInfoDTO getUserInfo();
+    @GetMapping(path = "/public/internal/get-user-info/{userId}")
+    UserInfoDTO getUserInfo(@PathVariable String userId);
 }

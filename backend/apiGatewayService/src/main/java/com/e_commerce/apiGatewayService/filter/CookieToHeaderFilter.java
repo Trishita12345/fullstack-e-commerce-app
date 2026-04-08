@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Component
+@Slf4j
 public class CookieToHeaderFilter implements WebFilter {
     private static final String ACCESS_TOKEN = "accessToken";
 
@@ -24,24 +25,6 @@ public class CookieToHeaderFilter implements WebFilter {
         System.out.println(">>> CookieToHeaderFilter LOADED <<<");
     }
 
-    // private static final String[] WHITE_LIST = {
-    // "/.well-known/",
-    // "/actuator/",
-    // "/error",
-    // "/favicon.ico",
-    // "/public/",
-    // "/webjars/",
-    // "/api/auth-service/",
-    // "/swagger-ui/",
-    // "/v3/api-docs/",
-    // };
-
-    // private boolean isWhiteListedUrl(ServerWebExchange exchange) {
-    // String path = exchange.getRequest().getPath().value();
-
-    // return Arrays.stream(WHITE_LIST)
-    // .anyMatch(pattern -> path.contains(pattern));
-    // }
     private static final String[] WHITE_LIST = {
             "/.well-known/**",
             "/favicon.ico",
@@ -98,7 +81,7 @@ public class CookieToHeaderFilter implements WebFilter {
         }
         if (cookie != null) {
             String token = cookie.getValue();
-
+            log.info(">>> CookieToHeaderFilter: Found accessToken cookie, adding Authorization header");
             ServerHttpRequest mutatedRequest = exchange.getRequest()
                     .mutate()
                     .headers(headers -> {
