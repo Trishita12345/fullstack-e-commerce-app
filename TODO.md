@@ -3,18 +3,11 @@ Checking product availability.. RESERVED | PENDING
 Item just went out of stock. FAILED | NOT_INITIATED
 Preparing secure payment... RESERVED | INITIATED
 
+
+1. payment 
 2. Retry payment - 
 3. Resilience 4j
-7. Global Search - subhajit
-8. Static pages - subhajit
-9. shimmer/loader in plp
-10. Admin Dashboard page ui - coming soon
-12. payment 
------------------------------------------
-2. otp send
-3. email verify
 4. Zipkin
-5. Order confirm mail failed
 -----------------------------------------
 1. Project documentation - readme.md
 2. Map with system design concepts

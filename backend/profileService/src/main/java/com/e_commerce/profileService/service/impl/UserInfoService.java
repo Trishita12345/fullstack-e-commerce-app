@@ -63,12 +63,18 @@ public class UserInfoService implements IUserInfoService {
 
     @Override
     @Transactional
-    public UserInfo updateUserDetailsByUserId(String userId, UserInfo userInfo) {
+    public UserInfoDTO updateUserDetailsByUserId(String userId, UserInfoDTO userInfoDto) {
         UserInfo existingUserInfo = userInfoRepository.getByUserId(userId).orElseThrow();
-        return userInfoRepository.save(
-                userInfo.toBuilder()
-                        .id(existingUserInfo.getId())
-                        .build());
+        UserInfo updated = existingUserInfo.toBuilder()
+                .fullName(userInfoDto.getFullName())
+                .phoneNumber(userInfoDto.getPhoneNumber())
+                .emailId(userInfoDto.getEmailId())
+                .emailVerified(userInfoDto.getEmailIdVerified())
+                .dob(userInfoDto.getDob())
+                .gender(userInfoDto.getGender())
+                .build();
+
+        return userToUserInfoMapper(userInfoRepository.save(updated));
 
     }
 

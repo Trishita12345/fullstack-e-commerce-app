@@ -1,5 +1,5 @@
 "use client";
-import { ForwardRefExoticComponent, RefAttributes, useState } from "react";
+import React, { ForwardRefExoticComponent, RefAttributes, useState } from "react";
 import { Icon, IconChevronRight, IconProps } from "@tabler/icons-react";
 import { Box, Collapse, Group, ThemeIcon, UnstyledButton } from "@mantine/core";
 import "./NavbarLinksGroup.css";
@@ -8,10 +8,10 @@ import Link from "next/link";
 
 interface LinksGroupProps {
   icon: ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>;
-  label: string;
+  label: React.ReactNode;
   initiallyOpened?: boolean;
   links?: {
-    label: string;
+    label: React.ReactNode;
     link: string;
     icon: ForwardRefExoticComponent<IconProps & RefAttributes<Icon>>;
   }[];
@@ -31,11 +31,11 @@ export function LinksGroup({
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
 
-  const items = (hasLinks ? links : []).map((link) => (
+  const items = (hasLinks ? links : []).map((link, idx) => (
     <Link
       className={"link"}
       href={`/admin${link.link}`}
-      key={link.label}
+      key={idx}
       style={{
         backgroundColor: isActive(link.link)
           ? "var(--mantine-color-primaryDark-1)"

@@ -37,9 +37,10 @@ public class AuthController {
         private final IAuthApplicationService authService;
 
         @PostMapping("/request-otp")
-        public ResponseEntity<Void> requestOtp(@RequestBody Map<String, String> request) {
+        public ResponseEntity<String> requestOtp(@RequestBody Map<String, String> request) {
                 authService.requestOtp(request.get("phone"));
-                return ResponseEntity.noContent().build();
+                String otp = authService.requestOtp(request.get("phone"));
+                return ResponseEntity.ok(otp);
         }
 
         @PostMapping("/verify-otp")

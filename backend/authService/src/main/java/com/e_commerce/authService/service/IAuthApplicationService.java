@@ -4,7 +4,7 @@ import com.e_commerce.authService.model.dto.TokenResponse;
 import com.e_commerce.authService.model.dto.VerifyOtpResponseWithToken;
 
 public interface IAuthApplicationService {
-    void requestOtp(String phone);
+    String requestOtp(String phone);
 
     VerifyOtpResponseWithToken verifyOtp(String phone, String otp, String deviceId);
 

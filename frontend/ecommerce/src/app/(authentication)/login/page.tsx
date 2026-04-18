@@ -46,8 +46,8 @@ const Login = () => {
         setMobileError(false);
         try {
             setLoading(true);
-            await requestOtp(mobileNo);
-            router.push(`/otp?phone=${mobileNo}&redirectUrl=${encodeURIComponent(redirecturl)}`);
+            const otp = await requestOtp(mobileNo);
+            router.push(`/otp?phone=${mobileNo}&otp=${otp}&redirectUrl=${encodeURIComponent(redirecturl)}`);
         } catch (err) {
             notify({
                 variant: 'error',
@@ -80,7 +80,7 @@ const Login = () => {
                                 +91
                             </Text>
                         }
-                        placeholder="&nbsp;Enter mobile number"
+                        placeholder="&nbsp;Enter your mobile number"
                         value={mobileNo}
                         onChange={(event) => {
                             if (/^\d{0,10}$/.test(event.currentTarget.value) || event.currentTarget.value === "") {
@@ -118,6 +118,9 @@ const Login = () => {
                         Continue
                     </Button>
                 </Stack>
+                <Text size="sm" ta='center'>
+                    <i>**You can use <b>7777777777</b> mobile number to login as Admin<br />(Only for dev purpose)</i>
+                </Text>
             </Stack>
         </Box>
     )

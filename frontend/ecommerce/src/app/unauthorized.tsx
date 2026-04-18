@@ -7,11 +7,11 @@ import { useEffect } from "react";
 
 export default function Unauthorized() {
     const router = useRouter();
-    const { isLoggedIn } = useCurrentUser();
+    const { loading, isLoggedIn } = useCurrentUser();
 
     useEffect(() => {
-        if (!isLoggedIn) router.push(`/login?redirectUrl=${encodeURIComponent(window.location.href)}`);
-    }, [isLoggedIn])
+        if (!isLoggedIn && !loading) router.push(`/login?redirectUrl=${encodeURIComponent(window.location.href)}`);
+    }, [isLoggedIn, loading])
     return (
         <>unauthorized</>
     )

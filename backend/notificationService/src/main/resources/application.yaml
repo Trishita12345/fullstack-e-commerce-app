@@ -55,3 +55,6 @@ springdoc:
 gateway:
   base-url: https://api.loomandlume.shop/api/notification-service
   api-description: Swagger UI Documentation for notification Service
+
+fast2sms:
+  api-key: xxxx

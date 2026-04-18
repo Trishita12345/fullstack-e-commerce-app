@@ -3,30 +3,8 @@ import { StoriesType } from "@/constants/types";
 import { Box, Stack, Title, Group, Text, Button } from "@mantine/core";
 import Link from "next/link";
 import StoriesCard from "@/(components)/storiesCard";
+import { stories } from "../../stories/stories";
 
-const stories = [
-  {
-    id: "1",
-    imgUrl:
-      "https://images.unsplash.com/photo-1612293905607-b003de9e54fb?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Y2FuZGxlfGVufDB8fDB8fHww&auto=format&fit=crop&q=60&w=900",
-    name: "Top 5 Scented Candles to Transform Your home Ambience",
-    updatedAt: "16 Oct 2025",
-  },
-  {
-    id: "2",
-    imgUrl:
-      "https://images.unsplash.com/photo-1602952706017-f3cc19eb98af?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDJ8fGNhbmRsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
-    name: "How to Choose Perfect candle for Any Occasion",
-    updatedAt: "16 Oct 2025",
-  },
-  {
-    id: "3",
-    imgUrl:
-      "https://images.unsplash.com/photo-1610410863509-aa6ee0b12d76?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTZ8fGNhbmRsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&q=60&w=900",
-    name: "The Benefits of Aromatherapy Candles for Relaxation",
-    updatedAt: "14 Sep 2025",
-  },
-];
 const InspiringStories = () => {
   return (
     <Box bg="gray.0" py={96} id="read-stories">
@@ -53,14 +31,16 @@ const InspiringStories = () => {
           </Title>
         </Stack>
         <Group mt={48} gap={48} justify="center">
-          {stories.map((item: StoriesType) => (
+          {stories.slice(0, 3).map((item: StoriesType) => (
             <StoriesCard item={item} key={item.id} />
           ))}
         </Group>
         <Box w={200} mx="auto">
-          <Button color="primaryDark.6" size="lg" mt={48}>
-            <Link href="/strore">{en.readMore}</Link>
-          </Button>
+          <Link href="/stories">
+            <Button color="primaryDark.6" size="lg" mt={48}>
+              {en.readMore}
+            </Button>
+          </Link>
         </Box>
       </Box>
     </Box>

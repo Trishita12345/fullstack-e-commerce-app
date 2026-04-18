@@ -1,8 +1,6 @@
 package com.e_commerce.notificationService.strategy;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.mail.javamail.JavaMailSender;
@@ -28,16 +26,6 @@ public class EmailStrategy implements NotificationStrategy {
     public NotificationType getType() {
         return NotificationType.EMAIL;
     }
-
-    // @Override
-    // public void orderConfirmSend(OrderConfimedNotificationEvent request) {
-
-    // SimpleMailMessage message = new SimpleMailMessage();
-    // message.setTo(request.getConfig().getRecipient());
-    // message.setText(request.getConfig().getTemplate());
-    // mailSender.send(message);
-
-    // }
 
     @Override
     public void orderConfirmSend(OrderConfimedNotificationEvent req) {

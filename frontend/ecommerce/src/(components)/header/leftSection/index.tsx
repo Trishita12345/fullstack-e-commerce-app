@@ -20,7 +20,7 @@ const navData: NavItem[] = [
   },
   {
     label: en.customCandles,
-    href: "/#custom-candles",
+    href: "/about-us#custom-candles",
   },
 ];
 const LeftSection = () => {

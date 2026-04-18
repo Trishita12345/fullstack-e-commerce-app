@@ -1,4 +1,4 @@
-import { Box, Button, Card, Divider, Group, Text, Title } from "@mantine/core";
+import { Box, Button, Card, CardSection, Center, Divider, Group, Skeleton, Text, Title } from "@mantine/core";
 import { PLPResponseDTO, ProductItem } from "@/constants/types";
 import ProductCard from "@/(components)/productCard";
 import Breadcrumb from "@/(components)/Breadcrumb";
@@ -77,63 +77,64 @@ const PLP = async ({ searchParams }: PageProps) => {
       active: true,
     }
   ];
-  return <>
-    <Box
-      bg="gray.0"
-      style={{
-        borderTop: `1.5px solid var(--mantine-color-gray-1)`,
-        display: "flex",
-      }}
-    >
-      <Box w={260} style={{ borderRight: `1px solid var(--mantine-color-gray-1)` }} py={32} visibleFrom="md">
-        <PlpFilters facets={facets}
-          categories={categories}
-          category={category}
-          total={total}
-          discount={discount}
-          variants={variants}
-          minPrice={minPrice}
-          maxPrice={maxPrice}
-          inStock={inStock}
-        />
-      </Box>
-      <Box w={{ base: '95%', md: "calc(100% - 300px)" }} mx="auto" py={32} pos={'relative'} mb={{ base: 70, md: 0 }}>
-        <Breadcrumb items={breadcrumbs} />
-        <Title order={1} ta='center' tt={'capitalize'} style={{ fontFamily: "var(--font-jost)" }}>
-          {`Explore Products`}
-        </Title>
-        <PlpSearch query={q} />
-        {total > 0 ? (
-          <>
-            <PlpSorting />
-            <Group mt={16} gap={32} justify="space-between" visibleFrom="md">
-              {content.map((item: ProductItem) => (
-                <ProductCard product={item} key={item.productItemId} isPLP={true} stockQuantity={item.stockQuantity} />
-              ))}
-            </Group>
-            <Group mt={16} gap={32} justify="center" hiddenFrom="md">
-              {content.map((item: ProductItem) => (
-                <ProductCard product={item} key={item.productItemId} isPLP={true} stockQuantity={item.stockQuantity} />
-              ))}
-            </Group>
-            <Divider color="gray.1" py={48} />
-            <PlpPagination paginationDetails={paginationDetails} />
-          </>
-        ) :
-          <Box mt={48} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-            <Title order={3}>No products found matching your criteria.</Title>
-            <Link href="/products">
-              <Button color="primaryDark.7">
-                Reset Filters
-              </Button>
-            </Link>
-          </Box>
-        }
-      </Box>
-      <PlpBottomNav categories={categories} facets={facets} /> {/* visible below md */}
-    </Box >
-    <Box mb={65}><Footer /></Box>
-  </>;
+  return (
+    <>
+      <Box
+        bg="gray.0"
+        style={{
+          borderTop: `1.5px solid var(--mantine-color-gray-1)`,
+          display: "flex",
+        }}
+      >
+        <Box w={260} style={{ borderRight: `1px solid var(--mantine-color-gray-1)` }} py={32} visibleFrom="md">
+          <PlpFilters facets={facets}
+            categories={categories}
+            category={category}
+            total={total}
+            discount={discount}
+            variants={variants}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            inStock={inStock}
+          />
+        </Box>
+        <Box w={{ base: '95%', md: "calc(100% - 300px)" }} mx="auto" py={32} pos={'relative'} mb={{ base: 70, md: 0 }}>
+          <Breadcrumb items={breadcrumbs} />
+          <Title order={1} ta='center' tt={'capitalize'} style={{ fontFamily: "var(--font-jost)" }}>
+            {`Explore Products`}
+          </Title>
+          <PlpSearch query={q} />
+          {total > 0 ? (
+            <>
+              <PlpSorting />
+              <Group mt={16} gap={32} justify="space-between" visibleFrom="md">
+                {content.map((item: ProductItem) => (
+                  <ProductCard product={item} key={item.productItemId} isPLP={true} stockQuantity={item.stockQuantity} />
+                ))}
+              </Group>
+              <Group mt={16} gap={32} justify="center" hiddenFrom="md">
+                {content.map((item: ProductItem) => (
+                  <ProductCard product={item} key={item.productItemId} isPLP={true} stockQuantity={item.stockQuantity} />
+                ))}
+              </Group>
+              <Divider color="gray.1" py={48} />
+              <PlpPagination paginationDetails={paginationDetails} />
+            </>
+          ) :
+            <Box mt={48} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+              <Title order={3}>No products found matching your criteria.</Title>
+              <Link href="/products">
+                <Button color="primaryDark.7">
+                  Reset Filters
+                </Button>
+              </Link>
+            </Box>
+          }
+        </Box>
+        <PlpBottomNav categories={categories} facets={facets} /> {/* visible below md */}
+      </Box >
+      <Box mb={65}><Footer /></Box>
+    </>);
 };
 
 export default PLP;

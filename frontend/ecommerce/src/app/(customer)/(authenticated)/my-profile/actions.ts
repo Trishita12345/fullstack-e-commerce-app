@@ -15,3 +15,11 @@ export async function updateUser(body: User) {
     revalidatePath("/my-profile");
     return res;
 }
+
+export async function generateEmailOtp(email: string) {
+    await serverApiFetch(`/profile-service/verify-email/generate-otp?email=${email}`);
+}
+
+export async function verifyEmailOtp(email: string, code: string) {
+    await serverApiFetch(`/profile-service/verify-email/resend-otp?email=${email}&verificationCode=${code}`);
+}

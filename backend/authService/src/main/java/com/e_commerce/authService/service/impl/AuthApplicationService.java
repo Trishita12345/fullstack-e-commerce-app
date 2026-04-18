@@ -26,11 +26,12 @@ public class AuthApplicationService implements IAuthApplicationService {
     private final IUserService userService;
     private final IJwtService jwtService;
 
-    public void requestOtp(String phone) {
+    public String requestOtp(String phone) {
         String otp = otpService.generateAndSaveOtp(phone);
 
         // TODO: integrate SMS later
         log.info("OTP for {}: {}", phone, otp);
+        return otp;
     }
 
     public VerifyOtpResponseWithToken verifyOtp(String phone, String otp, String deviceId) {

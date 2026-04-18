@@ -24,12 +24,14 @@ export type BannerImageItem = {
   id: string;
   imageUrl: string;
   href: string;
+  type?: "image" | "video";
 };
 export type StoriesType = {
   id: string;
   imgUrl: string;
   name: string;
   updatedAt: string;
+  description: string;
 };
 export type SelectOptionType = {
   label: string;

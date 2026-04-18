@@ -2,7 +2,7 @@ import { en } from "@/constants/en";
 import { Text, Tooltip } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons-react";
 
-export const InfoIcon = ({ info }: { info: string }) => {
+export const InfoIcon = ({ info, size = 12 }: { info: string, size?: number }) => {
     return (
         <Tooltip
             withArrow
@@ -16,7 +16,7 @@ export const InfoIcon = ({ info }: { info: string }) => {
         >
             <IconInfoCircle
                 color="var(--mantine-color-dimmed)"
-                size={12}
+                size={size}
                 style={{ cursor: "pointer" }}
             />
         </Tooltip>

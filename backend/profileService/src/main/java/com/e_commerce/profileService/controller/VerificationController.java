@@ -15,20 +15,20 @@ import com.e_commerce.profileService.service.IVerificationService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(path = "/verify")
+@RequestMapping(path = "/verify-email")
 @RequiredArgsConstructor
 public class VerificationController {
 
     private final IVerificationService verificationService;
 
-    @PostMapping("/email")
+    @GetMapping("/generate-otp")
     @Async
     public ResponseEntity<String> generateVerifyEmail(@RequestParam String email) {
         verificationService.generateEmailVerification(email);
         return ResponseEntity.ok("Email verification generated successfully");
     }
 
-    @GetMapping("/email")
+    @GetMapping("/resend-otp")
     public ResponseEntity<String> verifyEmail(@RequestParam String email, @RequestParam String verificationCode) {
         if (verificationService.verifyEmail(email, verificationCode)) {
             return ResponseEntity.ok("Email verified successfully");

@@ -43,7 +43,6 @@ const UpdateProfileForm = ({ userInfodata, redirecturl }: { userInfodata?: User;
 
     const handleSubmit = async (values: User) => {
         try {
-            console.log('values: ', values)
             setLoading(true);
             const updatedUser = await updateUser(values);
             setUserInfo(updatedUser);
@@ -81,7 +80,7 @@ const UpdateProfileForm = ({ userInfodata, redirecturl }: { userInfodata?: User;
                                 label="Email Id"
                                 key={form.key("emailId")}
                                 disabled
-                                rightSection={<UpdateEmail setFormEmailValue={setEmail} />}
+                                rightSection={<UpdateEmail setFormEmailValue={setEmail} currEmail={form.getValues().emailId || ''} />}
 
                             />
                         </GridCol>

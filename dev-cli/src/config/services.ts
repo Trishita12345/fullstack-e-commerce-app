@@ -72,7 +72,7 @@ export const services: Service[] = [
         name: "notification-service",
         type: "backend",
         path: path.join(ROOT_DIR, "backend/notificationService"),
-        port: 8089,
+        port: 8090,
         startCommand: "mvn spring-boot:run"
     },
     // -------- CART SERVICE --------

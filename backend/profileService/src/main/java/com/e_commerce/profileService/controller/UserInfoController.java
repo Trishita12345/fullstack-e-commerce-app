@@ -28,9 +28,8 @@ public class UserInfoController {
     }
 
     @PutMapping
-    public ResponseEntity<UserInfo> updateUserInfo(@RequestBody UserInfo updatedUserInfo,
+    public ResponseEntity<UserInfoDTO> updateUserInfo(@RequestBody UserInfoDTO updatedUserInfo,
             Authentication authentication) {
         return ResponseEntity.ok(userInfoService.updateUserDetailsByUserId(authentication.getName(), updatedUserInfo));
-
     }
 }

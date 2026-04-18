@@ -68,5 +68,5 @@ feign:
 app:
   otp:
     whitelist-enabled: ${WHITELIST_ENABLED:true}
-    whitelist-phones: ${WHITELIST_PHONES:7777777777,8888888888}
+    whitelist-phones: ${WHITELIST_PHONES:8888888888}
     whitelist-otp: ${WHITELIST_OTP:111111}

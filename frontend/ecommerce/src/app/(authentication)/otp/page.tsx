@@ -12,10 +12,11 @@ import { ErrorResponse, VerifyOtpResponse } from "@/constants/types";
 import { useAuthActions } from "@/utils/store/auth";
 import { useResendTimer } from "@/utils/hooks/useResendTimer";
 
-const Login = () => {
+const Otp = () => {
     const isLoggedIn = useIsLoggedIn();
     const redirecturl = useSearchParams().get("redirectUrl") || `${process.env.NEXT_PUBLIC_FRONTEND || ""}/`
     const mobileNo = useSearchParams().get("phone") || "";
+    const otpFromBE = useSearchParams().get("otp") || "";
     const router = useRouter();
     const [otp, setOtp] = useState<string>('');
     const [loading, setLoading] = useState(false);
@@ -32,8 +33,8 @@ const Login = () => {
     const handleResend = async () => {
         try {
             setLoading(true);
-            await requestOtp(mobileNo);
-
+            const otp = await requestOtp(mobileNo);
+            router.push(`/otp?phone=${mobileNo}&otp=${otp}&redirectUrl=${encodeURIComponent(redirecturl)}`);
             notify({
                 variant: 'success',
                 title: 'OTP Sent',
@@ -128,10 +129,13 @@ const Login = () => {
                             {canResend ? 'Resend OTP' : `Resend OTP in 00:${timer.toString().padStart(2, '0')}`}
                         </Button>
                     </Stack>
+                    <Text size="sm">
+                        <i>**Use <b>{otpFromBE}</b> as your verification code (Only for dev purpose)</i>
+                    </Text>
                 </Stack>
             </Stack>
         </Box >
     )
 }
 
-export default Login;
+export default Otp;

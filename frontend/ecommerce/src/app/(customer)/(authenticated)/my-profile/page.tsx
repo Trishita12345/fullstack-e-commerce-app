@@ -1,5 +1,4 @@
 import { Avatar, Box, Button, Center, Divider, Grid, GridCol, Group, Stack, Text } from "@mantine/core";
-import "./profile.css";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/getCurrentUser";
 
@@ -31,7 +30,6 @@ const Row = ({ label, value }: { label: string; value: string }) => (
 
 const MyProfilePage = async () => {
   const user = await getCurrentUser();
-  const { phoneNumber, emailId, fullName, gender, dob } = user;
 
   const formattedDate = (input: string) => {
     return input === '' ? '' : new Date(input).toLocaleDateString("en-US", {
