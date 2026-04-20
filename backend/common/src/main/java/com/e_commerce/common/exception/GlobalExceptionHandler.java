@@ -6,12 +6,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.micrometer.tracing.Tracer;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 @Slf4j
+@RequiredArgsConstructor
 public class GlobalExceptionHandler {
+
+    private final Tracer tracer;
 
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ErrorResponse> handleBaseException(
@@ -24,7 +29,7 @@ public class GlobalExceptionHandler {
                 .error(ex.getErrorCode())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
-                .traceId(getTraceId(request))
+                .traceId(getTraceId())
                 .build();
 
         return new ResponseEntity<>(response, ex.getStatus());
@@ -41,15 +46,13 @@ public class GlobalExceptionHandler {
                 .error("INTERNAL_SERVER_ERROR")
                 .message("Something went wrong")
                 .path(request.getRequestURI())
-                .traceId(getTraceId(request))
+                .traceId(getTraceId())
                 .build();
 
         return ResponseEntity.status(500).body(response);
     }
 
-    private String getTraceId(HttpServletRequest request) {
-        // Implement logic to retrieve trace ID from the current context (e.g., MDC,
-        // ThreadLocal, etc.)
-        return request.getHeader("X-Trace-Id") != null ? request.getHeader("X-Trace-Id") : "trace-id-placeholder";
+    private String getTraceId() {
+        return tracer.currentSpan().context().traceId();
     }
 }

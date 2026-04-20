@@ -1,0 +1,6 @@
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - "127.0.0.1:9411:9411"
+    restart: unless-stopped

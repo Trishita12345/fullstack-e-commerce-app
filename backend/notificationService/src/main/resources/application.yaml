@@ -4,7 +4,7 @@ server:
 
 spring:
   application:
-    name: notificationService
+    name: notification-service
 
   mail:
     host: smtp.gmail.com
@@ -33,17 +33,6 @@ spring:
         spring.json.trusted.packages: "*"
         spring.json.value.default.type: com.e_commerce.common.model.event.OrderCreatedEvent
 
-logging:
-  level:
-    org:
-      springframework:
-        security: debug
-  file:
-    name: app/app.log
-  logback:
-    rollingpolicy:
-      max-file-size: 10MB
-      max-history: 5
 springdoc:
   api-docs:
     path: /v3/api-docs
@@ -58,3 +47,30 @@ gateway:
 
 fast2sms:
   api-key: xxxx
+
+   
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}] [%thread] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}] [%thread] %logger{36} - %msg%n"
+  level:
+    org:
+      springframework:
+        security: debug
+        cloud:
+          gateway: debug
+  file:
+    name: app/app.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 5
+     
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://127.0.0.1:9411/api/v2/spans

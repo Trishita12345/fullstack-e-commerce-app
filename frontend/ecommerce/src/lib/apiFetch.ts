@@ -88,6 +88,7 @@ export async function apiFetch<T>(
     } catch (e) {
       console.error("Failed to read error response:", e);
     }
+    console.error("error traceid: " + error.traceId);
     throw new Error(error.message, { cause: error.traceId as string });
   }
 

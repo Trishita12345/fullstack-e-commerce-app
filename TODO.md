@@ -24,7 +24,6 @@ Preparing secure payment... RESERVED | INITIATED
 
 
 ROLE____
-first time login
 
 GET /products/search?
 q=candle

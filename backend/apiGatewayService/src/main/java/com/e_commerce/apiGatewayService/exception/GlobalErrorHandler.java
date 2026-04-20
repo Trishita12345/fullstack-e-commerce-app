@@ -10,24 +10,26 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.e_commerce.apiGatewayService.filter.TraceIdFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.micrometer.tracing.Tracer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class GlobalErrorHandler implements ErrorWebExceptionHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final Tracer tracer;
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
 
         HttpStatus status = determineStatus(ex);
-
-        String traceId = exchange.getAttribute(TraceIdFilter.TRACE_ID_KEY);
 
         ErrorResponse response;
 
@@ -38,7 +40,7 @@ public class GlobalErrorHandler implements ErrorWebExceptionHandler {
                     .error(baseEx.getErrorCode())
                     .message(baseEx.getMessage())
                     .path(exchange.getRequest().getPath().value())
-                    .traceId(traceId)
+                    .traceId(tracer.currentSpan().context().traceId())
                     .build();
         } else {
             response = ErrorResponse.builder()
@@ -47,7 +49,7 @@ public class GlobalErrorHandler implements ErrorWebExceptionHandler {
                     .error(status.name())
                     .message(resolveMessage(ex))
                     .path(exchange.getRequest().getPath().value())
-                    .traceId(traceId)
+                    .traceId(tracer.currentSpan().context().traceId())
                     .build();
         }
 

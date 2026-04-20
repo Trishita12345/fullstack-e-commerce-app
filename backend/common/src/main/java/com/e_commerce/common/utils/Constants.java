@@ -19,4 +19,8 @@ public class Constants {
     public static final BigDecimal MIN_PURCHASE_VALUE = BigDecimal.valueOf(999);
     public static final BigDecimal ZERO = BigDecimal.ZERO;
 
+    public static final String USER_ID = "X-User-Id";
+    public static final String USER_ROLES = "X-User-Roles";
+    public static final String TRACE_ID = "X-Trace-Id";
+
 }

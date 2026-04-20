@@ -29,6 +29,8 @@ springdoc:
 spring:
   main:
     web-application-type: reactive
+  reactor:
+    context-propagation: auto
   application:
     name: api-gateway
 
@@ -109,6 +111,9 @@ spring:
         jwt:
           issuer-uri: https://loomandlume.shop
 logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}] [%thread] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}] [%thread] %logger{36} - %msg%n"
   level:
     org:
       springframework:
@@ -124,3 +129,12 @@ logging:
 
 frontend:
   url: https://loomandlume.shop
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans

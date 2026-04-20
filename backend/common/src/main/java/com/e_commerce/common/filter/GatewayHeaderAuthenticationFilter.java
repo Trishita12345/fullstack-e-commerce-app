@@ -5,7 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.e_commerce.common.security.UserHeaders;
+import com.e_commerce.common.utils.Constants;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,8 +28,8 @@ public class GatewayHeaderAuthenticationFilter extends OncePerRequestFilter {
         // Prevent overriding existing authentication
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            String userId = request.getHeader(UserHeaders.USER_ID);
-            String rolesHeader = request.getHeader(UserHeaders.USER_ROLES);
+            String userId = request.getHeader(Constants.USER_ID);
+            String rolesHeader = request.getHeader(Constants.USER_ROLES);
 
             if (userId != null && rolesHeader != null) {
 
