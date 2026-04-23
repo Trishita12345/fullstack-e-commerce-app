@@ -36,11 +36,6 @@ import com.e_commerce.common.model.event.OrderReservedEvent;
 import com.e_commerce.common.model.event.PaymentCreatedEvent;
 import com.e_commerce.common.model.event.PaymentStatusEvent;
 import com.e_commerce.common.utils.Constants;
-import com.e_commerce.orderService.client.ICartClient;
-import com.e_commerce.orderService.client.IOfferClient;
-import com.e_commerce.orderService.client.IPaymentClient;
-import com.e_commerce.orderService.client.IProductClient;
-import com.e_commerce.orderService.client.IProfileClient;
 import com.e_commerce.orderService.kafka.OrderEventProducer;
 import com.e_commerce.orderService.model.Order;
 import com.e_commerce.orderService.model.OrderItem;
@@ -78,12 +73,8 @@ public class OrderService implements IOrderService {
         private String s3PublicUrl;
 
         private final OrderEventProducer orderEventProducer;
-        private final IPaymentClient paymentClient;
 
-        private final ICartClient cartClient;
-        private final IProductClient productClient;
-        private final IOfferClient offerClient;
-        private final IProfileClient profileClient;
+        private final ExternalService externalService;
 
         private final IOrderRepository orderRepository;
         private final IInvoicePdfGeneratorService invoicePdfGeneratorService;
@@ -103,7 +94,7 @@ public class OrderService implements IOrderService {
                 if (selectedCouponCode == null)
                         return Constants.ZERO;
 
-                return offerClient.getCouponDiscountPercent(
+                return externalService.getCouponDiscountPercent(
                                 selectedCouponCode,
                                 totalPrice);
         }
@@ -136,7 +127,7 @@ public class OrderService implements IOrderService {
         }
 
         private Order createOrder(String userId, PlaceOrderReqDTO placeOrderReq) {
-                AddressDTO addressDetails = profileClient.getAddressDetailsById(placeOrderReq.getDeliveryAddressId());
+                AddressDTO addressDetails = externalService.getAddressDetailsById(placeOrderReq.getDeliveryAddressId());
                 String fullAddress = addressDetails.getAddressLine1() + ", " +
                                 (addressDetails.getAddressLine2() != null ? addressDetails.getAddressLine2() + ", "
                                                 : "")
@@ -262,9 +253,9 @@ public class OrderService implements IOrderService {
         @Transactional
         public UUID placeOrder(String userId, PlaceOrderReqDTO placeOrderReq) {
 
-                CartDTO cart = cartClient.getSelectedItemsInCart();
+                CartDTO cart = externalService.getSelectedItemsInCart();
 
-                ProductPriceDTO productPriceDTO = productClient.getPricesForPlaceOrder(cart.getSelectedCartItems());
+                ProductPriceDTO productPriceDTO = externalService.getPricesForPlaceOrder(cart.getSelectedCartItems());
 
                 BigDecimal couponPercent = fetchCouponPercent(placeOrderReq.getSelectedCouponCode(),
                                 productPriceDTO.getTotalPrice());
@@ -314,7 +305,7 @@ public class OrderService implements IOrderService {
 
         @Override
         public PriceSummaryResponseDTO getPriceSummary(PriceSummaryRequestDTO priceSummaryRequestDTO) {
-                TotalProductPriceResponseDTO totalProductPriceResponseDTO = productClient
+                TotalProductPriceResponseDTO totalProductPriceResponseDTO = externalService
                                 .getPrices(priceSummaryRequestDTO.getCartItems());
 
                 BigDecimal totalBasePrice = totalProductPriceResponseDTO.getTotalBasePrice();
@@ -381,10 +372,11 @@ public class OrderService implements IOrderService {
                                                         .userId(order.getUserId())
                                                         .build();
                                         orderEventProducer.publishOrderFulfilled(orderFulfilledEvent);
-                                        UserInfoDTO userInfoDTO = profileClient.getUserInfo(order.getUserId());
-                                        var userName = userInfoDTO.getFullName();
-                                        var userEmail = userInfoDTO.getEmailId();
-                                        var userEmailVerified = userInfoDTO.getEmailIdVerified();
+                                        UserInfoDTO userInfoDTO = externalService.getUserInfo(order.getUserId());
+                                        var userName = userInfoDTO != null ? userInfoDTO.getFullName() : null;
+                                        var userEmail = userInfoDTO != null ? userInfoDTO.getEmailId() : null;
+                                        var userEmailVerified = userInfoDTO != null ? userInfoDTO.getEmailIdVerified()
+                                                        : false;
                                         if (userEmail != null && userEmailVerified) {
                                                 OrderConfimedNotificationEvent orderConfimedNotificationEvent = OrderConfimedNotificationEvent
                                                                 .builder()
@@ -451,7 +443,7 @@ public class OrderService implements IOrderService {
                                 .orElseThrow(() -> new BaseException("Order not found: " + orderId,
                                                 HttpStatus.NOT_FOUND, "ORDER_NOT_FOUND"));
                 if (order.getPaymentGateway() != null)
-                        return paymentClient.getGatewayMerchantKey(order.getPaymentGateway().name());
+                        return externalService.getGatewayMerchantKey(order.getPaymentGateway().name());
                 else
                         throw new BaseException("Payment gateway not set for order: " + orderId, HttpStatus.BAD_REQUEST,
                                         "PAYMENT_GATEWAY_NOT_SET");

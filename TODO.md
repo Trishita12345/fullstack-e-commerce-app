@@ -7,7 +7,6 @@ Preparing secure payment... RESERVED | INITIATED
 1. payment 
 2. Retry payment - 
 3. Resilience 4j
-4. Zipkin
 -----------------------------------------
 1. Project documentation - readme.md
 2. Map with system design concepts

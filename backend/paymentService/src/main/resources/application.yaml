@@ -55,24 +55,7 @@ gateway:
   base-url: https://api.loomandlume.shop/api/payment-service
   api-description: Swagger UI Documentation for Payment Service
 
-   
-logging:
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}] [%thread] %logger{36} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}] [%thread] %logger{36} - %msg%n"
-  level:
-    org:
-      springframework:
-        security: debug
-        cloud:
-          gateway: debug
-  file:
-    name: app/app.log
-  logback:
-    rollingpolicy:
-      max-file-size: 10MB
-      max-history: 5
-     
+  
 management:
   tracing:
     sampling:
