@@ -13,7 +13,7 @@ A **production-ready, distributed e-commerce system** built using **Java Spring 
 
 ---
 
-## ⚡ Key Highlights (Resume Ready)
+## ⚡ Key Highlights
 
 * 🧩 Built **10+ microservices** with **Spring Boot & WebFlux API Gateway**
 * 🔐 Implemented **OTP-based authentication with Redis + JWT (Access + Refresh in cookies)**
