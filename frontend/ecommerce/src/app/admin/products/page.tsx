@@ -5,12 +5,13 @@ import type {
   ProductsListingPageProps,
   SelectOptionType,
 } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { IconArrowNarrowLeft, IconEdit, IconPlus } from "@tabler/icons-react";
 import { ActionButton } from "@/(components)/ActionButton";
 
 import Link from "next/link";
 import { FilterButton } from "@/(components)/FilterButton";
+import { notify } from "@/utils/helperFunctions";
 
 interface PageProps {
   searchParams: {
@@ -32,17 +33,26 @@ export default async function Products({ searchParams }: PageProps) {
   } = await searchParams;
 
   const page = Number(pageParam ?? 1) - 1;
+  let products, categoriesForFilter = [] as SelectOptionType[];
+  try {
+    products = await serverApiFetch<Page<ProductsListingPageProps>>(
+      `/product-service/product/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
+      {
+        cache: "force-cache",
+        revalidate: 60,
+      }
+    )
+    categoriesForFilter = await serverApiFetch<SelectOptionType[]>(
+      "/product-service/category/get-leaf-categories"
+    );
+  } catch (err) {
+    notify({
+      message: (err as Error)?.message || "Something went wrong",
+      variant: "error",
+      title: "Error"
+    })
+  };
 
-  const products = await apiFetch<Page<ProductsListingPageProps>>(
-    `/product-service/product/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}&filter=${f}`,
-    {
-      cache: "force-cache",
-      revalidate: 60,
-    }
-  );
-  const categoriesForFilter = await apiFetch<SelectOptionType[]>(
-    "/product-service/category/get-leaf-categories"
-  );
   const sortableFields: SortableField[] = [
     {
       field: "name",
@@ -89,11 +99,11 @@ export default async function Products({ searchParams }: PageProps) {
             />
           </Link>
         }
-        pageData={products}
+        pageData={products as Page<ProductsListingPageProps>}
         fields={sortableFields}
         tableContent={{
           head: ["Name", "Category Name", "Actions"],
-          body: products.content.map((item: ProductsListingPageProps) => [
+          body: products?.content.map((item: ProductsListingPageProps) => [
             item.productName,
             item.categoryName,
             <Link

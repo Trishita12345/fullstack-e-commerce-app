@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-add-is_selected_column_cart_items
+      author: trishita
+      changes:
+        - addColumn:
+            tableName: cart_items
+            columns:
+              - column:
+                  name: is_selected
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

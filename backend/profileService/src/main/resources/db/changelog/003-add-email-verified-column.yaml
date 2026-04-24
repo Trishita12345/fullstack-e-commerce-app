@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-email-verified-column
+      author: trishita
+      changes:
+        - addColumn:
+            tableName: user_info
+            columns:
+              - column:
+                  name: email_verified
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false

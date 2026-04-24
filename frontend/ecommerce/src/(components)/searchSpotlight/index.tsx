@@ -1,7 +1,11 @@
 "use client";
 import { en } from "@/constants/en";
+import { faAddressBook, faIdCard } from "@fortawesome/free-regular-svg-icons";
 import {
   faArrowTrendUp,
+  faCartArrowDown,
+  faCartShopping,
+  faFire,
   faHeart,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
@@ -9,36 +13,86 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDebouncedValue } from "@mantine/hooks";
 import { Spotlight, SpotlightActionData, spotlight } from "@mantine/spotlight";
 import { IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const defaultActions: SpotlightActionData[] = [
-  //   {
-  //     id: "home",
-  //     label: "Home",
-  //     description: "Get to home page",
-  //     onClick: () => console.log("Home"),
-  //     leftSection: <IconHome size={24} stroke={1.5} />,
-  //   },
-  {
-    id: "newlyAdded",
-    label: en.newlyAddedItems,
-    description: en.mostLovedItemsDesc,
-    onClick: () => console.log("Documentation"),
-    leftSection: <FontAwesomeIcon icon={faArrowTrendUp} size="lg" />,
-  },
-  {
-    id: "mostLoved",
-    label: en.mostLovedItems,
-    description: en.mostLovedItemsDesc,
-    onClick: () => console.log("Dashboard"),
-    leftSection: <FontAwesomeIcon icon={faHeart} size="lg" />,
-  },
-];
+const defaultActions = (handleClick: (link: string) => void): SpotlightActionData[] => {
+  return ([
+    {
+      id: "trending",
+      label: 'Explore Trending Items',
+      description: 'Check the trending items in our store',
+      onClick: () => handleClick("/products?sortBy=trending&dir=desc"),
+      leftSection: <FontAwesomeIcon icon={faFire} size="lg" />,
+    },
+    {
+      id: "newlyAdded",
+      label: en.newlyAddedItems,
+      description: en.mostLovedItemsDesc,
+      onClick: () => handleClick("/products?sortBy=createdAt&dir=desc"),
+      leftSection: <FontAwesomeIcon icon={faArrowTrendUp} size="lg" />,
+    },
+    {
+      id: "mostBought",
+      label: 'Most Bought Items',
+      description: 'Check the most bought items by our customers',
+      onClick: () => handleClick("/products?sortBy=popularity&dir=desc"),
+      leftSection: <FontAwesomeIcon icon={faHeart} size="lg" />,
+    },
+    {
+      id: "address",
+      label: 'My Address',
+      description: 'View my address',
+      onClick: () => handleClick("/saved-addresses"),
+      leftSection: <FontAwesomeIcon icon={faAddressBook} size="lg" />,
+    },
+    {
+      id: "orders",
+      label: 'My Orders',
+      description: 'View my orders',
+      onClick: () => handleClick("/orders"),
+      leftSection: <FontAwesomeIcon icon={faCartArrowDown} size="lg" />,
+    },
+    {
+      id: "profile",
+      label: 'My Profile',
+      description: 'View and edit your profile',
+      onClick: () => handleClick("/my-profile"),
+      leftSection: <FontAwesomeIcon icon={faIdCard} size="lg" />,
+    },
+    {
+      id: "wishlist",
+      label: 'My Wishlist',
+      description: 'View my wishlist',
+      onClick: () => handleClick("/wishlist"),
+      leftSection: <FontAwesomeIcon icon={faHeart} size="lg" />,
+    },
+    {
+      id: "cart",
+      label: 'My Cart',
+      description: 'View my cart',
+      onClick: () => handleClick("/checkout/cart"),
+      leftSection: <FontAwesomeIcon icon={faCartShopping} size="lg" />,
+    },
+  ])
+};
 
 function SearchSpotlight() {
-  const [actions, setActions] = useState<SpotlightActionData[]>(defaultActions);
+  const [actions, setActions] = useState<SpotlightActionData[]>([]);
   const [value, setValue] = useState("");
   const [debounced] = useDebouncedValue(value, 2000);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (debounced) { }
+    else {
+      setActions(defaultActions(handleClick));
+    }
+  }, [debounced]);
+
+  const handleClick = (link: string) => {
+    router.push(link)
+  }
   return (
     <>
       <FontAwesomeIcon
@@ -50,6 +104,7 @@ function SearchSpotlight() {
         actions={actions}
         nothingFound="Nothing found..."
         highlightQuery
+        // limit={3}
         searchProps={{
           leftSection: <IconSearch size={20} stroke={1.5} />,
           placeholder: "Search...",

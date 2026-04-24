@@ -24,12 +24,14 @@ export type BannerImageItem = {
   id: string;
   imageUrl: string;
   href: string;
+  type?: "image" | "video";
 };
 export type StoriesType = {
   id: string;
   imgUrl: string;
   name: string;
   updatedAt: string;
+  description: string;
 };
 export type SelectOptionType = {
   label: string;
@@ -122,12 +124,13 @@ export interface ProductVariant {
   basePrice: number;
   discountedPrice: number;
   imgUrls: {
-    url: string,
-    isThumbnail: boolean
+    url: string;
+    isThumbnail: boolean;
   }[];
-   attributes: {
+  attributes: {
     [key: string]: string;
   };
+  hsn: string;
 }
 
 export interface VariantAttribute {
@@ -137,13 +140,13 @@ export interface VariantAttribute {
 }
 
 export interface ProductItemListing {
-  productItemId: string,
-  sku: string,
-  avlStock: number,
-  basePrice: number,
-  discountedPrice: number,
-  imgUrl: string,
-  attributes: string[]
+  productItemId: string;
+  sku: string;
+  avlStock: number;
+  basePrice: number;
+  discountedPrice: number;
+  imgUrl: string;
+  attributes: string[];
 }
 
 export interface AddEditCategoryResponseType {
@@ -156,7 +159,7 @@ export interface AddEditCategoryResponseType {
 
 export type VariantAttributeType = {
   name: string;
-  productItemId: string;
+  productItemId: string[];
 };
 
 export type ProductVariantAttribute = {
@@ -178,9 +181,8 @@ export type ProductDetailsDTO = {
   rating: number;
   noOfReviews: number;
 };
-export interface pdpCartDataDTO {
-  addedToWishList: boolean,
-    noOfItemsInCart: number,
+export interface PdpCartDataDTO {
+  noOfItemsInCart: number;
 }
 export interface ProductReviewsResponseDTO {
   productId: string;
@@ -202,7 +204,7 @@ export interface ReviewSummaryDTO {
 export interface UserDTO {
   id: string;
   name: string;
-  avatarUrl: string|null;
+  avatarUrl: string | null;
 }
 
 export interface ReviewDTO {
@@ -213,3 +215,264 @@ export interface ReviewDTO {
   createdAt: string; // ISO date from backend
 }
 
+export interface CartItemDTO {
+  productItemId: string;
+  quantity: number;
+  updatedQuantity: number;
+  priceSnapshot: number;
+  isSelected?: boolean;
+}
+export interface CartItemDbDTO {
+  productItemId: string;
+  quantity: number;
+  priceSnapshot: number;
+  isSelected?: boolean;
+}
+export interface TotalPriceFromProductDTO {
+  totalBasePrice: number;
+  totalDiscountedPrice: number;
+}
+
+export interface CartProducts {
+  sku: string;
+  productName: string;
+  productItemId: string;
+  basePrice: number;
+  discountedPrice: number;
+  availableStock: number;
+  imgUrl: string;
+}
+
+export interface CartProductsDTO {
+  [productItemId: string]: CartProducts;
+}
+
+export enum AddressType {
+  HOME = "HOME",
+  OFFICE = "WORK",
+  OTHER = "OTHER",
+}
+export interface AddressDTO {
+  addressId?: string;
+  fullName: string;
+  phoneNumber: string;
+  addressLine1: string;
+  addressLine2?: string | null;
+  landmark?: string | null;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  addressType: AddressType;
+  isDefault: boolean;
+  isSelected: boolean;
+}
+
+export enum PaymentModeType {
+  COD = "COD",
+  PREPAID = "PREPAID",
+}
+
+export interface PlaceOrderReqDTO {
+  donation: number;
+  giftWrap: boolean;
+  selectedCouponCode: string | null;
+  paymentMode: PaymentModeType;
+  paymentGateway?: string;
+  deliveryAddressId: string;
+}
+export interface PriceSummaryResponse {
+  itemsTotalMrp: number;
+  productDiscount: number;
+  couponDiscount: number;
+  donation: number;
+  giftWrapFee: number;
+  payableAmount: number;
+  shippingFee: number;
+  amountToAvoidShippingFee: number;
+}
+
+export interface TotalPriceFromProductDTORequest {
+  productItemId: string;
+  quantity: number;
+}
+export interface PriceSummaryRequest {
+  donation: number;
+  giftWrap: boolean;
+  selectedCouponCode: string | null;
+  cartItems: {
+    productItemId: string;
+    quantity: number;
+  }[];
+}
+
+export interface OrderStatusPollingResponse {
+  orderId: string;
+  orderStatus: string;
+  paymentStatus: string;
+  transactionId: string;
+  gatewayOrderId: string;
+  amount: number;
+  paymentMode: string;
+}
+
+export interface PriceSummary {
+  itemsTotalMrp: number;
+  itemsTotalMrpAfterDiscount: number;
+  couponDiscount: number;
+  donation: number;
+  giftWrapFee: number;
+  shippingFee: number;
+  totalPaidAmount: number;
+}
+
+export interface OrderItem {
+  orderItemId: string;
+  productItemId: string
+  sku: string;
+  productName: string;
+  productImg: string;
+  quantity: number;
+  basePrice: number;
+  sellingPrice: number;
+  couponDiscount: number;
+  finalPrice: number;
+}
+export interface OrderDetailsDTO {
+  orderId: string;
+  orderStatus: string;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  priceSummary: PriceSummary;
+  paymentMode: string;
+  paymentStatus: string;
+  canRetryPayment: boolean;
+  canCancel: boolean;
+  items: OrderItem[];
+  deliveryName: string;
+  deliveryAddressDetails: string;
+  contactNumber: string;
+}
+
+export interface PLPResponseDTO {
+  products: ProductsPage;
+  facets: Record<string, FacetValue[]>;
+  total: number;
+}
+
+export interface ProductsPage {
+  totalElements: number;
+  totalPages: number;
+  pageable: Pageable;
+  numberOfElements: number;
+  first: boolean;
+  last: boolean;
+  size: number;
+  content: ProductItem[];
+  number: number;
+  sort: Sort[];
+  empty: boolean;
+}
+
+export interface Pageable {
+  pageNumber: number;
+  pageSize: number;
+  paged: boolean;
+  unpaged: boolean;
+  offset: number;
+  sort: Sort[];
+}
+
+export interface Sort {
+  direction: string;
+  nullHandling: string;
+  ascending: boolean;
+  property: string;
+  ignoreCase: boolean;
+}
+
+export interface ProductItem {
+  productItemId: string;
+  productId: string;
+  productName: string;
+  category: string;
+  basePrice: number;
+  sellingPrice: number;
+  discountPercentage: number;
+  inStock: boolean;
+  images: SearchProductImage[];
+  variants: SearchProductVariant[];
+  stockQuantity: number;
+  purchaseCount: number;
+  trendingScore: number;
+  rating: number;
+  ratingCount: number;
+  rankingBoost: number;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+}
+
+export interface SearchProductImage {
+  imgUrl: string;
+  isThumbnail: boolean;
+}
+
+export interface SearchProductVariant {
+  name: string;
+  value: string;
+}
+
+export interface FacetValue {
+  value: string;
+  count: number;
+}
+
+export interface saveUserDTO {
+  id: String;
+  name: String;
+  email: String;
+  emailVerified: boolean;
+  image: String;
+}
+
+export interface User {
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  id: string;
+  userId: string;
+  phoneNumber: string;
+  emailId?: string;
+  emailIdVerified?: boolean;
+  fullName: string;
+  gender?: Gender;
+  dob?: string; // ISO date string
+}
+
+export interface generateOTPRequest {
+  phone: string;
+}
+export interface OtpVerifyRequest {
+  phone: string;
+  otp: string;
+  deviceId: string;
+}
+export interface VerifyOtpResponse extends rolePermissionResponse {
+  firstTimeLogin: boolean;
+  userInfo: User;
+}
+
+export interface rolePermissionResponse {
+  role: string;
+  permissions: string[];
+}
+
+export interface ErrorResponse {
+  timestamp: string;
+  status: number;
+  error: string;
+  message: string;
+  path: string;
+  traceId: string;
+}
+
+export type Gender = "MALE" | "FEMALE" | "PREFER_NOT_TO_SAY";

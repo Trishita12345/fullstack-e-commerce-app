@@ -1,7 +1,9 @@
 "use client";
 
 import { CustomInputProps } from "@/(components)/CustomRichTextEditor";
-import { notify, uploadToS3 } from "@/utils/helperFunctions";
+import { ErrorResponse } from "@/constants/types";
+import { notify } from "@/utils/helperFunctions";
+import { uploadToS3 } from "@/utils/s3Actions";
 import {
   Box,
   Text,
@@ -97,11 +99,11 @@ export function ProductImagesSection({
                     open();
                     const uploadedUrl = await uploadToS3(files[0]);
                     setThumbnail(uploadedUrl);
-                  } catch {
+                  } catch (err) {
                     notify({
                       variant: "error",
                       title: "Error!",
-                      message: "Failed to upload thumbnail image.",
+                      message: (err as Error)?.message || "Failed to upload thumbnail image.",
                     });
                   } finally {
                     close();
@@ -179,11 +181,11 @@ export function ProductImagesSection({
                     );
                     const uploadedUrls = await Promise.all(uploadPromises);
                     setImages((prev) => [...prev, ...uploadedUrls]);
-                  } catch {
+                  } catch (err) {
                     notify({
                       variant: "error",
                       title: "Error!",
-                      message: "Failed to upload images.",
+                      message: (err as Error)?.message || "Failed to upload images.",
                     });
                   } finally {
                     close();

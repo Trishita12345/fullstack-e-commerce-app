@@ -6,10 +6,13 @@ import { Fragment } from "react";
 const VariantAttributes = ({
   va,
   productItemId,
+  availableStock,
 }: {
   va: ProductVariantAttribute;
   productItemId: string;
+  availableStock: number;
 }) => {
+  const outOfStock = availableStock === 0;
   return (
     <Stack gap={10}>
       <Text tt="uppercase" size="11px" fw={600} lts={0.9} c={"black.8"}>
@@ -19,19 +22,23 @@ const VariantAttributes = ({
         {va.attributes.map((vaa) => (
           <Fragment key={vaa.name}>
             {" "}
-            {vaa.productItemId === productItemId ? ( //isSelected
+            {vaa.productItemId.includes(productItemId) ? ( //isSelected
               <Button
                 variant={"filled"}
                 color={"primaryDark.5"}
                 size="xs"
                 style={{ cursor: "default" }}
               >
-                {vaa.name}
+                <Text size="xs" tt="capitalize" fw={500}>
+                  {vaa.name}
+                </Text>
               </Button>
             ) : (
-              <Link href={`/products/${vaa.productItemId}`}>
+              <Link href={`/products/${vaa.productItemId[0]}`}>
                 <Button variant={"outline"} color={"primaryDark.5"} size="xs">
-                  {vaa.name}
+                  <Text size="xs" tt="capitalize" fw={500}>
+                    {vaa.name}
+                  </Text>
                 </Button>
               </Link>
             )}

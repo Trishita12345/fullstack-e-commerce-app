@@ -1,4 +1,5 @@
-export const dynamic = "force-static";
+export const revalidate = 3600;
+export const dynamic = "force-static"
 
 import Breadcrumb from "@/(components)/Breadcrumb";
 import { Accordion, Box, Divider, Grid, GridCol, Stack } from "@mantine/core";
@@ -12,7 +13,6 @@ import PdpAccordionItem from "./(components)/PdpAccordianItem";
 import ReviewSection from "./(components)/(review)/ReviewSection";
 import { reviewData } from "./(components)/(dummyData)/productReviewData";
 import { en } from "@/constants/en";
-import { pdpCartData } from "./(components)/pdpCartData";
 import { ProductDetailsDTO } from "@/constants/types";
 import { apiFetch } from "@/lib/apiFetch";
 
@@ -27,7 +27,7 @@ export async function generateStaticParams() {
     {
       cache: "force-cache",
       revalidate: 3600,
-    }
+    },
   );
   return productItemIds;
 }
@@ -38,19 +38,18 @@ async function getPDPData(productItemId: string) {
     {
       cache: "force-cache",
       revalidate: 3600,
-    }
+    },
   );
 }
 export async function generateMetadata({ params }: PageProps) {
   const { productItemId } = await params;
   const pdp = await getPDPData(productItemId);
-
   return {
     title: pdp.productName,
     description: pdp.description,
     openGraph: {
       title: pdp.productName,
-      images: pdp.imgUrls,
+      images: pdp.imgUrls[0],
     },
   };
 }
@@ -59,7 +58,6 @@ const PDP = async ({ params }: PageProps) => {
   const { productItemId } = await params;
   const pdpData = await getPDPData(productItemId);
   const reviews = reviewData;
-  const pdpCartDetails = pdpCartData;
   const breadcrumbs = [
     { title: "Home", href: "/" },
     {
@@ -79,7 +77,7 @@ const PDP = async ({ params }: PageProps) => {
         borderTop: `1.5px solid var(--mantine-color-gray-1)`,
       }}
     >
-      <Box w={{ base: "90%", md: "85%" }} mx="auto" py={48}>
+      <Box w={{ base: "100%", xs: '90%', md: "85%" }} mx="auto" pb={32} pt={{ base: 0, xs: 32 }}>
         <Breadcrumb items={breadcrumbs} />
         <Grid>
           <GridCol span={{ base: 12, sm: 5.7, md: 5.5, lg: 5 }}>
@@ -88,13 +86,13 @@ const PDP = async ({ params }: PageProps) => {
               product={{ name: pdpData.productName, id: productItemId }}
             />
           </GridCol>
-          <GridCol span={{ base: 12, sm: 6, md: 6.5, lg: 7 }}>
+          <GridCol span={{ base: 12, sm: 6, md: 6.5, lg: 7 }} px={{ base: 24, xs: 0 }}>
             <Stack gap={24}>
               <TitleSection pdpData={pdpData} />
               <PriceSection pdpData={pdpData} />
               <UpperRatingSection pdpData={pdpData} />
               <Variants pdpData={pdpData} productItemId={productItemId} />
-              <ButtonSection pdpData={pdpData} pdpCartData={pdpCartDetails} />
+              <ButtonSection pdpData={pdpData} productItemId={productItemId} />
               <Divider color="gray.2" mb={-24} />
               <Accordion>
                 <PdpAccordionItem
@@ -114,7 +112,9 @@ const PDP = async ({ params }: PageProps) => {
             </Stack>
           </GridCol>
         </Grid>
-        <ReviewSection reviews={reviews} />
+        <Box px={{ base: 24, xs: 0 }}>
+          <ReviewSection reviews={reviews} />
+        </Box>
       </Box>
     </Box>
   );

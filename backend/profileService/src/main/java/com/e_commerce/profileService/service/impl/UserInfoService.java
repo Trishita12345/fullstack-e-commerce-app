@@ -1,0 +1,86 @@
+package com.e_commerce.profileService.service.impl;
+
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import com.e_commerce.common.exception.BaseException;
+import com.e_commerce.common.model.dto.UserInfoDTO;
+import com.e_commerce.common.model.enums.Gender;
+import com.e_commerce.profileService.model.UserInfo;
+import com.e_commerce.profileService.repository.IUserInfoRepository;
+import com.e_commerce.profileService.service.IUserInfoService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class UserInfoService implements IUserInfoService {
+
+    private final IUserInfoRepository userInfoRepository;
+
+    @Override
+    public UserInfoDTO getUserDetailsByUserId(String userId) {
+        return userInfoRepository.getByUserId(userId).map(this::userToUserInfoMapper).orElseThrow(
+                () -> new BaseException("User info not found for userId: " + userId, HttpStatus.NOT_FOUND,
+                        "USER_INFO_NOT_FOUND"));
+    }
+
+    @Override
+    @Transactional
+    public UserInfoDTO saveUserDetails(String userId, String phoneNumber) {
+        Optional<UserInfo> userInfo = userInfoRepository.getByUserId(userId);
+        if (userInfo.isPresent()) {
+            return userToUserInfoMapper(userInfo.get());
+        }
+        UserInfo newUserInfo = UserInfo.builder()
+                .userId(userId)
+                .fullName("")
+                .phoneNumber(phoneNumber)
+                .gender(Gender.MALE)
+                .build();
+
+        UserInfo savedUserInfo = userInfoRepository.save(newUserInfo);
+        return userToUserInfoMapper(savedUserInfo);
+    }
+
+    private UserInfoDTO userToUserInfoMapper(UserInfo existUserInfo) {
+        return UserInfoDTO.builder()
+                .id(existUserInfo.getId())
+                .userId(existUserInfo.getUserId())
+                .createdAt(existUserInfo.getCreatedAt())
+                .updatedAt(existUserInfo.getUpdatedAt())
+                .fullName(existUserInfo.getFullName())
+                .phoneNumber(existUserInfo.getPhoneNumber())
+                .emailId(existUserInfo.getEmailId())
+                .emailIdVerified(existUserInfo.getEmailVerified())
+                .dob(existUserInfo.getDob())
+                .gender(existUserInfo.getGender())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public UserInfoDTO updateUserDetailsByUserId(String userId, UserInfoDTO userInfoDto) {
+        UserInfo existingUserInfo = userInfoRepository.getByUserId(userId).orElseThrow();
+        UserInfo updated = existingUserInfo.toBuilder()
+                .fullName(userInfoDto.getFullName())
+                .phoneNumber(userInfoDto.getPhoneNumber())
+                .emailId(userInfoDto.getEmailId())
+                .emailVerified(userInfoDto.getEmailIdVerified())
+                .dob(userInfoDto.getDob())
+                .gender(userInfoDto.getGender())
+                .build();
+
+        return userToUserInfoMapper(userInfoRepository.save(updated));
+
+    }
+
+    @Override
+    public UserInfoDTO getUserInfo(String name) {
+        return getUserDetailsByUserId(name);
+    }
+
+}

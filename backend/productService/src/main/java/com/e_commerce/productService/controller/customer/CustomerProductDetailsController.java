@@ -1,14 +1,18 @@
 package com.e_commerce.productService.controller.customer;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.e_commerce.productService.model.dto.customer.CartProductItemInfoResponse;
 import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
 import com.e_commerce.productService.model.dto.customer.ProductItemIdDTO;
 import com.e_commerce.productService.service.IProductItemService;
@@ -33,4 +37,11 @@ public class CustomerProductDetailsController {
         return ResponseEntity.ok(productItemService.getAllProductItemIds());
 
     }
+
+    @PostMapping("/cart-item-details")
+    public ResponseEntity<Map<UUID, CartProductItemInfoResponse>> getCarProductItemInfos(
+            @RequestBody List<UUID> productItemIds) {
+        return ResponseEntity.ok(productItemService.getCarProductItemInfos(productItemIds));
+    }
+
 }

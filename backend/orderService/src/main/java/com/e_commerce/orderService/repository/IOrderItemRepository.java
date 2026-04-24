@@ -1,0 +1,13 @@
+package com.e_commerce.orderService.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.e_commerce.orderService.model.OrderItem;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface IOrderItemRepository extends JpaRepository<OrderItem, UUID> {
+
+    List<OrderItem> findByOrderId(UUID orderId);
+}

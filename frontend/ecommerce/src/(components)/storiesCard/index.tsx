@@ -15,7 +15,7 @@ const StoriesCard = ({ item }: { item: StoriesType }) => {
       <Text fw={600} size="lg">
         {item.name}
       </Text>
-      <Link href={""}>
+      <Link href={`/stories/${item.id}`}>
         <Group gap={8}>
           <Text size="sm" c="primaryDark.6" fw="500">
             <span

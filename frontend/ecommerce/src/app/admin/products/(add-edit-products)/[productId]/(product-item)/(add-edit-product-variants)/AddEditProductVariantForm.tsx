@@ -39,12 +39,14 @@ interface PageProps {
   variantAttributes: VariantAttribute[];
   productVariantId?: string;
   productVariantData?: ProductVariant;
+  gstOptions?: SelectOptionType[];
 }
 const AddEditProductVariantForm = ({
   productId,
   productVariantId,
   productVariantData,
   variantAttributes,
+  gstOptions = [],
 }: PageProps) => {
   const [visible, { open, close }] = useDisclosure(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -54,7 +56,7 @@ const AddEditProductVariantForm = ({
   const router = useRouter();
   const variantAttributesFormFields = variantAttributes.map((va) => ({
     [`attributes.${va.variantName}`]: isNotEmpty(
-      `${va.variantName} cannot be empty`
+      `${va.variantName} cannot be empty`,
     ),
   }));
   const form = useForm({
@@ -66,10 +68,12 @@ const AddEditProductVariantForm = ({
       discountedPrice: 0,
       imgUrls: [],
       attributes: {},
+      hsn: "",
       // attributes: { UUID1000: "UUID1", UUID1001: "UUID3" },
     },
     validate: {
       sku: isNotEmpty("Please generate sku first before submitting."),
+      hsn: isNotEmpty("Please select HSN code."),
       basePrice: (value) => (value > 0.0 ? null : "Base Price cannot be zero"),
       discountedPrice: (value, values) =>
         value > 0.0
@@ -96,7 +100,7 @@ const AddEditProductVariantForm = ({
     if (value === null) value = "";
     form.setFieldValue(`attributes.${key}`, value);
     const variantNotSelected = variantAttributes.some(
-      (va) => !form.getValues().attributes?.[va.variantName]
+      (va) => !form.getValues().attributes?.[va.variantName],
     );
     setGenerateSKUButtonDisabled(variantNotSelected);
     form.setFieldValue("sku", "");
@@ -107,7 +111,7 @@ const AddEditProductVariantForm = ({
       setSkuLoading(true);
       const value = await generateProductSKU(
         productId,
-        form.getValues().attributes
+        form.getValues().attributes,
       );
       form.setFieldValue("sku", value);
     } catch {
@@ -185,6 +189,14 @@ const AddEditProductVariantForm = ({
                   }
                 />
               ))}
+              <Select
+                withAsterisk
+                {...form.getInputProps(`hsn`)}
+                label={"GST HSN Code"}
+                placeholder={`Select HSN Code...`}
+                key={form.key(`hsn`)}
+                data={gstOptions}
+              />
               <NumberInput
                 {...form.getInputProps("avlStock")}
                 allowNegative={false}
@@ -215,22 +227,18 @@ const AddEditProductVariantForm = ({
                 key={form.key("discountedPrice")}
               />
               <Group>
-                {productVariantId ? (
-                  <></>
-                ) : (
-                  <Button
-                    variant="light"
-                    color="primaryDark.7"
-                    size="xs"
-                    w={"max-content"}
-                    loading={skuLoading}
-                    disabled={generateSKUButtonDisabled}
-                    leftSection={<IconSparkles />}
-                    onClick={generateSKU}
-                  >
-                    {form.getValues().sku ? "Regenerate SKU" : "Generate SKU"}
-                  </Button>
-                )}
+                <Button
+                  variant="light"
+                  color="primaryDark.7"
+                  size="xs"
+                  w={"max-content"}
+                  loading={skuLoading}
+                  disabled={generateSKUButtonDisabled}
+                  leftSection={<IconSparkles />}
+                  onClick={generateSKU}
+                >
+                  {form.getValues().sku ? "Regenerate SKU" : "Generate SKU"}
+                </Button>
                 {form.getValues().sku && (
                   <Group gap={0}>
                     <Text size="sm" fw={600}>

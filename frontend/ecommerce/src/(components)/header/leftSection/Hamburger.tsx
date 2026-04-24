@@ -10,12 +10,19 @@ import { Drawer, Box, Text } from "@mantine/core";
 import { NavItem } from "@/constants/types";
 import LogoText from "../../logo/LogoText";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type HamburgerProps = {
   navData: NavItem[];
 };
 const Hamburger = ({ navData }: HamburgerProps) => {
   const [opened, { open, close }] = useDisclosure(false);
+  const router = useRouter();
+
+  const redirectTo = (href: string) => {
+    router.push(href);
+    close();
+  };
 
   return (
     <>
@@ -50,22 +57,22 @@ const Hamburger = ({ navData }: HamburgerProps) => {
         }
       >
         {navData.map((item: NavItem) => (
-          <Link href={item.href} key={item.label}>
-            <Box
-              px={10}
-              style={{
-                borderBottom: `1px solid ${"var(--mantine-color-black-2)"}`,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                height: 50,
-              }}
-              tt="uppercase"
-            >
-              <Text size="xs">{item.label}</Text>
-              <FontAwesomeIcon icon={faArrowRight} size="xs" />
-            </Box>
-          </Link>
+          <Box
+            key={item.label}
+            px={10}
+            style={{
+              borderBottom: `1px solid ${"var(--mantine-color-black-2)"}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              height: 50,
+            }}
+            tt="uppercase"
+            onClick={() => redirectTo(item.href)}
+          >
+            <Text size="xs">{item.label}</Text>
+            <FontAwesomeIcon icon={faArrowRight} size="xs" />
+          </Box>
         ))}
       </Drawer>
     </>

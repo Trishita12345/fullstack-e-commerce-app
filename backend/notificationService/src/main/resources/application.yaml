@@ -1,0 +1,60 @@
+server:
+  port: 8090
+  address: 127.0.0.1
+
+spring:
+  application:
+    name: notification-service
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: darkspirit2212@gmail.com
+    password: xfojevykqtgbnijo
+    properties: 
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+
+    consumer:
+      group-id: notification-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.e_commerce.common.model.event.OrderCreatedEvent
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    config-url: /api/notification-service/v3/api-docs/swagger-config
+    url: /api/notification-service/v3/api-docs
+
+gateway:
+  base-url: https://api.loomandlume.shop/api/notification-service
+  api-description: Swagger UI Documentation for notification Service
+
+fast2sms:
+  api-key: xxxx
+
+   
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://127.0.0.1:9411/api/v2/spans

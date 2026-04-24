@@ -8,12 +8,14 @@ backend/productService/.mvn/wrapper/maven-wrapper.properties
 # frontend
 node_modules
 generated
+.env
 
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+backend/**/app/
 
 ### STS ###
 .apt_generated
@@ -44,3 +46,4 @@ build/
 .vscode/
 
 **/.mvn/wrapper/maven-wrapper.properties
+**/package-lock.json

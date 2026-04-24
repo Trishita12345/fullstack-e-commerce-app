@@ -1,0 +1,2746 @@
+Folder structure for /home/code/fullstack-e-commerce-app
+
+fullstack-e-commerce-app/
+├── backend/
+│   ├── apiGatewayService/
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── apiGatewayService/
+│   │   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   │   ├── GatewaySwaggerConfig.java
+│   │   │   │   │   │   │   │   │   └── SecurityConfig.java
+│   │   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   │   ├── DemoController.java
+│   │   │   │   │   │   │   │   │   └── GlobalFallbackController.java
+│   │   │   │   │   │   │   │   ├── exception/
+│   │   │   │   │   │   │   │   │   ├── BaseException.java
+│   │   │   │   │   │   │   │   │   ├── ErrorResponse.java
+│   │   │   │   │   │   │   │   │   └── GlobalErrorHandler.java
+│   │   │   │   │   │   │   │   ├── filter/
+│   │   │   │   │   │   │   │   │   ├── CookieToHeaderFilter.java
+│   │   │   │   │   │   │   │   │   ├── TraceIdFilter.java
+│   │   │   │   │   │   │   │   │   └── UserContextGatewayFilterFactory.java
+│   │   │   │   │   │   │   │   └── ApiGatewayServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │   │   └── application.yml
+│   │   │   └── test/
+│   │   │   │   └── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── apiGatewayService/
+│   │   │   │   │   │   │   │   └── ApiGatewayServiceApplicationTests.java
+│   │   └── pom.xml
+│   ├── authService/
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── authService/
+│   │   │   │   │   │   │   │   ├── client/
+│   │   │   │   │   │   │   │   │   └── IProfileClient.java
+│   │   │   │   │   │   │   │   ├── configuration/
+│   │   │   │   │   │   │   │   │   ├── OtpConfig.java
+│   │   │   │   │   │   │   │   │   ├── RedisConfig.java
+│   │   │   │   │   │   │   │   │   └── RsaKeyConfig.java
+│   │   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   │   ├── AuthController.java
+│   │   │   │   │   │   │   │   │   └── JwkController.java
+│   │   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   │   ├── OTpVerifyRequest.java
+│   │   │   │   │   │   │   │   │   │   ├── TokenResponse.java
+│   │   │   │   │   │   │   │   │   │   ├── UserResponse.java
+│   │   │   │   │   │   │   │   │   │   ├── VerifyOtpResponse.java
+│   │   │   │   │   │   │   │   │   │   └── VerifyOtpResponseWithToken.java
+│   │   │   │   │   │   │   │   │   ├── Permission.java
+│   │   │   │   │   │   │   │   │   ├── RefreshToken.java
+│   │   │   │   │   │   │   │   │   ├── Role.java
+│   │   │   │   │   │   │   │   │   └── User.java
+│   │   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   │   ├── RefreshTokenRepository.java
+│   │   │   │   │   │   │   │   │   ├── RoleRepository.java
+│   │   │   │   │   │   │   │   │   └── UserRepository.java
+│   │   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   │   ├── AuthApplicationService.java
+│   │   │   │   │   │   │   │   │   │   ├── JwtService.java
+│   │   │   │   │   │   │   │   │   │   ├── OtpService.java
+│   │   │   │   │   │   │   │   │   │   └── UserService.java
+│   │   │   │   │   │   │   │   │   ├── IAuthApplicationService.java
+│   │   │   │   │   │   │   │   │   ├── IJwtService.java
+│   │   │   │   │   │   │   │   │   ├── IOtpService.java
+│   │   │   │   │   │   │   │   │   └── IUserService.java
+│   │   │   │   │   │   │   │   ├── utils/
+│   │   │   │   │   │   │   │   │   └── Constants.java
+│   │   │   │   │   │   │   │   └── AuthServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │   │   ├── db/
+│   │   │   │   │   │   └── changelog/
+│   │   │   │   │   │   │   ├── 001-create-table.yaml
+│   │   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   │   └── application.yaml
+│   │   │   └── test/
+│   │   │   │   └── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── authService/
+│   │   │   │   │   │   │   │   └── AuthServiceApplicationTests.java
+│   │   ├── compose.yaml
+│   │   └── pom.xml
+│   ├── cartService/
+│   │   ├── app/
+│   │   │   ├── app.log
+│   │   │   ├── app.log.2026-04-18.0.gz
+│   │   │   ├── app.log.2026-04-19.0.gz
+│   │   │   ├── app.log.2026-04-20.0.gz
+│   │   │   └── app.log.2026-04-21.0.gz
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── cartService/
+│   │   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   │   ├── CartItemController.java
+│   │   │   │   │   │   │   │   │   ├── InternalController.java
+│   │   │   │   │   │   │   │   │   └── WishlistedController.java
+│   │   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   │   └── OrderFulfilledConsumer.java
+│   │   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   │   ├── CartItemRequestDTO.java
+│   │   │   │   │   │   │   │   │   │   └── CartItemRequestDTOWithUpdatedQty.java
+│   │   │   │   │   │   │   │   │   ├── enums/
+│   │   │   │   │   │   │   │   │   │   └── CartStatus.java
+│   │   │   │   │   │   │   │   │   ├── Cart.java
+│   │   │   │   │   │   │   │   │   ├── CartItem.java
+│   │   │   │   │   │   │   │   │   └── Wishlisted.java
+│   │   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   │   ├── ICartItemRepository.java
+│   │   │   │   │   │   │   │   │   ├── ICartRepository.java
+│   │   │   │   │   │   │   │   │   └── IWishlistedRepository.java
+│   │   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   │   ├── CartItemServiceImpl.java
+│   │   │   │   │   │   │   │   │   │   └── WishlistedServiceImpl.java
+│   │   │   │   │   │   │   │   │   ├── ICartItemService.java
+│   │   │   │   │   │   │   │   │   └── IWishlistedService.java
+│   │   │   │   │   │   │   │   └── CartServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │   │   ├── db/
+│   │   │   │   │   │   └── changelog/
+│   │   │   │   │   │   │   ├── 001-create-table.yaml
+│   │   │   │   │   │   │   ├── 002-create-wishlisted-table.yaml
+│   │   │   │   │   │   │   ├── 003-add-is_selected_column_cart_items.yaml
+│   │   │   │   │   │   │   ├── 004-add-updated_quantity_column_cart_items.yaml
+│   │   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   │   └── application.yml
+│   │   │   └── test/
+│   │   │   │   └── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── cartService/
+│   │   │   │   │   │   │   │   └── CartServiceApplicationTests.java
+│   │   ├── target/
+│   │   │   ├── classes/
+│   │   │   │   ├── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── cartService/
+│   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   ├── CartItemController.class
+│   │   │   │   │   │   │   │   ├── InternalController.class
+│   │   │   │   │   │   │   │   └── WishlistedController.class
+│   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   └── OrderFulfilledConsumer.class
+│   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   ├── CartItemRequestDTO.class
+│   │   │   │   │   │   │   │   │   ├── CartItemRequestDTO$CartItemRequestDTOBuilder.class
+│   │   │   │   │   │   │   │   │   └── CartItemRequestDTOWithUpdatedQty.class
+│   │   │   │   │   │   │   │   ├── enums/
+│   │   │   │   │   │   │   │   │   └── CartStatus.class
+│   │   │   │   │   │   │   │   ├── Cart.class
+│   │   │   │   │   │   │   │   ├── Cart$CartBuilder.class
+│   │   │   │   │   │   │   │   ├── CartItem.class
+│   │   │   │   │   │   │   │   ├── CartItem$CartItemBuilder.class
+│   │   │   │   │   │   │   │   ├── Wishlisted.class
+│   │   │   │   │   │   │   │   └── Wishlisted$WishlistedBuilder.class
+│   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   ├── ICartItemRepository.class
+│   │   │   │   │   │   │   │   ├── ICartRepository.class
+│   │   │   │   │   │   │   │   └── IWishlistedRepository.class
+│   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   ├── CartItemServiceImpl.class
+│   │   │   │   │   │   │   │   │   └── WishlistedServiceImpl.class
+│   │   │   │   │   │   │   │   ├── ICartItemService.class
+│   │   │   │   │   │   │   │   └── IWishlistedService.class
+│   │   │   │   │   │   │   └── CartServiceApplication.class
+│   │   │   │   ├── db/
+│   │   │   │   │   └── changelog/
+│   │   │   │   │   │   ├── 001-create-table.yaml
+│   │   │   │   │   │   ├── 002-create-wishlisted-table.yaml
+│   │   │   │   │   │   ├── 003-add-is_selected_column_cart_items.yaml
+│   │   │   │   │   │   ├── 004-add-updated_quantity_column_cart_items.yaml
+│   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   └── application.yml
+│   │   │   ├── generated-sources/
+│   │   │   │   └── annotations/
+│   │   │   ├── generated-test-sources/
+│   │   │   │   └── test-annotations/
+│   │   │   ├── maven-archiver/
+│   │   │   │   └── pom.properties
+│   │   │   ├── maven-status/
+│   │   │   │   └── maven-compiler-plugin/
+│   │   │   │   │   ├── compile/
+│   │   │   │   │   │   └── default-compile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   │   │   └── testCompile/
+│   │   │   │   │   │   └── default-testCompile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   ├── surefire-reports/
+│   │   │   │   ├── com.e_commerce.cartService.CartServiceApplicationTests.txt
+│   │   │   │   └── TEST-com.e_commerce.cartService.CartServiceApplicationTests.xml
+│   │   │   ├── test-classes/
+│   │   │   │   └── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── cartService/
+│   │   │   │   │   │   │   └── CartServiceApplicationTests.class
+│   │   │   ├── cartService-0.0.1-SNAPSHOT.jar
+│   │   │   └── cartService-0.0.1-SNAPSHOT.jar.original
+│   │   ├── compose.yaml
+│   │   ├── pom.xml
+│   │   └── readme.md
+│   ├── common/
+│   │   ├── src/
+│   │   │   └── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── common/
+│   │   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   │   ├── CommonSwaggerConfig.java
+│   │   │   │   │   │   │   │   │   ├── FeignConfig.java
+│   │   │   │   │   │   │   │   │   ├── GatewaySecurityAutoConfiguration.java
+│   │   │   │   │   │   │   │   │   └── SecurityConfig.java
+│   │   │   │   │   │   │   │   ├── exception/
+│   │   │   │   │   │   │   │   │   ├── BaseException.java
+│   │   │   │   │   │   │   │   │   ├── ErrorResponse.java
+│   │   │   │   │   │   │   │   │   └── GlobalExceptionHandler.java
+│   │   │   │   │   │   │   │   ├── filter/
+│   │   │   │   │   │   │   │   │   └── GatewayHeaderAuthenticationFilter.java
+│   │   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   │   ├── notificationDtos/
+│   │   │   │   │   │   │   │   │   │   │   ├── NotificationDTO.java
+│   │   │   │   │   │   │   │   │   │   │   └── OrderItemEmailDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── AddressDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── CartDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── CartItemDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── PlaceOrderReqDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── ProductPriceDetailsDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── ProductPriceDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── TotalProductPriceResponseDTO.java
+│   │   │   │   │   │   │   │   │   │   └── UserInfoDTO.java
+│   │   │   │   │   │   │   │   │   ├── enums/
+│   │   │   │   │   │   │   │   │   │   ├── AddressType.java
+│   │   │   │   │   │   │   │   │   │   ├── Gender.java
+│   │   │   │   │   │   │   │   │   │   ├── NotificationStatus.java
+│   │   │   │   │   │   │   │   │   │   ├── NotificationType.java
+│   │   │   │   │   │   │   │   │   │   ├── PaymentGateway.java
+│   │   │   │   │   │   │   │   │   │   └── PaymentMode.java
+│   │   │   │   │   │   │   │   │   ├── event/
+│   │   │   │   │   │   │   │   │   │   ├── InventoryReserveEvent.java
+│   │   │   │   │   │   │   │   │   │   ├── OrderConfimedNotificationEvent.java
+│   │   │   │   │   │   │   │   │   │   ├── OrderCreatedEvent.java
+│   │   │   │   │   │   │   │   │   │   ├── OrderFulfilledEvent.java
+│   │   │   │   │   │   │   │   │   │   ├── OrderReservedEvent.java
+│   │   │   │   │   │   │   │   │   │   ├── PaymentCreatedEvent.java
+│   │   │   │   │   │   │   │   │   │   ├── PaymentStatusEvent.java
+│   │   │   │   │   │   │   │   │   │   └── ProductSearchDocumentEvent.java
+│   │   │   │   │   │   │   │   │   └── AuditEntity.java
+│   │   │   │   │   │   │   │   ├── security/
+│   │   │   │   │   │   │   │   │   └── UserHeaders.java
+│   │   │   │   │   │   │   │   └── utils/
+│   │   │   │   │   │   │   │   │   └── Constants.java
+│   │   │   │   └── resources/
+│   │   │   │   │   └── logback-spring.xml
+│   │   ├── target/
+│   │   │   ├── classes/
+│   │   │   │   ├── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── common/
+│   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   ├── CommonSwaggerConfig.class
+│   │   │   │   │   │   │   │   ├── FeignConfig.class
+│   │   │   │   │   │   │   │   ├── GatewaySecurityAutoConfiguration.class
+│   │   │   │   │   │   │   │   └── SecurityConfig.class
+│   │   │   │   │   │   │   ├── exception/
+│   │   │   │   │   │   │   │   ├── BaseException.class
+│   │   │   │   │   │   │   │   ├── ErrorResponse.class
+│   │   │   │   │   │   │   │   ├── ErrorResponse$ErrorResponseBuilder.class
+│   │   │   │   │   │   │   │   └── GlobalExceptionHandler.class
+│   │   │   │   │   │   │   ├── filter/
+│   │   │   │   │   │   │   │   └── GatewayHeaderAuthenticationFilter.class
+│   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   ├── notificationDtos/
+│   │   │   │   │   │   │   │   │   │   ├── NotificationDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── NotificationDTO$NotificationDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── OrderItemEmailDTO.class
+│   │   │   │   │   │   │   │   │   │   └── OrderItemEmailDTO$OrderItemEmailDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── AddressDTO.class
+│   │   │   │   │   │   │   │   │   ├── AddressDTO$AddressDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── CartDTO.class
+│   │   │   │   │   │   │   │   │   ├── CartDTO$CartDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── CartItemDTO.class
+│   │   │   │   │   │   │   │   │   ├── CartItemDTO$CartItemDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── PlaceOrderReqDTO.class
+│   │   │   │   │   │   │   │   │   ├── ProductPriceDetailsDTO.class
+│   │   │   │   │   │   │   │   │   ├── ProductPriceDetailsDTO$ProductPriceDetailsDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── ProductPriceDTO.class
+│   │   │   │   │   │   │   │   │   ├── ProductPriceDTO$ProductPriceDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── TotalProductPriceResponseDTO.class
+│   │   │   │   │   │   │   │   │   ├── TotalProductPriceResponseDTO$TotalProductPriceResponseDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── UserInfoDTO.class
+│   │   │   │   │   │   │   │   │   └── UserInfoDTO$UserInfoDTOBuilder.class
+│   │   │   │   │   │   │   │   ├── enums/
+│   │   │   │   │   │   │   │   │   ├── AddressType.class
+│   │   │   │   │   │   │   │   │   ├── Gender.class
+│   │   │   │   │   │   │   │   │   ├── NotificationStatus.class
+│   │   │   │   │   │   │   │   │   ├── NotificationType.class
+│   │   │   │   │   │   │   │   │   ├── PaymentGateway.class
+│   │   │   │   │   │   │   │   │   └── PaymentMode.class
+│   │   │   │   │   │   │   │   ├── event/
+│   │   │   │   │   │   │   │   │   ├── InventoryReserveEvent.class
+│   │   │   │   │   │   │   │   │   ├── InventoryReserveEvent$InventoryReserveEventBuilder.class
+│   │   │   │   │   │   │   │   │   ├── OrderConfimedNotificationEvent.class
+│   │   │   │   │   │   │   │   │   ├── OrderConfimedNotificationEvent$OrderConfimedNotificationEventBuilder.class
+│   │   │   │   │   │   │   │   │   ├── OrderCreatedEvent.class
+│   │   │   │   │   │   │   │   │   ├── OrderCreatedEvent$OrderCreatedEventBuilder.class
+│   │   │   │   │   │   │   │   │   ├── OrderFulfilledEvent.class
+│   │   │   │   │   │   │   │   │   ├── OrderFulfilledEvent$OrderFulfilledEventBuilder.class
+│   │   │   │   │   │   │   │   │   ├── OrderReservedEvent.class
+│   │   │   │   │   │   │   │   │   ├── OrderReservedEvent$OrderReservedEventBuilder.class
+│   │   │   │   │   │   │   │   │   ├── PaymentCreatedEvent.class
+│   │   │   │   │   │   │   │   │   ├── PaymentCreatedEvent$PaymentCreatedEventBuilder.class
+│   │   │   │   │   │   │   │   │   ├── PaymentStatusEvent.class
+│   │   │   │   │   │   │   │   │   ├── PaymentStatusEvent$PaymentStatusEventBuilder.class
+│   │   │   │   │   │   │   │   │   ├── ProductSearchDocumentEvent.class
+│   │   │   │   │   │   │   │   │   ├── ProductSearchDocumentEvent$ImageDTO.class
+│   │   │   │   │   │   │   │   │   ├── ProductSearchDocumentEvent$ImageDTO$ImageDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── ProductSearchDocumentEvent$ProductSearchDocumentEventBuilder.class
+│   │   │   │   │   │   │   │   │   ├── ProductSearchDocumentEvent$VariantDTO.class
+│   │   │   │   │   │   │   │   │   └── ProductSearchDocumentEvent$VariantDTO$VariantDTOBuilder.class
+│   │   │   │   │   │   │   │   └── AuditEntity.class
+│   │   │   │   │   │   │   ├── security/
+│   │   │   │   │   │   │   │   └── UserHeaders.class
+│   │   │   │   │   │   │   └── utils/
+│   │   │   │   │   │   │   │   └── Constants.class
+│   │   │   │   └── logback-spring.xml
+│   │   │   ├── generated-sources/
+│   │   │   │   └── annotations/
+│   │   │   ├── generated-test-sources/
+│   │   │   │   └── test-annotations/
+│   │   │   ├── maven-archiver/
+│   │   │   │   └── pom.properties
+│   │   │   ├── maven-status/
+│   │   │   │   └── maven-compiler-plugin/
+│   │   │   │   │   └── compile/
+│   │   │   │   │   │   └── default-compile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   ├── test-classes/
+│   │   │   └── common-1.0.0.jar
+│   │   └── pom.xml
+│   ├── contentService/
+│   │   ├── app/
+│   │   │   └── app.log
+│   │   ├── target/
+│   │   │   ├── classes/
+│   │   │   │   └── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── contentService/
+│   │   │   │   │   │   │   └── model/
+│   │   │   │   │   │   │   │   └── enums/
+│   │   │   ├── generated-sources/
+│   │   │   │   └── annotations/
+│   │   │   ├── generated-test-sources/
+│   │   │   │   └── test-annotations/
+│   │   │   ├── maven-archiver/
+│   │   │   │   └── pom.properties
+│   │   │   ├── maven-status/
+│   │   │   │   └── maven-compiler-plugin/
+│   │   │   │   │   ├── compile/
+│   │   │   │   │   │   └── default-compile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   │   │   └── testCompile/
+│   │   │   │   │   │   └── default-testCompile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   ├── surefire-reports/
+│   │   │   │   ├── com.e_commerce.contentService.ContentServiceApplicationTests.txt
+│   │   │   │   └── TEST-com.e_commerce.contentService.ContentServiceApplicationTests.xml
+│   │   │   ├── test-classes/
+│   │   │   │   └── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── contentService/
+│   │   │   ├── contentService-0.0.1-SNAPSHOT.jar
+│   │   │   └── contentService-0.0.1-SNAPSHOT.jar.original
+│   │   ├── HELP.md
+│   │   ├── mvnw
+│   │   └── mvnw.cmd
+│   ├── kafka-setup/
+│   │   └── docker-compose.yml
+│   ├── notificationService/
+│   │   ├── app/
+│   │   │   ├── app.log
+│   │   │   ├── app.log.2026-04-18.0.gz
+│   │   │   ├── app.log.2026-04-19.0.gz
+│   │   │   ├── app.log.2026-04-20.0.gz
+│   │   │   ├── app.log.2026-04-21.0.gz
+│   │   │   └── app.log.2026-04-22.0.gz
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── notificationService/
+│   │   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   │   ├── AppConfig.java
+│   │   │   │   │   │   │   │   │   ├── Fast2SmsConfig.java
+│   │   │   │   │   │   │   │   │   └── MailConfig.java
+│   │   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   │   └── NotificationController.java
+│   │   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   │   ├── OrderCreatedEventConsumer.java
+│   │   │   │   │   │   │   │   │   └── VerificationEventConsumer.java
+│   │   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   │   ├── NotificationService.java
+│   │   │   │   │   │   │   │   │   │   └── ThymeleafTemplateService.java
+│   │   │   │   │   │   │   │   │   ├── INotificationService.java
+│   │   │   │   │   │   │   │   │   └── ITemplateService.java
+│   │   │   │   │   │   │   │   ├── strategy/
+│   │   │   │   │   │   │   │   │   ├── EmailStrategy.java
+│   │   │   │   │   │   │   │   │   ├── NotificationStrategy.java
+│   │   │   │   │   │   │   │   │   ├── NotificationStrategyFactory.java
+│   │   │   │   │   │   │   │   │   ├── SmsStrategy.java
+│   │   │   │   │   │   │   │   │   └── WhatsappStrategy.java
+│   │   │   │   │   │   │   │   └── NotificationServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │   │   ├── static/
+│   │   │   │   │   ├── templates/
+│   │   │   │   │   │   └── email/
+│   │   │   │   │   │   │   ├── email-verification.html
+│   │   │   │   │   │   │   └── order-confirmation.html
+│   │   │   │   │   └── application.yaml
+│   │   │   └── test/
+│   │   │   │   └── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── notificationService/
+│   │   │   │   │   │   │   │   └── NotificationServiceApplicationTests.java
+│   │   ├── target/
+│   │   │   ├── classes/
+│   │   │   │   ├── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── notificationService/
+│   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   ├── AppConfig.class
+│   │   │   │   │   │   │   │   ├── Fast2SmsConfig.class
+│   │   │   │   │   │   │   │   └── MailConfig.class
+│   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   └── NotificationController.class
+│   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   ├── OrderCreatedEventConsumer.class
+│   │   │   │   │   │   │   │   └── VerificationEventConsumer.class
+│   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   ├── NotificationService.class
+│   │   │   │   │   │   │   │   │   └── ThymeleafTemplateService.class
+│   │   │   │   │   │   │   │   ├── INotificationService.class
+│   │   │   │   │   │   │   │   └── ITemplateService.class
+│   │   │   │   │   │   │   ├── strategy/
+│   │   │   │   │   │   │   │   ├── EmailStrategy.class
+│   │   │   │   │   │   │   │   ├── NotificationStrategy.class
+│   │   │   │   │   │   │   │   ├── NotificationStrategyFactory.class
+│   │   │   │   │   │   │   │   ├── SmsStrategy.class
+│   │   │   │   │   │   │   │   └── WhatsappStrategy.class
+│   │   │   │   │   │   │   └── NotificationServiceApplication.class
+│   │   │   │   ├── templates/
+│   │   │   │   │   └── email/
+│   │   │   │   │   │   ├── email-verification.html
+│   │   │   │   │   │   └── order-confirmation.html
+│   │   │   │   └── application.yaml
+│   │   │   ├── generated-sources/
+│   │   │   │   └── annotations/
+│   │   │   ├── generated-test-sources/
+│   │   │   │   └── test-annotations/
+│   │   │   ├── maven-archiver/
+│   │   │   │   └── pom.properties
+│   │   │   ├── maven-status/
+│   │   │   │   └── maven-compiler-plugin/
+│   │   │   │   │   ├── compile/
+│   │   │   │   │   │   └── default-compile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   │   │   └── testCompile/
+│   │   │   │   │   │   └── default-testCompile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   ├── surefire-reports/
+│   │   │   │   ├── com.e_commerce.notificationService.NotificationServiceApplicationTests.txt
+│   │   │   │   └── TEST-com.e_commerce.notificationService.NotificationServiceApplicationTests.xml
+│   │   │   ├── test-classes/
+│   │   │   │   └── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── notificationService/
+│   │   │   │   │   │   │   └── NotificationServiceApplicationTests.class
+│   │   │   ├── notificationService-0.0.1-SNAPSHOT.jar
+│   │   │   └── notificationService-0.0.1-SNAPSHOT.jar.original
+│   │   └── pom.xml
+│   ├── observability-setup/
+│   │   ├── logstash/
+│   │   │   └── pipeline/
+│   │   │   │   └── logstash.conf
+│   │   └── compose.yml
+│   ├── offerService/
+│   │   ├── app/
+│   │   │   ├── app.log
+│   │   │   ├── app.log.2026-04-18.0.gz
+│   │   │   ├── app.log.2026-04-19.0.gz
+│   │   │   ├── app.log.2026-04-20.0.gz
+│   │   │   └── app.log.2026-04-21.0.gz
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── offerService/
+│   │   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   │   ├── CouponController.java
+│   │   │   │   │   │   │   │   │   └── InternalController.java
+│   │   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   │   └── CouponTypeDTO.java
+│   │   │   │   │   │   │   │   │   └── Coupon.java
+│   │   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   │   └── ICouponRepository.java
+│   │   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   │   └── CouponService.java
+│   │   │   │   │   │   │   │   │   └── ICouponService.java
+│   │   │   │   │   │   │   │   └── OfferServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │   │   ├── db/
+│   │   │   │   │   │   └── changelog/
+│   │   │   │   │   │   │   ├── 000-enable-pgcrypto.yaml
+│   │   │   │   │   │   │   ├── 001-create-table.yaml
+│   │   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   │   └── application.yaml
+│   │   │   └── test/
+│   │   │   │   └── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── offerService/
+│   │   │   │   │   │   │   │   └── OfferServiceApplicationTests.java
+│   │   ├── target/
+│   │   │   ├── classes/
+│   │   │   │   ├── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── offerService/
+│   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   ├── CouponController.class
+│   │   │   │   │   │   │   │   └── InternalController.class
+│   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   ├── CouponTypeDTO.class
+│   │   │   │   │   │   │   │   │   └── CouponTypeDTO$CouponTypeDTOBuilder.class
+│   │   │   │   │   │   │   │   ├── Coupon.class
+│   │   │   │   │   │   │   │   └── Coupon$CouponBuilder.class
+│   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   └── ICouponRepository.class
+│   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   └── CouponService.class
+│   │   │   │   │   │   │   │   └── ICouponService.class
+│   │   │   │   │   │   │   └── OfferServiceApplication.class
+│   │   │   │   ├── db/
+│   │   │   │   │   └── changelog/
+│   │   │   │   │   │   ├── 000-enable-pgcrypto.yaml
+│   │   │   │   │   │   ├── 001-create-table.yaml
+│   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   └── application.yaml
+│   │   │   ├── generated-sources/
+│   │   │   │   └── annotations/
+│   │   │   ├── generated-test-sources/
+│   │   │   │   └── test-annotations/
+│   │   │   ├── maven-archiver/
+│   │   │   │   └── pom.properties
+│   │   │   ├── maven-status/
+│   │   │   │   └── maven-compiler-plugin/
+│   │   │   │   │   ├── compile/
+│   │   │   │   │   │   └── default-compile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   │   │   └── testCompile/
+│   │   │   │   │   │   └── default-testCompile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   ├── surefire-reports/
+│   │   │   │   ├── com.e_commerce.offerService.OfferServiceApplicationTests.txt
+│   │   │   │   └── TEST-com.e_commerce.offerService.OfferServiceApplicationTests.xml
+│   │   │   ├── test-classes/
+│   │   │   │   └── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── offerService/
+│   │   │   │   │   │   │   └── OfferServiceApplicationTests.class
+│   │   │   ├── offerService-0.0.1-SNAPSHOT.jar
+│   │   │   └── offerService-0.0.1-SNAPSHOT.jar.original
+│   │   ├── compose.yaml
+│   │   └── pom.xml
+│   ├── orderService/
+│   │   ├── app/
+│   │   │   ├── app.log
+│   │   │   ├── app.log.2026-04-18.0.gz
+│   │   │   ├── app.log.2026-04-19.0.gz
+│   │   │   ├── app.log.2026-04-20.0.gz
+│   │   │   └── app.log.2026-04-21.0.gz
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── orderService/
+│   │   │   │   │   │   │   │   ├── client/
+│   │   │   │   │   │   │   │   │   ├── ICartClient.java
+│   │   │   │   │   │   │   │   │   ├── IOfferClient.java
+│   │   │   │   │   │   │   │   │   ├── IPaymentClient.java
+│   │   │   │   │   │   │   │   │   ├── IProductClient.java
+│   │   │   │   │   │   │   │   │   └── IProfileClient.java
+│   │   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   │   └── OrderController.java
+│   │   │   │   │   │   │   │   ├── cron/
+│   │   │   │   │   │   │   │   │   └── ReservationCleanupJob.java
+│   │   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   │   ├── InventoryEventConsumer.java
+│   │   │   │   │   │   │   │   │   ├── OrderEventProducer.java
+│   │   │   │   │   │   │   │   │   └── PaymentEventConsumer.java
+│   │   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   │   ├── pdf/
+│   │   │   │   │   │   │   │   │   │   │   ├── InvoiceData.java
+│   │   │   │   │   │   │   │   │   │   │   └── InvoiceItemData.java
+│   │   │   │   │   │   │   │   │   │   ├── OrderDetailsResponseDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── OrderItemSummaryForOrderDetails.java
+│   │   │   │   │   │   │   │   │   │   ├── OrderStatusResponseDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── PriceSummaryForOrderDetails.java
+│   │   │   │   │   │   │   │   │   │   ├── PriceSummaryRequestDTO.java
+│   │   │   │   │   │   │   │   │   │   └── PriceSummaryResponseDTO.java
+│   │   │   │   │   │   │   │   │   ├── enums/
+│   │   │   │   │   │   │   │   │   │   ├── OrderItemStatus.java
+│   │   │   │   │   │   │   │   │   │   ├── OrderStatus.java
+│   │   │   │   │   │   │   │   │   │   └── PaymentStatus.java
+│   │   │   │   │   │   │   │   │   ├── Order.java
+│   │   │   │   │   │   │   │   │   └── OrderItem.java
+│   │   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   │   ├── IOrderItemRepository.java
+│   │   │   │   │   │   │   │   │   └── IOrderRepository.java
+│   │   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   │   ├── ExternalService.java
+│   │   │   │   │   │   │   │   │   │   ├── InvoicePdfGeneratorService.java
+│   │   │   │   │   │   │   │   │   │   └── OrderService.java
+│   │   │   │   │   │   │   │   │   ├── IInvoicePdfGeneratorService.java
+│   │   │   │   │   │   │   │   │   └── IOrderService.java
+│   │   │   │   │   │   │   │   └── OrderServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │   │   ├── db/
+│   │   │   │   │   │   └── changelog/
+│   │   │   │   │   │   │   ├── 001-create-table.yaml
+│   │   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   │   └── application.yaml
+│   │   │   └── test/
+│   │   │   │   └── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── orderService/
+│   │   │   │   │   │   │   │   └── OrderServiceApplicationTests.java
+│   │   ├── target/
+│   │   │   ├── classes/
+│   │   │   │   ├── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── orderService/
+│   │   │   │   │   │   │   ├── client/
+│   │   │   │   │   │   │   │   ├── ICartClient.class
+│   │   │   │   │   │   │   │   ├── IOfferClient.class
+│   │   │   │   │   │   │   │   ├── IPaymentClient.class
+│   │   │   │   │   │   │   │   ├── IProductClient.class
+│   │   │   │   │   │   │   │   └── IProfileClient.class
+│   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   └── OrderController.class
+│   │   │   │   │   │   │   ├── cron/
+│   │   │   │   │   │   │   │   └── ReservationCleanupJob.class
+│   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   ├── InventoryEventConsumer.class
+│   │   │   │   │   │   │   │   ├── OrderEventProducer.class
+│   │   │   │   │   │   │   │   └── PaymentEventConsumer.class
+│   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   ├── pdf/
+│   │   │   │   │   │   │   │   │   │   ├── InvoiceData.class
+│   │   │   │   │   │   │   │   │   │   ├── InvoiceData$InvoiceDataBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── InvoiceItemData.class
+│   │   │   │   │   │   │   │   │   │   └── InvoiceItemData$InvoiceItemDataBuilder.class
+│   │   │   │   │   │   │   │   │   ├── OrderDetailsResponseDTO.class
+│   │   │   │   │   │   │   │   │   ├── OrderDetailsResponseDTO$OrderDetailsResponseDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── OrderItemSummaryForOrderDetails.class
+│   │   │   │   │   │   │   │   │   ├── OrderItemSummaryForOrderDetails$OrderItemSummaryForOrderDetailsBuilder.class
+│   │   │   │   │   │   │   │   │   ├── OrderStatusResponseDTO.class
+│   │   │   │   │   │   │   │   │   ├── OrderStatusResponseDTO$OrderStatusResponseDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── PriceSummaryForOrderDetails.class
+│   │   │   │   │   │   │   │   │   ├── PriceSummaryForOrderDetails$PriceSummaryForOrderDetailsBuilder.class
+│   │   │   │   │   │   │   │   │   ├── PriceSummaryRequestDTO.class
+│   │   │   │   │   │   │   │   │   ├── PriceSummaryResponseDTO.class
+│   │   │   │   │   │   │   │   │   └── PriceSummaryResponseDTO$PriceSummaryResponseDTOBuilder.class
+│   │   │   │   │   │   │   │   ├── enums/
+│   │   │   │   │   │   │   │   │   ├── OrderItemStatus.class
+│   │   │   │   │   │   │   │   │   ├── OrderStatus.class
+│   │   │   │   │   │   │   │   │   └── PaymentStatus.class
+│   │   │   │   │   │   │   │   ├── Order.class
+│   │   │   │   │   │   │   │   ├── Order$OrderBuilder.class
+│   │   │   │   │   │   │   │   ├── OrderItem.class
+│   │   │   │   │   │   │   │   └── OrderItem$OrderItemBuilder.class
+│   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   ├── IOrderItemRepository.class
+│   │   │   │   │   │   │   │   └── IOrderRepository.class
+│   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   ├── ExternalService.class
+│   │   │   │   │   │   │   │   │   ├── InvoicePdfGeneratorService.class
+│   │   │   │   │   │   │   │   │   ├── InvoicePdfGeneratorService$TaxTotals.class
+│   │   │   │   │   │   │   │   │   └── OrderService.class
+│   │   │   │   │   │   │   │   ├── IInvoicePdfGeneratorService.class
+│   │   │   │   │   │   │   │   └── IOrderService.class
+│   │   │   │   │   │   │   └── OrderServiceApplication.class
+│   │   │   │   ├── db/
+│   │   │   │   │   └── changelog/
+│   │   │   │   │   │   ├── 001-create-table.yaml
+│   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   └── application.yaml
+│   │   │   ├── generated-sources/
+│   │   │   │   └── annotations/
+│   │   │   ├── generated-test-sources/
+│   │   │   │   └── test-annotations/
+│   │   │   ├── maven-archiver/
+│   │   │   │   └── pom.properties
+│   │   │   ├── maven-status/
+│   │   │   │   └── maven-compiler-plugin/
+│   │   │   │   │   ├── compile/
+│   │   │   │   │   │   └── default-compile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   │   │   └── testCompile/
+│   │   │   │   │   │   └── default-testCompile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   ├── surefire-reports/
+│   │   │   │   ├── com.e_commerce.orderService.OrderServiceApplicationTests.txt
+│   │   │   │   └── TEST-com.e_commerce.orderService.OrderServiceApplicationTests.xml
+│   │   │   ├── test-classes/
+│   │   │   │   └── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── orderService/
+│   │   │   │   │   │   │   └── OrderServiceApplicationTests.class
+│   │   │   ├── orderService-0.0.1-SNAPSHOT.jar
+│   │   │   └── orderService-0.0.1-SNAPSHOT.jar.original
+│   │   ├── compose.yaml
+│   │   └── pom.xml
+│   ├── paymentService/
+│   │   ├── app/
+│   │   │   ├── app.log
+│   │   │   ├── app.log.2026-04-18.0.gz
+│   │   │   ├── app.log.2026-04-19.0.gz
+│   │   │   └── app.log.2026-04-20.0.gz
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── paymentService/
+│   │   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   │   └── RazorpayConfig.java
+│   │   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   │   └── PaymentController.java
+│   │   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   │   ├── OrderReservedEventConsumer.java
+│   │   │   │   │   │   │   │   │   └── PaymentEventProducer.java
+│   │   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   │   ├── GatewayOrderResponse.java
+│   │   │   │   │   │   │   │   │   │   ├── PaymentResponse.java
+│   │   │   │   │   │   │   │   │   │   └── PaymentStatusRequest.java
+│   │   │   │   │   │   │   │   │   ├── enums/
+│   │   │   │   │   │   │   │   │   │   └── PaymentStatus.java
+│   │   │   │   │   │   │   │   │   └── Payment.java
+│   │   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   │   └── IPaymentRepository.java
+│   │   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   │   ├── PaymentService.java
+│   │   │   │   │   │   │   │   │   │   ├── RazorpayPaymentGateway.java
+│   │   │   │   │   │   │   │   │   │   └── RazorpayWebhookService.java
+│   │   │   │   │   │   │   │   │   ├── IPaymentGateway.java
+│   │   │   │   │   │   │   │   │   ├── IPaymentService.java
+│   │   │   │   │   │   │   │   │   └── IWebhookService.java
+│   │   │   │   │   │   │   │   └── PaymentServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │   │   ├── db/
+│   │   │   │   │   │   └── changelog/
+│   │   │   │   │   │   │   ├── 001-create-payments-table.yaml
+│   │   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   │   └── application.yaml
+│   │   │   └── test/
+│   │   │   │   └── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── paymentService/
+│   │   │   │   │   │   │   │   └── PaymentServiceApplicationTests.java
+│   │   ├── target/
+│   │   │   ├── classes/
+│   │   │   │   ├── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── paymentService/
+│   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   └── RazorpayConfig.class
+│   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   └── PaymentController.class
+│   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   ├── OrderReservedEventConsumer.class
+│   │   │   │   │   │   │   │   └── PaymentEventProducer.class
+│   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   ├── GatewayOrderResponse.class
+│   │   │   │   │   │   │   │   │   ├── GatewayOrderResponse$GatewayOrderResponseBuilder.class
+│   │   │   │   │   │   │   │   │   ├── PaymentResponse.class
+│   │   │   │   │   │   │   │   │   ├── PaymentResponse$PaymentResponseBuilder.class
+│   │   │   │   │   │   │   │   │   ├── PaymentStatusRequest.class
+│   │   │   │   │   │   │   │   │   └── PaymentStatusRequest$PaymentStatusRequestBuilder.class
+│   │   │   │   │   │   │   │   ├── enums/
+│   │   │   │   │   │   │   │   │   └── PaymentStatus.class
+│   │   │   │   │   │   │   │   ├── Payment.class
+│   │   │   │   │   │   │   │   └── Payment$PaymentBuilder.class
+│   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   └── IPaymentRepository.class
+│   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   ├── PaymentService.class
+│   │   │   │   │   │   │   │   │   ├── RazorpayPaymentGateway.class
+│   │   │   │   │   │   │   │   │   └── RazorpayWebhookService.class
+│   │   │   │   │   │   │   │   ├── IPaymentGateway.class
+│   │   │   │   │   │   │   │   ├── IPaymentService.class
+│   │   │   │   │   │   │   │   └── IWebhookService.class
+│   │   │   │   │   │   │   └── PaymentServiceApplication.class
+│   │   │   │   ├── db/
+│   │   │   │   │   └── changelog/
+│   │   │   │   │   │   ├── 001-create-payments-table.yaml
+│   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   └── application.yaml
+│   │   │   ├── generated-sources/
+│   │   │   │   └── annotations/
+│   │   │   ├── generated-test-sources/
+│   │   │   │   └── test-annotations/
+│   │   │   ├── maven-archiver/
+│   │   │   │   └── pom.properties
+│   │   │   ├── maven-status/
+│   │   │   │   └── maven-compiler-plugin/
+│   │   │   │   │   ├── compile/
+│   │   │   │   │   │   └── default-compile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   │   │   └── testCompile/
+│   │   │   │   │   │   └── default-testCompile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   ├── surefire-reports/
+│   │   │   │   ├── com.e_commerce.paymentService.PaymentServiceApplicationTests.txt
+│   │   │   │   └── TEST-com.e_commerce.paymentService.PaymentServiceApplicationTests.xml
+│   │   │   ├── test-classes/
+│   │   │   │   └── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── paymentService/
+│   │   │   │   │   │   │   └── PaymentServiceApplicationTests.class
+│   │   │   ├── paymentService-0.0.1-SNAPSHOT.jar
+│   │   │   └── paymentService-0.0.1-SNAPSHOT.jar.original
+│   │   ├── compose.yaml
+│   │   └── pom.xml
+│   ├── productService/
+│   │   ├── app/
+│   │   │   ├── app.log
+│   │   │   ├── app.log.2026-04-18.0.gz
+│   │   │   ├── app.log.2026-04-19.0.gz
+│   │   │   ├── app.log.2026-04-20.0.gz
+│   │   │   ├── app.log.2026-04-21.0.gz
+│   │   │   └── app.log.2026-04-22.0.gz
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── productService/
+│   │   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   │   └── S3Config.java
+│   │   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   │   ├── admin/
+│   │   │   │   │   │   │   │   │   │   ├── CategoryController.java
+│   │   │   │   │   │   │   │   │   │   ├── ProductController.java
+│   │   │   │   │   │   │   │   │   │   ├── ProductIndexController.java
+│   │   │   │   │   │   │   │   │   │   ├── ProductItemController.java
+│   │   │   │   │   │   │   │   │   │   ├── S3Controller.java
+│   │   │   │   │   │   │   │   │   │   └── VariantController.java
+│   │   │   │   │   │   │   │   │   ├── customer/
+│   │   │   │   │   │   │   │   │   │   ├── CustomerCategoryController.java
+│   │   │   │   │   │   │   │   │   │   └── CustomerProductDetailsController.java
+│   │   │   │   │   │   │   │   │   ├── DemoController.java
+│   │   │   │   │   │   │   │   │   └── InternalController.java
+│   │   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   │   ├── InventoryReservationEventProducer.java
+│   │   │   │   │   │   │   │   │   ├── OrderCreatedEventConsumer.java
+│   │   │   │   │   │   │   │   │   ├── OrderFulfilledEventConsumer.java
+│   │   │   │   │   │   │   │   │   └── ProductSearchDocumentIngestEventProducer.java
+│   │   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   │   ├── category/
+│   │   │   │   │   │   │   │   │   │   │   ├── CategoryListingResponseDTO.java
+│   │   │   │   │   │   │   │   │   │   │   ├── CategoryRequestDTO.java
+│   │   │   │   │   │   │   │   │   │   │   └── CategoryResponseDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── common/
+│   │   │   │   │   │   │   │   │   │   │   └── SelectOptionDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── customer/
+│   │   │   │   │   │   │   │   │   │   │   ├── CartProductItemInfoResponse.java
+│   │   │   │   │   │   │   │   │   │   │   ├── CategoryResponseDTOLanding.java
+│   │   │   │   │   │   │   │   │   │   │   ├── ProductDetailsDTO.java
+│   │   │   │   │   │   │   │   │   │   │   ├── ProductItemIdDTO.java
+│   │   │   │   │   │   │   │   │   │   │   ├── ProductVariantAttributeDTO.java
+│   │   │   │   │   │   │   │   │   │   │   └── VariantAttributeDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── product/
+│   │   │   │   │   │   │   │   │   │   │   ├── ProductDTO.java
+│   │   │   │   │   │   │   │   │   │   │   ├── ProductFilterDTO.java
+│   │   │   │   │   │   │   │   │   │   │   └── ProductListingResponseDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── productItem/
+│   │   │   │   │   │   │   │   │   │   │   ├── ImageDTO.java
+│   │   │   │   │   │   │   │   │   │   │   ├── ProductItemDTO.java
+│   │   │   │   │   │   │   │   │   │   │   ├── ProductItemFilter.java
+│   │   │   │   │   │   │   │   │   │   │   ├── ProductItemListingDTO.java
+│   │   │   │   │   │   │   │   │   │   │   └── ProductItemPriceDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── s3/
+│   │   │   │   │   │   │   │   │   │   │   ├── ImageKey.java
+│   │   │   │   │   │   │   │   │   │   │   └── PresignRequest.java
+│   │   │   │   │   │   │   │   │   │   └── variant/
+│   │   │   │   │   │   │   │   │   │   │   ├── ProductVariantAttributesDTO.java
+│   │   │   │   │   │   │   │   │   │   │   ├── VariantAttributeDTO.java
+│   │   │   │   │   │   │   │   │   │   │   ├── VariantDTO.java
+│   │   │   │   │   │   │   │   │   │   │   └── VariantWithCategoryDTO.java
+│   │   │   │   │   │   │   │   │   ├── enums/
+│   │   │   │   │   │   │   │   │   │   └── ReservationStatus.java
+│   │   │   │   │   │   │   │   │   ├── Category.java
+│   │   │   │   │   │   │   │   │   ├── GstTaxSlab.java
+│   │   │   │   │   │   │   │   │   ├── InventoryReservation.java
+│   │   │   │   │   │   │   │   │   ├── Product.java
+│   │   │   │   │   │   │   │   │   ├── ProductItem.java
+│   │   │   │   │   │   │   │   │   ├── ProductItemImage.java
+│   │   │   │   │   │   │   │   │   ├── Variant.java
+│   │   │   │   │   │   │   │   │   └── VariantAttribute.java
+│   │   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   │   ├── ICategoryRepository.java
+│   │   │   │   │   │   │   │   │   ├── IGstTaxSlabRepository.java
+│   │   │   │   │   │   │   │   │   ├── IInventoryReservationRepository.java
+│   │   │   │   │   │   │   │   │   ├── IProductItemImageRepository.java
+│   │   │   │   │   │   │   │   │   ├── IProductItemRepository.java
+│   │   │   │   │   │   │   │   │   ├── IProductRepository.java
+│   │   │   │   │   │   │   │   │   ├── IVariantAttributeRepository.java
+│   │   │   │   │   │   │   │   │   └── IVariantRepository.java
+│   │   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   │   ├── CategoryService.java
+│   │   │   │   │   │   │   │   │   │   ├── InventoryReservationService.java
+│   │   │   │   │   │   │   │   │   │   ├── ProductDataIngestionService.java
+│   │   │   │   │   │   │   │   │   │   ├── ProductItemService.java
+│   │   │   │   │   │   │   │   │   │   ├── ProductService.java
+│   │   │   │   │   │   │   │   │   │   ├── S3Service.java
+│   │   │   │   │   │   │   │   │   │   ├── SkuUtilService.java
+│   │   │   │   │   │   │   │   │   │   └── VariantService.java
+│   │   │   │   │   │   │   │   │   ├── ICategoryService.java
+│   │   │   │   │   │   │   │   │   ├── IInventoryReservationService.java
+│   │   │   │   │   │   │   │   │   ├── IProductDataIngestionService.java
+│   │   │   │   │   │   │   │   │   ├── IProductItemService.java
+│   │   │   │   │   │   │   │   │   ├── IProductService.java
+│   │   │   │   │   │   │   │   │   ├── IS3Service.java
+│   │   │   │   │   │   │   │   │   ├── ISkuUtilService.java
+│   │   │   │   │   │   │   │   │   └── IVariantService.java
+│   │   │   │   │   │   │   │   └── ProductServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │   │   ├── db/
+│   │   │   │   │   │   └── changelog/
+│   │   │   │   │   │   │   ├── 001-create-table.yaml
+│   │   │   │   │   │   │   ├── 002-add-audit-columns.yaml
+│   │   │   │   │   │   │   ├── 003-add-isThumbnail-column-productItemImage.yaml
+│   │   │   │   │   │   │   ├── 004-add-unique-constraint-name-variant-attribute.yaml
+│   │   │   │   │   │   │   ├── 005-add-image-description-in-catergories.yaml
+│   │   │   │   │   │   │   ├── 006-create-gst-tax-slab-table.yaml
+│   │   │   │   │   │   │   ├── 007-insert-gst-tax-slabs.yaml
+│   │   │   │   │   │   │   ├── 008-add-hsn-column-to-product-item.yaml
+│   │   │   │   │   │   │   ├── 009-update-existing-products-hsn.yaml
+│   │   │   │   │   │   │   ├── 010-make-hsn-not-null.yaml
+│   │   │   │   │   │   │   ├── 011-create-inventory-reservation.yaml
+│   │   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   │   └── application.yaml
+│   │   │   └── test/
+│   │   │   │   └── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── productService/
+│   │   │   │   │   │   │   │   └── ProductServiceApplicationTests.java
+│   │   ├── target/
+│   │   │   ├── classes/
+│   │   │   │   ├── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── productService/
+│   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   └── S3Config.class
+│   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   ├── admin/
+│   │   │   │   │   │   │   │   │   ├── CategoryController.class
+│   │   │   │   │   │   │   │   │   ├── ProductController.class
+│   │   │   │   │   │   │   │   │   ├── ProductIndexController.class
+│   │   │   │   │   │   │   │   │   ├── ProductItemController.class
+│   │   │   │   │   │   │   │   │   ├── S3Controller.class
+│   │   │   │   │   │   │   │   │   └── VariantController.class
+│   │   │   │   │   │   │   │   ├── customer/
+│   │   │   │   │   │   │   │   │   ├── CustomerCategoryController.class
+│   │   │   │   │   │   │   │   │   └── CustomerProductDetailsController.class
+│   │   │   │   │   │   │   │   ├── DemoController.class
+│   │   │   │   │   │   │   │   └── InternalController.class
+│   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   ├── InventoryReservationEventProducer.class
+│   │   │   │   │   │   │   │   ├── OrderCreatedEventConsumer.class
+│   │   │   │   │   │   │   │   ├── OrderFulfilledEventConsumer.class
+│   │   │   │   │   │   │   │   └── ProductSearchDocumentIngestEventProducer.class
+│   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   ├── category/
+│   │   │   │   │   │   │   │   │   │   ├── CategoryListingResponseDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── CategoryListingResponseDTO$CategoryListingResponseDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── CategoryRequestDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── CategoryResponseDTO.class
+│   │   │   │   │   │   │   │   │   │   └── CategoryResponseDTO$CategoryResponseDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── common/
+│   │   │   │   │   │   │   │   │   │   ├── SelectOptionDTO.class
+│   │   │   │   │   │   │   │   │   │   └── SelectOptionDTO$SelectOptionDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── customer/
+│   │   │   │   │   │   │   │   │   │   ├── CartProductItemInfoResponse.class
+│   │   │   │   │   │   │   │   │   │   ├── CartProductItemInfoResponse$CartProductItemInfoResponseBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── CategoryResponseDTOLanding.class
+│   │   │   │   │   │   │   │   │   │   ├── CategoryResponseDTOLanding$CategoryResponseDTOLandingBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductDetailsDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductItemIdDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductItemIdDTO$ProductItemIdDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductVariantAttributeDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductVariantAttributeDTO$ProductVariantAttributeDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── VariantAttributeDTO.class
+│   │   │   │   │   │   │   │   │   │   └── VariantAttributeDTO$VariantAttributeDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── product/
+│   │   │   │   │   │   │   │   │   │   ├── ProductDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductDTO$ProductDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductFilterDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductListingResponseDTO.class
+│   │   │   │   │   │   │   │   │   │   └── ProductListingResponseDTO$ProductListingResponseDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── productItem/
+│   │   │   │   │   │   │   │   │   │   ├── ImageDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── ImageDTO$ImageDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductItemDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductItemDTO$ProductItemDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductItemFilter.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductItemListingDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductItemListingDTO$ProductItemListingDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   └── ProductItemPriceDTO.class
+│   │   │   │   │   │   │   │   │   ├── s3/
+│   │   │   │   │   │   │   │   │   │   ├── ImageKey.class
+│   │   │   │   │   │   │   │   │   │   └── PresignRequest.class
+│   │   │   │   │   │   │   │   │   └── variant/
+│   │   │   │   │   │   │   │   │   │   ├── ProductVariantAttributesDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── ProductVariantAttributesDTO$ProductVariantAttributesDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── VariantAttributeDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── VariantAttributeDTO$VariantAttributeDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── VariantDTO.class
+│   │   │   │   │   │   │   │   │   │   ├── VariantDTO$VariantDTOBuilder.class
+│   │   │   │   │   │   │   │   │   │   ├── VariantWithCategoryDTO.class
+│   │   │   │   │   │   │   │   │   │   └── VariantWithCategoryDTO$VariantWithCategoryDTOBuilder.class
+│   │   │   │   │   │   │   │   ├── enums/
+│   │   │   │   │   │   │   │   │   └── ReservationStatus.class
+│   │   │   │   │   │   │   │   ├── Category.class
+│   │   │   │   │   │   │   │   ├── GstTaxSlab.class
+│   │   │   │   │   │   │   │   ├── InventoryReservation.class
+│   │   │   │   │   │   │   │   ├── InventoryReservation$InventoryReservationBuilder.class
+│   │   │   │   │   │   │   │   ├── Product.class
+│   │   │   │   │   │   │   │   ├── Product$ProductBuilder.class
+│   │   │   │   │   │   │   │   ├── ProductItem.class
+│   │   │   │   │   │   │   │   ├── ProductItem$ProductItemBuilder.class
+│   │   │   │   │   │   │   │   ├── ProductItemImage.class
+│   │   │   │   │   │   │   │   ├── ProductItemImage$ProductItemImageBuilder.class
+│   │   │   │   │   │   │   │   ├── Variant.class
+│   │   │   │   │   │   │   │   ├── Variant$VariantBuilder.class
+│   │   │   │   │   │   │   │   ├── VariantAttribute.class
+│   │   │   │   │   │   │   │   └── VariantAttribute$VariantAttributeBuilder.class
+│   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   ├── ICategoryRepository.class
+│   │   │   │   │   │   │   │   ├── IGstTaxSlabRepository.class
+│   │   │   │   │   │   │   │   ├── IInventoryReservationRepository.class
+│   │   │   │   │   │   │   │   ├── IProductItemImageRepository.class
+│   │   │   │   │   │   │   │   ├── IProductItemRepository.class
+│   │   │   │   │   │   │   │   ├── IProductRepository.class
+│   │   │   │   │   │   │   │   ├── IVariantAttributeRepository.class
+│   │   │   │   │   │   │   │   └── IVariantRepository.class
+│   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   ├── CategoryService.class
+│   │   │   │   │   │   │   │   │   ├── InventoryReservationService.class
+│   │   │   │   │   │   │   │   │   ├── ProductDataIngestionService.class
+│   │   │   │   │   │   │   │   │   ├── ProductItemService.class
+│   │   │   │   │   │   │   │   │   ├── ProductService.class
+│   │   │   │   │   │   │   │   │   ├── S3Service.class
+│   │   │   │   │   │   │   │   │   ├── SkuUtilService.class
+│   │   │   │   │   │   │   │   │   └── VariantService.class
+│   │   │   │   │   │   │   │   ├── ICategoryService.class
+│   │   │   │   │   │   │   │   ├── IInventoryReservationService.class
+│   │   │   │   │   │   │   │   ├── IProductDataIngestionService.class
+│   │   │   │   │   │   │   │   ├── IProductItemService.class
+│   │   │   │   │   │   │   │   ├── IProductService.class
+│   │   │   │   │   │   │   │   ├── IS3Service.class
+│   │   │   │   │   │   │   │   ├── ISkuUtilService.class
+│   │   │   │   │   │   │   │   └── IVariantService.class
+│   │   │   │   │   │   │   └── ProductServiceApplication.class
+│   │   │   │   ├── db/
+│   │   │   │   │   └── changelog/
+│   │   │   │   │   │   ├── 001-create-table.yaml
+│   │   │   │   │   │   ├── 002-add-audit-columns.yaml
+│   │   │   │   │   │   ├── 003-add-isThumbnail-column-productItemImage.yaml
+│   │   │   │   │   │   ├── 004-add-unique-constraint-name-variant-attribute.yaml
+│   │   │   │   │   │   ├── 005-add-image-description-in-catergories.yaml
+│   │   │   │   │   │   ├── 006-create-gst-tax-slab-table.yaml
+│   │   │   │   │   │   ├── 007-insert-gst-tax-slabs.yaml
+│   │   │   │   │   │   ├── 008-add-hsn-column-to-product-item.yaml
+│   │   │   │   │   │   ├── 009-update-existing-products-hsn.yaml
+│   │   │   │   │   │   ├── 010-make-hsn-not-null.yaml
+│   │   │   │   │   │   ├── 011-create-inventory-reservation.yaml
+│   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   └── application.yaml
+│   │   │   ├── generated-sources/
+│   │   │   │   └── annotations/
+│   │   │   ├── generated-test-sources/
+│   │   │   │   └── test-annotations/
+│   │   │   ├── maven-archiver/
+│   │   │   │   └── pom.properties
+│   │   │   ├── maven-status/
+│   │   │   │   └── maven-compiler-plugin/
+│   │   │   │   │   ├── compile/
+│   │   │   │   │   │   └── default-compile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   │   │   └── testCompile/
+│   │   │   │   │   │   └── default-testCompile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   ├── surefire-reports/
+│   │   │   │   ├── com.e_commerce.productService.ProductServiceApplicationTests.txt
+│   │   │   │   └── TEST-com.e_commerce.productService.ProductServiceApplicationTests.xml
+│   │   │   ├── test-classes/
+│   │   │   │   └── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── productService/
+│   │   │   │   │   │   │   └── ProductServiceApplicationTests.class
+│   │   │   ├── productService-0.0.1-SNAPSHOT.jar
+│   │   │   └── productService-0.0.1-SNAPSHOT.jar.original
+│   │   ├── compose.yaml
+│   │   └── pom.xml
+│   ├── profileService/
+│   │   ├── app/
+│   │   │   ├── app.log
+│   │   │   ├── app.log.2026-04-18.0.gz
+│   │   │   ├── app.log.2026-04-19.0.gz
+│   │   │   ├── app.log.2026-04-20.0.gz
+│   │   │   ├── app.log.2026-04-21.0.gz
+│   │   │   └── app.log.2026-04-22.0.gz
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── profileService/
+│   │   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   │   └── RedisConfig.java
+│   │   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   │   ├── AddressController.java
+│   │   │   │   │   │   │   │   │   ├── InternalController.java
+│   │   │   │   │   │   │   │   │   ├── UserInfoController.java
+│   │   │   │   │   │   │   │   │   └── VerificationController.java
+│   │   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   │   └── ProfileVerificationEventProducer.java
+│   │   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   │   ├── Address.java
+│   │   │   │   │   │   │   │   │   └── UserInfo.java
+│   │   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   │   ├── IAddressRepository.java
+│   │   │   │   │   │   │   │   │   └── IUserInfoRepository.java
+│   │   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   │   ├── AddressService.java
+│   │   │   │   │   │   │   │   │   │   ├── UserInfoService.java
+│   │   │   │   │   │   │   │   │   │   └── VerificationService.java
+│   │   │   │   │   │   │   │   │   ├── IAddressService.java
+│   │   │   │   │   │   │   │   │   ├── IUserInfoService.java
+│   │   │   │   │   │   │   │   │   └── IVerificationService.java
+│   │   │   │   │   │   │   │   └── ProfileServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │   │   ├── db/
+│   │   │   │   │   │   └── changelog/
+│   │   │   │   │   │   │   ├── 001-create-address-table.yaml
+│   │   │   │   │   │   │   ├── 002-create-userinfo-table.yaml
+│   │   │   │   │   │   │   ├── 003-add-email-verified-column.yaml
+│   │   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   │   └── application.yaml
+│   │   │   └── test/
+│   │   │   │   └── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── profileService/
+│   │   │   │   │   │   │   │   └── ProfileServiceApplicationTests.java
+│   │   ├── target/
+│   │   │   ├── classes/
+│   │   │   │   ├── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── profileService/
+│   │   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   │   └── RedisConfig.class
+│   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   ├── AddressController.class
+│   │   │   │   │   │   │   │   ├── InternalController.class
+│   │   │   │   │   │   │   │   ├── UserInfoController.class
+│   │   │   │   │   │   │   │   └── VerificationController.class
+│   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   └── ProfileVerificationEventProducer.class
+│   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   ├── Address.class
+│   │   │   │   │   │   │   │   ├── Address$AddressBuilder.class
+│   │   │   │   │   │   │   │   ├── UserInfo.class
+│   │   │   │   │   │   │   │   └── UserInfo$UserInfoBuilder.class
+│   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   ├── IAddressRepository.class
+│   │   │   │   │   │   │   │   └── IUserInfoRepository.class
+│   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   ├── AddressService.class
+│   │   │   │   │   │   │   │   │   ├── UserInfoService.class
+│   │   │   │   │   │   │   │   │   └── VerificationService.class
+│   │   │   │   │   │   │   │   ├── IAddressService.class
+│   │   │   │   │   │   │   │   ├── IUserInfoService.class
+│   │   │   │   │   │   │   │   └── IVerificationService.class
+│   │   │   │   │   │   │   └── ProfileServiceApplication.class
+│   │   │   │   ├── db/
+│   │   │   │   │   └── changelog/
+│   │   │   │   │   │   ├── 001-create-address-table.yaml
+│   │   │   │   │   │   ├── 002-create-userinfo-table.yaml
+│   │   │   │   │   │   ├── 003-add-email-verified-column.yaml
+│   │   │   │   │   │   └── db-changelog-master.yaml
+│   │   │   │   └── application.yaml
+│   │   │   ├── generated-sources/
+│   │   │   │   └── annotations/
+│   │   │   ├── generated-test-sources/
+│   │   │   │   └── test-annotations/
+│   │   │   ├── maven-archiver/
+│   │   │   │   └── pom.properties
+│   │   │   ├── maven-status/
+│   │   │   │   └── maven-compiler-plugin/
+│   │   │   │   │   ├── compile/
+│   │   │   │   │   │   └── default-compile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   │   │   └── testCompile/
+│   │   │   │   │   │   └── default-testCompile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   ├── surefire-reports/
+│   │   │   │   ├── com.e_commerce.profileService.ProfileServiceApplicationTests.txt
+│   │   │   │   └── TEST-com.e_commerce.profileService.ProfileServiceApplicationTests.xml
+│   │   │   ├── test-classes/
+│   │   │   │   └── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── profileService/
+│   │   │   │   │   │   │   └── ProfileServiceApplicationTests.class
+│   │   │   ├── profileService-0.0.1-SNAPSHOT.jar
+│   │   │   └── profileService-0.0.1-SNAPSHOT.jar.original
+│   │   ├── compose.yaml
+│   │   └── pom.xml
+│   └── seachEngineService/
+│   │   ├── app/
+│   │   │   ├── app.log
+│   │   │   ├── app.log.2026-04-18.0.gz
+│   │   │   ├── app.log.2026-04-19.0.gz
+│   │   │   ├── app.log.2026-04-20.0.gz
+│   │   │   ├── app.log.2026-04-21.0.gz
+│   │   │   └── app.log.2026-04-22.0.gz
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── seachEngineService/
+│   │   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   │   └── SerchEngineServiceController.java
+│   │   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   │   ├── OrderFulfilledEventConsumer.java
+│   │   │   │   │   │   │   │   │   └── ProductSearchDocumentEventConsumer.java
+│   │   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   │   ├── FacetValueDTO.java
+│   │   │   │   │   │   │   │   │   │   ├── ProductSearchRequest.java
+│   │   │   │   │   │   │   │   │   │   └── ProductSearchResponse.java
+│   │   │   │   │   │   │   │   │   ├── CartItemDocument.java
+│   │   │   │   │   │   │   │   │   ├── ImageDocument.java
+│   │   │   │   │   │   │   │   │   ├── OrderSearchDocument.java
+│   │   │   │   │   │   │   │   │   ├── ProductSearchDocument.java
+│   │   │   │   │   │   │   │   │   └── VariantDocument.java
+│   │   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   │   ├── IOrderSearchRepository.java
+│   │   │   │   │   │   │   │   │   └── IProductSearchRepository.java
+│   │   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   │   ├── OrderSearchService.java
+│   │   │   │   │   │   │   │   │   │   ├── ProductSearchQueryService.java
+│   │   │   │   │   │   │   │   │   │   └── ProductSearchService.java
+│   │   │   │   │   │   │   │   │   ├── IOrderSearchService.java
+│   │   │   │   │   │   │   │   │   ├── IProductSearchQueryService.java
+│   │   │   │   │   │   │   │   │   └── IProductSearchService.java
+│   │   │   │   │   │   │   │   └── SeachEngineServiceApplication.java
+│   │   │   │   └── resources/
+│   │   │   │   │   ├── application.yaml
+│   │   │   │   │   └── elasticsearch-settings.json
+│   │   │   └── test/
+│   │   │   │   └── java/
+│   │   │   │   │   └── com/
+│   │   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   │   └── seachEngineService/
+│   │   │   │   │   │   │   │   └── SeachEngineServiceApplicationTests.java
+│   │   ├── target/
+│   │   │   ├── classes/
+│   │   │   │   ├── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── seachEngineService/
+│   │   │   │   │   │   │   ├── controller/
+│   │   │   │   │   │   │   │   └── SerchEngineServiceController.class
+│   │   │   │   │   │   │   ├── kafka/
+│   │   │   │   │   │   │   │   ├── OrderFulfilledEventConsumer.class
+│   │   │   │   │   │   │   │   └── ProductSearchDocumentEventConsumer.class
+│   │   │   │   │   │   │   ├── model/
+│   │   │   │   │   │   │   │   ├── dto/
+│   │   │   │   │   │   │   │   │   ├── FacetValueDTO.class
+│   │   │   │   │   │   │   │   │   ├── FacetValueDTO$FacetValueDTOBuilder.class
+│   │   │   │   │   │   │   │   │   ├── ProductSearchRequest.class
+│   │   │   │   │   │   │   │   │   ├── ProductSearchRequest$ProductSearchRequestBuilder.class
+│   │   │   │   │   │   │   │   │   ├── ProductSearchResponse.class
+│   │   │   │   │   │   │   │   │   └── ProductSearchResponse$ProductSearchResponseBuilder.class
+│   │   │   │   │   │   │   │   ├── CartItemDocument.class
+│   │   │   │   │   │   │   │   ├── CartItemDocument$CartItemDocumentBuilder.class
+│   │   │   │   │   │   │   │   ├── ImageDocument.class
+│   │   │   │   │   │   │   │   ├── ImageDocument$ImageDocumentBuilder.class
+│   │   │   │   │   │   │   │   ├── OrderSearchDocument.class
+│   │   │   │   │   │   │   │   ├── OrderSearchDocument$OrderSearchDocumentBuilder.class
+│   │   │   │   │   │   │   │   ├── ProductSearchDocument.class
+│   │   │   │   │   │   │   │   ├── ProductSearchDocument$ProductSearchDocumentBuilder.class
+│   │   │   │   │   │   │   │   ├── VariantDocument.class
+│   │   │   │   │   │   │   │   └── VariantDocument$VariantDocumentBuilder.class
+│   │   │   │   │   │   │   ├── repository/
+│   │   │   │   │   │   │   │   ├── IOrderSearchRepository.class
+│   │   │   │   │   │   │   │   └── IProductSearchRepository.class
+│   │   │   │   │   │   │   ├── service/
+│   │   │   │   │   │   │   │   ├── impl/
+│   │   │   │   │   │   │   │   │   ├── OrderSearchService.class
+│   │   │   │   │   │   │   │   │   ├── ProductSearchQueryService.class
+│   │   │   │   │   │   │   │   │   └── ProductSearchService.class
+│   │   │   │   │   │   │   │   ├── IOrderSearchService.class
+│   │   │   │   │   │   │   │   ├── IProductSearchQueryService.class
+│   │   │   │   │   │   │   │   └── IProductSearchService.class
+│   │   │   │   │   │   │   └── SeachEngineServiceApplication.class
+│   │   │   │   ├── application.yaml
+│   │   │   │   └── elasticsearch-settings.json
+│   │   │   ├── generated-sources/
+│   │   │   │   └── annotations/
+│   │   │   ├── generated-test-sources/
+│   │   │   │   └── test-annotations/
+│   │   │   ├── maven-archiver/
+│   │   │   │   └── pom.properties
+│   │   │   ├── maven-status/
+│   │   │   │   └── maven-compiler-plugin/
+│   │   │   │   │   ├── compile/
+│   │   │   │   │   │   └── default-compile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   │   │   └── testCompile/
+│   │   │   │   │   │   └── default-testCompile/
+│   │   │   │   │   │   │   ├── createdFiles.lst
+│   │   │   │   │   │   │   └── inputFiles.lst
+│   │   │   ├── surefire-reports/
+│   │   │   │   ├── com.e_commerce.seachEngineService.SeachEngineServiceApplicationTests.txt
+│   │   │   │   └── TEST-com.e_commerce.seachEngineService.SeachEngineServiceApplicationTests.xml
+│   │   │   ├── test-classes/
+│   │   │   │   └── com/
+│   │   │   │   │   └── e_commerce/
+│   │   │   │   │   │   └── seachEngineService/
+│   │   │   │   │   │   │   └── SeachEngineServiceApplicationTests.class
+│   │   │   ├── seachEngineService-0.0.1-SNAPSHOT.jar
+│   │   │   └── seachEngineService-0.0.1-SNAPSHOT.jar.original
+│   │   ├── compose.yaml
+│   │   └── pom.xml
+├── dev-cli/
+│   ├── assets/
+│   │   └── ui.png
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── services.ts
+│   │   ├── core/
+│   │   │   ├── logManager.ts
+│   │   │   ├── processManager.ts
+│   │   │   └── statusManager.ts
+│   │   ├── types/
+│   │   │   └── service.ts
+│   │   ├── ui/
+│   │   │   ├── logsPanel.ts
+│   │   │   ├── rightPanel.ts
+│   │   │   └── servicesTable.ts
+│   │   ├── utils/
+│   │   │   └── logger.ts
+│   │   └── index.ts
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── README.md
+│   └── tsconfig.json
+├── frontend/
+│   └── ecommerce/
+│   │   ├── public/
+│   │   │   ├── assets/
+│   │   │   │   ├── Banner1.png
+│   │   │   │   ├── Banner2.png
+│   │   │   │   ├── Banner3.png
+│   │   │   │   ├── CartEmpty.svg
+│   │   │   │   ├── COD.svg
+│   │   │   │   ├── facebookIcon.svg
+│   │   │   │   ├── footerImg.jpg
+│   │   │   │   ├── googleIcon.svg
+│   │   │   │   ├── PlaceOrderloading.gif
+│   │   │   │   ├── PREPAID.svg
+│   │   │   │   ├── Trending.mp4
+│   │   │   │   └── WishlistEmpty.svg
+│   │   │   ├── file.svg
+│   │   │   ├── globe.svg
+│   │   │   ├── next.svg
+│   │   │   ├── vercel.svg
+│   │   │   └── window.svg
+│   │   ├── src/
+│   │   │   ├── (components)/
+│   │   │   │   ├── ActionButton/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── adminHeader/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── adminListPage/
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   └── SortButton.tsx
+│   │   │   │   ├── adminNavbarLinksGroup/
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   └── NavbarLinksGroup.css
+│   │   │   │   ├── adminSidebar/
+│   │   │   │   │   ├── adminSidebar.css
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   ├── Links.tsx
+│   │   │   │   │   └── MobileSideBar.tsx
+│   │   │   │   ├── Breadcrumb/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── carousel/
+│   │   │   │   │   └── carousel.module.css
+│   │   │   │   ├── categoriesCard/
+│   │   │   │   │   ├── categoryImageCard.css
+│   │   │   │   │   ├── CategoryImageCard.tsx
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── CopyButton/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── CustomerCheckoutHeader/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── CustomRichTextEditor/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── FilterButton/
+│   │   │   │   │   ├── FilterMultiSelect.tsx
+│   │   │   │   │   ├── FilterRangeSelect.tsx
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── footer/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── header/
+│   │   │   │   │   ├── leftSection/
+│   │   │   │   │   │   ├── Hamburger.tsx
+│   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   └── LeftNavItem.tsx
+│   │   │   │   │   ├── rightSection/
+│   │   │   │   │   │   ├── LoginButton/
+│   │   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   │   ├── PopoverContent.tsx
+│   │   │   │   │   │   │   └── PopoverContentItems.tsx
+│   │   │   │   │   │   ├── CartButton.tsx
+│   │   │   │   │   │   └── index.tsx
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── ImageCarousel/
+│   │   │   │   │   ├── ImageCarousel.module.css
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── ImageGallery/
+│   │   │   │   │   ├── imageGallery.css
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── InfoIcon/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── InitialDataLoader/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── LoginComponent/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── logo/
+│   │   │   │   │   └── LogoText.tsx
+│   │   │   │   ├── productCard/
+│   │   │   │   │   ├── ProductCardHomepage/
+│   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   ├── ProductCardHomepageButtonSection.tsx
+│   │   │   │   │   │   └── ProductDetails.tsx
+│   │   │   │   │   ├── ProductCardPlp/
+│   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   ├── ProductCardPlpButtonSection.tsx
+│   │   │   │   │   │   └── ProductDetailsPLP.tsx
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   ├── productCard.css
+│   │   │   │   │   └── ProductCardImageSection.tsx
+│   │   │   │   ├── responsiveImage/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── searchSpotlight/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── Shimmer/
+│   │   │   │   │   └── ListPageTableShimmer.tsx
+│   │   │   │   ├── storiesCard/
+│   │   │   │   │   └── index.tsx
+│   │   │   │   └── UploadDropzone/
+│   │   │   │   │   └── index.tsx
+│   │   │   ├── app/
+│   │   │   │   ├── (authentication)/
+│   │   │   │   │   ├── login/
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── otp/
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── setup-account/
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── actions.ts
+│   │   │   │   │   ├── layout.tsx
+│   │   │   │   │   └── loading.tsx
+│   │   │   │   ├── (customer-checkout)/
+│   │   │   │   │   └── checkout/
+│   │   │   │   │   │   ├── [step]/
+│   │   │   │   │   │   │   ├── (address)/
+│   │   │   │   │   │   │   │   ├── AddEditAddressForm.tsx
+│   │   │   │   │   │   │   │   ├── AddressCard.tsx
+│   │   │   │   │   │   │   │   ├── AddressListSection.tsx
+│   │   │   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   │   │   └── LoadingAddresses.tsx
+│   │   │   │   │   │   │   ├── (cart)/
+│   │   │   │   │   │   │   │   ├── (CartItemCard)/
+│   │   │   │   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   │   │   │   ├── PriceDetailsBoxButton.tsx
+│   │   │   │   │   │   │   │   │   ├── PriceSection.tsx
+│   │   │   │   │   │   │   │   │   └── Quantity.tsx
+│   │   │   │   │   │   │   │   ├── AddressBox.tsx
+│   │   │   │   │   │   │   │   ├── AddressListingForCart.tsx
+│   │   │   │   │   │   │   │   ├── CartEmpty.tsx
+│   │   │   │   │   │   │   │   ├── CartItemsSection.tsx
+│   │   │   │   │   │   │   │   ├── CouponBox.tsx
+│   │   │   │   │   │   │   │   ├── DeleteCartItem.tsx
+│   │   │   │   │   │   │   │   ├── DonateBox.tsx
+│   │   │   │   │   │   │   │   ├── GiftBox.tsx
+│   │   │   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   │   │   ├── LoadingCart.tsx
+│   │   │   │   │   │   │   │   ├── PriceDetailsBox.tsx
+│   │   │   │   │   │   │   │   └── PriceDetailsBoxHelper.tsx
+│   │   │   │   │   │   │   ├── (payment)/
+│   │   │   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   │   │   ├── LoadingPayment.tsx
+│   │   │   │   │   │   │   │   └── PaymentOptionsSection.tsx
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   ├── addressActions.ts
+│   │   │   │   │   │   ├── cartActions.ts
+│   │   │   │   │   │   ├── layout.tsx
+│   │   │   │   │   │   └── paymentActions.ts
+│   │   │   │   ├── (customer)/
+│   │   │   │   │   ├── (authenticated)/
+│   │   │   │   │   │   ├── create-checkout-session/
+│   │   │   │   │   │   │   ├── checkoutSessionActions.ts
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   ├── my-profile/
+│   │   │   │   │   │   │   ├── edit/
+│   │   │   │   │   │   │   │   ├── layout.tsx
+│   │   │   │   │   │   │   │   ├── loading.tsx
+│   │   │   │   │   │   │   │   ├── page.tsx
+│   │   │   │   │   │   │   │   ├── UpdateEmail.tsx
+│   │   │   │   │   │   │   │   └── UpdateProfileForm.tsx
+│   │   │   │   │   │   │   ├── actions.ts
+│   │   │   │   │   │   │   ├── loading.tsx
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   ├── orders/
+│   │   │   │   │   │   │   ├── [orderId]/
+│   │   │   │   │   │   │   │   └── [orderItemId]/
+│   │   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   ├── actions.ts
+│   │   │   │   │   │   │   ├── OrderDetailComponent.tsx
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   ├── payment-success/
+│   │   │   │   │   │   │   ├── DownloadInvoice.tsx
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   ├── saved-addresses/
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   └── layout.tsx
+│   │   │   │   │   ├── (landing)/
+│   │   │   │   │   │   ├── banner/
+│   │   │   │   │   │   │   └── index.tsx
+│   │   │   │   │   │   ├── explore-products/
+│   │   │   │   │   │   │   ├── exploreProducts.css
+│   │   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   │   └── SeeAllProductsBtn.tsx
+│   │   │   │   │   │   ├── fast-shipping/
+│   │   │   │   │   │   │   └── index.tsx
+│   │   │   │   │   │   ├── inspiring-stories/
+│   │   │   │   │   │   │   └── index.tsx
+│   │   │   │   │   │   ├── shop-by-categories/
+│   │   │   │   │   │   │   └── index.tsx
+│   │   │   │   │   │   ├── testimonial/
+│   │   │   │   │   │   │   └── index.tsx
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── about-us/
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── products/
+│   │   │   │   │   │   ├── (components)/
+│   │   │   │   │   │   │   ├── PlpFilters/
+│   │   │   │   │   │   │   │   ├── mobile/
+│   │   │   │   │   │   │   │   │   ├── PlpBottomNav.tsx
+│   │   │   │   │   │   │   │   │   └── PlpMobileFilterTabs.tsx
+│   │   │   │   │   │   │   │   ├── AvailabilityFilter.tsx
+│   │   │   │   │   │   │   │   ├── CategoriesFilter.tsx
+│   │   │   │   │   │   │   │   ├── DiscountsFilter.tsx
+│   │   │   │   │   │   │   │   ├── index.tsx
+│   │   │   │   │   │   │   │   ├── PriceSlider.tsx
+│   │   │   │   │   │   │   │   └── VariantsFilter.tsx
+│   │   │   │   │   │   │   ├── PlpPaginationSection.tsx
+│   │   │   │   │   │   │   ├── PlpSearch.tsx
+│   │   │   │   │   │   │   └── PlpSorting.tsx
+│   │   │   │   │   │   ├── [productItemId]/
+│   │   │   │   │   │   │   ├── (components)/
+│   │   │   │   │   │   │   │   ├── (dummyData)/
+│   │   │   │   │   │   │   │   │   └── productReviewData.ts
+│   │   │   │   │   │   │   │   ├── (review)/
+│   │   │   │   │   │   │   │   │   ├── review.css
+│   │   │   │   │   │   │   │   │   ├── ReviewCard.tsx
+│   │   │   │   │   │   │   │   │   ├── ReviewDetails.tsx
+│   │   │   │   │   │   │   │   │   ├── ReviewSection.tsx
+│   │   │   │   │   │   │   │   │   └── ReviewSummary.tsx
+│   │   │   │   │   │   │   │   ├── actions.ts
+│   │   │   │   │   │   │   │   ├── ButtonSection.tsx
+│   │   │   │   │   │   │   │   ├── ImageComponent.tsx
+│   │   │   │   │   │   │   │   ├── PdpAccordianItem.tsx
+│   │   │   │   │   │   │   │   ├── PriceSection.tsx
+│   │   │   │   │   │   │   │   ├── TitleSection.tsx
+│   │   │   │   │   │   │   │   ├── UpperRatingSection.tsx
+│   │   │   │   │   │   │   │   ├── VariantAttributes.tsx
+│   │   │   │   │   │   │   │   └── Variants.tsx
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   ├── loading.tsx
+│   │   │   │   │   │   ├── page.tsx
+│   │   │   │   │   │   └── PlpStyles.css
+│   │   │   │   │   ├── stories/
+│   │   │   │   │   │   ├── [id]/
+│   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   ├── page.tsx
+│   │   │   │   │   │   └── stories.ts
+│   │   │   │   │   ├── wishlist/
+│   │   │   │   │   │   ├── loading.tsx
+│   │   │   │   │   │   ├── MoveToBagButton.tsx
+│   │   │   │   │   │   ├── page.tsx
+│   │   │   │   │   │   └── RemoveWishlistIcon.tsx
+│   │   │   │   │   └── layout.tsx
+│   │   │   │   ├── admin/
+│   │   │   │   │   ├── categories/
+│   │   │   │   │   │   ├── (add-edit-category)/
+│   │   │   │   │   │   │   ├── [categoryId]/
+│   │   │   │   │   │   │   │   ├── variants/
+│   │   │   │   │   │   │   │   │   ├── (add-edit-variants)/
+│   │   │   │   │   │   │   │   │   │   ├── [variantId]/
+│   │   │   │   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   │   │   │   ├── add/
+│   │   │   │   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   │   │   │   ├── actions.ts
+│   │   │   │   │   │   │   │   │   │   ├── AddEditVariantForm.tsx
+│   │   │   │   │   │   │   │   │   │   └── loading.tsx
+│   │   │   │   │   │   │   │   │   ├── loading.tsx
+│   │   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   ├── add/
+│   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   ├── actions.ts
+│   │   │   │   │   │   │   └── add-edit-category-form.tsx
+│   │   │   │   │   │   ├── loading.tsx
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── dashboard/
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── products/
+│   │   │   │   │   │   ├── (add-edit-products)/
+│   │   │   │   │   │   │   ├── [productId]/
+│   │   │   │   │   │   │   │   ├── (product-item)/
+│   │   │   │   │   │   │   │   │   ├── (add-edit-product-variants)/
+│   │   │   │   │   │   │   │   │   │   ├── [productVariantId]/
+│   │   │   │   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   │   │   │   ├── add/
+│   │   │   │   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   │   │   │   ├── actions.ts
+│   │   │   │   │   │   │   │   │   │   ├── AddEditProductVariantForm.tsx
+│   │   │   │   │   │   │   │   │   │   └── ProductImageSection.tsx
+│   │   │   │   │   │   │   │   │   ├── DeleteProductItem.tsx
+│   │   │   │   │   │   │   │   │   └── ProductVariantsListing.tsx
+│   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   ├── add/
+│   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   ├── actions.ts
+│   │   │   │   │   │   │   ├── AddEditProductForm.tsx
+│   │   │   │   │   │   │   └── AddEditProductTabs.tsx
+│   │   │   │   │   │   ├── loading.tsx
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   ├── variants/
+│   │   │   │   │   │   ├── (add-edit-variants)/
+│   │   │   │   │   │   │   ├── add/
+│   │   │   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   │   │   └── loading.tsx
+│   │   │   │   │   │   ├── loading.tsx
+│   │   │   │   │   │   └── page.tsx
+│   │   │   │   │   └── layout.tsx
+│   │   │   │   ├── error.tsx
+│   │   │   │   ├── favicon.ico
+│   │   │   │   ├── globals.css
+│   │   │   │   ├── layout.tsx
+│   │   │   │   └── unauthorized.tsx
+│   │   │   ├── constants/
+│   │   │   │   ├── en.ts
+│   │   │   │   └── types.ts
+│   │   │   ├── lib/
+│   │   │   │   ├── apiFetch.ts
+│   │   │   │   ├── getCurrentUser.ts
+│   │   │   │   ├── refreshToken.ts
+│   │   │   │   └── serverApiFetch.ts
+│   │   │   └── utils/
+│   │   │   │   ├── hooks/
+│   │   │   │   │   ├── useCurrentUser.ts
+│   │   │   │   │   └── useResendTimer.ts
+│   │   │   │   ├── store/
+│   │   │   │   │   ├── address.ts
+│   │   │   │   │   ├── auth.ts
+│   │   │   │   │   └── cart.ts
+│   │   │   │   ├── constants.ts
+│   │   │   │   ├── helperFunctions.tsx
+│   │   │   │   ├── loadRazorpay.ts
+│   │   │   │   └── s3Actions.ts
+│   │   ├── bugs.md
+│   │   ├── docker-compose.yml
+│   │   ├── eslint.config.mjs
+│   │   ├── next-env.d.ts
+│   │   ├── next.config.ts
+│   │   ├── package-lock.json
+│   │   ├── package.json
+│   │   ├── postcss.config.mjs
+│   │   ├── prisma.config.ts
+│   │   ├── README.md
+│   │   ├── Todo.txt
+│   │   └── tsconfig.json
+├── db_backup.sql
+├── nginx-setup.md
+├── setup.md
+├── shell.md
+└── TODO.md
+.
+├── backend
+│   ├── apiGatewayService
+│   │   ├── pom.xml
+│   │   └── src
+│   │       ├── main
+│   │       │   ├── java
+│   │       │   │   └── com
+│   │       │   │       └── e_commerce
+│   │       │   │           └── apiGatewayService
+│   │       │   │               ├── ApiGatewayServiceApplication.java
+│   │       │   │               ├── config
+│   │       │   │               │   ├── GatewaySwaggerConfig.java
+│   │       │   │               │   └── SecurityConfig.java
+│   │       │   │               ├── controller
+│   │       │   │               │   ├── DemoController.java
+│   │       │   │               │   └── GlobalFallbackController.java
+│   │       │   │               ├── exception
+│   │       │   │               │   ├── BaseException.java
+│   │       │   │               │   ├── ErrorResponse.java
+│   │       │   │               │   └── GlobalErrorHandler.java
+│   │       │   │               └── filter
+│   │       │   │                   ├── CookieToHeaderFilter.java
+│   │       │   │                   ├── TraceIdFilter.java
+│   │       │   │                   └── UserContextGatewayFilterFactory.java
+│   │       │   └── resources
+│   │       │       └── application.yml
+│   │       └── test
+│   │           └── java
+│   │               └── com
+│   │                   └── e_commerce
+│   │                       └── apiGatewayService
+│   │                           └── ApiGatewayServiceApplicationTests.java
+│   ├── authService
+│   │   ├── app
+│   │   ├── compose.yaml
+│   │   ├── pom.xml
+│   │   └── src
+│   │       ├── main
+│   │       │   ├── java
+│   │       │   │   └── com
+│   │       │   │       └── e_commerce
+│   │       │   │           └── authService
+│   │       │   │               ├── AuthServiceApplication.java
+│   │       │   │               ├── client
+│   │       │   │               │   └── IProfileClient.java
+│   │       │   │               ├── configuration
+│   │       │   │               │   ├── OtpConfig.java
+│   │       │   │               │   ├── RedisConfig.java
+│   │       │   │               │   └── RsaKeyConfig.java
+│   │       │   │               ├── controller
+│   │       │   │               │   ├── AuthController.java
+│   │       │   │               │   └── JwkController.java
+│   │       │   │               ├── model
+│   │       │   │               │   ├── dto
+│   │       │   │               │   │   ├── OTpVerifyRequest.java
+│   │       │   │               │   │   ├── TokenResponse.java
+│   │       │   │               │   │   ├── UserResponse.java
+│   │       │   │               │   │   ├── VerifyOtpResponse.java
+│   │       │   │               │   │   └── VerifyOtpResponseWithToken.java
+│   │       │   │               │   ├── Permission.java
+│   │       │   │               │   ├── RefreshToken.java
+│   │       │   │               │   ├── Role.java
+│   │       │   │               │   └── User.java
+│   │       │   │               ├── repository
+│   │       │   │               │   ├── RefreshTokenRepository.java
+│   │       │   │               │   ├── RoleRepository.java
+│   │       │   │               │   └── UserRepository.java
+│   │       │   │               ├── service
+│   │       │   │               │   ├── IAuthApplicationService.java
+│   │       │   │               │   ├── IJwtService.java
+│   │       │   │               │   ├── impl
+│   │       │   │               │   │   ├── AuthApplicationService.java
+│   │       │   │               │   │   ├── JwtService.java
+│   │       │   │               │   │   ├── OtpService.java
+│   │       │   │               │   │   └── UserService.java
+│   │       │   │               │   ├── IOtpService.java
+│   │       │   │               │   └── IUserService.java
+│   │       │   │               └── utils
+│   │       │   │                   └── Constants.java
+│   │       │   └── resources
+│   │       │       ├── application.yaml
+│   │       │       └── db
+│   │       │           └── changelog
+│   │       │               ├── 001-create-table.yaml
+│   │       │               └── db-changelog-master.yaml
+│   │       └── test
+│   │           └── java
+│   │               └── com
+│   │                   └── e_commerce
+│   │                       └── authService
+│   │                           └── AuthServiceApplicationTests.java
+│   ├── cartService
+│   │   ├── app
+│   │   ├── compose.yaml
+│   │   ├── pom.xml
+│   │   ├── readme.md
+│   │   └── src
+│   │       ├── main
+│   │       │   ├── java
+│   │       │   │   └── com
+│   │       │   │       └── e_commerce
+│   │       │   │           └── cartService
+│   │       │   │               ├── CartServiceApplication.java
+│   │       │   │               ├── controller
+│   │       │   │               │   ├── CartItemController.java
+│   │       │   │               │   ├── InternalController.java
+│   │       │   │               │   └── WishlistedController.java
+│   │       │   │               ├── kafka
+│   │       │   │               │   └── OrderFulfilledConsumer.java
+│   │       │   │               ├── model
+│   │       │   │               │   ├── CartItem.java
+│   │       │   │               │   ├── Cart.java
+│   │       │   │               │   ├── dto
+│   │       │   │               │   │   ├── CartItemRequestDTO.java
+│   │       │   │               │   │   └── CartItemRequestDTOWithUpdatedQty.java
+│   │       │   │               │   ├── enums
+│   │       │   │               │   │   └── CartStatus.java
+│   │       │   │               │   └── Wishlisted.java
+│   │       │   │               ├── repository
+│   │       │   │               │   ├── ICartItemRepository.java
+│   │       │   │               │   ├── ICartRepository.java
+│   │       │   │               │   └── IWishlistedRepository.java
+│   │       │   │               └── service
+│   │       │   │                   ├── ICartItemService.java
+│   │       │   │                   ├── impl
+│   │       │   │                   │   ├── CartItemServiceImpl.java
+│   │       │   │                   │   └── WishlistedServiceImpl.java
+│   │       │   │                   └── IWishlistedService.java
+│   │       │   └── resources
+│   │       │       ├── application.yml
+│   │       │       └── db
+│   │       │           └── changelog
+│   │       │               ├── 001-create-table.yaml
+│   │       │               ├── 002-create-wishlisted-table.yaml
+│   │       │               ├── 003-add-is_selected_column_cart_items.yaml
+│   │       │               ├── 004-add-updated_quantity_column_cart_items.yaml
+│   │       │               └── db-changelog-master.yaml
+│   │       └── test
+│   │           └── java
+│   │               └── com
+│   │                   └── e_commerce
+│   │                       └── cartService
+│   │                           └── CartServiceApplicationTests.java
+│   ├── common
+│   │   ├── pom.xml
+│   │   └── src
+│   │       └── main
+│   │           ├── java
+│   │           │   └── com
+│   │           │       └── e_commerce
+│   │           │           └── common
+│   │           │               ├── config
+│   │           │               │   ├── CommonSwaggerConfig.java
+│   │           │               │   ├── FeignConfig.java
+│   │           │               │   ├── GatewaySecurityAutoConfiguration.java
+│   │           │               │   └── SecurityConfig.java
+│   │           │               ├── exception
+│   │           │               │   ├── BaseException.java
+│   │           │               │   ├── ErrorResponse.java
+│   │           │               │   └── GlobalExceptionHandler.java
+│   │           │               ├── filter
+│   │           │               │   └── GatewayHeaderAuthenticationFilter.java
+│   │           │               ├── model
+│   │           │               │   ├── AuditEntity.java
+│   │           │               │   ├── dto
+│   │           │               │   │   ├── AddressDTO.java
+│   │           │               │   │   ├── CartDTO.java
+│   │           │               │   │   ├── CartItemDTO.java
+│   │           │               │   │   ├── notificationDtos
+│   │           │               │   │   │   ├── NotificationDTO.java
+│   │           │               │   │   │   └── OrderItemEmailDTO.java
+│   │           │               │   │   ├── PlaceOrderReqDTO.java
+│   │           │               │   │   ├── ProductPriceDetailsDTO.java
+│   │           │               │   │   ├── ProductPriceDTO.java
+│   │           │               │   │   ├── TotalProductPriceResponseDTO.java
+│   │           │               │   │   └── UserInfoDTO.java
+│   │           │               │   ├── enums
+│   │           │               │   │   ├── AddressType.java
+│   │           │               │   │   ├── Gender.java
+│   │           │               │   │   ├── NotificationStatus.java
+│   │           │               │   │   ├── NotificationType.java
+│   │           │               │   │   ├── PaymentGateway.java
+│   │           │               │   │   └── PaymentMode.java
+│   │           │               │   └── event
+│   │           │               │       ├── InventoryReserveEvent.java
+│   │           │               │       ├── OrderConfimedNotificationEvent.java
+│   │           │               │       ├── OrderCreatedEvent.java
+│   │           │               │       ├── OrderFulfilledEvent.java
+│   │           │               │       ├── OrderReservedEvent.java
+│   │           │               │       ├── PaymentCreatedEvent.java
+│   │           │               │       ├── PaymentStatusEvent.java
+│   │           │               │       └── ProductSearchDocumentEvent.java
+│   │           │               ├── security
+│   │           │               │   └── UserHeaders.java
+│   │           │               └── utils
+│   │           │                   └── Constants.java
+│   │           └── resources
+│   │               └── logback-spring.xml
+│   ├── contentService
+│   │   ├── app
+│   │   ├── HELP.md
+│   │   ├── mvnw
+│   │   └── mvnw.cmd
+│   ├── kafka-setup
+│   │   └── docker-compose.yml
+│   ├── notificationService
+│   │   ├── app
+│   │   ├── pom.xml
+│   │   └── src
+│   │       ├── main
+│   │       │   ├── java
+│   │       │   │   └── com
+│   │       │   │       └── e_commerce
+│   │       │   │           └── notificationService
+│   │       │   │               ├── config
+│   │       │   │               │   ├── AppConfig.java
+│   │       │   │               │   ├── Fast2SmsConfig.java
+│   │       │   │               │   └── MailConfig.java
+│   │       │   │               ├── controller
+│   │       │   │               │   └── NotificationController.java
+│   │       │   │               ├── kafka
+│   │       │   │               │   ├── OrderCreatedEventConsumer.java
+│   │       │   │               │   └── VerificationEventConsumer.java
+│   │       │   │               ├── NotificationServiceApplication.java
+│   │       │   │               ├── service
+│   │       │   │               │   ├── impl
+│   │       │   │               │   │   ├── NotificationService.java
+│   │       │   │               │   │   └── ThymeleafTemplateService.java
+│   │       │   │               │   ├── INotificationService.java
+│   │       │   │               │   └── ITemplateService.java
+│   │       │   │               └── strategy
+│   │       │   │                   ├── EmailStrategy.java
+│   │       │   │                   ├── NotificationStrategyFactory.java
+│   │       │   │                   ├── NotificationStrategy.java
+│   │       │   │                   ├── SmsStrategy.java
+│   │       │   │                   └── WhatsappStrategy.java
+│   │       │   └── resources
+│   │       │       ├── application.yaml
+│   │       │       ├── static
+│   │       │       └── templates
+│   │       │           └── email
+│   │       │               ├── email-verification.html
+│   │       │               └── order-confirmation.html
+│   │       └── test
+│   │           └── java
+│   │               └── com
+│   │                   └── e_commerce
+│   │                       └── notificationService
+│   │                           └── NotificationServiceApplicationTests.java
+│   ├── observability-setup
+│   │   ├── compose.yml
+│   │   └── logstash
+│   │       └── pipeline
+│   │           └── logstash.conf
+│   ├── offerService
+│   │   ├── app
+│   │   ├── compose.yaml
+│   │   ├── pom.xml
+│   │   └── src
+│   │       ├── main
+│   │       │   ├── java
+│   │       │   │   └── com
+│   │       │   │       └── e_commerce
+│   │       │   │           └── offerService
+│   │       │   │               ├── controller
+│   │       │   │               │   ├── CouponController.java
+│   │       │   │               │   └── InternalController.java
+│   │       │   │               ├── model
+│   │       │   │               │   ├── Coupon.java
+│   │       │   │               │   └── dto
+│   │       │   │               │       └── CouponTypeDTO.java
+│   │       │   │               ├── OfferServiceApplication.java
+│   │       │   │               ├── repository
+│   │       │   │               │   └── ICouponRepository.java
+│   │       │   │               └── service
+│   │       │   │                   ├── ICouponService.java
+│   │       │   │                   └── impl
+│   │       │   │                       └── CouponService.java
+│   │       │   └── resources
+│   │       │       ├── application.yaml
+│   │       │       └── db
+│   │       │           └── changelog
+│   │       │               ├── 000-enable-pgcrypto.yaml
+│   │       │               ├── 001-create-table.yaml
+│   │       │               └── db-changelog-master.yaml
+│   │       └── test
+│   │           └── java
+│   │               └── com
+│   │                   └── e_commerce
+│   │                       └── offerService
+│   │                           └── OfferServiceApplicationTests.java
+│   ├── orderService
+│   │   ├── app
+│   │   ├── compose.yaml
+│   │   ├── pom.xml
+│   │   └── src
+│   │       ├── main
+│   │       │   ├── java
+│   │       │   │   └── com
+│   │       │   │       └── e_commerce
+│   │       │   │           └── orderService
+│   │       │   │               ├── client
+│   │       │   │               │   ├── ICartClient.java
+│   │       │   │               │   ├── IOfferClient.java
+│   │       │   │               │   ├── IPaymentClient.java
+│   │       │   │               │   ├── IProductClient.java
+│   │       │   │               │   └── IProfileClient.java
+│   │       │   │               ├── controller
+│   │       │   │               │   └── OrderController.java
+│   │       │   │               ├── cron
+│   │       │   │               │   └── ReservationCleanupJob.java
+│   │       │   │               ├── kafka
+│   │       │   │               │   ├── InventoryEventConsumer.java
+│   │       │   │               │   ├── OrderEventProducer.java
+│   │       │   │               │   └── PaymentEventConsumer.java
+│   │       │   │               ├── model
+│   │       │   │               │   ├── dto
+│   │       │   │               │   │   ├── OrderDetailsResponseDTO.java
+│   │       │   │               │   │   ├── OrderItemSummaryForOrderDetails.java
+│   │       │   │               │   │   ├── OrderStatusResponseDTO.java
+│   │       │   │               │   │   ├── pdf
+│   │       │   │               │   │   │   ├── InvoiceData.java
+│   │       │   │               │   │   │   └── InvoiceItemData.java
+│   │       │   │               │   │   ├── PriceSummaryForOrderDetails.java
+│   │       │   │               │   │   ├── PriceSummaryRequestDTO.java
+│   │       │   │               │   │   └── PriceSummaryResponseDTO.java
+│   │       │   │               │   ├── enums
+│   │       │   │               │   │   ├── OrderItemStatus.java
+│   │       │   │               │   │   ├── OrderStatus.java
+│   │       │   │               │   │   └── PaymentStatus.java
+│   │       │   │               │   ├── OrderItem.java
+│   │       │   │               │   └── Order.java
+│   │       │   │               ├── OrderServiceApplication.java
+│   │       │   │               ├── repository
+│   │       │   │               │   ├── IOrderItemRepository.java
+│   │       │   │               │   └── IOrderRepository.java
+│   │       │   │               └── service
+│   │       │   │                   ├── IInvoicePdfGeneratorService.java
+│   │       │   │                   ├── impl
+│   │       │   │                   │   ├── ExternalService.java
+│   │       │   │                   │   ├── InvoicePdfGeneratorService.java
+│   │       │   │                   │   └── OrderService.java
+│   │       │   │                   └── IOrderService.java
+│   │       │   └── resources
+│   │       │       ├── application.yaml
+│   │       │       └── db
+│   │       │           └── changelog
+│   │       │               ├── 001-create-table.yaml
+│   │       │               └── db-changelog-master.yaml
+│   │       └── test
+│   │           └── java
+│   │               └── com
+│   │                   └── e_commerce
+│   │                       └── orderService
+│   │                           └── OrderServiceApplicationTests.java
+│   ├── paymentService
+│   │   ├── app
+│   │   ├── compose.yaml
+│   │   ├── pom.xml
+│   │   └── src
+│   │       ├── main
+│   │       │   ├── java
+│   │       │   │   └── com
+│   │       │   │       └── e_commerce
+│   │       │   │           └── paymentService
+│   │       │   │               ├── config
+│   │       │   │               │   └── RazorpayConfig.java
+│   │       │   │               ├── controller
+│   │       │   │               │   └── PaymentController.java
+│   │       │   │               ├── kafka
+│   │       │   │               │   ├── OrderReservedEventConsumer.java
+│   │       │   │               │   └── PaymentEventProducer.java
+│   │       │   │               ├── model
+│   │       │   │               │   ├── dto
+│   │       │   │               │   │   ├── GatewayOrderResponse.java
+│   │       │   │               │   │   ├── PaymentResponse.java
+│   │       │   │               │   │   └── PaymentStatusRequest.java
+│   │       │   │               │   ├── enums
+│   │       │   │               │   │   └── PaymentStatus.java
+│   │       │   │               │   └── Payment.java
+│   │       │   │               ├── PaymentServiceApplication.java
+│   │       │   │               ├── repository
+│   │       │   │               │   └── IPaymentRepository.java
+│   │       │   │               └── service
+│   │       │   │                   ├── impl
+│   │       │   │                   │   ├── PaymentService.java
+│   │       │   │                   │   ├── RazorpayPaymentGateway.java
+│   │       │   │                   │   └── RazorpayWebhookService.java
+│   │       │   │                   ├── IPaymentGateway.java
+│   │       │   │                   ├── IPaymentService.java
+│   │       │   │                   └── IWebhookService.java
+│   │       │   └── resources
+│   │       │       ├── application.yaml
+│   │       │       └── db
+│   │       │           └── changelog
+│   │       │               ├── 001-create-payments-table.yaml
+│   │       │               └── db-changelog-master.yaml
+│   │       └── test
+│   │           └── java
+│   │               └── com
+│   │                   └── e_commerce
+│   │                       └── paymentService
+│   │                           └── PaymentServiceApplicationTests.java
+│   ├── productService
+│   │   ├── app
+│   │   ├── compose.yaml
+│   │   ├── pom.xml
+│   │   └── src
+│   │       ├── main
+│   │       │   ├── java
+│   │       │   │   └── com
+│   │       │   │       └── e_commerce
+│   │       │   │           └── productService
+│   │       │   │               ├── config
+│   │       │   │               │   └── S3Config.java
+│   │       │   │               ├── controller
+│   │       │   │               │   ├── admin
+│   │       │   │               │   │   ├── CategoryController.java
+│   │       │   │               │   │   ├── ProductController.java
+│   │       │   │               │   │   ├── ProductIndexController.java
+│   │       │   │               │   │   ├── ProductItemController.java
+│   │       │   │               │   │   ├── S3Controller.java
+│   │       │   │               │   │   └── VariantController.java
+│   │       │   │               │   ├── customer
+│   │       │   │               │   │   ├── CustomerCategoryController.java
+│   │       │   │               │   │   └── CustomerProductDetailsController.java
+│   │       │   │               │   ├── DemoController.java
+│   │       │   │               │   └── InternalController.java
+│   │       │   │               ├── kafka
+│   │       │   │               │   ├── InventoryReservationEventProducer.java
+│   │       │   │               │   ├── OrderCreatedEventConsumer.java
+│   │       │   │               │   ├── OrderFulfilledEventConsumer.java
+│   │       │   │               │   └── ProductSearchDocumentIngestEventProducer.java
+│   │       │   │               ├── model
+│   │       │   │               │   ├── Category.java
+│   │       │   │               │   ├── dto
+│   │       │   │               │   │   ├── category
+│   │       │   │               │   │   │   ├── CategoryListingResponseDTO.java
+│   │       │   │               │   │   │   ├── CategoryRequestDTO.java
+│   │       │   │               │   │   │   └── CategoryResponseDTO.java
+│   │       │   │               │   │   ├── common
+│   │       │   │               │   │   │   └── SelectOptionDTO.java
+│   │       │   │               │   │   ├── customer
+│   │       │   │               │   │   │   ├── CartProductItemInfoResponse.java
+│   │       │   │               │   │   │   ├── CategoryResponseDTOLanding.java
+│   │       │   │               │   │   │   ├── ProductDetailsDTO.java
+│   │       │   │               │   │   │   ├── ProductItemIdDTO.java
+│   │       │   │               │   │   │   ├── ProductVariantAttributeDTO.java
+│   │       │   │               │   │   │   └── VariantAttributeDTO.java
+│   │       │   │               │   │   ├── product
+│   │       │   │               │   │   │   ├── ProductDTO.java
+│   │       │   │               │   │   │   ├── ProductFilterDTO.java
+│   │       │   │               │   │   │   └── ProductListingResponseDTO.java
+│   │       │   │               │   │   ├── productItem
+│   │       │   │               │   │   │   ├── ImageDTO.java
+│   │       │   │               │   │   │   ├── ProductItemDTO.java
+│   │       │   │               │   │   │   ├── ProductItemFilter.java
+│   │       │   │               │   │   │   ├── ProductItemListingDTO.java
+│   │       │   │               │   │   │   └── ProductItemPriceDTO.java
+│   │       │   │               │   │   ├── s3
+│   │       │   │               │   │   │   ├── ImageKey.java
+│   │       │   │               │   │   │   └── PresignRequest.java
+│   │       │   │               │   │   └── variant
+│   │       │   │               │   │       ├── ProductVariantAttributesDTO.java
+│   │       │   │               │   │       ├── VariantAttributeDTO.java
+│   │       │   │               │   │       ├── VariantDTO.java
+│   │       │   │               │   │       └── VariantWithCategoryDTO.java
+│   │       │   │               │   ├── enums
+│   │       │   │               │   │   └── ReservationStatus.java
+│   │       │   │               │   ├── GstTaxSlab.java
+│   │       │   │               │   ├── InventoryReservation.java
+│   │       │   │               │   ├── ProductItemImage.java
+│   │       │   │               │   ├── ProductItem.java
+│   │       │   │               │   ├── Product.java
+│   │       │   │               │   ├── VariantAttribute.java
+│   │       │   │               │   └── Variant.java
+│   │       │   │               ├── ProductServiceApplication.java
+│   │       │   │               ├── repository
+│   │       │   │               │   ├── ICategoryRepository.java
+│   │       │   │               │   ├── IGstTaxSlabRepository.java
+│   │       │   │               │   ├── IInventoryReservationRepository.java
+│   │       │   │               │   ├── IProductItemImageRepository.java
+│   │       │   │               │   ├── IProductItemRepository.java
+│   │       │   │               │   ├── IProductRepository.java
+│   │       │   │               │   ├── IVariantAttributeRepository.java
+│   │       │   │               │   └── IVariantRepository.java
+│   │       │   │               └── service
+│   │       │   │                   ├── ICategoryService.java
+│   │       │   │                   ├── IInventoryReservationService.java
+│   │       │   │                   ├── impl
+│   │       │   │                   │   ├── CategoryService.java
+│   │       │   │                   │   ├── InventoryReservationService.java
+│   │       │   │                   │   ├── ProductDataIngestionService.java
+│   │       │   │                   │   ├── ProductItemService.java
+│   │       │   │                   │   ├── ProductService.java
+│   │       │   │                   │   ├── S3Service.java
+│   │       │   │                   │   ├── SkuUtilService.java
+│   │       │   │                   │   └── VariantService.java
+│   │       │   │                   ├── IProductDataIngestionService.java
+│   │       │   │                   ├── IProductItemService.java
+│   │       │   │                   ├── IProductService.java
+│   │       │   │                   ├── IS3Service.java
+│   │       │   │                   ├── ISkuUtilService.java
+│   │       │   │                   └── IVariantService.java
+│   │       │   └── resources
+│   │       │       ├── application.yaml
+│   │       │       └── db
+│   │       │           └── changelog
+│   │       │               ├── 001-create-table.yaml
+│   │       │               ├── 002-add-audit-columns.yaml
+│   │       │               ├── 003-add-isThumbnail-column-productItemImage.yaml
+│   │       │               ├── 004-add-unique-constraint-name-variant-attribute.yaml
+│   │       │               ├── 005-add-image-description-in-catergories.yaml
+│   │       │               ├── 006-create-gst-tax-slab-table.yaml
+│   │       │               ├── 007-insert-gst-tax-slabs.yaml
+│   │       │               ├── 008-add-hsn-column-to-product-item.yaml
+│   │       │               ├── 009-update-existing-products-hsn.yaml
+│   │       │               ├── 010-make-hsn-not-null.yaml
+│   │       │               ├── 011-create-inventory-reservation.yaml
+│   │       │               └── db-changelog-master.yaml
+│   │       └── test
+│   │           └── java
+│   │               └── com
+│   │                   └── e_commerce
+│   │                       └── productService
+│   │                           └── ProductServiceApplicationTests.java
+│   ├── profileService
+│   │   ├── app
+│   │   ├── compose.yaml
+│   │   ├── pom.xml
+│   │   └── src
+│   │       ├── main
+│   │       │   ├── java
+│   │       │   │   └── com
+│   │       │   │       └── e_commerce
+│   │       │   │           └── profileService
+│   │       │   │               ├── config
+│   │       │   │               │   └── RedisConfig.java
+│   │       │   │               ├── controller
+│   │       │   │               │   ├── AddressController.java
+│   │       │   │               │   ├── InternalController.java
+│   │       │   │               │   ├── UserInfoController.java
+│   │       │   │               │   └── VerificationController.java
+│   │       │   │               ├── kafka
+│   │       │   │               │   └── ProfileVerificationEventProducer.java
+│   │       │   │               ├── model
+│   │       │   │               │   ├── Address.java
+│   │       │   │               │   └── UserInfo.java
+│   │       │   │               ├── ProfileServiceApplication.java
+│   │       │   │               ├── repository
+│   │       │   │               │   ├── IAddressRepository.java
+│   │       │   │               │   └── IUserInfoRepository.java
+│   │       │   │               └── service
+│   │       │   │                   ├── IAddressService.java
+│   │       │   │                   ├── impl
+│   │       │   │                   │   ├── AddressService.java
+│   │       │   │                   │   ├── UserInfoService.java
+│   │       │   │                   │   └── VerificationService.java
+│   │       │   │                   ├── IUserInfoService.java
+│   │       │   │                   └── IVerificationService.java
+│   │       │   └── resources
+│   │       │       ├── application.yaml
+│   │       │       └── db
+│   │       │           └── changelog
+│   │       │               ├── 001-create-address-table.yaml
+│   │       │               ├── 002-create-userinfo-table.yaml
+│   │       │               ├── 003-add-email-verified-column.yaml
+│   │       │               └── db-changelog-master.yaml
+│   │       └── test
+│   │           └── java
+│   │               └── com
+│   │                   └── e_commerce
+│   │                       └── profileService
+│   │                           └── ProfileServiceApplicationTests.java
+│   └── seachEngineService
+│       ├── app
+│       ├── compose.yaml
+│       ├── pom.xml
+│       └── src
+│           ├── main
+│           │   ├── java
+│           │   │   └── com
+│           │   │       └── e_commerce
+│           │   │           └── seachEngineService
+│           │   │               ├── controller
+│           │   │               │   └── SerchEngineServiceController.java
+│           │   │               ├── kafka
+│           │   │               │   ├── OrderFulfilledEventConsumer.java
+│           │   │               │   └── ProductSearchDocumentEventConsumer.java
+│           │   │               ├── model
+│           │   │               │   ├── CartItemDocument.java
+│           │   │               │   ├── dto
+│           │   │               │   │   ├── FacetValueDTO.java
+│           │   │               │   │   ├── ProductSearchRequest.java
+│           │   │               │   │   └── ProductSearchResponse.java
+│           │   │               │   ├── ImageDocument.java
+│           │   │               │   ├── OrderSearchDocument.java
+│           │   │               │   ├── ProductSearchDocument.java
+│           │   │               │   └── VariantDocument.java
+│           │   │               ├── repository
+│           │   │               │   ├── IOrderSearchRepository.java
+│           │   │               │   └── IProductSearchRepository.java
+│           │   │               ├── SeachEngineServiceApplication.java
+│           │   │               └── service
+│           │   │                   ├── impl
+│           │   │                   │   ├── OrderSearchService.java
+│           │   │                   │   ├── ProductSearchQueryService.java
+│           │   │                   │   └── ProductSearchService.java
+│           │   │                   ├── IOrderSearchService.java
+│           │   │                   ├── IProductSearchQueryService.java
+│           │   │                   └── IProductSearchService.java
+│           │   └── resources
+│           │       ├── application.yaml
+│           │       └── elasticsearch-settings.json
+│           └── test
+│               └── java
+│                   └── com
+│                       └── e_commerce
+│                           └── seachEngineService
+│                               └── SeachEngineServiceApplicationTests.java
+├── db_backup.sql
+├── folder_structure.txt
+├── frontend
+│   └── ecommerce
+│       ├── bugs.md
+│       ├── docker-compose.yml
+│       ├── eslint.config.mjs
+│       ├── next.config.ts
+│       ├── next-env.d.ts
+│       ├── package.json
+│       ├── package-lock.json
+│       ├── postcss.config.mjs
+│       ├── public
+│       │   ├── assets
+│       │   │   ├── Banner1.png
+│       │   │   ├── Banner2.png
+│       │   │   ├── Banner3.png
+│       │   │   ├── CartEmpty.svg
+│       │   │   ├── COD.svg
+│       │   │   ├── facebookIcon.svg
+│       │   │   ├── footerImg.jpg
+│       │   │   ├── googleIcon.svg
+│       │   │   ├── PlaceOrderloading.gif
+│       │   │   ├── PREPAID.svg
+│       │   │   ├── Trending.mp4
+│       │   │   └── WishlistEmpty.svg
+│       │   ├── file.svg
+│       │   ├── globe.svg
+│       │   ├── next.svg
+│       │   ├── vercel.svg
+│       │   └── window.svg
+│       ├── README.md
+│       ├── src
+│       │   ├── app
+│       │   │   ├── admin
+│       │   │   │   ├── categories
+│       │   │   │   │   ├── (add-edit-category)
+│       │   │   │   │   │   ├── actions.ts
+│       │   │   │   │   │   ├── add
+│       │   │   │   │   │   │   └── page.tsx
+│       │   │   │   │   │   ├── add-edit-category-form.tsx
+│       │   │   │   │   │   └── [categoryId]
+│       │   │   │   │   │       ├── page.tsx
+│       │   │   │   │   │       └── variants
+│       │   │   │   │   │           ├── (add-edit-variants)
+│       │   │   │   │   │           │   ├── actions.ts
+│       │   │   │   │   │           │   ├── add
+│       │   │   │   │   │           │   │   └── page.tsx
+│       │   │   │   │   │           │   ├── AddEditVariantForm.tsx
+│       │   │   │   │   │           │   ├── loading.tsx
+│       │   │   │   │   │           │   └── [variantId]
+│       │   │   │   │   │           │       └── page.tsx
+│       │   │   │   │   │           ├── loading.tsx
+│       │   │   │   │   │           └── page.tsx
+│       │   │   │   │   ├── loading.tsx
+│       │   │   │   │   └── page.tsx
+│       │   │   │   ├── dashboard
+│       │   │   │   │   └── page.tsx
+│       │   │   │   ├── layout.tsx
+│       │   │   │   ├── products
+│       │   │   │   │   ├── (add-edit-products)
+│       │   │   │   │   │   ├── actions.ts
+│       │   │   │   │   │   ├── add
+│       │   │   │   │   │   │   └── page.tsx
+│       │   │   │   │   │   ├── AddEditProductForm.tsx
+│       │   │   │   │   │   ├── AddEditProductTabs.tsx
+│       │   │   │   │   │   └── [productId]
+│       │   │   │   │   │       ├── page.tsx
+│       │   │   │   │   │       └── (product-item)
+│       │   │   │   │   │           ├── (add-edit-product-variants)
+│       │   │   │   │   │           │   ├── actions.ts
+│       │   │   │   │   │           │   ├── add
+│       │   │   │   │   │           │   │   └── page.tsx
+│       │   │   │   │   │           │   ├── AddEditProductVariantForm.tsx
+│       │   │   │   │   │           │   ├── ProductImageSection.tsx
+│       │   │   │   │   │           │   └── [productVariantId]
+│       │   │   │   │   │           │       └── page.tsx
+│       │   │   │   │   │           ├── DeleteProductItem.tsx
+│       │   │   │   │   │           └── ProductVariantsListing.tsx
+│       │   │   │   │   ├── loading.tsx
+│       │   │   │   │   └── page.tsx
+│       │   │   │   └── variants
+│       │   │   │       ├── (add-edit-variants)
+│       │   │   │       │   ├── add
+│       │   │   │       │   │   └── page.tsx
+│       │   │   │       │   └── loading.tsx
+│       │   │   │       ├── loading.tsx
+│       │   │   │       └── page.tsx
+│       │   │   ├── (authentication)
+│       │   │   │   ├── actions.ts
+│       │   │   │   ├── layout.tsx
+│       │   │   │   ├── loading.tsx
+│       │   │   │   ├── login
+│       │   │   │   │   └── page.tsx
+│       │   │   │   ├── otp
+│       │   │   │   │   └── page.tsx
+│       │   │   │   └── setup-account
+│       │   │   │       └── page.tsx
+│       │   │   ├── (customer)
+│       │   │   │   ├── about-us
+│       │   │   │   │   └── page.tsx
+│       │   │   │   ├── (authenticated)
+│       │   │   │   │   ├── create-checkout-session
+│       │   │   │   │   │   ├── checkoutSessionActions.ts
+│       │   │   │   │   │   └── page.tsx
+│       │   │   │   │   ├── layout.tsx
+│       │   │   │   │   ├── my-profile
+│       │   │   │   │   │   ├── actions.ts
+│       │   │   │   │   │   ├── edit
+│       │   │   │   │   │   │   ├── layout.tsx
+│       │   │   │   │   │   │   ├── loading.tsx
+│       │   │   │   │   │   │   ├── page.tsx
+│       │   │   │   │   │   │   ├── UpdateEmail.tsx
+│       │   │   │   │   │   │   └── UpdateProfileForm.tsx
+│       │   │   │   │   │   ├── loading.tsx
+│       │   │   │   │   │   └── page.tsx
+│       │   │   │   │   ├── orders
+│       │   │   │   │   │   ├── actions.ts
+│       │   │   │   │   │   ├── OrderDetailComponent.tsx
+│       │   │   │   │   │   ├── [orderId]
+│       │   │   │   │   │   │   └── [orderItemId]
+│       │   │   │   │   │   │       └── page.tsx
+│       │   │   │   │   │   └── page.tsx
+│       │   │   │   │   ├── payment-success
+│       │   │   │   │   │   ├── DownloadInvoice.tsx
+│       │   │   │   │   │   └── page.tsx
+│       │   │   │   │   └── saved-addresses
+│       │   │   │   │       └── page.tsx
+│       │   │   │   ├── (landing)
+│       │   │   │   │   ├── banner
+│       │   │   │   │   │   └── index.tsx
+│       │   │   │   │   ├── explore-products
+│       │   │   │   │   │   ├── exploreProducts.css
+│       │   │   │   │   │   ├── index.tsx
+│       │   │   │   │   │   └── SeeAllProductsBtn.tsx
+│       │   │   │   │   ├── fast-shipping
+│       │   │   │   │   │   └── index.tsx
+│       │   │   │   │   ├── inspiring-stories
+│       │   │   │   │   │   └── index.tsx
+│       │   │   │   │   ├── page.tsx
+│       │   │   │   │   ├── shop-by-categories
+│       │   │   │   │   │   └── index.tsx
+│       │   │   │   │   └── testimonial
+│       │   │   │   │       └── index.tsx
+│       │   │   │   ├── layout.tsx
+│       │   │   │   ├── products
+│       │   │   │   │   ├── (components)
+│       │   │   │   │   │   ├── PlpFilters
+│       │   │   │   │   │   │   ├── AvailabilityFilter.tsx
+│       │   │   │   │   │   │   ├── CategoriesFilter.tsx
+│       │   │   │   │   │   │   ├── DiscountsFilter.tsx
+│       │   │   │   │   │   │   ├── index.tsx
+│       │   │   │   │   │   │   ├── mobile
+│       │   │   │   │   │   │   │   ├── PlpBottomNav.tsx
+│       │   │   │   │   │   │   │   └── PlpMobileFilterTabs.tsx
+│       │   │   │   │   │   │   ├── PriceSlider.tsx
+│       │   │   │   │   │   │   └── VariantsFilter.tsx
+│       │   │   │   │   │   ├── PlpPaginationSection.tsx
+│       │   │   │   │   │   ├── PlpSearch.tsx
+│       │   │   │   │   │   └── PlpSorting.tsx
+│       │   │   │   │   ├── loading.tsx
+│       │   │   │   │   ├── page.tsx
+│       │   │   │   │   ├── PlpStyles.css
+│       │   │   │   │   └── [productItemId]
+│       │   │   │   │       ├── (components)
+│       │   │   │   │       │   ├── actions.ts
+│       │   │   │   │       │   ├── ButtonSection.tsx
+│       │   │   │   │       │   ├── (dummyData)
+│       │   │   │   │       │   │   └── productReviewData.ts
+│       │   │   │   │       │   ├── ImageComponent.tsx
+│       │   │   │   │       │   ├── PdpAccordianItem.tsx
+│       │   │   │   │       │   ├── PriceSection.tsx
+│       │   │   │   │       │   ├── (review)
+│       │   │   │   │       │   │   ├── ReviewCard.tsx
+│       │   │   │   │       │   │   ├── review.css
+│       │   │   │   │       │   │   ├── ReviewDetails.tsx
+│       │   │   │   │       │   │   ├── ReviewSection.tsx
+│       │   │   │   │       │   │   └── ReviewSummary.tsx
+│       │   │   │   │       │   ├── TitleSection.tsx
+│       │   │   │   │       │   ├── UpperRatingSection.tsx
+│       │   │   │   │       │   ├── VariantAttributes.tsx
+│       │   │   │   │       │   └── Variants.tsx
+│       │   │   │   │       └── page.tsx
+│       │   │   │   ├── stories
+│       │   │   │   │   ├── [id]
+│       │   │   │   │   │   └── page.tsx
+│       │   │   │   │   ├── page.tsx
+│       │   │   │   │   └── stories.ts
+│       │   │   │   └── wishlist
+│       │   │   │       ├── loading.tsx
+│       │   │   │       ├── MoveToBagButton.tsx
+│       │   │   │       ├── page.tsx
+│       │   │   │       └── RemoveWishlistIcon.tsx
+│       │   │   ├── (customer-checkout)
+│       │   │   │   └── checkout
+│       │   │   │       ├── addressActions.ts
+│       │   │   │       ├── cartActions.ts
+│       │   │   │       ├── layout.tsx
+│       │   │   │       ├── paymentActions.ts
+│       │   │   │       └── [step]
+│       │   │   │           ├── (address)
+│       │   │   │           │   ├── AddEditAddressForm.tsx
+│       │   │   │           │   ├── AddressCard.tsx
+│       │   │   │           │   ├── AddressListSection.tsx
+│       │   │   │           │   ├── index.tsx
+│       │   │   │           │   └── LoadingAddresses.tsx
+│       │   │   │           ├── (cart)
+│       │   │   │           │   ├── AddressBox.tsx
+│       │   │   │           │   ├── AddressListingForCart.tsx
+│       │   │   │           │   ├── CartEmpty.tsx
+│       │   │   │           │   ├── (CartItemCard)
+│       │   │   │           │   │   ├── index.tsx
+│       │   │   │           │   │   ├── PriceDetailsBoxButton.tsx
+│       │   │   │           │   │   ├── PriceSection.tsx
+│       │   │   │           │   │   └── Quantity.tsx
+│       │   │   │           │   ├── CartItemsSection.tsx
+│       │   │   │           │   ├── CouponBox.tsx
+│       │   │   │           │   ├── DeleteCartItem.tsx
+│       │   │   │           │   ├── DonateBox.tsx
+│       │   │   │           │   ├── GiftBox.tsx
+│       │   │   │           │   ├── index.tsx
+│       │   │   │           │   ├── LoadingCart.tsx
+│       │   │   │           │   ├── PriceDetailsBoxHelper.tsx
+│       │   │   │           │   └── PriceDetailsBox.tsx
+│       │   │   │           ├── page.tsx
+│       │   │   │           └── (payment)
+│       │   │   │               ├── index.tsx
+│       │   │   │               ├── LoadingPayment.tsx
+│       │   │   │               └── PaymentOptionsSection.tsx
+│       │   │   ├── error.tsx
+│       │   │   ├── favicon.ico
+│       │   │   ├── globals.css
+│       │   │   ├── layout.tsx
+│       │   │   └── unauthorized.tsx
+│       │   ├── (components)
+│       │   │   ├── ActionButton
+│       │   │   │   └── index.tsx
+│       │   │   ├── adminHeader
+│       │   │   │   └── index.tsx
+│       │   │   ├── adminListPage
+│       │   │   │   ├── index.tsx
+│       │   │   │   └── SortButton.tsx
+│       │   │   ├── adminNavbarLinksGroup
+│       │   │   │   ├── index.tsx
+│       │   │   │   └── NavbarLinksGroup.css
+│       │   │   ├── adminSidebar
+│       │   │   │   ├── adminSidebar.css
+│       │   │   │   ├── index.tsx
+│       │   │   │   ├── Links.tsx
+│       │   │   │   └── MobileSideBar.tsx
+│       │   │   ├── Breadcrumb
+│       │   │   │   └── index.tsx
+│       │   │   ├── carousel
+│       │   │   │   └── carousel.module.css
+│       │   │   ├── categoriesCard
+│       │   │   │   ├── categoryImageCard.css
+│       │   │   │   ├── CategoryImageCard.tsx
+│       │   │   │   └── index.tsx
+│       │   │   ├── CopyButton
+│       │   │   │   └── index.tsx
+│       │   │   ├── CustomerCheckoutHeader
+│       │   │   │   └── index.tsx
+│       │   │   ├── CustomRichTextEditor
+│       │   │   │   └── index.tsx
+│       │   │   ├── FilterButton
+│       │   │   │   ├── FilterMultiSelect.tsx
+│       │   │   │   ├── FilterRangeSelect.tsx
+│       │   │   │   └── index.tsx
+│       │   │   ├── footer
+│       │   │   │   └── index.tsx
+│       │   │   ├── header
+│       │   │   │   ├── index.tsx
+│       │   │   │   ├── leftSection
+│       │   │   │   │   ├── Hamburger.tsx
+│       │   │   │   │   ├── index.tsx
+│       │   │   │   │   └── LeftNavItem.tsx
+│       │   │   │   └── rightSection
+│       │   │   │       ├── CartButton.tsx
+│       │   │   │       ├── index.tsx
+│       │   │   │       └── LoginButton
+│       │   │   │           ├── index.tsx
+│       │   │   │           ├── PopoverContentItems.tsx
+│       │   │   │           └── PopoverContent.tsx
+│       │   │   ├── ImageCarousel
+│       │   │   │   ├── ImageCarousel.module.css
+│       │   │   │   └── index.tsx
+│       │   │   ├── ImageGallery
+│       │   │   │   ├── imageGallery.css
+│       │   │   │   └── index.tsx
+│       │   │   ├── InfoIcon
+│       │   │   │   └── index.tsx
+│       │   │   ├── InitialDataLoader
+│       │   │   │   └── index.tsx
+│       │   │   ├── LoginComponent
+│       │   │   │   └── index.tsx
+│       │   │   ├── logo
+│       │   │   │   └── LogoText.tsx
+│       │   │   ├── productCard
+│       │   │   │   ├── index.tsx
+│       │   │   │   ├── productCard.css
+│       │   │   │   ├── ProductCardHomepage
+│       │   │   │   │   ├── index.tsx
+│       │   │   │   │   ├── ProductCardHomepageButtonSection.tsx
+│       │   │   │   │   └── ProductDetails.tsx
+│       │   │   │   ├── ProductCardImageSection.tsx
+│       │   │   │   └── ProductCardPlp
+│       │   │   │       ├── index.tsx
+│       │   │   │       ├── ProductCardPlpButtonSection.tsx
+│       │   │   │       └── ProductDetailsPLP.tsx
+│       │   │   ├── responsiveImage
+│       │   │   │   └── index.tsx
+│       │   │   ├── searchSpotlight
+│       │   │   │   └── index.tsx
+│       │   │   ├── Shimmer
+│       │   │   │   └── ListPageTableShimmer.tsx
+│       │   │   ├── storiesCard
+│       │   │   │   └── index.tsx
+│       │   │   └── UploadDropzone
+│       │   │       └── index.tsx
+│       │   ├── constants
+│       │   │   ├── en.ts
+│       │   │   └── types.ts
+│       │   ├── lib
+│       │   │   ├── apiFetch.ts
+│       │   │   ├── getCurrentUser.ts
+│       │   │   ├── refreshToken.ts
+│       │   │   └── serverApiFetch.ts
+│       │   └── utils
+│       │       ├── constants.ts
+│       │       ├── helperFunctions.tsx
+│       │       ├── hooks
+│       │       │   ├── useCurrentUser.ts
+│       │       │   └── useResendTimer.ts
+│       │       ├── loadRazorpay.ts
+│       │       ├── s3Actions.ts
+│       │       └── store
+│       │           ├── address.ts
+│       │           ├── auth.ts
+│       │           └── cart.ts
+│       ├── Todo.txt
+│       └── tsconfig.json
+├── nginx-setup.md
+├── setup.md
+├── shell.md
+└── TODO.md
+

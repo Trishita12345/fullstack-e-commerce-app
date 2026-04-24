@@ -2,13 +2,46 @@
   "configurations": [
     {
       "type": "java",
+      "name": "NotificationServiceApplication",
+      "request": "launch",
+      "mainClass": "com.e_commerce.notificationService.NotificationServiceApplication",
+      "projectName": "notificationService"
+    },
+    {
+      "type": "java",
+      "name": "AuthServiceApplication",
+      "request": "launch",
+      "mainClass": "com.e_commerce.authService.AuthServiceApplication",
+      "projectName": "authService"
+    },
+    {
+      "type": "java",
+      "name": "SeachEngineServiceApplication",
+      "request": "launch",
+      "mainClass": "com.e_commerce.seachEngineService.SeachEngineServiceApplication"
+    },
+    {
+      "type": "java",
+      "name": "PaymentServiceApplication",
+      "request": "launch",
+      "mainClass": "com.e_commerce.paymentService.PaymentServiceApplication"
+    },
+    {
+      "type": "java",
+      "name": "ProfileServiceApplication",
+      "request": "launch",
+      "mainClass": "com.e_commerce.profileService.ProfileServiceApplication"
+    },
+    {
+      "type": "java",
       "name": "Spring Boot-ProductServiceApplication<productService>",
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "mainClass": "com.e_commerce.productService.ProductServiceApplication",
       "projectName": "productService",
       "args": "",
-      "envFile": "${workspaceFolder}/.env"
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=60166 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=productService"
     },
     {
       "type": "java",
@@ -39,6 +72,58 @@
       "cwd": "${workspaceFolder}",
       "mainClass": "com.e_commerce.Main",
       "projectName": "common-auth",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-ProfileServiceApplication<profileService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.profileService.ProfileServiceApplication",
+      "projectName": "profileService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-OrderServiceApplication<orderService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.orderService.OrderServiceApplication",
+      "projectName": "orderService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=52101 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=orderService"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-OfferServiceApplication<offerService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.offerService.OfferServiceApplication",
+      "projectName": "offerService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env",
+      "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=52100 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=offerService"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-PaymentServiceApplication<paymentService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.paymentService.PaymentServiceApplication",
+      "projectName": "paymentService",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-SeachEngineServiceApplication<seachEngineService>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.e_commerce.seachEngineService.SeachEngineServiceApplication",
+      "projectName": "seachEngineService",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
     }

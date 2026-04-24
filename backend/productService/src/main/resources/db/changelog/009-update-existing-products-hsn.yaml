@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      id: update-productitems-hsn-candles
+      author: trishita
+      changes:
+        - sql:
+            sql: |
+              UPDATE product_items
+              SET hsn_code = '3406'
+              WHERE sku LIKE '%SOY_WAX%'
+                 OR sku LIKE '%BEE_WAX%'
+                 OR sku LIKE '%COCONUT_WAX%';
+
+  - changeSet:
+      id: update-productitems-hsn-waxmelts
+      author: trishita
+      changes:
+        - sql:
+            sql: |
+              UPDATE product_items
+              SET hsn_code = '3307'
+              WHERE sku LIKE 'WM–%' OR sku LIKE 'WM-%';
+
+  - changeSet:
+      id: update-productitems-hsn-holders
+      author: trishita
+      changes:
+        - sql:
+            sql: |
+              UPDATE product_items
+              SET hsn_code = '7013'
+              WHERE sku LIKE 'MGCH-%';
+
+  - changeSet:
+      id: update-productitems-hsn-burner
+      author: trishita
+      changes:
+        - sql:
+            sql: |
+              UPDATE product_items
+              SET hsn_code = '6912'
+              WHERE sku LIKE 'MCWMB-%';
+
+  - changeSet:
+      id: update-productitems-hsn-tools
+      author: trishita
+      changes:
+        - sql:
+            sql: |
+              UPDATE product_items
+              SET hsn_code = '8205'
+              WHERE sku LIKE 'WT-%';

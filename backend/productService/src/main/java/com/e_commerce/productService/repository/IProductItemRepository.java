@@ -1,12 +1,18 @@
 package com.e_commerce.productService.repository;
 
 import com.e_commerce.productService.model.ProductItem;
+import com.e_commerce.productService.model.dto.customer.CartProductItemInfoResponse;
 import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
+import com.e_commerce.productService.model.dto.productItem.ProductItemPriceDTO;
+
+import jakarta.persistence.LockModeType;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -153,4 +159,58 @@ public interface IProductItemRepository extends JpaRepository<ProductItem, UUID>
             where pi.product_id = :productId
             """, nativeQuery = true)
     List<Object[]> findVariantAttributeByProductId(UUID productId);
+
+    @Query(value = """
+            SELECT
+            pi.sku as sku,
+            p.name as productName,
+            pi.id as productItemId,
+            CAST(pi.base_price AS DOUBLE PRECISION) as basePrice,
+            CAST(pi.discounted_price AS DOUBLE PRECISION)  as discountedPrice,
+            CAST(pi.available_stock AS INTEGER) as availableStock,
+            pii.img_url as imgUrl
+            FROM product_items pi
+            join products p on p.id = pi.product_id
+            join product_item_images pii on pi.id = pii.product_item_id
+            where pii.is_thumbnail = true
+            and pi.id in :productItemIds
+                                    """, nativeQuery = true)
+    List<CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("""
+                SELECT pi FROM ProductItem pi
+                WHERE pi.id = :id
+            """)
+    Optional<ProductItem> findByIdForUpdate(@Param("id") UUID id);
+
+    @Query(value = """
+                        SELECT pi.base_price as basePrice,
+            pi.discounted_price as discountedPrice,
+            pi.sku as sku,
+            pi.id as id,
+            gts.gst_rate as gstRate,
+            p.name as productName,
+            pii.img_url as thumbnailImage
+            FROM product_items pi
+            JOIN  gst_tax_slab gts on gts.hsn_code = pi.hsn_code
+            JOIN  products p on p.id = pi.product_id
+            JOIN product_item_images pii on pi.id = pii.product_item_id and pii.is_thumbnail = true
+            WHERE pi.id in :productItemIds
+                        """, nativeQuery = true)
+    List<ProductItemPriceDTO> getAllById(List<UUID> productItemIds);
+
+    @Modifying
+    @Query(value = """
+            UPDATE product_items
+            SET available_stock = available_stock - :quantity
+            WHERE id = :productItemId
+            """, nativeQuery = true)
+    int decreaseAvailableStock(UUID productItemId, Integer quantity);
+
+    @Query(value = """
+            SELECT pi.id
+            FROM product_items pi
+            """, nativeQuery = true)
+    List<UUID> findAllProductItemIds();
 }

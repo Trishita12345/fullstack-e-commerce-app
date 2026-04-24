@@ -1,0 +1,34 @@
+databaseChangeLog:
+  # 1️⃣ Add column (nullable first)
+  - changeSet:
+      id: 001-add-updated_quantity_column_cart_items
+      author: trishita
+      changes:
+        - addColumn:
+            tableName: cart_items
+            columns:
+              - column:
+                  name: updated_quantity
+                  type: INT
+
+  # 2️⃣ Backfill existing rows from quantity
+  - changeSet:
+      id: 002-backfill-updated-quantity
+      author: trishita
+      changes:
+        - update:
+            tableName: cart_items
+            columns:
+              - column:
+                  name: updated_quantity
+                  valueComputed: quantity
+
+  # 3️⃣ Enforce NOT NULL
+  - changeSet:
+      id: 003-make-updated-quantity-not-null
+      author: trishita
+      changes:
+        - addNotNullConstraint:
+            tableName: cart_items
+            columnName: updated_quantity
+            columnDataType: INT

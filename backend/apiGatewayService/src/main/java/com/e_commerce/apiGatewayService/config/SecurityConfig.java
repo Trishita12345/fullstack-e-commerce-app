@@ -3,13 +3,11 @@ package com.e_commerce.apiGatewayService.config;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
@@ -20,19 +18,27 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
+import com.e_commerce.apiGatewayService.filter.CookieToHeaderFilter;
+
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    @Value("${frontend.url}") // fallback if not set
-    private String allowedOrigin;
+    // @Value("${frontend.url}") // fallback if not set
+    private String allowedOrigin = "https://loomandlume.shop";
+
+    private final CookieToHeaderFilter cookieToHeaderFilter;
+
+    public SecurityConfig(CookieToHeaderFilter cookieToHeaderFilter) {
+        this.cookieToHeaderFilter = cookieToHeaderFilter;
+    }
 
     @Bean(name = "security")
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-
         return http
                 .cors(cors -> Customizer.withDefaults()) // ✅ ENABLE CORS
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .addFilterBefore(cookieToHeaderFilter, SecurityWebFiltersOrder.AUTHENTICATION)
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(
                                 "/.well-known/**",
@@ -45,17 +51,35 @@ public class SecurityConfig {
                                 "/api/product-service/public/**",
                                 "/api/product-service/swagger-ui/**",
                                 "/api/product-service/v3/api-docs/**",
+                                "/api/profile-service/public/**",
+                                "/api/profile-service/swagger-ui/**",
+                                "/api/profile-service/v3/api-docs/**",
                                 "/api/cart-service/public/**",
                                 "/api/cart-service/swagger-ui/**",
                                 "/api/cart-service/v3/api-docs/**",
                                 "/api/order-service/public/**",
+                                "/api/order-service/swagger-ui/**",
+                                "/api/order-service/v3/api-docs/**",
+                                "/api/offer-service/public/**",
+                                "/api/offer-service/swagger-ui/**",
+                                "/api/offer-service/v3/api-docs/**",
                                 "/api/payment-service/public/**",
+                                "/api/payment-service/swagger-ui/**",
+                                "/api/payment-service/v3/api-docs/**",
                                 "/api/notification-service/public/**",
+                                "/api/notification-service/swagger-ui/**",
+                                "/api/notification-service/v3/api-docs/**",
+                                "/api/search-service/public/**",
+                                "/api/search-service/swagger-ui/**",
+                                "/api/search-service/v3/api-docs/**",
+                                "/api/auth-service/**",
                                 "/error")
                         .permitAll()
-                        .anyExchange().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(
-                        reactiveJwtAuthenticationConverter())))
+                        .anyExchange()
+                        .authenticated())
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(
+                                reactiveJwtAuthenticationConverter())))
                 .build();
     }
 
@@ -64,9 +88,7 @@ public class SecurityConfig {
      */
     @Bean
     public ReactiveJwtAuthenticationConverterAdapter reactiveJwtAuthenticationConverter() {
-
         JwtAuthenticationConverter delegate = new JwtAuthenticationConverter();
-
         delegate.setJwtGrantedAuthoritiesConverter(jwt -> {
             var authorities = new java.util.ArrayList<>(
                     new org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter()
@@ -85,20 +107,22 @@ public class SecurityConfig {
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
         return NimbusReactiveJwtDecoder
-                .withJwkSetUri("http://localhost:3000/api/auth/jwks")
+                .withJwkSetUri("https://api.loomandlume.shop" + "/api/auth-service/public/.well-known/jwks.json")
                 .build();
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(allowedOrigin)); // Your Vite frontend URL
+        configuration.setAllowedOrigins(List.of(allowedOrigin, "https://api.loomandlume.shop")); // Your Vite frontend
+                                                                                                 // URL
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // if using cookies / auth headers
-
+        configuration.setExposedHeaders(List.of("Set-Cookie"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }

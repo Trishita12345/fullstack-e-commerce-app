@@ -4,6 +4,7 @@ import "@mantine/carousel/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/spotlight/styles.css";
 import "@mantine/tiptap/styles.css";
+import '@mantine/dates/styles.css';
 import {
   ColorSchemeScript,
   createTheme,
@@ -14,6 +15,7 @@ import { en } from "@/constants/en";
 import { Allura, Inter, Jost, Poppins } from "next/font/google";
 import "./globals.css";
 import { Notifications } from "@mantine/notifications";
+// import { InitialDataLoader } from "@/(components)/InitialDataLoader";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -45,6 +47,8 @@ export const metadata: Metadata = {
 };
 
 const theme = createTheme({
+  primaryColor: "primaryDark",
+  primaryShade: 6,
   colors: {
     primary: [
       "#fbebe3", //light-peach primary.0
@@ -112,6 +116,7 @@ export default function RootLayout({
       >
         <MantineProvider theme={theme}>
           <Notifications />
+          {/* <InitialDataLoader /> */}
           {children}
         </MantineProvider>
       </body>

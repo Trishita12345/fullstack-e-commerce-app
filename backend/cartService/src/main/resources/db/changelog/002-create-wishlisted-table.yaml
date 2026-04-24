@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-wishlisted-table
+      author: trishita
+      changes:
+        - createTable:
+            tableName: wishlisted
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_item_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: wishlisted
+            columnNames: user_id, product_item_id
+            constraintName: uk_wishlisted_user_product
+
+        - createIndex:
+            tableName: wishlisted
+            indexName: idx_wishlisted_user_id
+            columns:
+              - column:
+                  name: user_id

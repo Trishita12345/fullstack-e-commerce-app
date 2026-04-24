@@ -1,0 +1,41 @@
+server:
+  port: 8085
+  address: 127.0.0.1
+spring:
+  application:
+    name: offer-service
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5436/offer_db
+    username: user
+    password: pass123
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db-changelog-master.yaml
+
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    config-url: /api/offer-service/v3/api-docs/swagger-config
+    url: /api/offer-service/v3/api-docs
+
+gateway:
+  base-url: https://api.loomandlume.shop/api/offer-service
+  api-description: Swagger UI Documentation for offer Service
+
+  
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://127.0.0.1:9411/api/v2/spans

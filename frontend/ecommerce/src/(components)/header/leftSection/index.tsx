@@ -8,7 +8,7 @@ import Hamburger from "./Hamburger";
 const navData: NavItem[] = [
   {
     label: en.store,
-    href: "/store",
+    href: "/products",
   },
   {
     label: en.about,
@@ -20,7 +20,7 @@ const navData: NavItem[] = [
   },
   {
     label: en.customCandles,
-    href: "/#custom-candles",
+    href: "/about-us#custom-candles",
   },
 ];
 const LeftSection = () => {

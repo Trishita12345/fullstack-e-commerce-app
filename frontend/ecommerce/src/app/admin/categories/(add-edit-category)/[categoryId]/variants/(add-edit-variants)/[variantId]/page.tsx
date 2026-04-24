@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import AddEditVariantForm from "../AddEditVariantForm";
 import type { SelectOptionType, Variant } from "@/constants/types";
 
@@ -10,11 +10,11 @@ interface PageProps {
 }
 const EditVariant = async ({ params }: PageProps) => {
   const { categoryId, variantId } = await params;
-  const variantData = await apiFetch<Variant>(
-    `/product-service/variant/${variantId}`
+  const variantData = await serverApiFetch<Variant>(
+    `/product-service/variant/${variantId}`,
   );
-  const categoryOptions = await apiFetch<SelectOptionType[]>(
-    `/product-service/category/${categoryId}/ancestors`
+  const categoryOptions = await serverApiFetch<SelectOptionType[]>(
+    `/product-service/category/${categoryId}/ancestors`,
   );
   return (
     <AddEditVariantForm

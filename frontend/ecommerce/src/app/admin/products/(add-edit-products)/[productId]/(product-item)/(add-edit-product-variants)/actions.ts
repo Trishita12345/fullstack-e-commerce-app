@@ -1,11 +1,11 @@
 "use server";
 
 import {ProductVariant } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { revalidatePath } from "next/cache";
 
 export async function addProductVariant(productId: string, values: ProductVariant) {
-  await apiFetch(`/product-service/productItem/add/${productId}`, {
+  await serverApiFetch(`/product-service/productItem/add/${productId}`, {
     method: "POST",
     body: values,
   });
@@ -17,7 +17,7 @@ export async function editProductVariant(
   productVariantId: string,
   values: ProductVariant
 ) {
-  await apiFetch(`/product-service/productItem/${productVariantId}`, {
+  await serverApiFetch(`/product-service/productItem/${productVariantId}`, {
     method: "PATCH",
     body: values,
   });
@@ -27,7 +27,7 @@ export async function editProductVariant(
 export async function deleteProductVariant(
   productVariantId: string
 ) {
-  await apiFetch<void>(`/product-service/productItem/${productVariantId}`, {
+  await serverApiFetch<void>(`/product-service/productItem/${productVariantId}`, {
         method: "DELETE"
       })
     revalidatePath(`/admin/products/${productVariantId}`)
@@ -37,7 +37,7 @@ export async function generateProductSKU(
   productId: string,
   variants: Record<string,string> = {}
 ): Promise<string> {
-  const { sku } = await apiFetch<{sku: string}>(`/product-service/productItem/${productId}/generate-sku`, {
+  const { sku } = await serverApiFetch<{sku: string}>(`/product-service/productItem/${productId}/generate-sku`, {
     method: "POST",
     body: variants
   })

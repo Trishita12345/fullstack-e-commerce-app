@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: make-hsn-not-null
+      author: trishita
+      changes:
+        - addNotNullConstraint:
+            tableName: product_items
+            columnName: hsn_code
+            columnDataType: VARCHAR(10)

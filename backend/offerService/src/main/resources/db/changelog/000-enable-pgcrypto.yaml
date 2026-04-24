@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: enable-pgcrypto-extension
+      author: trishita
+      preConditions:
+        - dbms:
+            type: postgresql
+      changes:
+        - sql:
+            sql: CREATE EXTENSION IF NOT EXISTS pgcrypto;

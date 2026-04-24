@@ -27,14 +27,16 @@ export function CategoryImageCard({ id, image, title, quantity }: CardProps) {
           {title}
         </Title>
       </div>
-      <Button
-        variant="white"
-        color="dark"
-        size="xs"
-        rightSection={<IconArrowUpRight size={"16"} />}
-      >
-        <Link href={`/products?category=${title}`}>View Products</Link>
-      </Button>
+      <Link href={`/products?category=${title}`}>
+        <Button
+          variant="white"
+          color="dark"
+          size="xs"
+          rightSection={<IconArrowUpRight size={"16"} />}
+        >
+          View Products
+        </Button>
+      </Link>
     </Paper>
   );
 }

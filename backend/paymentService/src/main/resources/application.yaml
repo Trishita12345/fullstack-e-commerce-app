@@ -1,0 +1,66 @@
+server:
+  port: 8086
+  address: 127.0.0.1
+
+spring:
+  application:
+    name: payment-service
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5437/payment_db
+    username: user
+    password: pass123
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db-changelog-master.yaml
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      observation-enabled: true
+    consumer:
+      group-id: payment-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.e_commerce.common.model.event.OrderReservedEvent
+      observation-enabled: true
+payment:
+  razorpay:
+    merchant.key: SI4DgzfFgdwe9h
+    api-key: rzp_test_SIQZ5fbnfovuwn
+    secret-key: CGFn8t7y9Y5GbG5l8LXuDCHz
+    webhook-secret: whsec_test_webhook_secret
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    config-url: /api/payment-service/v3/api-docs/swagger-config
+    url: /api/payment-service/v3/api-docs
+gateway:
+  base-url: https://api.loomandlume.shop/api/payment-service
+  api-description: Swagger UI Documentation for Payment Service
+
+  
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://127.0.0.1:9411/api/v2/spans

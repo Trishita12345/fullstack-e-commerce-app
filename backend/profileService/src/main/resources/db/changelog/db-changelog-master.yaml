@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - include:
+      file: classpath:/db/changelog/001-create-address-table.yaml
+  - include:
+      file: classpath:/db/changelog/002-create-userinfo-table.yaml
+  - include:
+      file: classpath:/db/changelog/003-add-email-verified-column.yaml
+  

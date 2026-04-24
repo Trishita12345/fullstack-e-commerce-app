@@ -1,6 +1,6 @@
 import AdminHeader from "@/(components)/adminHeader";
 import AdminSidebar from "@/(components)/adminSidebar";
-import { getServerSession } from "@/lib/get-server-auth";
+import { getCurrentUser } from "@/lib/getCurrentUser";
 import { Box, Group } from "@mantine/core";
 import { forbidden, unauthorized } from "next/navigation";
 
@@ -9,9 +9,9 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession();
-  if (!session) return unauthorized();
-  if (session.user.role !== "SELLER") return forbidden();
+  const user = await getCurrentUser();
+  if (user === null) return unauthorized();
+  // if (user.role !== "ADMIN") return forbidden();
   return (
     <>
       <AdminHeader />

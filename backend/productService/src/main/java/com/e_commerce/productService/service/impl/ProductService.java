@@ -1,5 +1,6 @@
 package com.e_commerce.productService.service.impl;
 
+import com.e_commerce.common.exception.BaseException;
 import com.e_commerce.productService.model.Category;
 import com.e_commerce.productService.model.Product;
 import com.e_commerce.productService.model.dto.product.ProductDTO;
@@ -11,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -53,7 +55,8 @@ public class ProductService implements IProductService {
     public Product getProduct(UUID productId) {
         Optional<Product> existing = productRepository.findById(productId);
         return existing
-                .orElseThrow(() -> new RuntimeException("Product with ID: " + productId + " not exist"));
+                .orElseThrow(() -> new BaseException("Product with ID: " + productId + " not exist",
+                        HttpStatus.NOT_FOUND, "PRODUCT_NOT_FOUND"));
     }
 
     @Override

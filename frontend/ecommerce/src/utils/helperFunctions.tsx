@@ -12,15 +12,24 @@ export function formattedPrice(amount: number) {
 
   return formatted;
 }
+type NotificationPosition =
+  | "top-left"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-right"
+  | "top-center"
+  | "bottom-center";
 
 export function notify({
   variant,
   title,
   message,
+  position = "top-center",
 }: {
   variant: "info" | "error" | "success" | "warning";
   title: string;
   message: string;
+  position?: NotificationPosition;
 }) {
   let Icon, color;
   if (variant === "success") {
@@ -38,7 +47,7 @@ export function notify({
   }
   showNotification({
     id: "notify",
-    position: "top-right",
+    position,
     withCloseButton: true,
     autoClose: 5000,
     title,
@@ -49,63 +58,7 @@ export function notify({
   });
 }
 
-async function getPresignedUrl(file: File) {
-  const { url } = await apiFetch<{ url: string }>(
-    "/product-service/s3/presign",
-    {
-      method: "POST",
-      body: {
-        key: `temp/${crypto.randomUUID()}-${file.name}`,
-        contentType: file.type,
-      },
-      headers: { "Content-Type": "application/json" },
-    }
-  );
-  return url;
-}
 
-export async function uploadToS3(file: File) {
-  const url = await getPresignedUrl(file);
-  await fetch(url, {
-    method: "PUT",
-    body: file,
-    headers: {
-      "Content-Type": file.type,
-    },
-  });
-
-  return url.split("?")[0]; // public S3 URL
-}
-
-function extractS3Key(s3Url: string) {
-  if (!s3Url) return "";
-
-  try {
-    const url = new URL(s3Url);
-    let key = url.pathname; // "/products/123/image.png"
-
-    // remove leading "/"
-    if (key.startsWith("/")) {
-      key = key.slice(1);
-    }
-
-    return key;
-  } catch {
-    console.error("Invalid S3 URL:", s3Url);
-    return "";
-  }
-}
-
-export async function deleteImageS3(file: string) {
-  if (file.includes("/temp/")) {
-    await apiFetch<null>(`/product-service/s3/images`, {
-      method: "DELETE",
-      body: {
-        key: extractS3Key(file),
-      },
-    });
-  }
-}
 
 export const shareProduct = async (product: ShareProductType) => {
   if (!navigator.share) return;
@@ -119,7 +72,7 @@ export const shareProduct = async (product: ShareProductType) => {
 export const saveToStorage = (
   key: string,
   value: string,
-  session?: boolean
+  session?: boolean,
 ) => {
   if (session) {
     sessionStorage.setItem(key, value);
@@ -128,33 +81,37 @@ export const saveToStorage = (
   }
 };
 
-export const fetchFromStorage = (key: string, session?: boolean) => {
-  if (session) {
-    return sessionStorage.getItem(key);
-  } else {
-    return localStorage.getItem(key);
-  }
-};
+export const dummyDelay = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-export const removeFromStorage = (key: string, session?: boolean) => {
-  if (session) {
-    sessionStorage.removeItem(key);
-  } else {
-    localStorage.removeItem(key);
-  }
-};
+export function decodeSkuToken(token: string) {
+  if (!token) return [];
+  return token
+    .replace("_", " ")
+    .split("-")
+    .slice(1, -1)
+    .map((word) => word.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()));
+}
+export const scrollToId = (id: string, offset = 0) => {
+  const element = document.getElementById(id);
+  if (!element) return;
 
-export const clearStorage = (level: "session" | "local" | "all" = "local") => {
-  switch (level) {
-    case "session":
-      sessionStorage.clear();
-      break;
-    case "local":
-      localStorage.clear();
-      break;
-    case "all":
-      sessionStorage.clear();
-      localStorage.clear();
-      break;
-  }
+  const y = element.getBoundingClientRect().top + window.pageYOffset - offset;
+
+  window.scrollTo({
+    top: y,
+    behavior: "smooth",
+  });
 };
+export function capitalizeString(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+export function getRandomValue(arrLength: number): number {
+  const randomIndex = Math.floor(Math.random() * arrLength);
+  return randomIndex;
+}
+
+export function copyText(text: string) {
+  navigator.clipboard.writeText(text)
+}

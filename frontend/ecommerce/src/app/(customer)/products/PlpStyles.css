@@ -1,0 +1,11 @@
+.prev-next-button {
+    border: 1px solid var(--mantine-color-gray-2);
+    padding: 6px 12px;
+    border-radius: 5;    
+}
+.enabled-prev-next-button{
+    cursor: pointer;
+}
+.enabled-prev-next-button:hover {
+    border: 1px solid black; 
+}

@@ -1,11 +1,11 @@
 "use server";
 
 import type { Product } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { revalidatePath } from "next/cache";
 
 export async function addProduct(values: Product) {
-  const { productId } = await apiFetch<Product>(`/product-service/product/add`, {
+  const { productId } = await serverApiFetch<Product>(`/product-service/product/add`, {
     method: "POST",
     body: values,
   });
@@ -14,7 +14,7 @@ export async function addProduct(values: Product) {
 }
 
 export async function editProduct(productId: string, values: Product) {
-  await apiFetch(`/product-service/product/${productId}`, {
+  await serverApiFetch(`/product-service/product/${productId}`, {
     method: "PUT",
     body: values,
   });

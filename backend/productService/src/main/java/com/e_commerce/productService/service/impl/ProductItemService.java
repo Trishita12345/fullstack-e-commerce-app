@@ -1,10 +1,18 @@
 package com.e_commerce.productService.service.impl;
 
+import com.e_commerce.common.exception.BaseException;
+import com.e_commerce.common.model.dto.CartItemDTO;
+import com.e_commerce.common.model.dto.ProductPriceDTO;
+import com.e_commerce.common.model.dto.ProductPriceDetailsDTO;
+import com.e_commerce.common.model.dto.TotalProductPriceResponseDTO;
+import com.e_commerce.productService.service.IS3Service;
 import com.e_commerce.productService.model.Category;
+import com.e_commerce.productService.model.GstTaxSlab;
 import com.e_commerce.productService.model.Product;
 import com.e_commerce.productService.model.ProductItem;
 import com.e_commerce.productService.model.ProductItemImage;
 import com.e_commerce.productService.model.VariantAttribute;
+import com.e_commerce.productService.model.dto.customer.CartProductItemInfoResponse;
 import com.e_commerce.productService.model.dto.customer.ProductDetailsDTO;
 import com.e_commerce.productService.model.dto.customer.ProductItemIdDTO;
 import com.e_commerce.productService.model.dto.customer.ProductVariantAttributeDTO;
@@ -13,18 +21,21 @@ import com.e_commerce.productService.model.dto.productItem.ImageDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemDTO;
 import com.e_commerce.productService.model.dto.productItem.ProductItemFilter;
 import com.e_commerce.productService.model.dto.productItem.ProductItemListingDTO;
+import com.e_commerce.productService.model.dto.productItem.ProductItemPriceDTO;
 import com.e_commerce.productService.model.dto.variant.ProductVariantAttributesDTO;
+import com.e_commerce.productService.repository.IGstTaxSlabRepository;
 import com.e_commerce.productService.repository.IProductItemImageRepository;
 import com.e_commerce.productService.repository.IProductItemRepository;
 import com.e_commerce.productService.repository.IVariantAttributeRepository;
+import com.e_commerce.productService.service.IInventoryReservationService;
 import com.e_commerce.productService.service.IProductItemService;
 import com.e_commerce.productService.service.IProductService;
-import com.e_commerce.productService.service.IS3Service;
 import com.e_commerce.productService.service.IVariantService;
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +60,9 @@ public class ProductItemService implements IProductItemService {
         private final IVariantAttributeRepository variantAttributeRepository;
         private final IProductItemRepository productItemRepository;
         private final IProductItemImageRepository productItemImageRepository;
+        private final IInventoryReservationService inventoryReservationService;
         private final IS3Service s3Service;
+        private final IGstTaxSlabRepository gstTaxSlabRepository;
 
         @Override
         public List<ProductVariantAttributesDTO> getVariantAttributesByCategoryId(UUID productId) {
@@ -63,6 +76,10 @@ public class ProductItemService implements IProductItemService {
         public UUID addProductItem(UUID productId, ProductItemDTO dto) {
 
                 Product product = productService.getProduct(productId);
+                GstTaxSlab gstTaxSlab = null;
+                if (dto.getHsn() != null && !dto.getHsn().isEmpty()) {
+                        gstTaxSlab = gstTaxSlabRepository.findById(dto.getHsn()).orElse(null);
+                }
 
                 ProductItem productItem = ProductItem.builder()
                                 .sku(dto.getSku())
@@ -70,6 +87,7 @@ public class ProductItemService implements IProductItemService {
                                 .basePrice(dto.getBasePrice())
                                 .discountedPrice(dto.getDiscountedPrice())
                                 .product(product)
+                                .gstTaxSlab(gstTaxSlab)
                                 .build();
                 Set<VariantAttribute> attributes = variantAttributeRepository
                                 .findByNameIn(new HashSet<>(dto.getAttributes().values()));
@@ -112,14 +130,17 @@ public class ProductItemService implements IProductItemService {
                                 .discountedPrice(productItem.getDiscountedPrice())
                                 .imgUrls(images)
                                 .attributes(attMap)
+                                .hsn(productItem.getGstTaxSlab().getHsnCode())
                                 .build();
         }
 
         private ProductItem getProductItem(UUID productItemId) {
                 Optional<ProductItem> existing = productItemRepository.findWithDetails(productItemId);
                 return existing
-                                .orElseThrow(() -> new RuntimeException(
-                                                "Product Item with ID: " + productItemId + " not exist"));
+                                .orElseThrow(() -> new BaseException(
+                                                "Product Item with ID: " + productItemId + " not exist",
+                                                HttpStatus.NOT_FOUND,
+                                                "PRODUCT_ITEM_NOT_FOUND"));
         }
 
         @Override
@@ -266,22 +287,25 @@ public class ProductItemService implements IProductItemService {
                 List<Object[]> rows = productItemRepository
                                 .findVariantAttributeByProductId(productDetailsDTO.getProductId());
                 System.out.println(rows.toString());
-                Map<String, Map<String, UUID>> outerMap = new HashMap<>();
+                Map<String, Map<String, List<UUID>>> outerMap = new HashMap<>();
                 for (Object[] row : rows) {
                         String variantName = (String) row[0];
                         String attributeName = (String) row[1];
                         UUID productItem = (UUID) row[2];
                         if (outerMap.containsKey(variantName)) {
-                                if (!outerMap.get(variantName).containsKey(attributeName)) {
-                                        outerMap.get(variantName).put(attributeName, productItem);
+                                if (outerMap.get(variantName).containsKey(attributeName)) {
+                                        outerMap.get(variantName).get(attributeName).add(productItem);
+                                } else {
+                                        List<UUID> productItemIds = new ArrayList<>();
+                                        productItemIds.add(productItem);
+                                        outerMap.get(variantName).put(attributeName, productItemIds);
                                 }
                         } else {
-
-                                outerMap.put(variantName, new HashMap<>() {
-                                        {
-                                                put(attributeName, productItem);
-                                        }
-                                });
+                                List<UUID> productItemIds = new ArrayList<>();
+                                productItemIds.add(productItem);
+                                Map<String, List<UUID>> innerMap = new HashMap<>();
+                                innerMap.put(attributeName, productItemIds);
+                                outerMap.put(variantName, innerMap);
                         }
                 }
                 List<ProductVariantAttributeDTO> pva = new ArrayList<>();
@@ -313,4 +337,106 @@ public class ProductItemService implements IProductItemService {
                                                 .build())
                                 .toList();
         }
+
+        @Override
+        public Map<UUID, CartProductItemInfoResponse> getCarProductItemInfos(List<UUID> productItemIds) {
+                Map<UUID, CartProductItemInfoResponse> map = new HashMap<>();
+                if (productItemIds.size() == 0)
+                        return map;
+                List<CartProductItemInfoResponse> cartProductItemInfoResponseList = productItemRepository
+                                .getCarProductItemInfos(productItemIds).stream()
+                                .map(i -> {
+                                        i.setImgUrl(s3Service.buildFullUrl(i.getImgUrl()));
+                                        return i;
+                                })
+                                .toList();
+                cartProductItemInfoResponseList
+                                .forEach(item -> {
+                                        map.put(item.getProductItemId(), item);
+                                });
+                return map;
+        }
+
+        @Override
+        public TotalProductPriceResponseDTO getTotalProductPrice(List<CartItemDTO> cartItems) {
+                Map<UUID, ProductItem> productItemMap = productItemRepository
+                                .findAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
+                                .stream()
+                                .collect(Collectors.toMap(
+                                                ProductItem::getId,
+                                                productItem -> productItem));
+                BigDecimal totalBasePrice = BigDecimal.valueOf(0);
+                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);
+                for (CartItemDTO ci : cartItems) {
+                        ProductItem productItem = productItemMap.get(ci.getProductItemId());
+
+                        BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());
+
+                        totalBasePrice = totalBasePrice.add(
+                                        productItem.getBasePrice().multiply(quantity));
+
+                        totalDiscountedPrice = totalDiscountedPrice.add(
+                                        productItem.getDiscountedPrice().multiply(quantity));
+                }
+
+                return TotalProductPriceResponseDTO.builder()
+                                .totalBasePrice(totalBasePrice)
+                                .totalDiscountedPrice(totalDiscountedPrice)
+                                .build();
+        }
+
+        @Override
+        public ProductPriceDTO getTotalProductPriceForPlaceOrder(List<CartItemDTO> cartItems) {
+                List<ProductPriceDetailsDTO> productPriceDetailsDTOs = new ArrayList<>();
+                Map<UUID, ProductItemPriceDTO> productItemMap = productItemRepository
+                                .getAllById(cartItems.stream().map(c -> c.getProductItemId()).toList())
+                                .stream()
+                                .collect(Collectors.toMap(
+                                                ProductItemPriceDTO::getId,
+                                                productItem -> productItem));
+                BigDecimal totalDiscountedPrice = BigDecimal.valueOf(0);
+                BigDecimal totalBasePrice = BigDecimal.valueOf(0);
+                for (CartItemDTO ci : cartItems) {
+                        ProductItemPriceDTO productItem = productItemMap.get(ci.getProductItemId());
+                        if (productItem == null) {
+                                throw new BaseException(
+                                                "Product not found: " + ci.getProductItemId(),
+                                                HttpStatus.NOT_FOUND,
+                                                "PRODUCT_NOT_FOUND");
+                        }
+
+                        if (inventoryReservationService.getSellableStock(productItem.getId()) < ci.getQuantity()) {
+                                throw new BaseException(
+                                                "Insufficient stock for product: " + productItem.getId(),
+                                                HttpStatus.BAD_REQUEST,
+                                                "INSUFFICIENT_STOCK");
+                        }
+                        BigDecimal quantity = BigDecimal.valueOf(ci.getQuantity());
+                        ProductPriceDetailsDTO productPriceDetailsDTO = ProductPriceDetailsDTO
+                                        .builder()
+                                        .productName(productItem.getProductName())
+                                        .productItemThumbnailImage(productItem.getThumbnailImage())
+                                        .inventoryBasePrice(productItem.getBasePrice())
+                                        .inventoryDiscountedPrice(productItem.getDiscountedPrice())
+                                        .quantity(ci.getQuantity())
+                                        .productItemId(productItem.getId())
+                                        .sku(productItem.getSku())
+                                        .gstPercentage(productItem.getGstRate())
+                                        .build();
+                        productPriceDetailsDTOs.add(productPriceDetailsDTO);
+                        totalBasePrice = totalBasePrice.add(
+                                        productItem.getBasePrice().multiply(quantity));
+
+                        totalDiscountedPrice = totalDiscountedPrice.add(
+                                        productItem.getDiscountedPrice().multiply(quantity));
+                }
+
+                return ProductPriceDTO
+                                .builder()
+                                .totalPrice(totalDiscountedPrice)
+                                .totalBasePrice(totalBasePrice)
+                                .priceDetailsDTOs(productPriceDetailsDTOs)
+                                .build();
+        }
+
 }

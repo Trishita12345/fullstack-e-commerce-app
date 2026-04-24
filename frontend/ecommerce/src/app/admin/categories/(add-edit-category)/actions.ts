@@ -2,11 +2,11 @@
 "use server";
 
 import { AddEditCategoryResponseType, SelectOptionType } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { revalidatePath } from "next/cache";
 
 export async function addCategory(values: AddEditCategoryResponseType) {
-  await apiFetch("/product-service/category/add", {
+  await serverApiFetch("/product-service/category/add", {
     method: "POST",
     body: values,
   });
@@ -14,7 +14,7 @@ export async function addCategory(values: AddEditCategoryResponseType) {
 }
 
 export async function editCategory(id: string, values: AddEditCategoryResponseType) {
-  await apiFetch(`/product-service/category/edit/${id}`, {
+  await serverApiFetch(`/product-service/category/edit/${id}`, {
     method: "PUT",
     body: values,
   });
@@ -22,5 +22,5 @@ export async function editCategory(id: string, values: AddEditCategoryResponseTy
 }
 
 export async function parentCaregories() {
-  await apiFetch<SelectOptionType[]>("/product-service/category/get-parent-categories");
+  await serverApiFetch<SelectOptionType[]>("/product-service/category/get-parent-categories");
 }

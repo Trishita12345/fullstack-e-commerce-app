@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-hsn-column-product-items
+      author: trishita
+      changes:
+        - addColumn:
+            tableName: product_items
+            columns:
+              - column:
+                  name: hsn_code
+                  type: VARCHAR(10)
+
+        # foreign key to master table
+        - addForeignKeyConstraint:
+            baseTableName: product_items
+            baseColumnNames: hsn_code
+            referencedTableName: gst_tax_slab
+            referencedColumnNames: hsn_code
+            constraintName: fk_productitem_hsn

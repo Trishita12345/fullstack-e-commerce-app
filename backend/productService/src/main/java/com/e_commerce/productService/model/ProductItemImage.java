@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.util.UUID;
 
+import com.e_commerce.common.model.AuditEntity;
+
 @Getter
 @Setter
 @Entity

@@ -10,26 +10,40 @@ import io.swagger.v3.oas.models.servers.Server;
 @Configuration
 public class GatewaySwaggerConfig {
 
-    @Bean
-    OpenAPI gatewayOpenAPI() {
+        @Bean
+        OpenAPI gatewayOpenAPI() {
 
-        return new OpenAPI()
-                .info(new Info()
-                        .title("E-Commerce API Gateway")
-                        .description("Gateway entry point for all services")
-                        .version("1.0"))
+                return new OpenAPI()
+                                .info(new Info()
+                                                .title("E-Commerce API Gateway")
+                                                .description("Gateway entry point for all services")
+                                                .version("1.0"))
 
-                // 🔥 SERVERS LIST
-                .addServersItem(new Server()
-                        .url("http://localhost:8080/api/product-service")
-                        .description("Product Service"))
+                                // 🔥 SERVERS LIST
+                                .addServersItem(new Server()
+                                                .url("https://api.loomandlume.shop/api/product-service")
+                                                .description("Product Service"))
 
-                .addServersItem(new Server()
-                        .url("http://localhost:8080/api/cart-service")
-                        .description("Cart Service"))
+                                .addServersItem(new Server()
+                                                .url("https://api.loomandlume.shop/api/cart-service")
+                                                .description("Cart Service"))
 
-                .addServersItem(new Server()
-                        .url("http://localhost:8080/api/order-service")
-                        .description("Order Service"));
-    }
+                                .addServersItem(new Server()
+                                                .url("https://api.loomandlume.shop/api/order-service")
+                                                .description("Order Service"))
+
+                                .addServersItem(new Server()
+                                                .url("https://api.loomandlume.shop/api/profile-service")
+                                                .description("Profile Service"))
+
+                                .addServersItem(new Server()
+                                                .url("https://api.loomandlume.shop/api/payment-service")
+                                                .description("Payment Service"))
+                                .addServersItem(new Server()
+                                                .url("https://api.loomandlume.shop/api/search-service")
+                                                .description("Search Service"))
+                                .addServersItem(new Server()
+                                                .url("https://api.loomandlume.shop/api/auth-service")
+                                                .description("Auth Service"));
+        }
 }

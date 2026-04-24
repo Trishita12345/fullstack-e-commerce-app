@@ -1,8 +1,9 @@
 server:
   port: 8082
+  address: 127.0.0.1
 spring:
   application:
-    name: cartService
+    name: cart-service
   jpa:
     hibernate:
       ddl-auto: none
@@ -16,11 +17,23 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db-changelog-master.yaml
 
-logging:
-  level:
-    org:
-      springframework:
-        security: debug
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+
+    consumer:
+      group-id: cart-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: com.e_commerce.common.model.event.OrderFulfilledEvent
+
+
 springdoc:
   api-docs:
     path: /v3/api-docs
@@ -30,5 +43,16 @@ springdoc:
     url: /api/cart-service/v3/api-docs
 
 gateway:
-  base-url: http://localhost:8080/api/cart-service
+  base-url: https://api.loomandlume.shop/api/cart-service
   api-description: Swagger UI Documentation for Cart Service
+
+     
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://127.0.0.1:9411/api/v2/spans
+

@@ -1,11 +1,11 @@
 "use server";
 
 import { Category } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { revalidatePath } from "next/cache";
 
 export async function addVariant(categoryId: string, values: Category) {
-  await apiFetch(`/product-service/variant/add/${categoryId}`, {
+  await serverApiFetch(`/product-service/variant/add/${categoryId}`, {
     method: "POST",
     body: values,
   });
@@ -17,7 +17,7 @@ export async function editVariant(
   variantId: string,
   values: Category
 ) {
-  await apiFetch(`/product-service/variant/${categoryId}/${variantId}`, {
+  await serverApiFetch(`/product-service/variant/${categoryId}/${variantId}`, {
     method: "PUT",
     body: values,
   });

@@ -1,0 +1,75 @@
+package com.e_commerce.authService.service.impl;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import com.e_commerce.authService.model.RefreshToken;
+import com.e_commerce.authService.model.User;
+import com.e_commerce.authService.model.dto.TokenResponse;
+import com.e_commerce.authService.model.dto.UserResponse;
+import com.e_commerce.authService.model.dto.VerifyOtpResponseWithToken;
+import com.e_commerce.authService.service.IAuthApplicationService;
+import com.e_commerce.authService.service.IJwtService;
+import com.e_commerce.authService.service.IOtpService;
+import com.e_commerce.authService.service.IUserService;
+import com.e_commerce.common.exception.BaseException;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class AuthApplicationService implements IAuthApplicationService {
+
+    private final IOtpService otpService;
+    private final IUserService userService;
+    private final IJwtService jwtService;
+
+    public String requestOtp(String phone) {
+        String otp = otpService.generateAndSaveOtp(phone);
+
+        // TODO: integrate SMS later
+        log.info("OTP for {}: {}", phone, otp);
+        return otp;
+    }
+
+    public VerifyOtpResponseWithToken verifyOtp(String phone, String otp, String deviceId) {
+        if (otp == null) {
+            throw new BaseException("OTP must be provided", HttpStatus.BAD_REQUEST, "OTP_NOT_FOUND");
+
+        }
+        if (!otpService.verifyOtp(phone, otp)) {
+            throw new BaseException("Invalid OTP", HttpStatus.BAD_REQUEST, "INVALID_OTP");
+        }
+
+        UserResponse user = userService.getOrCreateUser(phone);
+
+        String accessToken = jwtService.generateAccessToken(user.getUser());
+        String refreshToken = jwtService.generateRefreshToken(user.getUser().getUserId(), deviceId);
+
+        return new VerifyOtpResponseWithToken(
+                accessToken, refreshToken, user.getFirstTimeLogin(),
+                user.getUser().getRole().getRoleName(),
+                user.getUser().getRole().getPermissions().stream().map(p -> p.getPermissionName()).toList(),
+                user.getUserInfo());
+    }
+
+    @Override
+    public TokenResponse refresh(String refreshToken) {
+
+        RefreshToken token = jwtService.validate(refreshToken);
+
+        User user = userService.getById(token.getUserId());
+
+        String newAccessToken = jwtService.generateAccessToken(user);
+        String newRefreshToken = jwtService.generateRefreshToken(user.getUserId(), token.getDeviceId());
+
+        return new TokenResponse(newAccessToken, newRefreshToken);
+    }
+
+    @Override
+    public void logout(String refreshToken) {
+        jwtService.revoke(refreshToken);
+    }
+}

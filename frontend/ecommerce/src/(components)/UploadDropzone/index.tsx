@@ -1,6 +1,6 @@
 "use client";
 
-import { uploadToS3, notify } from "@/utils/helperFunctions";
+import { notify } from "@/utils/helperFunctions";
 import {
   Box,
   SimpleGrid,
@@ -17,6 +17,8 @@ import { IconPhoto, IconTrash } from "@tabler/icons-react";
 import { useUncontrolled } from "@mantine/hooks";
 import { CustomInputProps } from "../CustomRichTextEditor";
 import { useEffect, useState } from "react";
+import { uploadToS3 } from "@/utils/s3Actions";
+import { ErrorResponse } from "@/constants/types";
 
 type UploadDropzone = {
   visible: boolean;
@@ -79,11 +81,11 @@ const UploadDropzone = ({
                   open();
                   const uploadedUrl = await uploadToS3(files[0]);
                   setImg(uploadedUrl);
-                } catch {
+                } catch (err) {
                   notify({
                     variant: "error",
                     title: "Error!",
-                    message: "Failed to upload image.",
+                    message: (err as Error)?.message || "Failed to upload image.",
                   });
                 } finally {
                   close();

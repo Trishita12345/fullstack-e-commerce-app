@@ -6,9 +6,8 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Component;
-
-import reactor.core.publisher.Mono;
 
 import java.util.stream.Collectors;
 
@@ -21,28 +20,22 @@ public class UserContextGatewayFilterFactory
         System.out.println(">>> UserContextFilter BEAN CREATED <<<");
     }
 
+    @SuppressWarnings("null")
     @Override
     public GatewayFilter apply(Config config) {
 
         return (exchange, chain) -> ReactiveSecurityContextHolder.getContext()
-                .map(ctx -> ctx.getAuthentication())
-                .flatMap(authentication -> {
+                .defaultIfEmpty(new SecurityContextImpl())
+                .flatMap(ctx -> {
+                    Authentication auth = ctx.getAuthentication();
 
-                    // SECURE request
-                    ServerHttpRequest mutatedRequest = enrichRequest(exchange.getRequest(), authentication);
+                    if (auth == null || !auth.isAuthenticated()) {
+                        return chain.filter(exchange); // or reject
+                    }
 
-                    System.out.println("secure 2:");
-                    return chain.filter(
-                            exchange.mutate()
-                                    .request(mutatedRequest)
-                                    .build());
-                })
-                .switchIfEmpty(
-                        // PUBLIC request
-                        Mono.defer(() -> {
-                            System.out.println("public 1:");
-                            return chain.filter(exchange);
-                        }));
+                    ServerHttpRequest mutated = enrichRequest(exchange.getRequest(), auth);
+                    return chain.filter(exchange.mutate().request(mutated).build());
+                });
     }
 
     private ServerHttpRequest enrichRequest(ServerHttpRequest request,
@@ -55,6 +48,10 @@ public class UserContextGatewayFilterFactory
                 .collect(Collectors.joining(","));
 
         return request.mutate()
+                .headers(headers -> {
+                    headers.remove("X-User-Id");
+                    headers.remove("X-User-Roles");
+                })
                 .header("X-User-Id", userId)
                 .header("X-User-Roles", roles)
                 .build();

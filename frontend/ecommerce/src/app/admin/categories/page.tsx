@@ -1,7 +1,7 @@
 import { ListPageClient } from "@/(components)/adminListPage";
 import type { SortableField } from "@/(components)/adminListPage/SortButton";
 import type { Page, CategoryListType } from "@/constants/types";
-import { apiFetch } from "@/lib/apiFetch";
+import { serverApiFetch } from "@/lib/serverApiFetch";
 import { Box, Group, Text } from "@mantine/core";
 import {
   IconEdit,
@@ -31,7 +31,7 @@ export default async function Categories({ searchParams }: PageProps) {
 
   const page = Number(pageParam ?? 1) - 1;
 
-  const categories = await apiFetch<Page<CategoryListType>>(
+  const categories = await serverApiFetch<Page<CategoryListType>>(
     `/product-service/category/page?query=${query}&page=${page}&sortBy=${sortBy}&direction=${direction}`,
     {
       cache: "force-cache",
