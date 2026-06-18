@@ -256,15 +256,16 @@ For BUGFIX:
 
 For BUGFIX: skip branch creation (single implementation branch already has everything).
 
-**Step 6.5b — Provide testing instructions:**
-1. Read the **"Manual Testing"** section from the requirement doc (`.claude/docs/requirements/`)
-2. Tell the user:
-   - Which branch to checkout: `FEA{XXX}-{name}-test`
-   - Which services need restarting (from the requirement doc)
-   - Step-by-step test checklist (from acceptance criteria)
-3. The user restarts affected services from their terminal
+**Step 6.5b — Build and restart affected services:**
+1. Checkout the `-test` branch (or `bugfix-{name}` for BUGFIX)
+2. Read the **"Manual Testing"** section from the requirement doc (`.claude/docs/requirements/`)
+3. Invoke the **devops skill** (`/devops`) to rebuild and restart the services listed in the requirement doc
+4. Wait for all services to report healthy (port listening)
+5. Report which services were restarted and on which branch
 
-**Step 6.5c — Collect test evidence:**
+**Step 6.5c — Provide testing instructions and collect evidence:**
+1. Tell the user the step-by-step test checklist (from the requirement doc's "Test Steps")
+2. Ask the user to manually test the feature and provide screenshots or recordings
 1. Ask the user to provide screenshots or recordings
 2. Store in `.claude/docs/screenshots/` on the plan branch
 3. Commit to plan branch
