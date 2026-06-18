@@ -147,6 +147,7 @@ Before invoking any doc-producing agent, ensure the plan branch is checked out. 
 **Step 2a:** Invoke github-manager to:
 - Create plan branch: `FEA{XXX}-{name}/plan` from `develop`
 - Create GitHub Issue with label "feature" and pipeline checklist
+- **Copy the requirement document** (from `.claude/docs/requirements/`) to the plan branch and commit it — plan branches must contain all pipeline artifacts including requirements
 - Push plan branch
 
 **Step 2b:** Checkout plan branch, then invoke scrum-master to:
