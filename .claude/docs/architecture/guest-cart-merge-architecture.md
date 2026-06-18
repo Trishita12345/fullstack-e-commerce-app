@@ -179,7 +179,7 @@ sequenceDiagram
     GW->>CS: POST /cart-items/merge + X-User-Id, X-User-Roles
     CS->>DB: findByUserId(userId) [create ACTIVE cart if absent]
     CS->>DB: getAllCartItemsByCartId(cartId)
-    Note over CS: build dup-safe map; overwrite dup qty (D1),<br/>add new lines isSelected=true (D2)
+    Note over CS: build dup-safe map<br/>overwrite dup qty (D1)<br/>add new lines isSelected=true (D2)
     CS->>DB: save(cart)  [cascade insert new + update existing] @Transactional
     DB-->>CS: committed
     CS-->>GW: 204 No Content
