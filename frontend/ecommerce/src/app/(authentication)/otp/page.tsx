@@ -11,6 +11,16 @@ import { IconDeviceMobileMessage, IconEdit } from "@tabler/icons-react";
 import { ErrorResponse, VerifyOtpResponse } from "@/constants/types";
 import { useAuthActions } from "@/utils/store/auth";
 import { useResendTimer } from "@/utils/hooks/useResendTimer";
+import { useCartActions, useCartStore } from "@/utils/store/cart";
+import {
+    getCartItemsAction,
+    mergeGuestCartAction,
+} from "@/app/(customer-checkout)/checkout/cartActions";
+
+// Module-level one-shot guard to prevent re-entrant double-merge on rapid
+// double submit. Overwrite semantics (D1) make a re-merge harmless, but this
+// is defense-in-depth for R1.
+let mergeInFlight = false;
 
 const Otp = () => {
     const isLoggedIn = useIsLoggedIn();
@@ -23,6 +33,7 @@ const Otp = () => {
 
     const { timer, canResend, resetTimer } = useResendTimer(30);
     const { setAccess, setUserInfo } = useAuthActions();
+    const { setCartItems } = useCartActions();
     const [firstTimeLogin, setFirstTimeLogin] = useState(false);
 
     useEffect(() => {
@@ -53,6 +64,30 @@ const Otp = () => {
         }
     };
 
+    // Guest cart merge on login (FEA001). Reads the persisted guest cart from the
+    // store at call time, merges it into the server cart, then refreshes the store
+    // from the authoritative server cart. A merge failure never blocks login (D3/R3).
+    const mergeGuestCartOnLogin = async () => {
+        const guestItems = useCartStore.getState().cartItems;
+        if (!guestItems || guestItems.length === 0) return; // AC6
+        if (mergeInFlight) return;
+        mergeInFlight = true;
+        try {
+            await mergeGuestCartAction(guestItems); // POST /merge
+            const serverItems = await getCartItemsAction(); // authoritative merged cart
+            setCartItems(serverItems ?? []); // AC4: replace guest cart with server cart
+        } catch {
+            notify({
+                variant: 'error',
+                title: 'Cart sync failed',
+                message: 'We could not sync your cart. Your saved items are still on this device.',
+            });
+            // Do NOT rethrow — login must not be blocked by a merge failure (D3/R3).
+        } finally {
+            mergeInFlight = false;
+        }
+    };
+
     const handleOtpScreenClick = async () => {
         try {
             let deviceId = localStorage.getItem("deviceId");
@@ -67,6 +102,13 @@ const Otp = () => {
             setFirstTimeLogin(firstTimeLogin);
             setAccess(access);
             setUserInfo(userInfo);
+
+            // FEA001: merge the guest cart immediately after OTP verification, for
+            // BOTH the first-time-login (/setup-account) and normal-redirect paths (D3).
+            // Awaited so the merge runs while the auth cookie context is alive and
+            // before navigation (R3); failures are swallowed inside the helper.
+            await mergeGuestCartOnLogin();
+
             notify({
                 variant: 'success',
                 title: 'Success!',
