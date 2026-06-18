@@ -7,7 +7,7 @@
 **Plan Branch:** FEA001-guest-cart-merge/plan
 **Implementation Branches:** FEA001-guest-cart-merge-BE, FEA001-guest-cart-merge-FE
 **Base Branch:** develop
-**Current Stage:** BUILD (gate PASS — backend `mvn compile` and frontend `npm run build` both succeed; awaiting human approval to proceed to REVIEW)
+**Current Stage:** REVIEW (gate PASS — backend 8.5/10, frontend 9.0/10, both >= 8.0; awaiting human approval to proceed to TEST)
 **Last Updated:** 2026-06-18
 
 ---
@@ -19,8 +19,8 @@
 | 1 | REQUIREMENTS | 2026-06-18 | 2026-06-18 | DONE | PASS (92%) | APPROVED |
 | 2 | PLANNING | 2026-06-18 | 2026-06-18 | DONE | PASS (plan + Issue #24) | APPROVED |
 | 3 | DESIGN | 2026-06-18 | 2026-06-18 | DONE | PASS (doc covers all tasks + ACs) | APPROVED |
-| 4 | BUILD | 2026-06-18 | 2026-06-18 | DONE | PASS (BE compile + FE build succeed) | PENDING |
-| 5 | REVIEW | | | — | — | — |
+| 4 | BUILD | 2026-06-18 | 2026-06-18 | DONE | PASS (BE compile + FE build succeed) | APPROVED |
+| 5 | REVIEW | 2026-06-18 | 2026-06-18 | DONE | PASS (BE 8.5/10, FE 9.0/10) | PENDING |
 | 6 | TEST | | | — | — | — |
 | 7 | PR CREATION | | | — | — | — |
 
@@ -31,7 +31,7 @@
 | Branch | Type | Status | PR |
 |--------|------|--------|----|
 | develop | base | exists (remote) | — |
-| FEA001-guest-cart-merge/plan | plan | active (architecture committed) | — |
+| FEA001-guest-cart-merge/plan | plan | active (architecture + reviews committed) | — |
 | FEA001-guest-cart-merge-BE | impl (backend) | pushed (commit f878952) | — |
 | FEA001-guest-cart-merge-FE | impl (frontend) | pushed (commit ba50708) | — |
 
@@ -43,10 +43,12 @@
 | Sprint Plan | .claude/docs/plans/guest-cart-merge-sprint-plan.md | 2 |
 | Issue Body (prepared) | .claude/docs/plans/guest-cart-merge-issue-body.md | 2 |
 | Architecture | .claude/docs/architecture/guest-cart-merge-architecture.md | 3 |
+| Backend Review | .claude/docs/reviews/guest-cart-merge-backend-review.md | 5 |
+| Frontend Review | .claude/docs/reviews/guest-cart-merge-frontend-review.md | 5 |
 
 ## Active Blockers
 
-- None. (GitHub Issue #24 created; `gh` CLI + token now available.)
+- None.
 
 ## Open Decisions (from requirement) — ALL CONFIRMED
 
@@ -79,8 +81,25 @@
   Merge failure is non-blocking (D3/R3). Gate: `cd frontend/ecommerce && npm run build` -> EXIT 0;
   no new lint findings on changed files (only pre-existing warnings).
 
+## Review Summary (Stage 5)
+
+- **Backend review: 8.5/10 — PASS.** All ACs (AC1-AC8) + R2 verified; `mvn compile` SUCCESS.
+  Material finding: BE-4 unit suite (`CartItemServiceImplTest`, 7 cases) not delivered — deliver in Stage 6 TEST.
+  Minor: `@Valid` on `List` element-validation caveat. Report:
+  `.claude/docs/reviews/guest-cart-merge-backend-review.md`.
+- **Frontend review: 9.0/10 — PASS.** All ACs + D2/D3 + R1/R3 verified; `npm run build` EXIT 0;
+  no new lint issues on changed files. Report:
+  `.claude/docs/reviews/guest-cart-merge-frontend-review.md`.
+- **Carry-forward for Stage 6 / PR:**
+  1. Deliver BE-4 tests on `-BE` branch (TEST stage runs `mvn test`).
+  2. Commit the 2 stray FE lint fixes (`checkout/[step]/page.tsx` let->const,
+     `constants/types.ts` String->string) to the **FE** branch — currently only in working tree, not committed.
+  3. Repo-wide `npm run lint` exits 1 due to 17 PRE-EXISTING errors in untouched files
+     (`lib/apiFetch.ts`, `lib/refreshToken.ts`, etc.); scope the Stage 6 lint gate to changed files
+     or acknowledge as out-of-scope tech debt on develop.
+
 ## Review-Fix Cycle
 
-- **Iteration:** 0 / 3 max
-- **Last Review Score (Backend):** —
-- **Last Review Score (Frontend):** —
+- **Iteration:** 0 / 3 max (no remediation needed; both scores passed on first review)
+- **Last Review Score (Backend):** 8.5 / 10
+- **Last Review Score (Frontend):** 9.0 / 10
