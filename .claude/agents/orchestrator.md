@@ -243,20 +243,41 @@ For BUGFIX:
 
 ### Stage 6.5: MANUAL VERIFICATION
 
-**Purpose:** Automated tests verify code correctness, not feature correctness. This stage ensures the feature actually works end-to-end with visual proof.
+**Purpose:** Create a testable integration of all implementation branches so the user can manually verify the feature end-to-end.
 
-**Steps:**
-1. Provide the user with a **detailed test checklist** derived from the acceptance criteria (e.g., "Add 2 items as guest → login → verify both items appear in server cart")
-2. Ask the user to **manually test** the feature by running the app locally
-3. Ask the user to **attach screenshots or screen recordings** proving the feature works
-4. Store screenshots in `.claude/docs/screenshots/` on the plan branch (user provides the files)
-5. Commit screenshot files to the plan branch
+**Step 6.5a — Create temp integration branch:**
+1. Create branch `FEA{XXX}-{name}-test` from `develop`
+2. Merge each implementation branch into it:
+   - `git merge FEA{XXX}-{name}-BE` (if exists)
+   - `git merge FEA{XXX}-{name}-FE` (if exists)
+   - `git merge FEA{XXX}-{name}-SCHEMA` (if exists)
+3. Push the integration branch
+4. Resolve any merge conflicts (escalate to user if non-trivial)
+
+For BUGFIX: skip branch creation (single implementation branch already has everything).
+
+**Step 6.5b — Provide testing instructions:**
+1. Read the **"Manual Testing"** section from the requirement doc (`.claude/docs/requirements/`)
+2. Tell the user:
+   - Which branch to checkout: `FEA{XXX}-{name}-test`
+   - Which services need restarting (from the requirement doc)
+   - Step-by-step test checklist (from acceptance criteria)
+3. The user restarts affected services from their terminal
+
+**Step 6.5c — Collect test evidence:**
+1. Ask the user to provide screenshots or recordings
+2. Store in `.claude/docs/screenshots/` on the plan branch
+3. Commit to plan branch
 
 **Gate Check:**
 - User confirms manual testing is complete
-- At least one screenshot or recording is provided (or user explicitly waives this for backend-only changes)
+- At least one screenshot or recording is provided (or user explicitly waives for backend-only changes)
 
-**After gate passes:** Screenshots are committed to plan branch. Proceed to ask human for approval to create PRs.
+**Cleanup:**
+- The `-test` branch is temporary — it can be deleted after PR creation, or kept for reference
+- It is NEVER the PR source branch (PRs come from individual -BE/-FE/-SCHEMA branches)
+
+**After gate passes:** Ask human for approval to proceed to Stage 7 (PR CREATION).
 
 ### Stage 7: PR CREATION
 
