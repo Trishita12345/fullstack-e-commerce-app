@@ -28,6 +28,7 @@ public class InventoryReservationService implements IInventoryReservationService
     private final IProductItemRepository productItemRepository;
     private final IInventoryReservationRepository reservationRepository;
 
+    @Transactional
     public boolean reserveInventory(UUID orderId, UUID productItemId, int qty) {
 
         int sellableStock = getSellableStock(productItemId);

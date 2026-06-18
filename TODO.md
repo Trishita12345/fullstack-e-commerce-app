@@ -23,6 +23,17 @@ Preparing secure payment... RESERVED | INITIATED
 7. DSA
 
 
+java QnA(include virtual thread)
+project QnA
+project discussion(both way)
+hld QnA
+Spring theory
+Spring QnA
+DB QnA
+
+
+
+
 ROLE____
 
 GET /products/search?
@@ -63,3 +74,21 @@ q=candle
 8087 - search - 9200
 8088 - auth - 5438
 8089 - notification
+
+
+
+day1 -> Spring boot 
+day2 -> Spring boot Advanced
+day3 ->  - Wed (All Spring without security + Java)
+ -> Microservice + DB
+day4 -> Spring security + LLM
+day5 -> DB + CV + DSA
+day6 -> QnA
+day7 -> HLD
+day8 -> HLD
+day9 -> LLD Design pattern
+day10 -> Mock
+day11 -> Mock
+
+Kafka in depth
+
