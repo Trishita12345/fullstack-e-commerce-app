@@ -84,6 +84,39 @@ No API Gateway change needed (route `/api/cart-service/**` already proxies all c
 - **D2 — `isSelected` on merged items:** Newly added guest lines default `isSelected = true`; existing server lines retain their selection state.
 - **D3 — Where to trigger merge:** Merge immediately after OTP verification in `otp/page.tsx`, even for first-time users redirected to `/setup-account`. The merge fires in parallel with the redirect — first-time users won't have an existing server cart anyway, so it's safe.
 
+## 7.5 Manual Testing
+
+### Services Required
+
+| Service | Port | Why Needed |
+|---------|------|------------|
+| frontend | 3000 | Guest cart UI + OTP login flow |
+| api-gateway | 8080 | Routes requests to cart/auth services |
+| cart-service | 8082 | Merge endpoint (POST /cart-items/merge) |
+| auth-service | 8088 | OTP verification |
+| profile-service | 8083 | User profile (called by auth on login) |
+
+### Infrastructure Required
+- [ ] Cart Service DB (`cd backend/cartService && docker compose up -d`)
+- [ ] Auth Service DB (`cd backend/authService && docker compose up -d`)
+- [ ] Profile Service DB (`cd backend/profileService && docker compose up -d`)
+- [ ] Frontend DB (`cd frontend/ecommerce && docker compose up -d`)
+- [ ] Kafka (`cd backend/kafka-setup && docker compose up -d`)
+
+### Test Steps
+1. Checkout integration branch `FEA001-guest-cart-merge-test`
+2. Start/restart: cart-service, auth-service, profile-service, api-gateway, frontend
+3. Open browser (incognito) → browse products → add 2 items to cart as guest
+4. Go to checkout → click "Login to Proceed" → enter phone → verify OTP
+5. Verify: cart now shows merged items (guest + any pre-existing server items)
+6. Check: no "Cart sync failed" error notification
+7. Test duplicate: log out → add same item with different qty → log in → qty should be guest's qty
+8. Test empty guest cart: clear localStorage → log in → existing server cart loads normally
+
+### Expected Evidence
+- [ ] Screenshot: Guest cart before login (showing items + "Login to Proceed")
+- [ ] Screenshot: Cart after login (showing merged items + delivery address)
+
 ## 8. Confidence Justification (92%)
 
 - Cart Service structure, DTOs, repository, and auth model are fully understood and verified by reading source. (+)
