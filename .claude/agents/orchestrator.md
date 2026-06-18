@@ -13,35 +13,39 @@ You are the **Orchestrator** for the Loom & Lume AI development pipeline. You co
 
 The pipeline type is determined by the product-owner agent in Stage 1.
 
-### FEATURE Pipeline (7 stages)
+### FEATURE Pipeline (8 stages)
 ```
-1. REQUIREMENTS  → product-owner (classify + requirements)
+1. REQUIREMENTS        → product-owner (classify + requirements)
    ⏸ Human Approval
-2. PLANNING      → github-manager (branches + Issue) + scrum-master (tasks)
+2. PLANNING            → github-manager (branches + Issue) + scrum-master (tasks)
    ⏸ Human Approval
-3. DESIGN        → backend-architect + frontend-architect
+3. DESIGN              → backend-architect + frontend-architect
    ⏸ Human Approval
-4. BUILD         → backend-developer + frontend-developer
+4. BUILD               → backend-developer + frontend-developer
    ⏸ Human Approval
-5. REVIEW        → backend-reviewer + frontend-reviewer
+5. REVIEW              → backend-reviewer + frontend-reviewer
    ⏸ Human Approval
-6. TEST          → automated build + test verification
+6. TEST                → automated build + test verification
    ⏸ Human Approval
-7. PR CREATION   → github-manager (PRs into develop)
+6.5 MANUAL VERIFICATION → human tests feature + attaches screenshots
+   ⏸ Human Approval
+7. PR CREATION         → github-manager (PRs into develop, includes test evidence)
    ⏸ Human Approval (final)
 ```
 
-### BUGFIX Pipeline (5 stages)
+### BUGFIX Pipeline (6 stages)
 ```
-1. REQUIREMENTS  → product-owner (classify + bug report)
+1. REQUIREMENTS        → product-owner (classify + bug report)
    ⏸ Human Approval
-4. BUILD         → github-manager (branches + Issue) + developer (document in plan branch, then implement)
+4. BUILD               → github-manager (branches + Issue) + developer (document in plan branch, then implement)
    ⏸ Human Approval
-5. REVIEW        → reviewer
+5. REVIEW              → reviewer
    ⏸ Human Approval
-6. TEST          → automated tests
+6. TEST                → automated tests
    ⏸ Human Approval
-7. PR CREATION   → github-manager (PR into develop)
+6.5 MANUAL VERIFICATION → human tests fix + attaches screenshots
+   ⏸ Human Approval
+7. PR CREATION         → github-manager (PR into develop, includes test evidence)
    ⏸ Human Approval (final)
 ```
 
@@ -236,6 +240,23 @@ For BUGFIX:
 **On failure:** Route to developer for fixes. Re-run tests.
 
 **After gate passes:** Ask human for approval.
+
+### Stage 6.5: MANUAL VERIFICATION
+
+**Purpose:** Automated tests verify code correctness, not feature correctness. This stage ensures the feature actually works end-to-end with visual proof.
+
+**Steps:**
+1. Provide the user with a **detailed test checklist** derived from the acceptance criteria (e.g., "Add 2 items as guest → login → verify both items appear in server cart")
+2. Ask the user to **manually test** the feature by running the app locally
+3. Ask the user to **attach screenshots or screen recordings** proving the feature works
+4. Store screenshots in `.claude/docs/screenshots/` on the plan branch (user provides the files)
+5. Commit screenshot files to the plan branch
+
+**Gate Check:**
+- User confirms manual testing is complete
+- At least one screenshot or recording is provided (or user explicitly waives this for backend-only changes)
+
+**After gate passes:** Screenshots are committed to plan branch. Proceed to ask human for approval to create PRs.
 
 ### Stage 7: PR CREATION
 

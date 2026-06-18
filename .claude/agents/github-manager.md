@@ -185,6 +185,11 @@ gh pr create --base develop --title "feat(product-service): add wishlist API" --
 - `backend/productService/`: New WishlistItem entity, service, controller
 - Liquibase migration: `012-create-wishlist-items.yaml`
 
+## Test Evidence
+<!-- Screenshots or recordings proving the feature works end-to-end -->
+<!-- Attach images inline using ![description](url) or drag-and-drop -->
+- [ ] Screenshots/recordings attached below
+
 ## Test Plan
 - [ ] Toggle wishlist on PDP
 - [ ] View wishlist page
