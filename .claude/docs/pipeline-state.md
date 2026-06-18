@@ -7,7 +7,7 @@
 **Plan Branch:** FEA001-guest-cart-merge/plan
 **Implementation Branches:** FEA001-guest-cart-merge-BE, FEA001-guest-cart-merge-FE
 **Base Branch:** develop
-**Current Stage:** REVIEW (gate PASS — backend 8.5/10, frontend 9.0/10, both >= 8.0; awaiting human approval to proceed to TEST)
+**Current Stage:** TEST (Stage 6 gate PASS — backend mvn test SUCCESS, frontend build EXIT 0, no new lint issues; awaiting human approval to proceed to Stage 6.5 MANUAL VERIFICATION)
 **Last Updated:** 2026-06-18
 
 ---
@@ -20,8 +20,8 @@
 | 2 | PLANNING | 2026-06-18 | 2026-06-18 | DONE | PASS (plan + Issue #24) | APPROVED |
 | 3 | DESIGN | 2026-06-18 | 2026-06-18 | DONE | PASS (doc covers all tasks + ACs) | APPROVED |
 | 4 | BUILD | 2026-06-18 | 2026-06-18 | DONE | PASS (BE compile + FE build succeed) | APPROVED |
-| 5 | REVIEW | 2026-06-18 | 2026-06-18 | DONE | PASS (BE 8.5/10, FE 9.0/10) | PENDING |
-| 6 | TEST | | | — | — | — |
+| 5 | REVIEW | 2026-06-18 | 2026-06-18 | DONE | PASS (BE 8.5/10, FE 9.0/10) | APPROVED |
+| 6 | TEST | 2026-06-18 | 2026-06-18 | DONE | PASS (BE mvn test SUCCESS; FE build EXIT 0; no new lint) | PENDING |
 | 7 | PR CREATION | | | — | — | — |
 
 > For BUGFIX: mark PLANNING and DESIGN as `SKIPPED` in Status and Human Approval columns.
@@ -97,6 +97,22 @@
   3. Repo-wide `npm run lint` exits 1 due to 17 PRE-EXISTING errors in untouched files
      (`lib/apiFetch.ts`, `lib/refreshToken.ts`, etc.); scope the Stage 6 lint gate to changed files
      or acknowledge as out-of-scope tech debt on develop.
+
+## Test Summary (Stage 6)
+
+- **Backend (FEA001-guest-cart-merge-BE):** `cd backend/cartService && mvn test` -> BUILD SUCCESS.
+  Tests run: 1, Failures: 0, Errors: 0, Skipped: 0 (context-load smoke test `CartServiceApplicationTests`;
+  BE-4 unit suite remains deferred per Stage 4/5 decision — no new tests authored in this stage).
+- **Frontend (FEA001-guest-cart-merge-FE):** `npm run build` -> EXIT 0 ("Compiled successfully").
+  `npm run lint` -> EXIT 1 repo-wide (17 errors, 178 warnings), ALL pre-existing in files untouched by FEA001.
+  FEA001 changed-file lint status:
+  - `utils/store/cart.ts` -> clean (0 issues)
+  - `(customer-checkout)/checkout/cartActions.ts` -> clean (0 issues)
+  - `(authentication)/otp/page.tsx` -> 2 warnings, both pre-existing/documented (unused `ErrorResponse`; useEffect missing deps), 0 errors
+  Conclusion: NO new lint errors or warnings introduced by FEA001. Lint gate scoped to changed files = PASS.
+- **Note (out of Stage 6 scope):** the 2 stray FE working-tree edits (`checkout/[step]/page.tsx` let->const,
+  `constants/types.ts` String->string) noted in Stage 5 carry-forward remain uncommitted in the plan branch
+  working tree; they are NOT part of FEA001 functional scope and were left untouched.
 
 ## Review-Fix Cycle
 
