@@ -35,6 +35,22 @@ export async function getCartItemsAction() {
   return data;
 }
 
+export async function mergeGuestCartAction(items: CartItemDTO[]) {
+  // Map the persisted Zustand guest cart shape -> backend CartItemRequestDTO shape.
+  // We intentionally omit updatedQuantity (not part of CartItemRequestDTO) and
+  // never send a userId (resolved server-side from the gateway header, AC7).
+  const payload = items.map((ci) => ({
+    productItemId: ci.productItemId,
+    quantity: ci.quantity,
+    priceSnapshot: ci.priceSnapshot,
+    isSelected: ci.isSelected ?? true,
+  }));
+  await serverApiFetch<void>("/cart-service/cart-items/merge", {
+    method: "POST",
+    body: payload,
+  });
+}
+
 export async function getProductDetailsAction(cartItems: CartItemDbDTO[]) {
   const data = await serverApiFetch<CartProductsDTO>(
     "/product-service/public/products/cart-item-details",
