@@ -73,12 +73,13 @@ public class CookieToHeaderFilter implements WebFilter {
     @SuppressWarnings("null")
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        HttpCookie cookie = exchange.getRequest()
-                .getCookies()
-                .getFirst(ACCESS_TOKEN);
+
         if (isWhiteListedUrl(exchange)) {
             return chain.filter(exchange);
         }
+        HttpCookie cookie = exchange.getRequest()
+                .getCookies()
+                .getFirst(ACCESS_TOKEN);
         if (cookie != null) {
             String token = cookie.getValue();
             log.info(">>> CookieToHeaderFilter: Found accessToken cookie, adding Authorization header");
