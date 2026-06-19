@@ -6,10 +6,7 @@
     "dev": "next dev -H 127.0.0.1 --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint --fix",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:report": "playwright show-report"
+    "lint": "eslint --fix"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
@@ -51,7 +48,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@playwright/test": "^1.61.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.19.27",
     "@types/pg": "^8.16.0",
