@@ -126,31 +126,6 @@ All service logs go to `/tmp/<service-name>.log`. To tail a service log:
 tail -f /tmp/cart-service.log
 ```
 
-## E2E Tests (Playwright) — Optional
-
-Tests are **NOT** run by default on manual `/devops restart`. Only run when:
-- User explicitly requests: `/devops restart cart-service frontend --e2e`
-- Orchestrator invokes during Stage 6.5 (automatic)
-
-### Run all E2E tests
-```bash
-cd /home/code/fullstack-e-commerce-app/frontend/ecommerce && npx playwright test
-```
-
-### Run specific test file
-```bash
-cd /home/code/fullstack-e-commerce-app/frontend/ecommerce && npx playwright test tests/e2e/guest-cart-merge.spec.ts
-```
-
-### Screenshots location
-Test screenshots are saved to `frontend/ecommerce/test-results/`
-
-### Procedure (when E2E is requested)
-1. Ensure all required services are running first (restart completes before tests start)
-2. Run `cd /home/code/fullstack-e-commerce-app/frontend/ecommerce && npx playwright test`
-3. If tests pass: report results + screenshot file paths
-4. If tests fail: report failures with error details and log locations
-
 ## Notes
 - The `search-service` directory is intentionally misspelled as `seachEngineService` — do not "fix" it.
 - The API Gateway uses WebFlux (reactive), all other backend services use the servlet stack.

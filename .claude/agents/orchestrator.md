@@ -263,22 +263,16 @@ For BUGFIX: skip branch creation (single implementation branch already has every
 4. Wait for all services to report healthy (port listening)
 5. Report which services were restarted and on which branch
 
-**Step 6.5c — Run E2E tests (automated):**
-1. Run `cd frontend/ecommerce && npx playwright test` against the running services
-2. If tests pass: collect screenshots from `frontend/ecommerce/test-results/`
-3. Copy screenshots to `.claude/docs/screenshots/` on the plan branch
-4. Commit screenshots to plan branch
-5. If tests fail: report failures, route to developer for fixes, re-run after fix
-
-**Step 6.5d — Human verification (optional):**
-1. Show Playwright test results and screenshots to the user
-2. Ask if additional manual testing is needed
-3. Collect any additional screenshots from the user
+**Step 6.5c — Provide testing instructions and collect evidence:**
+1. Tell the user the step-by-step test checklist (from the requirement doc's "Test Steps")
+2. Ask the user to manually test the feature and provide screenshots or recordings
+1. Ask the user to provide screenshots or recordings
+2. Store in `.claude/docs/screenshots/` on the plan branch
+3. Commit to plan branch
 
 **Gate Check:**
-- E2E tests pass (Playwright exit code 0)
-- Screenshots committed to plan branch
-- User confirms verification is complete (or waives for backend-only changes)
+- User confirms manual testing is complete
+- At least one screenshot or recording is provided (or user explicitly waives for backend-only changes)
 
 **Cleanup:**
 - The `-test` branch is temporary — it can be deleted after PR creation, or kept for reference
