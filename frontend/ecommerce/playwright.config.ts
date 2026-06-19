@@ -10,7 +10,7 @@ export default defineConfig({
   workers: 1,
   reporter: [["html", { outputFolder: "playwright-report" }], ["list"]],
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "https://loomandlume.shop",
     screenshot: "on",
     trace: "on-first-retry",
     headless: true,
