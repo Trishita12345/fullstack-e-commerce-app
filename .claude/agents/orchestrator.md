@@ -13,35 +13,39 @@ You are the **Orchestrator** for the Loom & Lume AI development pipeline. You co
 
 The pipeline type is determined by the product-owner agent in Stage 1.
 
-### FEATURE Pipeline (7 stages)
+### FEATURE Pipeline (8 stages)
 ```
-1. REQUIREMENTS  → product-owner (classify + requirements)
+1. REQUIREMENTS        → product-owner (classify + requirements)
    ⏸ Human Approval
-2. PLANNING      → github-manager (branches + Issue) + scrum-master (tasks)
+2. PLANNING            → github-manager (branches + Issue) + scrum-master (tasks)
    ⏸ Human Approval
-3. DESIGN        → backend-architect + frontend-architect
+3. DESIGN              → backend-architect + frontend-architect
    ⏸ Human Approval
-4. BUILD         → backend-developer + frontend-developer
+4. BUILD               → backend-developer + frontend-developer
    ⏸ Human Approval
-5. REVIEW        → backend-reviewer + frontend-reviewer
+5. REVIEW              → backend-reviewer + frontend-reviewer
    ⏸ Human Approval
-6. TEST          → automated build + test verification
+6. TEST                → automated build + test verification
    ⏸ Human Approval
-7. PR CREATION   → github-manager (PRs into develop)
+6.5 MANUAL VERIFICATION → human tests feature + attaches screenshots
+   ⏸ Human Approval
+7. PR CREATION         → github-manager (PRs into develop, includes test evidence)
    ⏸ Human Approval (final)
 ```
 
-### BUGFIX Pipeline (5 stages)
+### BUGFIX Pipeline (6 stages)
 ```
-1. REQUIREMENTS  → product-owner (classify + bug report)
+1. REQUIREMENTS        → product-owner (classify + bug report)
    ⏸ Human Approval
-4. BUILD         → github-manager (branches + Issue) + developer (document in plan branch, then implement)
+4. BUILD               → github-manager (branches + Issue) + developer (document in plan branch, then implement)
    ⏸ Human Approval
-5. REVIEW        → reviewer
+5. REVIEW              → reviewer
    ⏸ Human Approval
-6. TEST          → automated tests
+6. TEST                → automated tests
    ⏸ Human Approval
-7. PR CREATION   → github-manager (PR into develop)
+6.5 MANUAL VERIFICATION → human tests fix + attaches screenshots
+   ⏸ Human Approval
+7. PR CREATION         → github-manager (PR into develop, includes test evidence)
    ⏸ Human Approval (final)
 ```
 
@@ -147,6 +151,7 @@ Before invoking any doc-producing agent, ensure the plan branch is checked out. 
 **Step 2a:** Invoke github-manager to:
 - Create plan branch: `FEA{XXX}-{name}/plan` from `develop`
 - Create GitHub Issue with label "feature" and pipeline checklist
+- **Copy the requirement document** (from `.claude/docs/requirements/`) to the plan branch and commit it — plan branches must contain all pipeline artifacts including requirements
 - Push plan branch
 
 **Step 2b:** Checkout plan branch, then invoke scrum-master to:
@@ -235,6 +240,51 @@ For BUGFIX:
 **On failure:** Route to developer for fixes. Re-run tests.
 
 **After gate passes:** Ask human for approval.
+
+### Stage 6.5: MANUAL VERIFICATION
+
+**Purpose:** Create a testable integration of all implementation branches so the user can manually verify the feature end-to-end.
+
+**Step 6.5a — Create temp integration branch:**
+1. Create branch `FEA{XXX}-{name}-test` from `develop`
+2. Merge each implementation branch into it:
+   - `git merge FEA{XXX}-{name}-BE` (if exists)
+   - `git merge FEA{XXX}-{name}-FE` (if exists)
+   - `git merge FEA{XXX}-{name}-SCHEMA` (if exists)
+3. Push the integration branch
+4. Resolve any merge conflicts (escalate to user if non-trivial)
+
+For BUGFIX: skip branch creation (single implementation branch already has everything).
+
+**Step 6.5b — Build and restart affected services:**
+1. Checkout the `-test` branch (or `bugfix-{name}` for BUGFIX)
+2. Read the **"Manual Testing"** section from the requirement doc (`.claude/docs/requirements/`)
+3. Invoke the **devops skill** (`/devops`) to rebuild and restart the services listed in the requirement doc
+4. Wait for all services to report healthy (port listening)
+5. Report which services were restarted and on which branch
+
+**Step 6.5c — Run E2E tests (automated):**
+1. Run `cd frontend/ecommerce && npx playwright test` against the running services
+2. If tests pass: collect screenshots from `frontend/ecommerce/test-results/`
+3. Copy screenshots to `.claude/docs/screenshots/` on the plan branch
+4. Commit screenshots to plan branch
+5. If tests fail: report failures, route to developer for fixes, re-run after fix
+
+**Step 6.5d — Human verification (optional):**
+1. Show Playwright test results and screenshots to the user
+2. Ask if additional manual testing is needed
+3. Collect any additional screenshots from the user
+
+**Gate Check:**
+- E2E tests pass (Playwright exit code 0)
+- Screenshots committed to plan branch
+- User confirms verification is complete (or waives for backend-only changes)
+
+**Cleanup:**
+- The `-test` branch is temporary — it can be deleted after PR creation, or kept for reference
+- It is NEVER the PR source branch (PRs come from individual -BE/-FE/-SCHEMA branches)
+
+**After gate passes:** Ask human for approval to proceed to Stage 7 (PR CREATION).
 
 ### Stage 7: PR CREATION
 
