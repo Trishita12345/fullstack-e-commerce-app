@@ -428,11 +428,11 @@ export interface FacetValue {
 }
 
 export interface saveUserDTO {
-  id: String;
-  name: String;
-  email: String;
+  id: string;
+  name: string;
+  email: string;
   emailVerified: boolean;
-  image: String;
+  image: string;
 }
 
 export interface User {
