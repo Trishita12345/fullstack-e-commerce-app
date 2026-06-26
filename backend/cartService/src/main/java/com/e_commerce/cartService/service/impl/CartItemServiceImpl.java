@@ -166,4 +166,64 @@ public class CartItemServiceImpl implements ICartItemService {
                 cartItemRepository.deleteItems(productItemIds, userId);
         }
 
+        @Override
+        @Transactional
+        public void mergeGuestCart(List<CartItemRequestDTO> guestItems, String userId) {
+                // AC6: empty/null guest cart -> no-op.
+                if (guestItems == null || guestItems.isEmpty()) {
+                        return;
+                }
+
+                // AC2: load the user's cart; create an ACTIVE cart on demand (mirror addItemInCart).
+                Cart cart = cartRepository
+                                .findByUserId(userId)
+                                .orElseGet(() -> Cart.builder()
+                                                .userId(userId)
+                                                .status(CartStatus.ACTIVE)
+                                                .items(new ArrayList<>())
+                                                .build());
+
+                if (cart.getItems() == null) {
+                        cart.setItems(new ArrayList<>());
+                }
+
+                // AC1 + R2: index existing items by productItemId. Use a merge function that
+                // keeps the first occurrence so pre-existing duplicate rows do not throw.
+                Map<UUID, CartItem> byProductItem = cartItemRepository
+                                .getAllCartItemsByCartId(cart.getId())
+                                .stream()
+                                .collect(Collectors.toMap(
+                                                CartItem::getProductItemId,
+                                                ci -> ci,
+                                                (existing, duplicate) -> existing));
+
+                for (CartItemRequestDTO guestItem : guestItems) {
+                        CartItem match = byProductItem.get(guestItem.getProductItemId());
+                        if (match != null) {
+                                // AC3 / D1: overwrite quantity with guest quantity.
+                                match.setQuantity(guestItem.getQuantity());
+                                match.setUpdatedQuantity(guestItem.getQuantity());
+                                // D2: retain existing isSelected and priceSnapshot (do not touch).
+                        } else {
+                                // AC2 / D2: new guest line -> isSelected=true, guest priceSnapshot.
+                                CartItem newItem = CartItem.builder()
+                                                .productItemId(guestItem.getProductItemId())
+                                                .quantity(guestItem.getQuantity())
+                                                .updatedQuantity(guestItem.getQuantity())
+                                                .priceSnapshot(guestItem.getPriceSnapshot())
+                                                .isSelected(true)
+                                                .cart(cart)
+                                                .build();
+                                cart.getItems().add(newItem);
+                                // AC5: dedupe within the guest payload itself so repeated
+                                // productItemIds update the just-created line instead of inserting twice.
+                                byProductItem.put(guestItem.getProductItemId(), newItem);
+                        }
+                }
+
+                // AC8: single transaction; cascade persists new items and flushes updated ones.
+                cartRepository.save(cart);
+        }
+
 }
+

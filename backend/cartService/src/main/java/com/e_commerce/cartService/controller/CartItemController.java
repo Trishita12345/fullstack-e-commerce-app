@@ -79,4 +79,12 @@ public class CartItemController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/merge")
+    public ResponseEntity<Void> mergeGuestCart(
+            @Valid @RequestBody List<CartItemRequestDTO> guestItems,
+            Authentication authentication) {
+        cartItemService.mergeGuestCart(guestItems, authentication.getName());
+        return ResponseEntity.noContent().build();
+    }
+
 }
