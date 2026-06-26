@@ -37,12 +37,13 @@ for SERVICE in $BACKEND_SERVICES; do
     fi
 done
 
-# Check frontend changes
-FRONTEND_CHANGED=$(echo "$STAGED_FILES" | grep "^frontend/ecommerce/" || true)
+# Check frontend changes — lint only staged files (not the entire project)
+FRONTEND_CHANGED=$(echo "$STAGED_FILES" | grep "^frontend/ecommerce/src/.*\.\(ts\|tsx\)$" || true)
 if [ -n "$FRONTEND_CHANGED" ]; then
-    echo "Linting frontend..." >&2
-    if ! (cd "$PROJECT_ROOT/frontend/ecommerce" && npm run lint 2>&1); then
-        ERRORS="$ERRORS\nFrontend lint failed"
+    echo "Linting staged frontend files..." >&2
+    FRONTEND_FILES=$(echo "$FRONTEND_CHANGED" | sed "s|^frontend/ecommerce/||" | tr '\n' ' ')
+    if ! (cd "$PROJECT_ROOT/frontend/ecommerce" && npx eslint --fix $FRONTEND_FILES 2>&1); then
+        ERRORS="$ERRORS\nFrontend lint failed on staged files"
     fi
 fi
 

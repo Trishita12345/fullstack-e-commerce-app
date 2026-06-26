@@ -75,6 +75,30 @@
 - [ ] Requires new database table?
 - [ ] Requires frontend route changes?
 
+## Manual Testing
+
+### Services Required
+<!-- List only the services that need to be running to test this feature -->
+
+| Service | Port | Why Needed |
+|---------|------|------------|
+| [e.g., cart-service] | [8082] | [Changed service] |
+| [e.g., api-gateway] | [8080] | [Routes requests] |
+| [e.g., frontend] | [3000] | [UI for testing] |
+
+### Infrastructure Required
+<!-- Check what infra needs to be up -->
+- [ ] Kafka (`cd backend/kafka-setup && docker compose up -d`)
+- [ ] Service-specific DBs (list which: `cd backend/<service> && docker compose up -d`)
+
+### Test Steps
+1. [Step-by-step instructions to verify the feature manually]
+2. [Include both happy path and key edge cases]
+
+### Expected Evidence
+- [ ] Screenshot: [description of what to capture]
+- [ ] Screenshot: [description of what to capture]
+
 ## Open Questions
 
 1. [Question that needs clarification]

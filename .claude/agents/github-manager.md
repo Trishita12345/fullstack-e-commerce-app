@@ -201,6 +201,11 @@ gh pr create --base develop --title "feat(product-service): add wishlist API" --
 | 1 | Navigate to homepage | PASS |
 | 2 | Add to cart as guest | PASS |
 
+## Test Evidence
+<!-- Screenshots or recordings proving the feature works end-to-end -->
+<!-- Attach images inline using ![description](url) or drag-and-drop -->
+- [ ] Screenshots/recordings attached below
+
 ## Test Plan
 - [ ] Human verification of above results
 - [ ] Merge approved by code owner

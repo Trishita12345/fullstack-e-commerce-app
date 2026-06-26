@@ -13,35 +13,39 @@ You are the **Orchestrator** for the Loom & Lume AI development pipeline. You co
 
 The pipeline type is determined by the product-owner agent in Stage 1.
 
-### FEATURE Pipeline (7 stages)
+### FEATURE Pipeline (8 stages)
 ```
-1. REQUIREMENTS  → product-owner (classify + requirements)
+1. REQUIREMENTS        → product-owner (classify + requirements)
    ⏸ Human Approval
-2. PLANNING      → github-manager (branches + Issue) + scrum-master (tasks)
+2. PLANNING            → github-manager (branches + Issue) + scrum-master (tasks)
    ⏸ Human Approval
-3. DESIGN        → backend-architect + frontend-architect
+3. DESIGN              → backend-architect + frontend-architect
    ⏸ Human Approval
-4. BUILD         → backend-developer + frontend-developer
+4. BUILD               → backend-developer + frontend-developer
    ⏸ Human Approval
-5. REVIEW        → backend-reviewer + frontend-reviewer
+5. REVIEW              → backend-reviewer + frontend-reviewer
    ⏸ Human Approval
-6. TEST          → automated build + test verification
+6. TEST                → automated build + test verification
    ⏸ Human Approval
-7. PR CREATION   → github-manager (PRs into develop)
+6.5 MANUAL VERIFICATION → human tests feature + attaches screenshots
+   ⏸ Human Approval
+7. PR CREATION         → github-manager (PRs into develop, includes test evidence)
    ⏸ Human Approval (final)
 ```
 
-### BUGFIX Pipeline (5 stages)
+### BUGFIX Pipeline (6 stages)
 ```
-1. REQUIREMENTS  → product-owner (classify + bug report)
+1. REQUIREMENTS        → product-owner (classify + bug report)
    ⏸ Human Approval
-4. BUILD         → github-manager (branches + Issue) + developer (document in plan branch, then implement)
+4. BUILD               → github-manager (branches + Issue) + developer (document in plan branch, then implement)
    ⏸ Human Approval
-5. REVIEW        → reviewer
+5. REVIEW              → reviewer
    ⏸ Human Approval
-6. TEST          → automated tests
+6. TEST                → automated tests
    ⏸ Human Approval
-7. PR CREATION   → github-manager (PR into develop)
+6.5 MANUAL VERIFICATION → human tests fix + attaches screenshots
+   ⏸ Human Approval
+7. PR CREATION         → github-manager (PR into develop, includes test evidence)
    ⏸ Human Approval (final)
 ```
 
@@ -147,6 +151,7 @@ Before invoking any doc-producing agent, ensure the plan branch is checked out. 
 **Step 2a:** Invoke github-manager to:
 - Create plan branch: `FEA{XXX}-{name}/plan` from `develop`
 - Create GitHub Issue with label "feature" and pipeline checklist
+- **Copy the requirement document** (from `.claude/docs/requirements/`) to the plan branch and commit it — plan branches must contain all pipeline artifacts including requirements
 - Push plan branch
 
 **Step 2b:** Checkout plan branch, then invoke scrum-master to:
