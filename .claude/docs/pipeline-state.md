@@ -7,8 +7,8 @@
 **Plan Branch:** FEA001-guest-cart-merge/plan
 **Implementation Branches:** FEA001-guest-cart-merge-BE, FEA001-guest-cart-merge-FE
 **Base Branch:** develop
-**Current Stage:** TEST (Stage 6 gate PASS — backend mvn test SUCCESS, frontend build EXIT 0, no new lint issues; awaiting human approval to proceed to Stage 6.5 MANUAL VERIFICATION)
-**Last Updated:** 2026-06-18
+**Current Stage:** E2E TESTING (Stage 6.5 — Playwright run complete: 8 PASS / 1 FAIL / 1 SKIP; core merge feature PASS; awaiting human approval [6.5c] to proceed to Stage 7 PR CREATION)
+**Last Updated:** 2026-06-26
 
 ---
 
@@ -21,7 +21,8 @@
 | 3 | DESIGN | 2026-06-18 | 2026-06-18 | DONE | PASS (doc covers all tasks + ACs) | APPROVED |
 | 4 | BUILD | 2026-06-18 | 2026-06-18 | DONE | PASS (BE compile + FE build succeed) | APPROVED |
 | 5 | REVIEW | 2026-06-18 | 2026-06-18 | DONE | PASS (BE 8.5/10, FE 9.0/10) | APPROVED |
-| 6 | TEST | 2026-06-18 | 2026-06-18 | DONE | PASS (BE mvn test SUCCESS; FE build EXIT 0; no new lint) | PENDING |
+| 6 | TEST | 2026-06-18 | 2026-06-18 | DONE | PASS (BE mvn test SUCCESS; FE build EXIT 0; no new lint) | APPROVED |
+| 6.5 | E2E TESTING | 2026-06-26 | 2026-06-26 | DONE | PASS w/ caveats (8 PASS / 1 FAIL / 1 SKIP) | PENDING |
 | 7 | PR CREATION | | | — | — | — |
 
 > For BUGFIX: mark PLANNING and DESIGN as `SKIPPED` in Status and Human Approval columns.
@@ -119,3 +120,26 @@
 - **Iteration:** 0 / 3 max (no remediation needed; both scores passed on first review)
 - **Last Review Score (Backend):** 8.5 / 10
 - **Last Review Score (Frontend):** 9.0 / 10
+
+## E2E Test Results (Stage 6.5)
+
+- **Test Report:** `.claude/docs/reviews/guest-cart-merge-test-report.md`
+- **Total / Pass / Fail / Skip:** 10 / 8 / 1 / 1
+- **Overall:** PASS with caveats — core guest cart merge verified end-to-end (guest adds items via PDP -> OTP login -> items merged into server cart, displayed correctly; empty-guest-cart no-op confirmed).
+- **Test Target:** Tested against PRODUCTION `https://loomandlume.shop` (per report header), NOT the locally-deployed `-test` branch. Orchestrator deployed `-test` locally (127.0.0.1) and verified health, but the tester exercised the live domain. Caveat noted for human review.
+- **Screenshots:** 14 PNGs in `.claude/docs/screenshots/` (fea001-step01..step10), all verified as real captures (step08 shows 2 merged items; step04 shows the guest-cart empty-state bug).
+- **Branches merged into -test:** FEA001-guest-cart-merge-BE + FEA001-guest-cart-merge-FE (no commits ahead in either).
+
+### Issues found (NEITHER is a FEA001 code defect)
+1. **Guest cart page empties localStorage (FAIL, step 4):** Visiting `/checkout/cart` as a guest clears `localStorage.cartItems` and shows empty state; no "Login to Proceed" prompt. Pre-existing behavior in the checkout page component, NOT introduced by FEA001. Risk: a guest who navigates to cart before login loses items before merge can occur.
+2. **`NEXT_PUBLIC_API_URL` deployment config (CRITICAL, infra):** Frontend built with `NEXT_PUBLIC_API_URL=http://127.0.0.1:8080/api`; client-side calls (OTP verify, logout) fail CORS from the external domain. Deployment/build config issue, not code. Tester used a fetch-interceptor workaround to complete OTP login.
+
+### AC verification (from report)
+- AC1, AC2, AC4, AC5, AC6, AC7, AC8 = PASS. AC3 (duplicate productItemId overwrite) = SKIPPED (needs pre-seeded server cart with same item).
+
+### Integration-branch hygiene fix during deploy
+- Removed orphaned `frontend/ecommerce/playwright.config.ts` from `-test` (commit e9ba5d7) — leftover from reverted Playwright framework (d4cc5a4); it broke the `-test` TS build. `-BE`/`-FE` PR source branches unaffected.
+
+### Stage 6.5 status
+- Gate: test report exists, critical merge path PASS. Awaiting **human Stage 6.5c approval** to proceed to Stage 7 (PR CREATION).
+- **Blocker for Stage 7:** `gh` CLI not authenticated (`gh auth status` -> not logged in). Must run `gh auth login` or set `GH_TOKEN` before PRs/Issue #24 updates.
