@@ -28,4 +28,6 @@ public interface ICartItemService {
 
     void removeCartItems(List<CartItemDTO> items, String userId);
 
+    void mergeGuestCart(List<CartItemRequestDTO> guestItems, String userId);
+
 }

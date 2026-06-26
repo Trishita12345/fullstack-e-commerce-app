@@ -241,44 +241,36 @@ For BUGFIX:
 
 **After gate passes:** Ask human for approval.
 
-### Stage 6.5: MANUAL VERIFICATION
+### Stage 6.5: E2E TESTING
 
-**Purpose:** Create a testable integration of all implementation branches so the user can manually verify the feature end-to-end.
+**Purpose:** Deploy the feature on a testable branch, run automated Playwright E2E tests, and collect acceptance evidence for the PR.
 
-**Step 6.5a — Create temp integration branch:**
-1. Create branch `FEA{XXX}-{name}-test` from `develop`
-2. Merge each implementation branch into it:
-   - `git merge FEA{XXX}-{name}-BE` (if exists)
-   - `git merge FEA{XXX}-{name}-FE` (if exists)
-   - `git merge FEA{XXX}-{name}-SCHEMA` (if exists)
-3. Push the integration branch
-4. Resolve any merge conflicts (escalate to user if non-trivial)
+**Step 6.5a — Determine test target and deploy:**
 
-For BUGFIX: skip branch creation (single implementation branch already has everything).
+| Changes | Test Target | Action |
+|---------|------------|--------|
+| Backend + Frontend | `FEA{XXX}-{name}-test` | Create from `develop`, merge -BE, -FE, -SCHEMA into it. Invoke `/devops` to rebuild all affected services. |
+| Frontend only | `FEA{XXX}-{name}-FE` | Use FE branch directly. Rebuild frontend only. |
+| BUGFIX | `bugfix-{name}` | Use bugfix branch directly. Rebuild affected services. |
 
-**Step 6.5b — Build and restart affected services:**
-1. Checkout the `-test` branch (or `bugfix-{name}` for BUGFIX)
-2. Read the **"Manual Testing"** section from the requirement doc (`.claude/docs/requirements/`)
-3. Invoke the **devops skill** (`/devops`) to rebuild and restart the services listed in the requirement doc
-4. Wait for all services to report healthy (port listening)
-5. Report which services were restarted and on which branch
+**Step 6.5b — Automated Playwright E2E testing:**
+1. Invoke the **playwright-tester** agent
+2. Tester checks existing test fixtures at `frontend/ecommerce/tests/e2e/fixtures/` and reuses them
+3. Tester navigates the deployed app, interacts via Playwright MCP, verifies acceptance criteria
+4. Tester produces acceptance test report at `.claude/docs/reviews/[feature]-test-report.md`
+5. If fixtures are missing or outdated, tester updates them in `tests/e2e/fixtures/` on the implementation branch
+6. Screenshots are ephemeral (saved to scratchpad, not committed)
 
-**Step 6.5c — Provide testing instructions and collect evidence:**
-1. Tell the user the step-by-step test checklist (from the requirement doc's "Test Steps")
-2. Ask the user to manually test the feature and provide screenshots or recordings
-1. Ask the user to provide screenshots or recordings
-2. Store in `.claude/docs/screenshots/` on the plan branch
-3. Commit to plan branch
+**Step 6.5c — Human verification:**
+1. Present the acceptance test report to the user (total/pass/fail/skipped, AC results)
+2. User reviews and can run additional manual tests if needed
 
 **Gate Check:**
-- User confirms manual testing is complete
-- At least one screenshot or recording is provided (or user explicitly waives for backend-only changes)
+- Acceptance test report exists
+- All critical acceptance criteria pass
+- User confirms evidence is acceptable
 
-**Cleanup:**
-- The `-test` branch is temporary — it can be deleted after PR creation, or kept for reference
-- It is NEVER the PR source branch (PRs come from individual -BE/-FE/-SCHEMA branches)
-
-**After gate passes:** Ask human for approval to proceed to Stage 7 (PR CREATION).
+**After gate passes:** Ask human for approval to proceed to Stage 7.
 
 ### Stage 7: PR CREATION
 
@@ -289,10 +281,12 @@ For FEATURE: Create separate PRs for each implementation branch into `develop`:
 - PR from `FEA{XXX}-{name}-FE` → `develop`
 - PR from `FEA{XXX}-{name}-SCHEMA` → `develop`
 - Each PR references the parent GitHub Issue (`Relates to #{number}`)
+- **Each PR body includes the full acceptance test results inline** (read from `.claude/docs/reviews/[feature]-test-report.md`)
 
 For BUGFIX: Create one PR:
 - PR from `bugfix-{name}` → `develop`
 - References parent GitHub Issue (`Relates to #{number}`)
+- PR body includes acceptance test results inline
 
 Update GitHub Issue checklist to mark "PR Created"
 

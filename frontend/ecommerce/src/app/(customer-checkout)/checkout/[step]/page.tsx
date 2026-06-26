@@ -7,7 +7,7 @@ import { Box, Loader, LoadingOverlay } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useCartActions, useCartItems } from "@/utils/store/cart";
+import { useCartActions, useCartStore } from "@/utils/store/cart";
 import { CartItemDTO, CartProductsDTO } from "@/constants/types";
 import {
   getCartItemsAction,
@@ -25,7 +25,6 @@ const Checkout = () => {
   const [visible, { open, close }] = useDisclosure(false);
   const isLoggedIn = useIsLoggedIn();
   const { setCartItems } = useCartActions();
-  const cartItems = useCartItems();
   const [cartProducts, setCartProducts] = useState<CartProductsDTO>({});
   const [isLoading, setIsLoading] = useState(true);
   const { getAllAddresses } = useAddressActions();
@@ -59,8 +58,8 @@ const Checkout = () => {
       if (isLoggedIn) {
         await updateOverallCartAction(updatedCart);
       }
-      let updatedCartOutOfStock: CartItemDTO[] = [];
-      let updatedCartInStock: CartItemDTO[] = [];
+      const updatedCartOutOfStock: CartItemDTO[] = [];
+      const updatedCartInStock: CartItemDTO[] = [];
       updatedCart.forEach((i) => {
         if (i.updatedQuantity === 0) {
           updatedCartOutOfStock.push(i);
@@ -74,19 +73,31 @@ const Checkout = () => {
   };
 
   useEffect(() => {
-    (async () => {
+    const loadCart = async () => {
       try {
         if (isLoggedIn) {
           setIsLoading(true);
           const cartItemsFromDb = await getCartItemsAction();
           getCartProducts(cartItemsFromDb);
         } else {
-          getCartProducts(cartItems);
+          const hydratedItems = useCartStore.getState().cartItems;
+          getCartProducts(hydratedItems);
         }
       } catch (err) {
         setIsLoading(false);
       }
-    })();
+    };
+
+    if (isLoggedIn) {
+      loadCart();
+    } else if (useCartStore.persist.hasHydrated()) {
+      loadCart();
+    } else {
+      const unsub = useCartStore.persist.onFinishHydration(() => {
+        loadCart();
+        unsub();
+      });
+    }
   }, [isLoggedIn]);
 
   return (

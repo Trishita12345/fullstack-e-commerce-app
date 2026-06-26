@@ -22,6 +22,7 @@
 | 4 | BUILD | | | — | — | — |
 | 5 | REVIEW | | | — | — | — |
 | 6 | TEST | | | — | — | — |
+| 6.5 | E2E TESTING | | | — | — | — |
 | 7 | PR CREATION | | | — | — | — |
 
 > For BUGFIX: mark PLANNING and DESIGN as `SKIPPED` in Status and Human Approval columns.
@@ -45,3 +46,9 @@ None.
 - **Iteration:** 0 / 3 max
 - **Last Review Score (Backend):** —
 - **Last Review Score (Frontend):** —
+
+## E2E Test Results
+
+- **Acceptance Report:** —
+- **Total / Pass / Fail / Skip:** — / — / — / —
+- **Test Target Branch:** —

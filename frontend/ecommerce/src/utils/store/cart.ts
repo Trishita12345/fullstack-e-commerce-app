@@ -155,6 +155,10 @@ const useCartStore = create<CartState>()(
   ),
 );
 
+// Exported so the raw store can be read via getState() outside React render
+// (used by the OTP page to snapshot the persisted guest cart at login, FEA001).
+export { useCartStore };
+
 export const useCartActions = () => useCartStore((state) => state.actions);
 export const useDonation = () => useCartStore((state) => state.donation);
 export const useGiftWrap = () => useCartStore((state) => state.giftWrap);
