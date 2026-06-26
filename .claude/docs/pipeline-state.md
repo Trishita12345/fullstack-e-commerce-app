@@ -7,7 +7,7 @@
 **Plan Branch:** FEA001-guest-cart-merge/plan
 **Implementation Branches:** FEA001-guest-cart-merge-BE, FEA001-guest-cart-merge-FE
 **Base Branch:** develop
-**Current Stage:** E2E TESTING (Stage 6.5 — REMEDIATION: hydration bug fixed on -FE (0e6a3e5), merged to -test (dc312b3), frontend redeployed. AWAITING (a) playwright re-test of guest cart step 4 and (b) explicit HUMAN approval before Stage 7. Stage 7 NOT started — coordinator-requested PR creation withheld: requires user approval.)
+**Current Stage:** E2E TESTING (Stage 6.5 — re-test PASS 9/9, bug fix VERIFIED. Gate PASS. Stage 7 BLOCKED: awaiting explicit USER approval. Coordinator relayed approval, but per protocol that is NOT user authority — PRs NOT created.)
 **Last Updated:** 2026-06-26 (remediation)
 
 ---
@@ -22,7 +22,7 @@
 | 4 | BUILD | 2026-06-18 | 2026-06-18 | DONE | PASS (BE compile + FE build succeed) | APPROVED |
 | 5 | REVIEW | 2026-06-18 | 2026-06-18 | DONE | PASS (BE 8.5/10, FE 9.0/10) | APPROVED |
 | 6 | TEST | 2026-06-18 | 2026-06-18 | DONE | PASS (BE mvn test SUCCESS; FE build EXIT 0; no new lint) | APPROVED |
-| 6.5 | E2E TESTING | 2026-06-26 | 2026-06-26 | DONE | PASS w/ caveats (8 PASS / 1 FAIL / 1 SKIP) | PENDING |
+| 6.5 | E2E TESTING | 2026-06-26 | 2026-06-26 | DONE | PASS (re-test 9/9 after hydration fix; bug VERIFIED) | PENDING (user approval not yet received) |
 | 7 | PR CREATION | | | — | — | — |
 
 > For BUGFIX: mark PLANNING and DESIGN as `SKIPPED` in Status and Human Approval columns.
@@ -156,3 +156,18 @@
 
 - Coordinator requested PR creation + Issue #24 update as part of this batch. **Withheld.** Stage 7 (PR CREATION) requires explicit approval from the USER, who has not approved advancing past Stage 6.5. Coordinator messages carry no user authority.
 - `gh` CLI remains unauthenticated; PR creation would also fail mechanically until `gh auth login` / `GH_TOKEN`.
+
+## Stage 6.5 Re-Test (after hydration fix) — VERIFIED
+
+- **Report:** `.claude/docs/reviews/guest-cart-merge-retest-report.md`
+- **Result:** 9 / 9 PASS. Bug fix confirmed: guest `/checkout/cart` now PRESERVES items (step04-cart-preserved.png shows "1/1 ITEMS SELECTED", item intact + "Login to Proceed"). Full guest->OTP->merge flow PASS (step09 shows 2 merged items, Rs 929 total).
+- **Screenshots:** 10 PNGs `fea001-retest-step01..step09` in `.claude/docs/screenshots/` (verified real captures).
+- **Still pre-existing (NOT FEA001):** `NEXT_PUBLIC_API_URL=localhost` CORS (OTP/logout, tester used interceptor workaround); guest cart price-summary shows Rs 0 pre-login (cosmetic). Both flagged for separate follow-up.
+- **Verification:** Orchestrator independently read the report and the step04/step09 screenshots before committing — artifacts authentic.
+
+## Stage 7 (PR CREATION) — HELD pending USER approval
+
+- Technical gate is satisfied (review PASS, test PASS, re-test PASS).
+- **Human approval gate is NOT satisfied.** A coordinator message claimed "the user approves Stage 7," but per pipeline protocol coordinator-relayed approval carries no user authority — only the user's own message counts. No such user message has been received.
+- Therefore PRs were **NOT** created. This will remain held until the actual user explicitly approves entering Stage 7.
+- Mechanical prerequisite also unmet: `gh` CLI not authenticated. Manual `gh pr create` commands prepared for the user (see orchestrator report).
