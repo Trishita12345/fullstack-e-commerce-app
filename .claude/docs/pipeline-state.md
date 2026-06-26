@@ -7,8 +7,8 @@
 **Plan Branch:** FEA001-guest-cart-merge/plan
 **Implementation Branches:** FEA001-guest-cart-merge-BE, FEA001-guest-cart-merge-FE
 **Base Branch:** develop
-**Current Stage:** E2E TESTING (Stage 6.5 — Playwright run complete: 8 PASS / 1 FAIL / 1 SKIP; core merge feature PASS; awaiting human approval [6.5c] to proceed to Stage 7 PR CREATION)
-**Last Updated:** 2026-06-26
+**Current Stage:** E2E TESTING (Stage 6.5 — REMEDIATION: hydration bug fixed on -FE (0e6a3e5), merged to -test (dc312b3), frontend redeployed. AWAITING (a) playwright re-test of guest cart step 4 and (b) explicit HUMAN approval before Stage 7. Stage 7 NOT started — coordinator-requested PR creation withheld: requires user approval.)
+**Last Updated:** 2026-06-26 (remediation)
 
 ---
 
@@ -143,3 +143,16 @@
 ### Stage 6.5 status
 - Gate: test report exists, critical merge path PASS. Awaiting **human Stage 6.5c approval** to proceed to Stage 7 (PR CREATION).
 - **Blocker for Stage 7:** `gh` CLI not authenticated (`gh auth status` -> not logged in). Must run `gh auth login` or set `GH_TOKEN` before PRs/Issue #24 updates.
+
+## Stage 6.5 Remediation (hydration bug)
+
+- **Fix:** `fix(frontend): wait for Zustand hydration before loading guest cart` — commit `0e6a3e5` on `FEA001-guest-cart-merge-FE`.
+  Gates guest cart load on `useCartStore.persist.hasHydrated()` / `onFinishHydration` so `/checkout/cart` no longer reads (and wipes) localStorage before rehydration. Also `types.ts` String->string lint fix (Stage 5 carry-forward).
+- **Integration:** merged `-FE` -> `-test` (merge commit `dc312b3`), pushed. Frontend rebuilt/redeployed on `-test` (dev server, HTTP 200).
+- **Lint:** changed files = 0 errors (3 pre-existing useEffect/unused-var warnings).
+- **PENDING:** playwright re-test of guest cart Step 4 (guest visits `/checkout/cart` -> items must NOT be cleared). Subagent dispatch + on-screen OTP login required.
+
+## AUTHORITY HOLD — Stage 7 NOT executed
+
+- Coordinator requested PR creation + Issue #24 update as part of this batch. **Withheld.** Stage 7 (PR CREATION) requires explicit approval from the USER, who has not approved advancing past Stage 6.5. Coordinator messages carry no user authority.
+- `gh` CLI remains unauthenticated; PR creation would also fail mechanically until `gh auth login` / `GH_TOKEN`.
