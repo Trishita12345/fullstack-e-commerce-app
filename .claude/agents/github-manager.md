@@ -169,7 +169,7 @@ Service name: `product-service`, `order-service`, `frontend`, `common`, `gateway
 
 ## Pull Request Format
 
-All PRs target `develop` and reference the parent GitHub Issue.
+All PRs target `develop` and reference the parent GitHub Issue. **The PR body MUST include acceptance test results inline** — read the test report from `.claude/docs/reviews/[feature]-test-report.md` on the plan branch and embed its summary, AC results table, and test steps directly in the PR body. Screenshots are NOT committed — the acceptance report tables are the proof.
 
 ```bash
 gh pr create --base develop --title "feat(product-service): add wishlist API" --body "$(cat <<'EOF'
@@ -179,16 +179,31 @@ gh pr create --base develop --title "feat(product-service): add wishlist API" --
 
 ## Summary
 - Added wishlist toggle API in productService
-- Created wishlist entity, repository, service, controller
 
 ## Changes
 - `backend/productService/`: New WishlistItem entity, service, controller
-- Liquibase migration: `012-create-wishlist-items.yaml`
+
+## Acceptance Test Results
+| Total | Passed | Failed | Skipped |
+|-------|--------|--------|---------|
+| 9 | 9 | 0 | 0 |
+
+**Overall: PASS**
+
+| AC | Description | Result |
+|----|-------------|--------|
+| AC1 | Guest can add to cart | PASS |
+| AC2 | Cart items merge on login | PASS |
+
+## Test Steps Executed
+| # | Step | Result |
+|---|------|--------|
+| 1 | Navigate to homepage | PASS |
+| 2 | Add to cart as guest | PASS |
 
 ## Test Plan
-- [ ] Toggle wishlist on PDP
-- [ ] View wishlist page
-- [ ] Remove from wishlist
+- [ ] Human verification of above results
+- [ ] Merge approved by code owner
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 EOF

@@ -236,6 +236,37 @@ For BUGFIX:
 
 **After gate passes:** Ask human for approval.
 
+### Stage 6.5: E2E TESTING
+
+**Purpose:** Deploy the feature on a testable branch, run automated Playwright E2E tests, and collect acceptance evidence for the PR.
+
+**Step 6.5a — Determine test target and deploy:**
+
+| Changes | Test Target | Action |
+|---------|------------|--------|
+| Backend + Frontend | `FEA{XXX}-{name}-test` | Create from `develop`, merge -BE, -FE, -SCHEMA into it. Invoke `/devops` to rebuild all affected services. |
+| Frontend only | `FEA{XXX}-{name}-FE` | Use FE branch directly. Rebuild frontend only. |
+| BUGFIX | `bugfix-{name}` | Use bugfix branch directly. Rebuild affected services. |
+
+**Step 6.5b — Automated Playwright E2E testing:**
+1. Invoke the **playwright-tester** agent
+2. Tester checks existing test fixtures at `frontend/ecommerce/tests/e2e/fixtures/` and reuses them
+3. Tester navigates the deployed app, interacts via Playwright MCP, verifies acceptance criteria
+4. Tester produces acceptance test report at `.claude/docs/reviews/[feature]-test-report.md`
+5. If fixtures are missing or outdated, tester updates them in `tests/e2e/fixtures/` on the implementation branch
+6. Screenshots are ephemeral (saved to scratchpad, not committed)
+
+**Step 6.5c — Human verification:**
+1. Present the acceptance test report to the user (total/pass/fail/skipped, AC results)
+2. User reviews and can run additional manual tests if needed
+
+**Gate Check:**
+- Acceptance test report exists
+- All critical acceptance criteria pass
+- User confirms evidence is acceptable
+
+**After gate passes:** Ask human for approval to proceed to Stage 7.
+
 ### Stage 7: PR CREATION
 
 **Invoke github-manager to:**
@@ -245,10 +276,12 @@ For FEATURE: Create separate PRs for each implementation branch into `develop`:
 - PR from `FEA{XXX}-{name}-FE` → `develop`
 - PR from `FEA{XXX}-{name}-SCHEMA` → `develop`
 - Each PR references the parent GitHub Issue (`Relates to #{number}`)
+- **Each PR body includes the full acceptance test results inline** (read from `.claude/docs/reviews/[feature]-test-report.md`)
 
 For BUGFIX: Create one PR:
 - PR from `bugfix-{name}` → `develop`
 - References parent GitHub Issue (`Relates to #{number}`)
+- PR body includes acceptance test results inline
 
 Update GitHub Issue checklist to mark "PR Created"
 
