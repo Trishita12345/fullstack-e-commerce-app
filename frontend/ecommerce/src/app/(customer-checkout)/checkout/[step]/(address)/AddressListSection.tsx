@@ -140,6 +140,7 @@ export const AddressListSection = ({
                 </Text>
                 {otherAddress.map((address) => (
                   <AddressCard
+                    key={address.addressId}
                     address={address}
                     showLoading={showLoading}
                     stopLoading={stopLoading}

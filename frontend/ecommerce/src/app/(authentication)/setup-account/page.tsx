@@ -22,7 +22,7 @@ const SetUpAccount = () => {
             </Stack>
             <Stack gap={12}>
                 <UpdateProfileForm userInfodata={userInfoData} redirecturl={redirecturl} />
-                <Text c={"primaryDark.7"} style={{ cursor: 'pointer' }} size='sm' fw={600} onClick={handleSkip}>Skip for now, I'll do it later</Text>
+                <Text c={"primaryDark.7"} style={{ cursor: 'pointer' }} size='sm' fw={600} onClick={handleSkip}>Skip for now, I&apos;ll do it later</Text>
             </Stack>
         </Stack>
     )

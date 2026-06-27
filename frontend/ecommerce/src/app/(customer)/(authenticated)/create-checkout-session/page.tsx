@@ -65,7 +65,8 @@ const CreateCheckoutSession = () => {
       return;
     }
 
-    const options: any = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const options: Record<string, any> = {
       key,
       amount: orderData.amount * 100, // paise
       currency: "INR",
@@ -76,7 +77,7 @@ const CreateCheckoutSession = () => {
         name: user?.fullName || "",
         email: user?.emailId || "",
       },
-      handler: function (response: any) {
+      handler: function () {
         verifyingPayment.current = true;
         setLoaderMsg("Payment received. Confirming with server...");
         startPolling(orderId!);
@@ -99,7 +100,7 @@ const CreateCheckoutSession = () => {
         color: "#3399cc",
       },
     };
-    const paymentObject = new (window as any).Razorpay(options);
+    const paymentObject = new (window as unknown as { Razorpay: new (opts: Record<string, unknown>) => { open: () => void } }).Razorpay(options);
     paymentObject.open();
   };
 

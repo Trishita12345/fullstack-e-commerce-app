@@ -131,6 +131,7 @@ const Quantity = ({
           {data.map((i) => {
             return (
               <Group
+                key={i}
                 gap={8}
                 py={4}
                 onClick={() => setValue(i)}

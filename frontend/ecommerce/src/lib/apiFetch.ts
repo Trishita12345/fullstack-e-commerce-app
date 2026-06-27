@@ -47,11 +47,9 @@ export async function apiFetch<T>(
     };
   }
 
-  let res: Response;
-
   // console.log(`API Fetch: `, finalHeaders);
 
-  res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
     method,
     headers: finalHeaders,
     body: body ? JSON.stringify(body) : undefined,

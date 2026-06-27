@@ -47,7 +47,7 @@ const PlpSorting = ({ isMobile = false, handleClose }: { isMobile?: boolean; han
                     {sortingData.map(s => {
                         const Icon = s.icon;
                         return (
-                            <Group onClick={() => {
+                            <Group key={s.value} onClick={() => {
                                 updateParams(s.value);
                                 handleClose && handleClose();
                             }

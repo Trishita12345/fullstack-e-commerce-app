@@ -59,8 +59,8 @@ const Checkout = () => {
       if (isLoggedIn) {
         await updateOverallCartAction(updatedCart);
       }
-      let updatedCartOutOfStock: CartItemDTO[] = [];
-      let updatedCartInStock: CartItemDTO[] = [];
+      const updatedCartOutOfStock: CartItemDTO[] = [];
+      const updatedCartInStock: CartItemDTO[] = [];
       updatedCart.forEach((i) => {
         if (i.updatedQuantity === 0) {
           updatedCartOutOfStock.push(i);

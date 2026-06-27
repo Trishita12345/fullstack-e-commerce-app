@@ -17,7 +17,6 @@ import { useEffect, useState } from "react";
 import { LoadingPrice } from "./LoadingCart";
 import { PriceDetailsBoxHelper } from "./PriceDetailsBoxHelper";
 import PriceDetailsBoxButton from "./(CartItemCard)/PriceDetailsBoxButton";
-import { useIsLoggedIn } from "@/utils/store/auth";
 
 const PriceDetailsBox = () => {
   const cartItems = useCartItems();
@@ -38,7 +37,6 @@ const PriceDetailsBox = () => {
     amountToAvoidShippingFee,
     payableAmount,
   } = priceSummary;
-  const isLoggedIn = useIsLoggedIn();
   const getTotalPrice = async () => {
     try {
       setIsLoading(true);
@@ -64,9 +62,9 @@ const PriceDetailsBox = () => {
   };
 
   useEffect(() => {
-    if (isLoggedIn)
+    if (selectedCartItems.length > 0)
       getTotalPrice();
-  }, [cartItems, selectedCouponCode, giftWrap, donationAmt, isLoggedIn]);
+  }, [cartItems, selectedCouponCode, giftWrap, donationAmt]);
 
   const { step } = useParams();
   return (

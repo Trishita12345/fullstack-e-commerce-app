@@ -7,7 +7,7 @@ const CategoriesFilter = ({ categories, isMobile = false, handleClose }: { categ
     const searchParams = useSearchParams();
     const selectedCategory = searchParams.get('category');
 
-    const updateFilter = (value: any) => {
+    const updateFilter = (value: string) => {
         const params = new URLSearchParams(searchParams.toString());
         params.delete('variants');
         params.delete("page");
