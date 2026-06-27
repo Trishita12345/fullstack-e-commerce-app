@@ -34,7 +34,7 @@ export default function ProductCardImageSection({ images, inStock = true, imgSiz
                     } as React.CSSProperties
                 }>
                     <div className="css-carousel-track">
-                        {carouselImages.map((img: any) => (
+                        {carouselImages.map((img: { imgUrl: string }) => (
                             <div className="css-carousel-slide" key={img.imgUrl}>
                                 <Image
                                     src={img.imgUrl}

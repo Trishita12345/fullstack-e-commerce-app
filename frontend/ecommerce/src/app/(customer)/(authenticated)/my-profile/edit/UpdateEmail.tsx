@@ -115,7 +115,7 @@ const UpdateEmail = ({ setFormEmailValue, currEmail }: { setFormEmailValue: (val
                 {!isOtpStep ?
                     <Stack>
                         <Text size='sm' c='dimmed'>
-                            We'll send an otp to this address for verification purpose
+                            We&apos;ll send an otp to this address for verification purpose
                         </Text>
                         <Box>
                             <TextInput value={email} label='Email Id' onChange={(e) => handleEmailChange(e.target.value)} />

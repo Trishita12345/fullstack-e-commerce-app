@@ -131,6 +131,7 @@ const AddEditAddressForm = ({
                 <Group mt="xs">
                   {Object.values(AddressType).map((i) => (
                     <Radio
+                      key={i}
                       value={i}
                       label={i}
                       size="xs"

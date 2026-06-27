@@ -173,7 +173,7 @@ export const PlpMobileFilterTab = ({ facets }: { facets: Record<string, FacetVal
                     </Tabs.List>
                 </ScrollArea>
                 {tabValues.map(t =>
-                    <Tabs.Panel value={t.value} style={{ padding: '14px', borderLeft: "1px solid var(--mantine-color-gray-2)" }}>
+                    <Tabs.Panel key={t.value} value={t.value} style={{ padding: '14px', borderLeft: "1px solid var(--mantine-color-gray-2)" }}>
                         <ScrollArea h={"300px"} style={{ overflow: "scroll" }}>
                             {t.Component}
                         </ScrollArea>

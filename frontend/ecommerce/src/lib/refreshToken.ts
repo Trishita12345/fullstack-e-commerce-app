@@ -37,7 +37,7 @@ function parseSetCookie(setCookie: string) {
   const [nameValue, ...attributes] = parts;
   const [name, value] = nameValue.split("=");
 
-  const options: any = {};
+  const options: Record<string, string> = {};
 
   attributes.forEach(attr => {
     const [key, val] = attr.split("=");

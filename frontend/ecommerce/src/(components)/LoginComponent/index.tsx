@@ -16,8 +16,8 @@ const LoginComponent = ({
   LoggedInComponent,
   NotLoggedInComponent,
 }: {
-  LoggedInComponent: any;
-  NotLoggedInComponent: any;
+  LoggedInComponent: React.ReactNode;
+  NotLoggedInComponent: React.ReactNode;
 }) => {
   const user = useUserInfo();
   const router = useRouter();

@@ -213,6 +213,7 @@ const AddressListingForCart = ({
               .filter((a) => !a.isDefault)
               .map((i) => (
                 <AddressCard
+                  key={i.addressId}
                   address={i}
                   selectedLocal={selectedLocal}
                   setSelectedLocal={setSelectedLocal}
