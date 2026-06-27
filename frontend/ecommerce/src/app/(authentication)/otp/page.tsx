@@ -8,14 +8,10 @@ import { requestOtp } from "../actions";
 import { notify } from "@/utils/helperFunctions";
 import { apiFetch } from "@/lib/apiFetch";
 import { IconDeviceMobileMessage, IconEdit } from "@tabler/icons-react";
-import { ErrorResponse, VerifyOtpResponse } from "@/constants/types";
+import { CartItemDTO, ErrorResponse, VerifyOtpResponse } from "@/constants/types";
 import { useAuthActions } from "@/utils/store/auth";
 import { useResendTimer } from "@/utils/hooks/useResendTimer";
 import { useCartActions, useCartStore } from "@/utils/store/cart";
-import {
-    getCartItemsAction,
-    mergeGuestCartAction,
-} from "@/app/(customer-checkout)/checkout/cartActions";
 
 // Module-level one-shot guard to prevent re-entrant double-merge on rapid
 // double submit. Overwrite semantics (D1) make a re-merge harmless, but this
@@ -73,8 +69,20 @@ const Otp = () => {
         if (mergeInFlight) return;
         mergeInFlight = true;
         try {
-            await mergeGuestCartAction(guestItems); // POST /merge
-            const serverItems = await getCartItemsAction(); // authoritative merged cart
+            // Use client-side apiFetch (credentials: "include") instead of server
+            // actions — right after OTP verification the auth cookies are in the
+            // browser but not yet available in the Next.js server-action request context.
+            const payload = guestItems.map((ci) => ({
+                productItemId: ci.productItemId,
+                quantity: ci.quantity,
+                priceSnapshot: ci.priceSnapshot,
+                isSelected: ci.isSelected ?? true,
+            }));
+            await apiFetch<void>("/cart-service/cart-items/merge", {
+                method: "POST",
+                body: payload,
+            });
+            const serverItems = await apiFetch<CartItemDTO[]>("/cart-service/cart-items");
             setCartItems(serverItems ?? []); // AC4: replace guest cart with server cart
         } catch {
             notify({
